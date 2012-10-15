@@ -67,6 +67,7 @@ require(['jquery-nos', 'jquery-ui.draggable', 'jquery-ui.droppable', 'jquery-ui.
             autoHideType: true,
             helper: 'helper_resize',
             grid: [$('#<?= $uniqid ?>').width() / 4, '2000']
+            ////////////////////////////////////////////////////////////
         });
 
         var $droppable;
@@ -86,31 +87,28 @@ require(['jquery-nos', 'jquery-ui.draggable', 'jquery-ui.droppable', 'jquery-ui.
                     var $new_row = $(this).closest('tr.fields');
                     var $old_row = $item.closest('tr.fields');
 
-                    console.log($new_row);
-                    console.log($new_row.children());
-                    console.log($new_row.children().length);
-                    console.log($new_row.clone());
+                    var old_position = $item.position();
+                    old_position.width = $item.width();
+                    old_position.height = $item.height();
 
 
+                    // length == 1 means it's the last row droppable (with an unique colspan="9" droppable)
                     if ($new_row.children().length == 1) {
                         $new_row.after($new_row.clone());
                     }
 
-
-
+                    // Moves the item (and it's following) droppable to the new position
                     $(this).after($item.add($item.next()));
 
-                    // When dragging from one line to another one
-                    //if ($new_row.get(0) != $old_row.get(0)) {
+                    // If the old_row becomes empty, delete it
+                    if ($old_row.find('td.draggable:not(.ui-draggable-dragging)').length == 0) {
+                        $old_row.remove();
+                    }
 
-                        if ($old_row.find('td.draggable:not(.ui-draggable-dragging)').length == 0) {
-                            $old_row.remove();
-                        }
-                    //}
-
-                    var $draggable = $new_row.find('td.draggable:not(.ui-draggable-dragging)');
+                    // Make the .droppable 1 column wide
                     $new_row.find('td.droppable').attr('colspan', 1);
 
+                    var $draggable = $new_row.find('td.draggable:not(.ui-draggable-dragging)');
                     if ($draggable.length == 1) {
                         $draggable.attr('colspan', 7);
                     }
@@ -123,6 +121,25 @@ require(['jquery-nos', 'jquery-ui.draggable', 'jquery-ui.droppable', 'jquery-ui.
                     if ($draggable.length == 4) {
                         $draggable.attr('colspan', 1);
                     }
+
+                    var new_position = $item.position();
+                    new_position.width = $item.width();
+                    new_position.height = $item.height();
+
+                    // Animate the thing so the user can understand it just moved accordingly
+                    old_position.position = 'absolute';
+                    old_position.backgroundColor = 'yellow';
+                    old_position.opacity = '1';
+
+                    new_position.position = 'absolute';
+                    new_position.opacity = '0';
+
+                    $('<div></div>').css(old_position).appendTo($item.offsetParent()).animate(new_position, function() {
+                        $(this).remove();
+                    })
+
+                    $item.offsetParent();
+
                     init_droppable();
                 }
             });
