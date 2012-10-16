@@ -2,149 +2,225 @@
 
 
 <div id="<?= $uniqid = uniqid('container_') ?>" style="margin: 1em 25% 1em 1%;">
-    <table width="100%" id="drag_drop">
-        <tr class="fields">
-            <td class="droppable">&nbsp;</td>
-            <td class="draggable" colspan="7">
+    <table style="width:100%" id="drag_drop">
+        <tr class="fields" id="ROW_1">
+            <td class="field" colspan="4">
                 <label>This is a nice question:</label>
                 <input type="text" value="Default" />
             </td>
-            <td class="droppable">&nbsp;</td>
         </tr>
-        <tr class="fields">
-            <td class="droppable">&nbsp;</td>
-            <td class="draggable" colspan="7" id="test">
+        <tr class="fields" id="ROW_2">
+            <td class="field" colspan="4">
                 <label>Another one:</label>
                 <input type="text" value="Default" />
             </td>
-            <td class="droppable">&nbsp;</td>
         </tr>
-        <tr class="fields">
-            <td class="droppable">&nbsp;</td>
-            <td class="draggable" colspan="7" id="test">
-                <label>Thrid question:</label>
+        <tr class="fields" id="ROW_3">
+            <td class="field" colspan="4">
+                <label>Third question:</label>
                 <input type="text" value="Default" />
             </td>
-            <td class="droppable">&nbsp;</td>
         </tr>
-        <tr class="fields">
-            <td class="droppable">&nbsp;</td>
-            <td class="draggable" colspan="7" id="test">
-                <label>4tha nd last (but not the least):</label>
+        <tr class="fields" id="ROW_4">
+            <td class="field" colspan="4">
+                <label>4th and last (but not the least):</label>
                 <input type="text" value="Default" />
             </td>
-            <td class="droppable">&nbsp;</td>
         </tr>
-        <tr class="fields">
-            <td class="droppable" colspan="9">&nbsp;</td>
-        </tr>
-        <tr class="" style="visibility: hidden;">
-            <td class="">&nbsp;</td>
-            <td class="draggable">&nbsp;</td>
-            <td class="">&nbsp;</td>
-            <td class="draggable">&nbsp;</td>
-            <td class="">&nbsp;</td>
-            <td class="draggable">&nbsp;</td>
-            <td class="">&nbsp;</td>
-            <td class="draggable">&nbsp;</td>
-            <td class="">&nbsp;</td>
+        <tr id="ROW_5">
+            <td colspan="1" style="width:25%"></td>
+            <td colspan="1" style="width:25%"></td>
+            <td colspan="1" style="width:25%"></td>
+            <td colspan="1" style="width:25%"></td>
         </tr>
     </table>
 </div>
 
 <script type="text/javascript">
-require(['jquery-nos', 'jquery-ui.draggable', 'jquery-ui.droppable', 'jquery-ui.resizable'], function($) {
+require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.droppable', 'jquery-ui.resizable'], function($) {
     $(function() {
-        $('td.draggable').draggable({
-            revert: 'invalid',
-            helper: 'clone'
-        });
 
-        $('td.draggable').wrapInner('<div class="resizable"></div>');
+        var col_size = Math.round($('#<?= $uniqid ?>').width() / 4);
+
+        $('td.field').wrapInner('<div class="resizable"></div>');
         $('div.resizable').resizable({
             ghost: true,
             handles: 'se',
             autoHideType: true,
             helper: 'helper_resize',
-            grid: [$('#<?= $uniqid ?>').width() / 4, '2000']
-            ////////////////////////////////////////////////////////////
+            grid: [col_size, '2000'],
+            stop: function(e, ui) {
+                var $tr = $(ui.element).closest('tr');
+                // Remove existing padding cell
+                $tr.find('td.padding').remove();
+                // Resize if overflowing
+                resize_to_best($tr, ui.element);
+            }
         });
 
-        var $droppable;
+        function resize_to_best($tr, priority) {
+            var size = calc_size($tr);
+            console.log('Sizing to best = ', size);
+            _resize_to($tr, size, priority);
+        }
+        function resize_to_original($tr) {
+            var size = $tr.data('saved_size');
+            //console.log('Restoring ' + size);
+            _resize_to($tr, size);
+        }
 
-        function init_droppable() {
+        function _resize_to($tr, size, priority) {
+            $tr.find('td.padding').remove();
+            var total_size = 0;
+            var widest = null;
+            $tr.find('td.field').each(function(i) {
+                total_size += parseInt(size[i]);
+                if (!widest || size > $(widest).data('size') ) {
+                    widest = this;
+                }
+                $(this).data('size', size[i]);
+            });
+
+            if (priority === undefined) {
+                priority = widest;
+            }
+
+            // If total size overflow the 4 columns, we need to shrink one of the columns
+            if (total_size > 4) {
+                var shrink_by = $(priority).data('size') - 1;
+                console.log('shrinking by = ' + shrink_by);
+                var shrink_me = $(priority).closest('tr').find('.resizable').not(':data(size=1)').not(priority);
+                shrink_me.data('size', shrink_me.data('size') - shrink_by);
+                total_size -= shrink_by;
+            }
+
+            console.log("ACTUAL RESIZE VALUES = ", size, total_size);
+
+            // Resize the <td> according to the new resized valued
+            $tr.find('td.field').width('auto').each(function() {
+                resize_to_col($(this), $(this).data('size'));
+            });
+
+            //console.log('total size  = ' + total_size);
+
+            // Add a padding cell if necessary
+            if (total_size < 4) {
+                //console.log('adding a padding cell with size = ' + (4 - total_size))
+                var $padding = $('<td class="padding"></td>');
+                resize_to_col($padding, (4 - total_size));
+                $tr.append($padding);
+            }
+        }
+
+        function calc_size($tr, priority) {
+            $tr.find('td.padding').remove();
+            var calc_size = [];
+            var max_item_size = 5 - $tr.find('.field').length;
+
+            $tr.find('td.field').each(function() {
+                // When doing a resize, the <td> keeps the same width, only the div.resizable changes size
+                var $item = $(this).find('.resizable');
+                if ($item.length == 0) {
+                    $item = $(this);
+                }
+                var size = Math.round($item.outerWidth() / col_size);
+                if (size < 1) {
+                    size = 1;
+                }
+                if (size > max_item_size) {
+                    size = max_item_size;
+                }
+                calc_size.push(size);
+            });
+
+            return calc_size;
+        }
+
+        function save_size($tr) {
+            $tr.data('saved_size', calc_size($tr));
+            //console.log('Saved size = ', $tr.data('saved_size'));
+        }
+
+        function clear_saved_size($tr) {
+            $tr.removeData('saved_size');
+        }
+
+        // Set both width and colspan accordingly
+        function resize_to_col($td, colspan) {
+            $td.attr('colspan', colspan).css('width', Math.round(colspan * col_size) + 'px');
+            $td.find('.resizable').width('auto');
+        }
+
+        var $sortable;
+
+
+        function init_sortable() {
             try {
-                $droppable.destroy();
+                $sortable.destroy();
             } catch (e) {}
 
-            $droppable = $('#drag_drop .droppable').droppable({
-                activeClass: 'active',
-                hoverClass: 'hover',
-                accept: 'td.draggable',
-                tolerance: 'pointer',
-                drop: function on_drop(e, ui) {
-                    var $item = $(ui.draggable);
-                    var $new_row = $(this).closest('tr.fields');
-                    var $old_row = $item.closest('tr.fields');
+            $sortable = $('#drag_drop');
+            $sortable.find('td.padding').remove();
+            // Remove empty lines
+            $sortable.find('tr').removeClass('fields').filter(function() {
+                return $(this).children(':not(.placeholder)').length == 0;
+            }).remove();
+            // Add empty lines to drop before / after (above / below) existing fields
+            $sortable.find('tr').before('<tr></tr>');
+            $sortable.append('<tr></tr>');
 
-                    var old_position = $item.position();
-                    old_position.width = $item.width();
-                    old_position.height = $item.height();
+            // Allow
+            $sortable.find('tr').filter(function() {
+                return $(this).children().length < 4;
+            }).addClass('fields');
 
+            console.log('init size_to_fit_available');
+            $sortable.find('tr.fields').each(function() {
+                var $tr = $(this);
+                clear_saved_size($tr);
+                resize_to_best($tr);
+                save_size($tr);
+            });
 
-                    // length == 1 means it's the last row droppable (with an unique colspan="9" droppable)
-                    if ($new_row.children().length == 1) {
-                        $new_row.after($new_row.clone());
-                    }
+            $sortable = $sortable.find('tr.fields').sortable({
+                appendTo: '#<?= $uniqid ?>', // Where the 'helper' is appended
+                connectWith: '#drag_drop tr.fields',
+                helper: "clone", // This is needed when using the "appendTo" option
+                dropOnEmpty: true,
+                items: '> td.field',
+                //forcePlaceholderSize: true,
+                //forceHelperSize: true,
+                placeholder: 'sortable_placeholder field',
+                tolerance: 'pointer', // 'intersect' or 'pointer'
+                out: function(e, ui) {
+                    //console.log('OUT from ' + $(this).closest('tr').attr('id'));
 
-                    // Moves the item (and it's following) droppable to the new position
-                    $(this).after($item.add($item.next()));
+                    // Restore saved size
+                    var $tr = $(this).closest('tr');
+                    resize_to_original($tr);
+                },
+                over: function(e, ui) {
+                    //console.log('OUT from ' + $(this).closest('tr').attr('id'));
 
-                    // If the old_row becomes empty, delete it
-                    if ($old_row.find('td.draggable:not(.ui-draggable-dragging)').length == 0) {
-                        $old_row.remove();
-                    }
+                    // Compute best size
+                    var colspan = Math.round($(ui.helper).width() / col_size);
+                    resize_to_col($(ui.placeholder), colspan);
+                    var $tr = $(this).closest('tr');
+                    resize_to_best($tr);
+                },
+                update: function(e, ui) {
+                    //console.log('CHANGE from ' + $(this).closest('tr').attr('id'));
 
-                    // Make the .droppable 1 column wide
-                    $new_row.find('td.droppable').attr('colspan', 1);
+                    // Compute best size
+                    var $tr = $(this).closest('tr');
+                    resize_to_best($tr, this);
+                    save_size($tr);
 
-                    var $draggable = $new_row.find('td.draggable:not(.ui-draggable-dragging)');
-                    if ($draggable.length == 1) {
-                        $draggable.attr('colspan', 7);
-                    }
-                    if ($draggable.length == 2) {
-                        $draggable.attr('colspan', 3);
-                    }
-                    if ($draggable.length == 3) {
-                        $draggable.attr('colspan', 1).eq(0).attr('colspan', 3);
-                    }
-                    if ($draggable.length == 4) {
-                        $draggable.attr('colspan', 1);
-                    }
-
-                    var new_position = $item.position();
-                    new_position.width = $item.width();
-                    new_position.height = $item.height();
-
-                    // Animate the thing so the user can understand it just moved accordingly
-                    old_position.position = 'absolute';
-                    old_position.backgroundColor = 'yellow';
-                    old_position.opacity = '1';
-
-                    new_position.position = 'absolute';
-                    new_position.opacity = '0';
-
-                    $('<div></div>').css(old_position).appendTo($item.offsetParent()).animate(new_position, function() {
-                        $(this).remove();
-                    })
-
-                    $item.offsetParent();
-
-                    init_droppable();
+                    init_sortable();
                 }
             });
         }
-        init_droppable();
+        init_sortable();
     });
 });
 </script>
@@ -155,7 +231,7 @@ require(['jquery-nos', 'jquery-ui.draggable', 'jquery-ui.droppable', 'jquery-ui.
     </p>
 
     <div class="line">
-        <div class="unit draggable c8" style="position:relative;">
+        <div class="unit sortable c8" style="position:relative;">
             <div class="preview_container">
 
             </div>
@@ -165,7 +241,7 @@ require(['jquery-nos', 'jquery-ui.draggable', 'jquery-ui.droppable', 'jquery-ui.
             </p>
         </div>
 
-        <div class="lastUnit draggable c4 fields_container">
+        <div class="lastUnit sortable c4 fields_container">
             <?php
             foreach ($item->fields as $field) {
                 echo \Request::forge('noviusos_form/admin/form/form_field')->execute(array($field));

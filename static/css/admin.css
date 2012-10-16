@@ -1,15 +1,8 @@
 
-td.droppable {
-    width: 10px;
-    background-color: transparent;
-}
-td.droppable.active {
+td.sortable_placeholder {
     background-color: #a7cdf0;
 }
-td.droppable.hover {
-    background-color: #f00;
-}
-td.draggable {
+td.sortable {
     width: 24%;
     background-color: #eeeeee;
 }
@@ -20,15 +13,20 @@ tr.fields {
     border: 1px dashed #dddddd;
 }
 
-.fields input {
+td.field.ui-sortable-helper {
+    opacity: 0.5;
+    background-color: #a7cdf0;
+}
+
+.field input {
     padding: 2px;
     width: 100%;
     -webkit-box-sinzing: border-box;
     -moz-box-sinzing: border-box;
     -o-box-sinzing: border-box;
-    box-sinzing: border-box;
+    box-sizing: border-box;
 }
-.fields label {
+.field label {
     display: inline-block;
     font-weight: bold;
     padding: 0 0 0.5em 0;
