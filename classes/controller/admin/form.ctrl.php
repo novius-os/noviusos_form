@@ -15,9 +15,14 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     function before_save($item, $data)
     {
         $field_names = array();
-        foreach (\Input::post('field') as $name => $whatever) {
+        foreach ($this->config['fields_config'] as $name => $field) {
+            if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
+                continue;
+            }
+            $name = str_replace(array('field[', '][]'), '', $name);
             $field_names[] = $name;
         }
+        // null is for the first argument of array_map() to transpose the matrix
         $values = array(null);
         foreach ($field_names as &$name) {
             $values[] = \Input::post('field.'.$name);
@@ -27,7 +32,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         foreach (call_user_func_array('array_map', $values) as $value) {
             $fields[] = array_combine(array_values($field_names), $value);
         }
-
 
         foreach ($fields as $field) {
             $is_new = empty($field['field_id']);
@@ -63,13 +67,20 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
     function action_form_field_ajax($field_id = null) {
         if (empty($field_id)) {
-            $model_field = Model_Field::forge(array(
+
+            $default_data = array(
                 'field_form_id' => '0',
-                'field_type' => 'text',
-                'field_label' => '',
-                'field_choices' => '',
                 'field_virtual_name' => uniqid(),
-            ), true);
+            );
+            foreach ($this->config['fields_config'] as $name => $field) {
+                if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
+                    continue;
+                }
+                $name = str_replace(array('field[', '][]'), '', $name);
+                $default_data['field_'.$name] = \Arr::get($field, 'form.value', '');
+            }
+            unset($default_data['field_id']);
+            $model_field = Model_Field::forge($default_data, true);
             $model_field->save();
         } else {
             $model_field = Model_Field::find($field_id);

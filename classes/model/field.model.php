@@ -15,6 +15,14 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_table_name = 'nos_form_field';
     protected static $_primary_key = array('field_id');
 
+    protected static $_observers = array(
+        'Orm\\Observer_CreatedAt' => array(
+            'events' => array('before_insert'),
+            'mysql_timestamp' => true,
+            'property' => 'field_created_at',
+        ),
+    );
+
     protected static $_behaviours = array(
         'Nos\Orm_Behaviour_Virtualname' => array(
             'events' => array('before_save', 'after_save'),

@@ -1,50 +1,75 @@
-
-td.sortable_placeholder {
-    background-color: #a7cdf0;
+.sortable_placeholder {
+    border-style: dotted !important;
+    /*border-width: 2px;*/
+    opacity: 0.3;
 }
-td.sortable {
+/*
+td.sortable_placeholder {
+    display: table-cell;
+}*/
+.sortable {
     width: 24%;
     background-color: #eeeeee;
 }
 
-tr.fields {
-    padding: 1em;
-    height: 3em;
-    border: 1px dashed #dddddd;
+.preview_row {
+    display: table-row;
+    /*border: 1px dashed #dddddd;*/
+    width: 100%;
 }
 
-td.field.ui-sortable-helper {
+.preview_row.empty {
+    border: none;
+}
+
+.preview, .preview label, .preview input, .preview textarea, .preview select {
+    cursor: pointer;
+}
+
+/* Interline droppable height*/
+.padding, .sortable_placeholder {
+    line-height: 2em;
+}
+
+.preview.ui-sortable-helper {
     opacity: 0.5;
     background-color: #a7cdf0;
 }
 
-.field input {
-    padding: 2px;
-    width: 100%;
-    -webkit-box-sinzing: border-box;
-    -moz-box-sinzing: border-box;
-    -o-box-sinzing: border-box;
-    box-sizing: border-box;
+li.preview {
+    float: left;
+    display: inline-block;
 }
-.field label {
+
+.preview input {
+    padding: 1px;
+    /*width: 100%;*/
+}
+.preview .preview_label {
     display: inline-block;
     font-weight: bold;
     padding: 0 0 0.5em 0;
 }
 
 .resizable {
-    padding: 1em;
+    padding: 0;
+    height: 100%;
 }
 
 .helper_resize {
     background: yellow;
 }
 
+.preview {
+    position: relative;
+    vertical-align: top;
+    overflow: hidden;
+    padding: 0 0.5em;
+}
 
-
-
-
-
+.ui-state-active .preview_content {
+    font-weight: normal;
+}
 
 .field_preview {
   position: relative;
@@ -55,101 +80,71 @@ td.field.ui-sortable-helper {
     margin-top: 0;
 }
 
-
-/*
-
-#being_edited_arrow {
-  background: url('img/big-arrow.png') no-repeat;
-  width: 32px;
-  height: 29px;
-  position: absolute;
-  top: 310px;
-  right: 32.5%;
+.preview .ui-widget-content {
+    position: relative;
 }
 
-#being_edited_borders {
-  width: 600px;
-  position: absolute;
-  top: 302px;
-  right: 25px;
+
+
+.fields_container p.actions {
+    text-align: center;
+}
+.fields_container button.action {
+    width: 49%;
 }
 
-#being_edited_borders #top_border {
-  position: absolute;
-  background: #ccc;
-  height: 1px;
-  width: 600px;
+.preview_arrow {
+    position: relative;
+    top: 29px; /* image height = 29px */
+    left: -11.68%;
 }
 
-#being_edited_borders #bottom_border {
-  position: absolute;
-  background: #ccc;
-  height: 1px;
-  width: 70px;
-  top: 41px;
-}
 
-#being_edited_borders #left_border {
-  position: absolute;
-  background: #ccc;
-  width: 1px;
-  height: 250px;
-  left: 70px;
-  top: 41px;
-}
-*/
-
-.field_preview .handle {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 10px;
-  height: 100%;
-  cursor: move;
-  -Webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-.field_preview .handle img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin: -7px 0px 0px -3px;
-}
-
-.field_preview table {
-  width: 100%;
-}
-
-.field_preview th {
-  font-weight: bold;
-  text-align: right;
-  padding: 2px 5px 0 0;
-}
-.field_preview td, .field_preview .th {
-    vertical-align: top;
-}
-
-.field_preview .ui-button-icon-primary {
-    display: inline-block;
-    position: static;
-    margin: 2px 4px;
-    vertical-align: middle;
-}
-.field_preview .ui-button-text {
-    display:none;
-}
-
-.field_preview.ui-state-active .ui-button-text {
-    display:inline-block;
-}
-.field_preview.ui-state-active  .ui-button-icon-primary {
+.preview_container .handle {
     position: absolute;
-    top: 0;
-    margin: 0;
+    top: -1px;
+    left: -1px;
+    bottom: -1px;
+    width: 10px;
+    cursor: move;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    /* Keep parent border for .ui-state-active *//*
+    border-top: 0;
+    border-left: 0;
+    border-bottom: 0;*/
 }
 
-#field_settings {
-  padding-top: 174px;
+
+
+.preview .preview_content, .preview label {
+    margin-right: 8px;
+    margin-left: 16px; /* .handle width */
 }
+
+.preview  .preview_label {
+    margin-top: 1em;
+}
+.preview .preview_content {
+    margin-bottom: 1em;
+}
+
+.preview_content input[type=text], .preview_content textarea {
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.preview_content input[type=text][size], .preview_content textarea[cols] {
+    width: auto;
+}
+.preview_content select {
+    max-width: 100%;
+}
+.preview_container .handle img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -8px 0px 0px -2px;
+}
+
