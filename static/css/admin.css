@@ -1,12 +1,40 @@
+
+.field_blank_slate td {
+    vertical-align: top;
+}
+
+.field_blank_slate {
+    margin: 1em 0.5em 0;
+    padding: 1em;
+}
+.field_blank_slate th {
+    text-align: center;
+    font-weight: bold;
+}
+.field_blank_slate td {
+    padding: 1em;
+}
+
+.field_blank_slate td:first-child {
+    border-right: 1px solid #ccc;
+}
+.field_blank_slate img {
+    vertical-align: middle;
+}
+.field_blank_slate label {
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: block;
+    padding: 2px;
+    margin-bottom: 1px;
+}
+
+
 .sortable_placeholder {
     border-style: dotted !important;
     /*border-width: 2px;*/
     opacity: 0.3;
 }
-/*
-td.sortable_placeholder {
-    display: table-cell;
-}*/
 .sortable {
     width: 24%;
     background-color: #eeeeee;
@@ -34,11 +62,6 @@ td.sortable_placeholder {
 .preview.ui-sortable-helper {
     opacity: 0.5;
     background-color: #a7cdf0;
-}
-
-li.preview {
-    float: left;
-    display: inline-block;
 }
 
 .preview input {
@@ -88,6 +111,7 @@ li.preview {
 
 .fields_container p.actions {
     text-align: center;
+    margin-bottom: 1em;
 }
 .fields_container button.action {
     width: 49%;
@@ -100,7 +124,11 @@ li.preview {
 }
 
 
-.preview_container .handle {
+.preview.ui-sortable-helper {
+    padding: 0;
+}
+
+.preview .handle {
     position: absolute;
     top: -1px;
     left: -1px;
@@ -124,7 +152,16 @@ li.preview {
 }
 
 .preview  .preview_label {
+    display: inline-block;
     margin-top: 1em;
+}
+
+.preview.separator .preview_label {
+    display: block;
+    text-align: center;
+}
+.preview.separator .preview_content {
+    display: none;
 }
 .preview .preview_content {
     margin-bottom: 1em;
@@ -141,7 +178,7 @@ li.preview {
 .preview_content select {
     max-width: 100%;
 }
-.preview_container .handle img {
+.preview .handle img {
     position: absolute;
     left: 50%;
     top: 50%;

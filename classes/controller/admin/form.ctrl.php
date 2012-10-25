@@ -12,6 +12,7 @@ namespace Nos\Form;
 
 class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 {
+    protected static $to_delete = array();
     function before_save($item, $data)
     {
         $field_names = array();
@@ -33,6 +34,11 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $fields[] = array_combine(array_values($field_names), $value);
         }
 
+        static::$to_delete = array_diff(
+            array_keys($item->fields),
+            static::array_pluck($fields, 'field_id')
+        );
+
         foreach ($fields as $field) {
             $is_new = empty($field['field_id']);
             $model_field = Model_Field::forge($field, $is_new);
@@ -51,10 +57,48 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $field->field_form_id = $item->form_id;
             $field->save();
         }
+        foreach (static::$to_delete as $field_id) {
+            $item->fields[$field_id]->delete();
+        }
         return $return;
     }
 
-    function action_form_field($field) {
+    function action_form_field_meta($meta) {
+        $lookup = $this->config['fields_meta']['standard'] + $this->config['fields_meta']['special'];
+        $definition = $lookup[$meta]['definition'];
+        $fields = array();
+        $layout = $definition['layout'];
+        foreach ($definition['fields_list'] as $type => $field_data) {
+            $field = $this->create_field_db($field_data);
+            $fields[] = $this->action_render_field($field);
+            $layout = str_replace($type, $field->field_id, $layout);
+        }
+        \Response::json(array(
+            'fields' => implode("\n", $fields),
+            'layout' => $layout,
+        ));
+    }
+
+    function create_field_db($data = array()) {
+
+        $default_data = array(
+            'field_form_id' => '0',
+            'field_virtual_name' => uniqid(),
+        );
+        foreach ($this->config['fields_config'] as $name => $field) {
+            if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
+                continue;
+            }
+            $name = str_replace(array('field[', '][]'), '', $name);
+            $default_data['field_'.$name] = \Arr::get($field, 'form.value', '');
+        }
+        unset($default_data['field_id']);
+        $model_field = Model_Field::forge(array_merge($default_data, $data), true);
+        $model_field->save();
+        return $model_field;
+    }
+
+    function action_render_field($field) {
 
         $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $field, array('save' => false));
         $fields_view_params = array(
@@ -65,26 +109,37 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return \View::forge('noviusos_form::admin/layout', $fields_view_params, false);
     }
 
-    function action_form_field_ajax($field_id = null) {
-        if (empty($field_id)) {
+    /**
+     * Pluck an array of values from an array.
+     *
+     * @param  array   $array  collection of arrays to pluck from
+     * @param  string  $key    key of the value to pluck
+     * @param  string  $index  optional return array index key, true for original index
+     * @return array   array of plucked values
+     */
+    public static function array_pluck($array, $key, $index = null)
+    {
+        $return = array();
+        $get_deep = strpos($key, '.') !== false;
 
-            $default_data = array(
-                'field_form_id' => '0',
-                'field_virtual_name' => uniqid(),
-            );
-            foreach ($this->config['fields_config'] as $name => $field) {
-                if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
-                    continue;
-                }
-                $name = str_replace(array('field[', '][]'), '', $name);
-                $default_data['field_'.$name] = \Arr::get($field, 'form.value', '');
+        if ( ! $index)
+        {
+            foreach ($array as $i => $a)
+            {
+                $return[] = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$key} :
+                    ($get_deep ? static::get($a, $key) : $a[$key]);
             }
-            unset($default_data['field_id']);
-            $model_field = Model_Field::forge($default_data, true);
-            $model_field->save();
-        } else {
-            $model_field = Model_Field::find($field_id);
         }
-        return $this->action_form_field($model_field);
+        else
+        {
+            foreach ($array as $i => $a)
+            {
+                $index !== true and $i = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$index} : $a[$index];
+                $return[$i] = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$key} :
+                    ($get_deep ? static::get($a, $key) : $a[$key]);
+            }
+        }
+
+        return $return;
     }
 }

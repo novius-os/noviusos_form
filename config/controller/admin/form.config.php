@@ -68,6 +68,224 @@ return array(
             ),
         ),
     ),
+    'fields_meta' => array(
+        'standard' => array(
+            'single_line_text' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/textfield.png',
+                'title' => __('Single line text'),
+                'definition' => array(
+                    'layout' => 'text=4',
+                    'fields_list' => array(
+                        'text' => array(
+                            'field_type' => 'text',
+                            'field_label' => __('Your nice question here:'),
+                        ),
+                    ),
+                ),
+            ),
+            'paragraph_text' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/text_align_justify.png',
+                'title' => __('Paragraph text'),
+                'definition' => array(
+                    'layout' => 'textarea=4',
+                    'fields_list' => array(
+                        'textarea' => array(
+                            'field_type' => 'textarea',
+                            'field_label' => __('Your nice question here:'),
+                        ),
+                    ),
+                ),
+            ),
+            'checkboxes' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/text_list_bullets.png',
+                'title' => __('Checkboxes'),
+                'definition' => array(
+                    'layout' => 'checkbox=4',
+                    'fields_list' => array(
+                        'checkbox' => array(
+                            'field_type' => 'checkbox',
+                            'field_label' => __('Your nice question here:'),
+                            'field_choices' => "First option\nSecond option",
+                        ),
+                    ),
+                ),
+            ),
+            'dropdown' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/text_list_bullets.png',
+                'title' => __('Dropdown'),
+                'definition' => array(
+                    'layout' => 'select=4',
+                    'fields_list' => array(
+                        'select' => array(
+                            'field_type' => 'select',
+                            'field_label' => __('Your nice question here:'),
+                            'field_choices' => "First option\nSecond option",
+                        ),
+                    ),
+                ),
+            ),
+            'unique_choice' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/text_list_bullets.png',
+                'title' => __('Unique choice'),
+                'definition' => array(
+                    'layout' => 'radio=4',
+                    'fields_list' => array(
+                        'radio' => array(
+                            'field_type' => 'radio',
+                            'field_label' => __('Please make a choice:'),
+                            'field_choices' => "First choice\nSecond choice",
+                        ),
+                    ),
+                ),
+            ),
+            'file' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/database_save.png',
+                'title' => __('File'),
+                'definition' => array(
+                    'layout' => 'file=4',
+                    'fields_list' => array(
+                        'file' => array(
+                            'field_type' => 'file',
+                            'field_label' => __('Your file:'),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        'special' => array(
+            'email' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/email.png',
+                'title' => __('Email'),
+                'definition' => array(
+                    'layout' => 'email=4',
+                    'fields_list' => array(
+                        'email' => array(
+                            'field_type' => 'email',
+                            'field_label' => __('Your email:'),
+                        ),
+                    ),
+                ),
+            ),
+            'number' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/calculator.png',
+                'title' => __('Number'),
+                'definition' => array(
+                    'layout' => 'number=4',
+                    'fields_list' => array(
+                        'textarea' => array(
+                            'field_type' => 'number',
+                            'field_label' => __('Your number here:'),
+                        ),
+                    ),
+                ),
+            ),
+            'date' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/date.png',
+                'title' => __('Date'),
+                'definition' => array(
+                    'layout' => 'date=4',
+                    'fields_list' => array(
+                        'textarea' => array(
+                            'field_type' => 'date',
+                            'field_label' => __('Your date here:'),
+                        ),
+                    ),
+                ),
+            ),
+            'fullname' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/vcard.png',
+                'title' => __('Full name'),
+                'definition' => array(
+                    'layout' => 'firstname=2,name=2',
+                    'fields_list' => array(
+                        'firstname' => array(
+                            'field_type' => 'text',
+                            'field_label' => __('Firstname:'),
+                        ),
+                        'name' => array(
+                            'field_type' => 'text',
+                            'field_label' => __('Name:'),
+                        ),
+                    ),
+                ),
+            ),
+            'address' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/building.png',
+                'title' => __('Address'),
+                'definition' => array(
+                    'layout' => "line_1=4\nline_2=4\npostal=1,city=3",
+                    'fields_list' => array(
+                        'line_1' => array(
+                            'field_type' => 'text',
+                            'field_label' => __('First address line:'),
+                        ),
+                        'line_2' => array(
+                            'field_type' => 'text',
+                            'field_label' => __('Second address line:'),
+                        ),
+                        'postal' => array(
+                            'field_type' => 'text',
+                            'field_label' => __('Postal code:'),
+                        ),
+                        'city' => array(
+                            'field_type' => 'text',
+                            'field_label' => __('City:'),
+                        ),
+                    ),
+                ),
+            ),
+            'message' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/font.png',
+                'title' => __('Message'),
+                'definition' => array(
+                    'layout' => 'message=4',
+                    'fields_list' => array(
+                        'message' => array(
+                            'field_type' => 'message',
+                            'field_label' => __('Message:'),
+                        ),
+                    ),
+                ),
+            ),
+            'separator' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/application_split.png',
+                'title' => __('Separator'),
+                'definition' => array(
+                    'layout' => 'separator=4',
+                    'fields_list' => array(
+                        'separator' => array(
+                            'field_label' => __('Separator'),
+                            'field_type' => 'separator',
+                        ),
+                    ),
+                ),
+            ),
+            'hidden' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/shading.png',
+                'title' => __('Hidden'),
+                'definition' => array(
+                    'layout' => 'hidden=4',
+                    'fields_list' => array(
+                        'hidden' => array(
+                            'field_type' => 'hidden',
+                        ),
+                   ),
+                ),
+            ),
+            'variable' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/pencil.png',
+                'title' => __('Variable'),
+                'definition' => array(
+                    'layout' => 'variable=4',
+                    'fields_list' => array(
+                        'variable' => array(
+                            'field_type' => 'variable',
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    ),
     'fields_layout' => array(
         'standard' => array(
             'view' => 'nos::form/accordion',
@@ -123,13 +341,19 @@ return array(
             'form' => array(
                 'type' => 'select',
                 'options' => array(
-                    'text' => __('Single line'),
-                    'textarea' => __('Paragraph'),
-                    'radio' => __('Multiple choices'),
+                    'text' => __('Single line text'),
+                    'textarea' => __('Paragraph text'),
                     'checkbox' => __('Checkboxes'),
                     'select' => __('Dropdown'),
+                    'radio' => __('Multiple choices'),
+                    'file' => __('File'),
+                    'email' => __('Email'),
+                    'number' => __('Number'),
+                    'date' => __('Date'),
+                    'message' => __('Message'),
                     'hidden' => __('Hidden'),
-                    'page_break' => __('Page break'),
+                    'separator' => __('Separator'),
+                    'variable' => __('Variable'),
                 ),
                 'value' => 'text',
             ),

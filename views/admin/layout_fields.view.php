@@ -2,12 +2,42 @@
 
 
 <div id="<?= $uniqid = uniqid('container_') ?>">
-    <p>
-        <button type="button" data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'top'))) ?>"><?= __('Add a field') ?></button>
-    </p>
 
     <div class="line">
         <div class="unit col c8" style="position:relative;">
+            <p>
+                <button type="button" data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'top'))) ?>"><?= __('Add a field') ?></button>
+            </p>
+
+            <div class="field_blank_slate ui-widget-content" style="display:none;">
+                <table style="width: 100%;">
+                    <tr>
+                        <th><?= __('Standard fields'); ?></th>
+                        <th><?= __('Special fields'); ?></th>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%">
+                            <?php
+                            foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.standard') as $type => $meta) {
+                                ?>
+                                <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
+                                <?php
+                            }
+                            ?>
+                        </td>
+                        <td style="width: 50%">
+                            <?php
+                            foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special') as $type => $meta) {
+                                ?>
+                                <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
+                                <?php
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
             <table style="width: 100%; table-layout:fixed;">
                 <tbody class="preview_container">
 
@@ -26,8 +56,17 @@
                 <button type="button" data-icon="copy" data-id="copy" class="action"><?= ('Duplicate') ?></button>
             </p>
             <?php
-            foreach ($item->fields as $field) {
-                echo \Request::forge('noviusos_form/admin/form/form_field')->execute(array($field));
+            $layout = explode("\n", $item->form_layout);
+            array_walk($layout, function(&$v) {
+                $v = explode(',', $v);
+            });
+            $layout = \Arr::flatten($layout);
+            array_walk($layout, function(&$v) {
+                $v = explode('=', $v);
+                $v = $v[0];
+            });
+            foreach ($layout as $field_id) {
+                echo \Request::forge('noviusos_form/admin/form/render_field')->execute(array($item->fields[$field_id]));
             }
             ?>
         </div>
@@ -54,12 +93,6 @@
             </tbody>
         </table>
     </div>
-    <?php /*
-    <td width="30%" style="text-align: right;">
-        <button data-icon="copy" data-id="copy" class="notransform" ><?= ('Duplicate') ?></button>
-        <button data-icon="trash" data-id="delete" class="notransform" ><?= ('Delete') ?></button>
-    </td>
-    */ ?>
 </div>
 
 <script type="text/javascript">
@@ -74,8 +107,17 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
         var $clone_preview = $container.find('[data-id=clone_preview]').clone().removeAttr('data-id');
         $container.find('[data-id=clone_preview]').remove();
 
+        var $blank_slate = $container.find('.field_blank_slate');
+
+        $blank_slate.find('label').hover(function() {
+            $(this).addClass('ui-state-hover');
+        }, function() {
+            $(this).removeClass('ui-state-hover');
+        });
+
         var col_size = Math.round($preview_container.outerWidth() / 4);
 
+        // Fill in the hidden field form_layout upon save
         $container.closest('form').bind('submit', function(e) {
             // Compute the layout
             var layout = '';
@@ -94,25 +136,42 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                     layout += $field.find('[name=field[id][]]').val() + '=' + Math.round($preview.outerWidth() / col_size);
                 });
             });
-            //console.log(layout);
             $layout.val(layout);
         });
 
-
-
-        function add_field(params) {
-            params.where = params.where || 'bottom';
+        function add_fields_blank_slate(e) {
+            e.preventDefault();
+            var params = {
+                where: ($blank_slate.data('params') || {}).where || 'bottom'
+            };
             $.ajax({
-                url: 'admin/noviusos_form/form/form_field_ajax',
-                complete: function(xhr) {
-                    var $field = $(xhr.responseText);
-                    $fields_container.append($field);
-                    $field.nosFormUI();
-                    on_field_added($field, params);
+                url: 'admin/noviusos_form/form/form_field_meta/' + $(this).data('meta'),
+                dataType: 'json',
+                success: function(json) {
+                    $blank_slate.hide();
+                    var $fields = $(json.fields).filter(function() {
+                        return this.nodeType != 3; // 3 == Node.TEXT_NODE
+                    });
+                    if (params.where == 'top') {
+                        $fields = $($fields.get().reverse());
+                    }
+                    $fields_container.append($fields);
+                    $fields.each(function() {
+                        var $field = $(this);
+                        $fields.nosFormUI();
+                        on_field_added($field, params);
+                        $field.hide();
+                    });
+                    apply_layout(json.layout);
                     init_all();
                 }
             });
         }
+
+
+        // Add a new field when clicking the "Add" button, either at top or bottom
+        $blank_slate.on('click', 'label', add_fields_blank_slate);
+
         function on_field_added($field, params) {
             // Make checkbox fill a hidden field instead (we're sending an array, we don't want "missing" values)
             $field.find('input[type=checkbox]').each(function normaliseCheckboxes() {
@@ -128,11 +187,18 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             // The clone will be wrapped into a <tr class="preview_row">
             var $preview = get_preview($field);
             $preview_container[params.where == 'top' ? 'prepend' : 'append']($preview.parent());
-            /*setTimeout(function() {
-                on_focus_preview($preview);
-            }, 10);*/
             $field.find('select[name^="field[type]"]').trigger('change');
         }
+
+        // Add a field
+        $container.on('click', '[data-id=add]', function onAdd(e) {
+            e.preventDefault();
+            var params_button = $(this).data('params');
+            $(this).closest('p')[params_button.where == 'top' ? 'after' : 'before']($blank_slate);
+            $blank_slate.data('params', params_button);
+            $blank_slate.show();
+            set_field_padding();
+        });
 
         function get_preview($field) {
 
@@ -161,7 +227,6 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
         function on_focus_preview(preview) {
             var $preview = $(preview);
             var $field = $preview.data('field');
-            var pos = $preview.position();
 
             // Make the preview look "active"
             $preview_container.find('td.preview').children().removeClass('ui-state-active');
@@ -172,22 +237,25 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             $field.show();
             $field.nosOnShow();
             $field.siblings('.accordion').hide();
-            $fields_container.css({
-                paddingTop: Math.max(0, pos.top - 29) + 'px' // 29 = arrow height
-            });
+            set_field_padding();
 
             $field.find('[name^="field[label"]').focus();
+        }
+
+        function set_field_padding() {
+
+            var $focus = $preview_container.find('.ui-state-active').closest('td.preview');
+            if ($focus.length > 0) {
+                var pos = $focus.position();
+                $fields_container.css({
+                    paddingTop: Math.max(0, pos.top - 29) + 'px' // 29 = arrow height
+                });
+            }
         }
 
         $preview_container.on('click', 'td.preview', function onClickPreview(e) {
             e.preventDefault();
             on_focus_preview(this);
-        });
-
-        // Add a new field when clicking the "Add" button, either at top or bottom
-        $container.find('[data-id=add]').click(function onClickAdd(e) {
-            e.preventDefault();
-            add_field($(this).data().params);
         });
 
         // Duplicate a field
@@ -199,36 +267,12 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
 
         // Delete a preview + field
         function delete_preview() {
-            // Focus the previous field
             var $preview = $(this);
-            var $focus = $preview.prev();
-            if ($focus.length == 0) {
-                // Or the next if we were the first child
-                $focus = $preview.next();
-            }
-            if ($focus.length == 0) {
-                try {
-                    $focus = $(this).closest('.preview_row').prev().prev();
-                } catch (e) {}
-                if ($focus.length == 0) {
-                    try {
-                        $focus = $(this).closest('.preview_row').next().next();
-                    } catch (e) {}
-                }
-                if ($focus.length > 0) {
-                    $focus = $focus.find('.preview').first();
-                }
-            }
-
             var $field = $preview.data('field');
             $field.remove();
             $preview.remove();
-
+            hide_field();
             init_all();
-            // Refocus another field
-            if ($focus.length > 0) {
-                on_focus_preview($focus);
-            }
         }
 
         // Delete listener
@@ -252,7 +296,7 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             var $field = $(this).closest('.accordion');
 
             show_when($field, 'choices', -1 !== $.inArray(type, ['radio', 'checkbox', 'select']));
-            show_when($field, 'label', -1 === $.inArray(type, ['hidden', 'page_break']));
+            show_when($field, 'label', -1 === $.inArray(type, ['hidden', 'separator']));
             show_when($field, 'name', -1 !== $.inArray(type, ['hidden']));
             show_when($field, 'value', -1 !== $.inArray(type, ['hidden']));
             show_when($field, 'details', -1 === $.inArray(type, ['hidden']));
@@ -282,7 +326,7 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             var $td = $preview.find('div.preview_content');
             var html  = '';
 
-            if (type == 'text') {
+            if (type == 'text' || type == 'email' || type == 'number' || type == 'date') {
                 var size = '';
                 if (width != '') {
                     size = ' size="' + width + '"';
@@ -316,6 +360,16 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                     html += '<option>' + text +'</option>';
                 });
                 html += '</select>';
+            }
+
+            if (type == 'message') {
+                html += $(this).val().replace(/\n/g, '<br />');
+            }
+
+            if (type == 'separator') {
+                $preview.find('.ui-widget-content').addClass('ui-widget-header');
+                $preview.addClass('separator');
+                $preview.find('.resizable').children().unwrap();
             }
 
             $td.html(html);
@@ -454,14 +508,17 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             } catch (e) {}
 
             $preview_container.find('td.padding').remove();
+            $preview_container.find('td.sortable_placeholder').remove();
             // Remove empty lines
             $preview_container.find('tr').addClass('preview_row').filter(function() {
                 return $(this).children(':not(.placeholder)').length == 0;
             }).remove();
 
+            $preview_container.find('tr').has('td.separator').addClass('separator');
+
             // Add empty lines to drop before / after (above / below) existing .preview_row
-            $preview_container.find('tr').before('<tr class="preview_row"><td class="padding" colspan="4">&nbsp;</td></tr>');
-            $preview_container.append('<tr class="preview_row"><td class="padding" colspan="4">&nbsp;</td></tr>');
+            $preview_container.find('tr').before('<tr class="preview_row preview_inserter"><td class="padding" colspan="4">&nbsp;</td></tr>');
+            $preview_container.append('<tr class="preview_row preview_inserter"><td class="padding" colspan="4">&nbsp;</td></tr>');
 
             // Connects only list which don't have 4 children
             $preview_container.find('tr').removeClass('preview_row_sortable').filter(function() {
@@ -477,10 +534,20 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                 save_size($tr);
             });
 
-            // @TODO find a way to only connect others lists (not including itself)
-            $sortable = $preview_container.find('tr.preview_row').sortable({
+            $preview_container.find('tr.preview_row.separator').sortable({
                 appendTo: '#<?= $uniqid ?>', // Where the 'helper' is appended
-                connectWith: '#<?= $uniqid ?> tr.preview_row_sortable',
+                connectWith: '#<?= $uniqid ?> tr.preview_row_sortable.preview_inserter',
+                helper: "clone", // This is needed when using the "appendTo" option
+                dropOnEmpty: true,
+                forceHelperSize: true,
+                placeholder: 'sortable_placeholder preview ui-state-active',
+                handle: '.handle'
+            });
+
+            // @TODO find a way to only connect others lists (not including itself)
+            $sortable = $preview_container.find('tr.preview_row:not(.separator)').sortable({
+                appendTo: '#<?= $uniqid ?>', // Where the 'helper' is appended
+                connectWith: '#<?= $uniqid ?> tr.preview_row_sortable:not(.separator)',
                 helper: "clone", // This is needed when using the "appendTo" option
                 dropOnEmpty: true,
                 items: '> td.preview',
@@ -527,12 +594,18 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                     if ($preview.length == 0) {
                         return;
                     }
-                    var $field = $preview.data('field');
                     $preview.children().removeClass('ui-state-active');
-                    $fields_container.find('.show_hide').hide();
-                    $field.hide();
+                    hide_field($preview.data('field'));
                 }
             });
+        }
+
+        function hide_field($field) {
+            $fields_container.find('.show_hide').hide();
+            if ($field) {
+                $preview.children().removeClass('ui-state-active');
+                $field.hide();
+            }
         }
 
         var $resizable;
@@ -558,47 +631,41 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
         function init_all() {
             init_resizable();
             init_sortable();
-
+            set_field_padding();
             setTimeout(refreshPreviewHeight, 10);
         }
 
-        var focus;
         $fields_container.children('.accordion').each(function onEachFields() {
             var $field = $(this);
-
             on_field_added($field, {where: 'bottom'});
-            if (!focus) {
-                //focus = $field.data('preview');
-            }
             $field.hide();
         });
         $fields_container.find('.show_hide').hide();
 
-        $.each($layout.val().split("\n"), function() {
-            var $previous = null;
-            $.each(this.split(','), function() {
-                var item = this.split('=');
-                var field_id = item[0];
-                var field_width = item[1];
-                var $preview = $fields_container.find('[name="field[id][]"]').filter(function() {
-                    return $(this).val() == field_id;
-                }).closest('.accordion').data('preview');
-                resize_to_col($preview, field_width);
-                if ($previous) {
-                    $previous.after($preview);
-                }
-                $previous = $preview;
+        function apply_layout(layout) {
+            $.each(layout.split("\n"), function layoutLines() {
+                var $previous = null;
+                $.each(this.split(','), function layoutCols() {
+                    var item = this.split('=');
+                    var field_id = item[0];
+                    var field_width = item[1];
+                    var $preview = $fields_container.find('[name="field[id][]"]').filter(function() {
+                        return $(this).val() == field_id;
+                    }).closest('.accordion').data('preview');
+                    resize_to_col($preview, field_width);
+                    if ($previous) {
+                        log('moving ', $previous.get(0), ' after ', $preview.get(0));
+                        $previous.after($preview);
+                    }
+                    $previous = $preview;
+                });
             });
-        });
+        }
+
+        apply_layout($layout.val());
 
         // init all the thing
         init_all();
-
-        if (focus) {
-            setTimeout(function() {
-                on_focus_preview(focus);
-            }, 10);
-        }
     });
 
 });
