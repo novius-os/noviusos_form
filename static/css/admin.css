@@ -30,14 +30,14 @@
 }
 
 
-.sortable_placeholder {
+.preview.sortable_placeholder .ui-widget-content, .helper_resize {
     border-style: dotted !important;
     /*border-width: 2px;*/
     opacity: 0.3;
-}
-.sortable {
-    width: 24%;
-    background-color: #eeeeee;
+    position: absolute;
+    height: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .preview_row {
@@ -55,8 +55,8 @@
 }
 
 /* Interline droppable height*/
-.padding, .sortable_placeholder {
-    line-height: 2em;
+tr.preview_inserter {
+    height: 2em;
 }
 
 .preview.ui-sortable-helper {
@@ -79,15 +79,11 @@
     height: 100%;
 }
 
-.helper_resize {
-    background: yellow;
-}
-
 .preview {
     position: relative;
     vertical-align: top;
     overflow: hidden;
-    padding: 0 0.5em;
+    padding: 0 1em 0 0;
 }
 
 .ui-state-active .preview_content {

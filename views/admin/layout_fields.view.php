@@ -75,21 +75,21 @@
     <div class="field_preview ui-widget-content" style="display:none;">
         <table width="100%">
             <tbody>
-                <tr class="preview_row" data-id="clone_preview">
-                    <td class="preview" colspan="4">
-                        <div class="ui-widget-content">
-                            <div class="resizable">
-                                <div class="handle ui-widget-header">
-                                    <img src="static/apps/noviusos_form/img/move-handle-dark3.png" />
-                                </div>
-                                <label class="preview_label"></label>
-                                <div class="preview_content">
+            <tr class="preview_row" data-id="clone_preview">
+                <td class="preview" colspan="4">
+                    <div class="ui-widget-content">
+                        <div class="resizable">
+                            <div class="handle ui-widget-header">
+                                <img src="static/apps/noviusos_form/img/move-handle-dark3.png" />
+                            </div>
+                            <label class="preview_label"></label>
+                            <div class="preview_content">
 
-                                </div>
                             </div>
                         </div>
-                    </td>
-                </tr>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -168,7 +168,6 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             });
         }
 
-
         // Add a new field when clicking the "Add" button, either at top or bottom
         $blank_slate.on('click', 'label', add_fields_blank_slate);
 
@@ -210,7 +209,7 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             // Generate a new preview
             var $clone = $clone_preview.clone();
             $preview = $clone.find('td.preview');
-            resize_to_col($preview, 4);
+            set_cell_colspan($preview, 4);
 
             $field.data('preview', $preview);
             $preview.data('field', $field);
@@ -288,7 +287,6 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
         function show_when($field, name, show) {
             $field.find('[name^="field[' + name + ']"]').closest('p')[show ? 'show' : 'hide']()
         }
-
 
         // When the "field_type" changes
         $fields_container.on('change', 'select[name^="field[type]"]', function on_type_change(e) {
@@ -386,119 +384,133 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
 
             $preview_container.find('tr').each(function sameHeight() {
                 var $preview = $(this).find('td.preview');
-                $preview.children().height('auto');
-                $preview.children().height($preview.height());
+                var max_height = 0;
+
+                $preview.children().height('auto').children().css('height', '');
+                $preview.each(function() {
+                    max_height = Math.max(max_height, $(this).outerHeight());
+                })
+                if (max_height) {
+                    $preview.children().height(max_height);
+                }
             });
         }
-
-
 
         function resize_to_best($tr, priority) {
-            var size = calc_size($tr);
-            //console.log('Sizing to best = ', size);
-            _resize_to($tr, size, priority);
-        }
-        function resize_to_original($tr) {
-            var size = $tr.data('saved_size');
-            //console.log('Restoring ', size);
-            _resize_to($tr, size);
-        }
 
-        function _resize_to($tr, size, priority) {
+            // If there's only one padding cell, it's already good!
+            if ($tr.find('td:not(.padding)').length == 0) {
+                return;
+            }
+
+            // Don't take padding into account (will be re-added at the end if needed)
             $tr.find('td.padding').remove();
+
+            var $cells = $tr.find('td.preview:visible');
+            var cell_sizes = [];
             var total_size = 0;
-            var widest = null;
-            var $preview = $tr.find('td.preview');
+            var $widest = [];
+            var max_cell_size = 5 - $cells.length;
 
-            if (size.length == 0) {
-                $preview = $preview.not('.sortable_placeholder');
-            }
-
-            $preview.each(function(i) {
-                total_size += parseInt(size[i]);
-                if (!widest || size > $(widest).data('size') ) {
-                    widest = this;
+            $cells.each(function() {
+                var $cell = $(this);
+                // When doing a resize, the <td> keeps the same width, only the div.resizable changes size
+                var $item = $cell.find('.resizable');
+                if ($item.length == 0) {
+                    $item = $cell;
                 }
-                $(this).data('size', size[i]);
-            });
+                var cell_size = Math.round($item.outerWidth() / col_size);
+                cell_size = Math.max(1, Math.min(max_cell_size, cell_size));
+                cell_sizes.push(cell_size);
+                total_size += cell_size;
+                $cell.data('colspan', cell_size);
 
-            if (priority === undefined || priority == null) {
-                priority = widest;
-            }
-            //console.log('priority = ', priority, $.isArray(priority));
-            //console.log("RESIZE VALUES BEFORE OVERFLOW = ", size, total_size);
+                if ($widest.length == 0 || cell_size > $widest.data('colspan') ) {
+                    $widest = $cell;
+                }
+            });
 
             // If total size overflow the 4 columns, we need to shrink one of them
             if (total_size > 4) {
-                var shrink_by = total_size - 4;
-                //console.log('shrinking by = ', shrink_by);
-                var shrink_me = $(priority).closest('tr').find('td.preview').filter(function() {
-                    var $this = $(this);
-                    //console.log($this.data('size'), this, priority);
-                    return $this.data('size') > 1 && this != priority;
-                }).filter(':first').closest('.preview');
-                //console.log('shrinking ', shrink_me);
-                shrink_me.data('size', shrink_me.data('size') - shrink_by);
-                total_size -= shrink_by;
-            }
+                //log("CELL WIDTHS = ", size.join(','), $preview, total_size);
 
-            //console.log("ACTUAL RESIZE VALUES = ", size, total_size);
+                if (priority === undefined || priority == null) {
+                    priority = $widest.get(0);
+                    //console.log('priority was not set, automatically using ', priority);
+                } else {
+                    //console.log('using defined priority ', priority);
+                }
+
+                var total_shrink_needed = total_size - 4;
+                // Shrink what we can (size > 1)
+                var $shrink_me = $cells.filter(function() {
+                    return $(this).data('colspan') > 1 && this != priority;
+                });
+                //console.log('shrinkable items are', $shrink_me);
+                $shrink_me.closest('td.preview').each(function() {
+                    var $cell = $(this);
+                    var size = $cell.data('colspan');
+                    var shrink_by = 1;
+                    while((size - shrink_by > 1) && (total_shrink_needed - shrink_by) > 0) {
+                        shrink_by++;
+                    };
+                    //console.log('shrinking ', this, ' by ', shrink_by);
+                    total_shrink_needed -= shrink_by;
+                    $cell.data('colspan', size - shrink_by);
+                });
+                // We need to shrink priority now...
+                if (total_shrink_needed > 0) {
+                    $(priority).data('colspan', $(priority).data('size') - total_shrink_needed);
+                }
+            }
 
             // Resize the <td> according to the new resized valued
             $tr.find('td.preview').width('auto').each(function() {
-                resize_to_col($(this), $(this).data('size'));
+                //console.log('col size = ', $(this).data('size'));
+                set_cell_colspan($(this), $(this).data('colspan'));
+                $(this).removeData('colspan');
             });
-
-            //console.log('total size  = ', total_size);
 
             // Add a padding cell if necessary
             if (total_size < 4) {
                 var $padding = $('<td class="padding">&nbsp;</td>');
-                resize_to_col($padding, (4 - total_size));
+                set_cell_colspan($padding, (4 - total_size));
                 //console.log('adding a padding cell with size = ', (4 - total_size), $padding, ' to ', $tr);
                 $tr.append($padding);
+            } else {
+                //console.log('no padding neeeded');
             }
         }
 
-        function calc_size($tr, priority) {
-            $tr.find('td.padding').hide();
-            var calc_size = [];
-            var max_item_size = 5 - $tr.find('td.preview').length;
-
-            $tr.find('td.preview').each(function() {
-                // When doing a resize, the <td> keeps the same width, only the div.resizable changes size
-                var $item = $(this).find('.resizable');
-                if ($item.length == 0) {
-                    $item = $(this);
-                }
-                var size = Math.round($item.outerWidth() / col_size);
-                if (size < 1) {
-                    size = 1;
-                }
-                if (size > max_item_size) {
-                    size = max_item_size;
-                }
-                calc_size.push(size);
-            });
-            $tr.find('td.padding').show();
-
-            return calc_size;
-        }
-
-        function save_size($tr) {
-            $tr.data('saved_size', calc_size($tr));
-            //console.log('Saved size = ', $tr.data('saved_size'));
-        }
-
-        function clear_saved_size($tr) {
-            $tr.removeData('saved_size');
-        }
-
         // Set both width and colspan accordingly
-        function resize_to_col($td, colspan) {
+        function set_cell_colspan($td, colspan) {
             var width = Math.round(colspan * col_size);
             $td.attr('colspan', colspan).width(width + 'px');
             $td.children().width(width - 15).children('.resizable').width(width - 15);
+        }
+
+        // Returns the colspan, according to width
+        function get_cell_colspan($td) {
+            return Math.round($td.width() / col_size);
+        }
+
+        // Save cell width
+        function save_cell_width($tr) {
+            $tr.find('td.preview:visible').each(function() {
+                var $this = $(this);
+                $this.data('saved_colspan', get_cell_colspan($this));
+            })
+        }
+
+        // Save cell width
+        function restore_cell_width($tr) {
+            $tr.find('td.preview:visible').each(function() {
+                var $this = $(this);
+                var saved_colspan = $this.data('saved_colspan');
+                if (saved_colspan) {
+                    set_cell_colspan($this, saved_colspan);
+                }
+            });
         }
 
         var $sortable;
@@ -514,11 +526,20 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                 return $(this).children(':not(.placeholder)').length == 0;
             }).remove();
 
-            $preview_container.find('tr').has('td.separator').addClass('separator');
+            $preview_container.find('td.separator').each(function() {
+                var $td = $(this);
+                set_cell_colspan($td, 4);
+                $td.closest('tr').addClass('separator');
+            });
 
             // Add empty lines to drop before / after (above / below) existing .preview_row
             $preview_container.find('tr').before('<tr class="preview_row preview_inserter"><td class="padding" colspan="4">&nbsp;</td></tr>');
             $preview_container.append('<tr class="preview_row preview_inserter"><td class="padding" colspan="4">&nbsp;</td></tr>');
+
+            //console.log('init size_to_fit_available');
+            $preview_container.find('tr.preview_row').each(function() {
+                resize_to_best($(this));
+            });
 
             // Connects only list which don't have 4 children
             $preview_container.find('tr').removeClass('preview_row_sortable').filter(function() {
@@ -526,12 +547,65 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                 return $(this).children().length < 4;
             }).addClass('preview_row_sortable');
 
-            //console.log('init size_to_fit_available');
-            $preview_container.find('tr.preview_row').each(function() {
-                var $tr = $(this);
-                clear_saved_size($tr);
-                resize_to_best($tr);
-                save_size($tr);
+            // @TODO find a way to only connect others lists (not including itself)
+            $sortable = $preview_container.find('tr.preview_row:not(.separator)').sortable({
+                connectWith: '#<?= $uniqid ?> tr.preview_row_sortable:not(.separator)',
+                dropOnEmpty: true,
+                helper: "clone", // This is needed when using the "appendTo" option
+                appendTo: '#<?= $uniqid ?>', // Where the 'helper' is appended
+                items: '> td.preview',
+                forceHelperSize: true,
+                placeholder: 'sortable_placeholder preview',
+                tolerance: 'pointer', // 'intersect' or 'pointer'
+                handle: '.handle',
+                start: function onSortableStart(e, ui) {
+                    var $tr = ui.placeholder.closest('tr');
+
+                    // Blur the selection
+                    blur();
+
+                    // Retain container height (the sortable will hide the item, possibly making an empty row without height)
+                    $tr.css('height', ui.item.height());
+
+                    // Style the placeholder with jQuery UI skin
+                    // Do this after the blur, or the ui-state-active will be removed
+                    ui.placeholder.html('<div class="ui-widget-content ui-state-active">&nbsp;</div>');
+
+                    // Firefox: height=100% on absolute div inside the position=relative cell is messed up
+                    ui.placeholder.children().css('height', $tr.css('height'));
+
+                    // Make the placeholder the same width as the original item.
+                    set_cell_colspan(ui.placeholder, get_cell_colspan(ui.helper));
+                },
+                update: function onSortableUpdate(e, ui) {
+                    // Restore original height
+                    ui.item.closest('tr').css('height', '');
+
+                    // Re-initialise everything
+                    init_all();
+                },
+                over: function onSortableOver(e, ui) {
+                    var $tr = ui.placeholder.closest('tr');
+
+                    // Save old size on over
+                    ui.placeholder.hide();
+                    save_cell_width($tr);
+                    ui.placeholder.show();
+
+                    // Firefox: height=100% on absolute div inside the position=relative cell is messed up
+                    ui.placeholder.children().css('height', $tr.css('height'));
+
+                    // Let's try to retain original item size
+                    set_cell_colspan(ui.placeholder, get_cell_colspan(ui.helper));
+
+                    // Handle overflow (> 4 columns)
+                    resize_to_best($tr, ui.placeholder.get(0));
+                },
+                out: function onSortableOut(e, ui) {
+                    var $tr = ui.placeholder.closest('tr');
+                    ui.placeholder.remove();
+                    restore_cell_width($tr);
+                }
             });
 
             $preview_container.find('tr.preview_row.separator').sortable({
@@ -540,70 +614,42 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                 helper: "clone", // This is needed when using the "appendTo" option
                 dropOnEmpty: true,
                 forceHelperSize: true,
-                placeholder: 'sortable_placeholder preview ui-state-active',
-                handle: '.handle'
-            });
-
-            // @TODO find a way to only connect others lists (not including itself)
-            $sortable = $preview_container.find('tr.preview_row:not(.separator)').sortable({
-                appendTo: '#<?= $uniqid ?>', // Where the 'helper' is appended
-                connectWith: '#<?= $uniqid ?> tr.preview_row_sortable:not(.separator)',
-                helper: "clone", // This is needed when using the "appendTo" option
-                dropOnEmpty: true,
-                items: '> td.preview',
-                //forcePlaceholderSize: true,
-                forceHelperSize: true,
-                placeholder: 'sortable_placeholder preview ui-state-active',
-                tolerance: 'pointer', // 'intersect' or 'pointer'
+                forcePlaceholderSize: true,
+                placeholder: 'sortable_placeholder preview', // ui-state-active
                 handle: '.handle',
-                out: function onSortableOut(e, ui) {
-                    //console.log('OUT from ' + $(this).closest('tr').attr('id'));
-
-                    // Restore saved size
-                    var $tr = $(this).closest('tr');
-                    resize_to_original($tr);
-                },
-                over: function onSortableOver(e, ui) {
-                    //console.log('OVER from ' + $(this).closest('tr').attr('id'));
-
-                    // Compute best size
-                    var colspan = Math.round($(ui.helper).width() / col_size);
-                    resize_to_col($(ui.placeholder), colspan);
-                    var $tr = $(this).closest('tr');
-                    resize_to_best($tr, this);
-                },
-                change: function onSortableChange(e, ui) {
-                    var $placeholder = $(ui.placeholder);
-                    //if (!$placeholder.has('.ui-widget-content')) {
-                    //    $placeholder.wrapInner($('<div class="ui-widget-content">&nbsp;</div>').height($(ui.item).height()));
-                    //}
-                },
-                update: function onSortableUpdate(e, ui) {
-                    //console.log('CHANGE from ' + $(this).closest('tr').attr('id'));
-
-                    // Compute best size
-                    var $tr = $(this).closest('tr');
-                    //resize_to_best($tr, this);
-                    save_size($tr);
-
-                    init_all();
-                },
                 start: function onSortableStart(e, ui) {
-                    $(ui.placeholder).html('&nbsp;');
-                    var $preview = $preview_container.find('.ui-widget-content.ui-state-active').parent();
-                    if ($preview.length == 0) {
-                        return;
-                    }
-                    $preview.children().removeClass('ui-state-active');
-                    hide_field($preview.data('field'));
+                    var $tr = ui.placeholder.closest('tr');
+
+                    // Blur the selection
+                    blur();
+
+                    // Retain container height (the sortable will hide the item, possibly making an empty row without height)
+                    $tr.css('height', ui.item.height());
+
+                    // Style the placeholder with jQuery UI skin
+                    // Do this after the blur, or the ui-state-active will be removed
+                    ui.placeholder.html('<div class="ui-widget-content ui-state-active">&nbsp;</div>');
+
+                    // Firefox: height=100% on absolute div inside the position=relative cell is messed up
+                    ui.placeholder.children().css('height', $tr.css('height'));
+
+                    // Make the placeholder the same width as the original item.
+                    set_cell_colspan(ui.placeholder, 4);
                 }
             });
         }
 
+        function blur() {
+            var $preview = $preview_container.find('.ui-widget-content.ui-state-active').parent();
+            if ($preview.length == 0) {
+                return;
+            }
+            $preview.children().removeClass('ui-state-active');
+            hide_field($preview.data('field'));
+        }
         function hide_field($field) {
             $fields_container.find('.show_hide').hide();
             if ($field) {
-                $preview.children().removeClass('ui-state-active');
                 $field.hide();
             }
         }
@@ -614,16 +660,22 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                 $resizable.destroy();
             } catch (e) {}
 
-            $resizable = $preview_container.find('div.resizable').resizable({
+            $resizable = $preview_container.find('div.resizable');
+            $resizable.css('height', '');
+            $resizable = $resizable.resizable({
                 ghost: true,
                 handles: 'se',
                 autoHideType: true,
-                helper: 'helper_resize',
+                helper: 'helper_resize preview ui-state-active',
                 grid: [col_size, '2000'],
+                start: function(e, ui) {
+                    blur();
+                },
                 stop: function(e, ui) {
-                    var $tr = $(ui.element).closest('tr');
-                    // Resize if overflowing
-                    resize_to_best($tr, $(ui.element).closest('td').get(0));
+                    var $tr = ui.element.closest('tr');
+                    ui.element.css('height', '');
+                    // Handle overflow (> 4 columns)
+                    resize_to_best($tr, ui.element.closest('td').get(0));
                 }
             });
         }
@@ -632,7 +684,9 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             init_resizable();
             init_sortable();
             set_field_padding();
-            setTimeout(refreshPreviewHeight, 10);
+            setTimeout(function() {
+                refreshPreviewHeight();
+            }, 100);
         }
 
         $fields_container.children('.accordion').each(function onEachFields() {
@@ -652,9 +706,8 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                     var $preview = $fields_container.find('[name="field[id][]"]').filter(function() {
                         return $(this).val() == field_id;
                     }).closest('.accordion').data('preview');
-                    resize_to_col($preview, field_width);
+                    set_cell_colspan($preview, field_width);
                     if ($previous) {
-                        log('moving ', $previous.get(0), ' after ', $preview.get(0));
                         $previous.after($preview);
                     }
                     $previous = $preview;
@@ -666,53 +719,10 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
 
         // init all the thing
         init_all();
+
+        // Firefox needs this <colgroup> to size the td[colspan] properly
+        $preview_container.closest('table').prepend($('<colgroup><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /></colgroup>'));
     });
 
 });
 </script>
-
-<?php
-/*
-?>
-<div id="<?= $uniqid = uniqid('container_') ?>" style="margin: 1em 25% 1em 1%;">
-    <table style="width:100%" id="drag_drop">
-        <tr class="empty">
-            <td colspan="1" stlye="width: 25%;">&nbsp;</td>
-            <td colspan="1" stlye="width: 25%;">&nbsp;</td>
-            <td colspan="1" stlye="width: 25%;">&nbsp;</td>
-            <td colspan="1" stlye="width: 25%;">&nbsp;</td>
-        </tr>
-        <tr class="preview_row" id="ROW_1">
-            <td class="preview" colspan="4">
-                <label>This is a nice question:</label>
-                <input type="text" value="Default" />
-            </td>
-        </tr>
-        <tr class="preview_row" id="ROW_2">
-            <td class="preview" colspan="4">
-                <label>Another one:</label>
-                <input type="text" value="Default" />
-            </td>
-        </tr>
-        <tr class="preview_row" id="ROW_3">
-            <td class="preview" colspan="4">
-                <label>Third question:</label>
-                <input type="text" value="Default" />
-            </td>
-        </tr>
-        <tr class="preview_row" id="ROW_4">
-            <td class="preview" colspan="4">
-                <label>4th and last (but not the least):</label>
-                <input type="text" value="Default" />
-            </td>
-        </tr>
-    </table>
-</div>
--->
-<script type="text/javascript">
-    require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($) {
-        $(function() {
-        });
-    });
-</script>
-*/
