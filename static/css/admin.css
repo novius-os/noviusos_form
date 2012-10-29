@@ -30,14 +30,10 @@
 }
 
 
-.preview.sortable_placeholder .ui-widget-content, .helper_resize {
+.preview.sortable_placeholder, .helper_resize {
     border-style: dotted !important;
     /*border-width: 2px;*/
     opacity: 0.3;
-    position: absolute;
-    height: 100%;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
 }
 
 .preview_row {
@@ -71,19 +67,20 @@ tr.preview_inserter {
 .preview .preview_label {
     display: inline-block;
     font-weight: bold;
-    padding: 0 0 0.5em 0;
 }
 
 .resizable {
-    padding: 0;
+    padding: 1em 0;
+    position: relative;
     height: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .preview {
-    position: relative;
     vertical-align: top;
     overflow: hidden;
-    padding: 0 1em 0 0;
+    /*padding: 0 1em 0 0;*/
 }
 
 .ui-state-active .preview_content {
@@ -91,19 +88,13 @@ tr.preview_inserter {
 }
 
 .field_preview {
-  position: relative;
-  padding: 10px 10px 10px 20px;
-  margin: 10px 0 10px;
+    position: relative;
+    padding: 10px 10px 10px 20px;
+    margin: 10px 0 10px;
 }
 .field_preview:first-child {
     margin-top: 0;
 }
-
-.preview .ui-widget-content {
-    position: relative;
-}
-
-
 
 .fields_container p.actions {
     text-align: center;
@@ -147,9 +138,12 @@ tr.preview_inserter {
     margin-left: 16px; /* .handle width */
 }
 
+.preview_content {
+    margin-top: 0.5em;
+}
+
 .preview  .preview_label {
     display: inline-block;
-    margin-top: 1em;
 }
 
 .preview.separator .preview_label {
@@ -158,9 +152,6 @@ tr.preview_inserter {
 }
 .preview.separator .preview_content {
     display: none;
-}
-.preview .preview_content {
-    margin-bottom: 1em;
 }
 
 .preview_content input[type=text], .preview_content textarea {
