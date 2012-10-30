@@ -335,22 +335,52 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             show_when($field, 'width', -1 !== $.inArray(type, ['text']));
 
             $field.find('[name^="field[label]"]').trigger('change');
+            $field.find('[name^="field[style]"]').trigger('change');
             generate_preview.call($field.get(0), e);
+        });
+
+        $fields_container.on('change', 'select[name^="field[style]"]', function on_style_change(e) {
+            var style = $(this).val();
+            var $field = $(this).closest('.fieldset');
+            var $message = $field.find('[name^="field[message]"]');
+            var $new = $(style == 'p' ? '<textarea rows="4"></textarea>' : '<input type="text" />');
+
+            $new.attr({
+                name: $message.attr('name'),
+                id: $message.attr('id')
+            });
+            $new.val($message.val());
+
+            $new.insertAfter($message);
+            $message.remove();
+            $new.parent().nosFormUI();
+            // Converting textarea to input will loose line breaks
+            $new.trigger('change');
         });
 
         // When the "field_label" changes
         $fields_container.on('change keyup', 'input[name^="field[label]"]', function on_label_change(e) {
             var $field = $(this).closest('.fieldset');
             var $preview = $field.data('preview');
-            $preview.find('label').text($(this).val());
+            var $label = $preview.find('label');
+            $label.text($(this).val());
+            if ($(this).is(':visible')) {
+                $label.show();
+            } else {
+                $label.hide();
+            }
         });
+
+        function find_field($context, field_name) {
+            return $context.find('[name^="field[' + field_name + ']"]');
+        }
 
         function generate_preview(e) {
             var $field = $(this).closest('.fieldset');
-            var type = $field.find('[name^="field[type]"]').val();
-            var choices = $field.find('textarea[name^="field[choices]"]').val();
-            var width = $field.find('[name^="field[width]"]').val();
-            var height = $field.find('[name^="field[height]"]').val();
+            var type = find_field($field, 'type').val();
+            var choices = find_field($field, 'choices').val();
+            var width = find_field($field, 'width').val();
+            var height = find_field($field, 'height').val();
             var $preview = $field.data('preview');
             var $td = $preview.find('div.preview_content');
             var html  = '';
@@ -392,7 +422,9 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             }
 
             if (type == 'message') {
-                html += choices.replace(/\n/g, '<br />');
+                var message = find_field($field, 'message').val().replace(/\n/g, '<br />');
+                var style = find_field($field, 'style').val();
+                html += '<' + style + '>' + message + '</' + style + '>';
             }
 
             if (type == 'separator') {
@@ -411,6 +443,7 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
 
         // When the "field_choices" changes
         $fields_container.on('change keyup', 'textarea[name^="field[choices]"]', generate_preview);
+        $fields_container.on('change keyup', '[name^="field[message]"]', generate_preview);
         $fields_container.on('change keyup', 'input[name^="field[width]"]', generate_preview);
         $fields_container.on('change keyup', 'input[name^="field[height]"]', generate_preview);
 

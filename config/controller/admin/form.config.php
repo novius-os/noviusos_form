@@ -300,7 +300,7 @@ return array(
                             'field[type][]',
                             'field[choices][]',
                             'field[style][]',
-                            'field[title][]',
+                            'field[message][]',
                             'field[name][]',
                             'field[value][]',
                         ),
@@ -372,13 +372,13 @@ return array(
                 return $item->field_label;
             },
         ),
-        'field[title][]' => array(
+        'field[message][]' => array(
             'label' => __('Title:'),
             'form' => array(
                 'value' => __('Your message here.'),
             ),
             'populate' => function($item) {
-                return $item->field_title;
+                return $item->field_message;
             },
         ),
         'field[style][]' => array(

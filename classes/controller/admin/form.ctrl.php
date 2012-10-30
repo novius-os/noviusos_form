@@ -54,7 +54,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     {
         $return = parent::save($item, $data);
         foreach ($item->fields as $field) {
-            if (!in_array($field->field_id, static::$to_delete)) {
+            if (in_array($field->field_id, static::$to_delete)) {
                 continue;
             }
             $field->field_form_id = $item->form_id;
