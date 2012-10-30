@@ -299,6 +299,8 @@ return array(
                             'field[label][]',
                             'field[type][]',
                             'field[choices][]',
+                            'field[style][]',
+                            'field[title][]',
                             'field[name][]',
                             'field[value][]',
                         ),
@@ -368,6 +370,31 @@ return array(
             ),
             'populate' => function($item) {
                 return $item->field_label;
+            },
+        ),
+        'field[title][]' => array(
+            'label' => __('Title:'),
+            'form' => array(
+                'value' => __('Your message here.'),
+            ),
+            'populate' => function($item) {
+                return $item->field_title;
+            },
+        ),
+        'field[style][]' => array(
+            'label' => __('Style:'),
+            'form' => array(
+                'type' => 'select',
+                'options' => array(
+                    'p' => __('Paragraph'),
+                    'h1' => __('Heading 1'),
+                    'h2' => __('Heading 2'),
+                    'h3' => __('Heading 3'),
+                ),
+                'value' => 'p',
+            ),
+            'populate' => function($item) {
+                return $item->field_style;
             },
         ),
         'field[choices][]' => array(

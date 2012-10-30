@@ -54,6 +54,9 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     {
         $return = parent::save($item, $data);
         foreach ($item->fields as $field) {
+            if (!in_array($field->field_id, static::$to_delete)) {
+                continue;
+            }
             $field->field_form_id = $item->form_id;
             $field->save();
         }
@@ -64,6 +67,9 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     }
 
     function action_form_field_meta($meta) {
+        if ($meta == 'page_break') {
+            return $this->page_break();
+        }
         $lookup = $this->config['fields_meta']['standard'] + $this->config['fields_meta']['special'];
         $definition = $lookup[$meta]['definition'];
         $fields = array();
@@ -98,15 +104,69 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return $model_field;
     }
 
-    function action_render_field($field) {
+    function action_render_field($item, $view = null) {
 
-        $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $field, array('save' => false));
+        // This action is not available from the browser. Only internal requests are authorised.
+        if (!empty($view) && !\Request::is_hmvc()) {
+            exit();
+        } else {
+            $view = 'noviusos_form::admin/layout';
+        }
+
+        if ($item->field_type == 'page_break') {
+            return $this->render_page_break($item);
+        }
+
+        $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $item, array('save' => false));
         $fields_view_params = array(
             'layout' => $this->config['fields_layout'],
             'fieldset' => $fieldset,
         );
         $fields_view_params['view_params'] = &$fields_view_params;
-        return \View::forge('noviusos_form::admin/layout', $fields_view_params, false);
+        return \View::forge($view, $fields_view_params, false);
+    }
+
+    function page_break() {
+
+        $data = array(
+            'field_form_id' => '0',
+            'field_virtual_name' => uniqid(),
+        );
+        foreach ($this->config['fields_config'] as $name => $field) {
+            if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
+                continue;
+            }
+            $name = str_replace(array('field[', '][]'), '', $name);
+            $data['field_'.$name] = '';
+        }
+        unset($data['field_id']);
+        $data['field_type'] = 'page_break';
+        $data['field_label'] = __('Page break');
+        $item = Model_Field::forge($data, true);
+        $item->save();
+
+        \Response::json(array(
+            'fields' => (string) $this->render_page_break($item),
+            'layout' => $item->field_id.'=4',
+        ));
+    }
+
+    function render_page_break($item) {
+
+        $fields_config = $this->config['fields_config'];
+        $fields_config['field[type][]']['form']['options'] = array('page_break' => __('Page break'));
+        foreach ($fields_config as $name => &$field_config) {
+            $field_config['template'] = "{field}\n";
+        }
+        $fieldset = \Fieldset::forge(uniqid(), array('auto_id' => false));
+        $fieldset->add_widgets($fields_config);
+        $fieldset->populate_with_instance($item);
+        $fields_view_params = array(
+            'layout' => $this->config['fields_layout'],
+            'fieldset' => $fieldset,
+        );
+        $fields_view_params['view_params'] = &$fields_view_params;
+        return \View::forge('noviusos_form::admin/page_break', $fields_view_params, false);
     }
 
     /**
