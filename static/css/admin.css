@@ -146,11 +146,11 @@ tr.preview_inserter {
     display: inline-block;
 }
 
-.preview.separator .preview_label {
+.preview.page_break .preview_label {
     display: block;
     text-align: center;
 }
-.preview.separator .preview_content {
+.preview.page_break .preview_content {
     display: none;
 }
 
