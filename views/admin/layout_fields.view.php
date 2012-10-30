@@ -40,6 +40,7 @@
 
             <table style="width: 100%; table-layout:fixed; border-spacing: 1em 0; border-collapse: separate;">
                 <colgroup>
+                    <!-- 4 even columns -->
                     <col />
                     <col />
                     <col />
@@ -159,15 +160,21 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
                     if (params.where == 'top') {
                         $fields = $($fields.get().reverse());
                     }
+                    var $previews = $(); // $([]) in jQuery < 1.4
                     $fields_container.append($fields);
+                    $fields.nosFormUI();
                     $fields.each(function() {
                         var $field = $(this);
-                        $fields.nosFormUI();
                         on_field_added($field, params);
                         $field.hide();
+                        $previews = $previews.add($field.data('preview'));
                     });
                     apply_layout(json.layout);
                     init_all();
+                    $previews.addClass('ui-state-hover');
+                    setTimeout(function() {
+                        $previews.removeClass('ui-state-hover');
+                    }, 500);
                 }
             });
         }
@@ -273,9 +280,11 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             var $preview = $(this);
             var $field = $preview.data('field');
             $field.remove();
-            $preview.remove();
             hide_field();
-            init_all();
+            $preview.addClass('ui-state-error').hide(500, function() {
+                $preview.remove();
+                init_all();
+            });
         }
 
         // Delete listener
@@ -719,7 +728,7 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
         }, 100);
 
         // Firefox needs this <colgroup> to size the td[colspan] properly
-        $preview_container.closest('table').prepend($('<colgroup><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /></colgroup>'));
+        //$preview_container.closest('table').prepend($('<colgroup><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /></colgroup>'));
     });
 
 });
