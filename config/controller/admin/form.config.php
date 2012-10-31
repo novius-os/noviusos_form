@@ -302,7 +302,8 @@ return array(
                             'field[style][]',
                             'field[message][]',
                             'field[name][]',
-                            'field[value][]',
+                            'field[origin][]',
+                            'field[origin_var][]',
                         ),
                     ),
                     'optional' => array(
@@ -423,10 +424,6 @@ return array(
             'label' => __('Name:'),
             'dont_save' => true,
         ),
-        'field[value][]' => array(
-            'label' => __('Value:'),
-            'dont_save' => true,
-        ),
         'field[details][]' => array(
             'label' => __('Field details:'),
             'form' => array(
@@ -471,6 +468,31 @@ return array(
             'form' => array(
                 'size' => '3',
             ),
+        ),
+        'field[origin][]' => array(
+            'label' => 'Origin',
+            'form' => array(
+                'type' => 'select',
+                'options' => array(
+                    'get' => 'Get', // No translation here: it's a feature
+                    'post' => 'Post',
+                    'request' => 'Request',
+                    'global' => 'Global',
+                    'session' => 'Session',
+                ),
+            ),
+            'populate' => function($item) {
+                return $item->field_origin;
+            },
+        ),
+        'field[origin_var][]' => array(
+            'label' => 'Variable name',
+            'form' => array(
+                'value' => '',
+            ),
+            'populate' => function($item) {
+                return $item->field_origin;
+            },
         ),
         'field[virtual_name][]' => array(
             'label' => __('Virtual field name:'),

@@ -322,17 +322,35 @@ require(['jquery-nos', 'jquery-ui.sortable', 'jquery-ui.resizable'], function($)
             var $field = $(this).closest('.fieldset');
 
             show_when($field, 'choices', -1 !== $.inArray(type, ['radio', 'checkbox', 'select']));
-            show_when($field, 'label', -1 === $.inArray(type, ['hidden', 'separator', 'message']));
-            show_when($field, 'style', -1 !== $.inArray(type, ['message']));
-            show_when($field, 'title', -1 !== $.inArray(type, ['message']));
+            show_when($field, 'label', -1 === $.inArray(type, ['separator', 'message']));
+            show_when($field, 'message', -1 !== $.inArray(type, ['message']));
             show_when($field, 'name', -1 !== $.inArray(type, ['hidden']));
-            show_when($field, 'value', -1 !== $.inArray(type, ['hidden']));
             show_when($field, 'details', -1 === $.inArray(type, ['hidden']));
             show_when($field, 'mandatory', -1 === $.inArray(type, ['hidden']));
             show_when($field, 'default_value', -1 === $.inArray(type, ['hidden']));
+            show_when($field, 'style', -1 !== $.inArray(type, ['message']));
+            show_when($field, 'width', -1 !== $.inArray(type, ['text']));
             show_when($field, 'height', -1 !== $.inArray(type, ['textarea']));
             show_when($field, 'limited_to', -1 !== $.inArray(type, ['text']));
-            show_when($field, 'width', -1 !== $.inArray(type, ['text']));
+            show_when($field, 'origin', -1 !== $.inArray(type, ['hidden', 'variable']));
+            show_when($field, 'origin_var', -1 !== $.inArray(type, ['hidden', 'variable']));
+
+            // The 'type' field is for sure in the first ui-accordion-content so we know $field IS an .accordion too
+            // So the selectedIndex is for sure '0'
+            $field.find('.ui-accordion-content').each(function() {
+                var $accordion_content = $(this);
+                // We need to select the appropriate index with wijaccordion() prior to changing the style or it's all messed up
+                if ($accordion_content.find(':input').filter(function() {
+                    return $(this).closest('p').css('display') != 'none';
+                }).length == 0) {
+                    // wijaccordion('activate', 0) does not work properly.
+
+                    // Hide .accordion-header
+                    $accordion_content.prev().hide();
+                } else {
+                    $accordion_content.prev().show();
+                }
+            });
 
             $field.find('[name^="field[label]"]').trigger('change');
             $field.find('[name^="field[style]"]').trigger('change');
