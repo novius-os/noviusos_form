@@ -13,7 +13,8 @@ namespace Nos\Form;
 class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 {
     protected static $to_delete = array();
-    function before_save($item, $data)
+
+    public function before_save($item, $data)
     {
         $field_names = array();
         foreach ($this->config['fields_config'] as $name => $field) {
@@ -50,7 +51,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
     }
 
-    function save($item, $data)
+    public function save($item, $data)
     {
         $return = parent::save($item, $data);
         foreach ($item->fields as $field) {
@@ -66,7 +67,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return $return;
     }
 
-    function action_form_field_meta($meta) {
+    public function action_form_field_meta($meta)
+    {
         if ($meta == 'page_break') {
             return $this->page_break();
         }
@@ -85,7 +87,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         ));
     }
 
-    function create_field_db($data = array()) {
+    public function create_field_db($data = array())
+    {
 
         $default_data = array(
             'field_form_id' => '0',
@@ -104,7 +107,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return $model_field;
     }
 
-    function action_render_field($item, $view = null) {
+    public function action_render_field($item, $view = null)
+    {
 
         // This action is not available from the browser. Only internal requests are authorised.
         if (!empty($view) && !\Request::is_hmvc()) {
@@ -126,7 +130,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return \View::forge($view, $fields_view_params, false);
     }
 
-    function page_break() {
+    public function page_break()
+    {
 
         $data = array(
             'field_form_id' => '0',
@@ -151,7 +156,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         ));
     }
 
-    function render_page_break($item) {
+    public function render_page_break($item)
+    {
 
         $fields_config = $this->config['fields_config'];
         $fields_config['field[type][]']['form']['options'] = array('page_break' => __('Page break'));
@@ -182,18 +188,13 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $return = array();
         $get_deep = strpos($key, '.') !== false;
 
-        if ( ! $index)
-        {
-            foreach ($array as $i => $a)
-            {
+        if ( ! $index) {
+            foreach ($array as $i => $a) {
                 $return[] = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$key} :
                     ($get_deep ? static::get($a, $key) : $a[$key]);
             }
-        }
-        else
-        {
-            foreach ($array as $i => $a)
-            {
+        } else {
+            foreach ($array as $i => $a) {
                 $index !== true and $i = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$index} : $a[$index];
                 $return[$i] = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$key} :
                     ($get_deep ? static::get($a, $key) : $a[$key]);
