@@ -17,22 +17,22 @@
                     </tr>
                     <tr>
                         <td style="width: 50%">
-                            <?php
-                            foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.standard') as $type => $meta) {
-                                ?>
+<?php
+foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.standard') as $type => $meta) {
+    ?>
                                 <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
-                                <?php
-                            }
-                            ?>
+    <?php
+}
+?>
                         </td>
                         <td style="width: 50%">
-                            <?php
-                            foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special') as $type => $meta) {
-                                ?>
+<?php
+foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special') as $type => $meta) {
+    ?>
                                 <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
-                                <?php
-                            }
-                            ?>
+    <?php
+}
+?>
                         </td>
                     </tr>
                 </table>
@@ -63,22 +63,22 @@
                 <button type="button" data-icon="trash" data-id="delete" class="action"><?= ('Delete') ?></button>
                 <button type="button" data-icon="copy" data-id="copy" class="action"><?= ('Duplicate') ?></button>
             </p>
-            <?php
-            $layout = explode("\n", $item->form_layout);
-            array_walk($layout, function(&$v) {
-                $v = explode(',', $v);
-            });
-            $layout = \Arr::flatten($layout);
-            // Remove empty values
-            $layout = array_filter($layout);
-            array_walk($layout, function(&$v) {
-                $v = explode('=', $v);
-                $v = $v[0];
-            });
-            foreach ($layout as $field_id) {
-                echo \Request::forge('noviusos_form/admin/form/render_field')->execute(array($item->fields[$field_id]));
-            }
-            ?>
+<?php
+$layout = explode("\n", $item->form_layout);
+array_walk($layout, function(&$v) {
+    $v = explode(',', $v);
+});
+$layout = \Arr::flatten($layout);
+// Remove empty values
+$layout = array_filter($layout);
+array_walk($layout, function(&$v) {
+    $v = explode('=', $v);
+    $v = $v[0];
+});
+foreach ($layout as $field_id) {
+    echo \Request::forge('noviusos_form/admin/form/render_field')->execute(array($item->fields[$field_id]));
+}
+?>
         </div>
     </div>
 
