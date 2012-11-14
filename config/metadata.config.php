@@ -33,6 +33,22 @@ return array(
             'icon64'  => 'static/apps/noviusos_form/img/icons/form-64.png',
         ),
     ),
+    'enhancers' => array(
+        'noviusos_form' => array(
+            'title' => 'Form',
+            'desc'  => '',
+            'enhancer' => 'noviusos_form/front/main',
+            //'urlEnhancer' => 'noviusos_form/front/main',
+            'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
+            'previewUrl' => 'admin/noviusos_form/enhancer/preview',
+            'dialog' => array(
+                'contentUrl' => 'admin/noviusos_form/enhancer/popup',
+                'width' => 450,
+                'height' => 400,
+                'ajax' => true,
+            ),
+        ),
+    ),
     'icons' => array(
         16  => 'static/apps/noviusos_form/img/icons/form-16.png',
         32 => 'static/apps/noviusos_form/img/icons/form-32.png',

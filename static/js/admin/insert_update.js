@@ -6,7 +6,9 @@ define(
     ],
     function($) {
         "use strict";
-        return function($container) {
+        return function(id) {
+
+            var $container = $(id);
 
             var $preview_container = $container.find('.preview_container');
             var $fields_container = $container.find('.fields_container');
@@ -27,7 +29,7 @@ define(
             var col_size = Math.round($preview_container.outerWidth() / 4);
 
             // Fill in the hidden field form_layout upon save
-            $container.closest('form').bind('submit', function computeLayout(e) {
+            $container.closest('form').on('submit', function computeLayout(e) {
                 var layout = '';
                 $container.find('tr.preview_row').each(function(i) {
                     var $preview = $(this).find('td.preview');
@@ -524,12 +526,14 @@ define(
                     return $(this).children().not('.padding').length < 4;
                 }).addClass('preview_row_sortable');
 
+                log($container.attr('id'));
+
                 // @TODO find a way to only connect others lists (not including itself)
                 $sortable = $preview_container.find('tr.preview_row:not(.page_break)').sortable({
-                    connectWith: '#<?= $uniqid ?> tr.preview_row_sortable:not(.page_break)',
+                    connectWith: id + ' tr.preview_row_sortable:not(.page_break)',
                     dropOnEmpty: true,
                     helper: "clone", // This is needed when using the "appendTo" option
-                    appendTo: '#<?= $uniqid ?>', // Where the 'helper' is appended
+                    appendTo: id, // Where the 'helper' is appended
                     items: '> td.preview',
                     forceHelperSize: true,
                     placeholder: 'sortable_placeholder preview',
@@ -679,6 +683,9 @@ define(
             function apply_layout(layout) {
                 $.each(layout.split("\n"), function layoutLines() {
                     var $previous = null;
+                    if (this == '') {
+                        return;
+                    }
                     $.each(this.split(','), function layoutCols() {
                         var item = this.split('=');
                         var field_id = item[0];

@@ -16,6 +16,9 @@ return array(
             'insert' => __('Add a form'),
         ),
     ),
+    'require_js' => array(
+        'static/apps/noviusos_form/js/admin/insert_update.js',
+    ),
     'layout' => array(
         'standard' => array(
             'view' => 'nos::form/layout_standard',

@@ -50,7 +50,6 @@ foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special'
 
                 </tbody>
             </table>
-
             <p>
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom'))) ?>"><?= __('Add a field') ?></button>
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom', 'type' => 'page_break'))) ?>"><?= __('Add a page break') ?></button>
@@ -106,8 +105,7 @@ foreach ($layout as $field_id) {
 <script type="text/javascript">
 require(['jquery-nos', 'static/apps/noviusos_form/js/admin/insert_update.js'], function($, init_form) {
     $(function() {
-        var $container = $('#<?= $uniqid ?>');
-        init_form($container);
+        init_form('#<?= $uniqid ?>');
     });
 });
 </script>

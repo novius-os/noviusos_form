@@ -26,13 +26,15 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
         // null is for the first argument of array_map() to transpose the matrix
         $values = array(null);
+        $fields = array();
         foreach ($field_names as &$name) {
             $values[] = \Input::post('field.'.$name);
             $name = 'field_'.$name;
         }
-        $fields = array();
-        foreach (call_user_func_array('array_map', $values) as $value) {
-            $fields[] = array_combine(array_values($field_names), $value);
+        if (!empty($values[1])) {
+            foreach (call_user_func_array('array_map', $values) as $value) {
+                $fields[] = array_combine(array_values($field_names), $value);
+            }
         }
 
         static::$to_delete = array_diff(
@@ -41,13 +43,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         );
 
         foreach ($fields as $field) {
-            $is_new = empty($field['field_id']);
-            $model_field = Model_Field::forge($field, $is_new);
-            if ($is_new) {
-                $item->fields[] = $model_field;
-            } else {
-                $item->fields[$model_field->field_id] = $model_field;
-            }
+            $model_field = Model_Field::forge($field, false);
+            $item->fields[$model_field->field_id] = $model_field;
         }
     }
 
@@ -63,6 +60,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
         foreach (static::$to_delete as $field_id) {
             $item->fields[$field_id]->delete();
+            unset($item->fields[$field_id]);
         }
         return $return;
     }
