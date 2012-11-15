@@ -48,6 +48,10 @@
     width: auto;
 }
 
+.column, .columns {
+    padding-right: 10px;
+}
+
 .label {
     display: block;
     padding: 6px 10px;

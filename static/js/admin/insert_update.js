@@ -597,8 +597,8 @@ define(
                 });
 
                 $preview_container.find('tr.preview_row.page_break').sortable({
-                    appendTo: '#<?= $uniqid ?>', // Where the 'helper' is appended
-                    connectWith: '#<?= $uniqid ?> tr.preview_row_sortable.preview_inserter',
+                    appendTo: id, // Where the 'helper' is appended
+                    connectWith: id + ' tr.preview_row_sortable.preview_inserter',
                     helper: "clone", // This is needed when using the "appendTo" option
                     dropOnEmpty: true,
                     forceHelperSize: true,
