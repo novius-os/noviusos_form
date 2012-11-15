@@ -58,6 +58,8 @@ foreach ($layout as $rows) {
 
 echo '<form method="POST" enctype="multipart/form-data" action="">';
 
+$fields = array();
+
 // Loop through rows...
 foreach ($layout as $rows) {
     $first_col = true;
@@ -85,11 +87,6 @@ foreach ($layout as $rows) {
             'class' => $label_class,
             'for' => $html_attrs['id'],
         );
-
-        if ($first_col) {
-            echo '<div class="row">';
-            $first_col = false;
-        }
 
         $html = '';
 
@@ -150,7 +147,7 @@ foreach ($layout as $rows) {
         } else if ($field->field_type == 'message') {
             $label = '';
             $type = in_array($field->field_style, array('p', 'h1', 'h2', 'h3')) ? $field->field_style : 'p';
-            $html = html_tag($type, array('class' => 'label_text'), $field->field_message);
+            $html = html_tag($type, array('class' => 'label_text'), nl2br($field->field_message));
         } else if ($field->field_type == 'separator') {
             $label = '';
             $html = html_tag('hr');
@@ -188,20 +185,60 @@ foreach ($layout as $rows) {
             $label = '';
         }
 
-        echo strtr($template, array(
-            '{label}' => $label,
-            '{field}' => $html,
-            '{label_class}' => in_array($args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$label_width],
-            '{field_class}' => $widths[$available_width - $label_width],
-        ));
-    }
-    if (!$first_col) {
-        if ($col_width < 12) {
-            echo '<div class="columns '.$widths[12 - $col_width].'"></div>';
-        }
-        echo '</div>';
+        $fields[$name] = array(
+            'label' => $label,
+            'field' => $html,
+            'label_class' => in_array($args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$label_width],
+            'field_class' => in_array($args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$available_width - $label_width],
+            'new_col' => $first_col,
+            'width' => $available_width,
+        );
+        $first_col = false;
     }
 }
+
+
+
+$first_row = true;
+$col_width = 12;
+
+// Loop through rows...
+foreach ($fields as $name => $field) {
+
+    if ($field['new_col']) {
+        if (!$first_row) {
+            if ($col_width < 12) {
+                echo '<div class="columns '.$widths[12 - $col_width].'"></div>';
+            }
+            echo '</div>';
+        }
+        if ($first_row) {
+            $first_row = false;
+        }
+        echo '<div class="row">';
+        $col_width = 0;
+    }
+
+    $col_width += $field['width'];
+
+    echo strtr($template, array(
+        '{label}' => $field['label'],
+        '{field}' => $field['field'],
+        '{label_class}' => $field['label_class'],
+        '{field_class}' => $field['field_class'],
+    ));
+}
+
+if (!$first_row) {
+    if ($col_width < 12) {
+        echo '<div class="columns '.$widths[12 - $col_width].'"></div>';
+    }
+    echo '</div>';
+}
+
+
+\Debug::dump($fields);
+
 
 echo \Form::submit('submit', 'Send the form');
 echo '</form>';
