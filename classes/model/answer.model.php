@@ -19,7 +19,7 @@ class Model_Answer extends \Nos\Orm\Model
         'Orm\\Observer_CreatedAt' => array(
             'events' => array('before_insert'),
             'mysql_timestamp' => true,
-            'property' => 'form_created_at',
+            'property' => 'answer_created_at',
         ),
     );
 

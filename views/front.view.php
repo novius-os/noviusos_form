@@ -56,6 +56,8 @@ foreach ($layout as $rows) {
     $label_width = min($label_width, $width);
 }
 
+echo '<form method="POST" enctype="multipart/form-data" action="">';
+
 // Loop through rows...
 foreach ($layout as $rows) {
     $first_col = true;
@@ -116,7 +118,10 @@ foreach ($layout as $rows) {
                 }
                 $html = \Fuel\Core\Form::textarea($name, $field->field_default_value, $html_attrs);
             } else if ($field->field_type == 'select') {
-                $html = \Fuel\Core\Form::select($name, $field->field_default_value, explode("\n", $field->field_choices), $html_attrs);
+                $label = html_tag('span', $label_attrs, $field->field_label);
+                $choices = explode("\n", $field->field_choices);
+                $choices = array_combine($choices, $choices);
+                $html = \Fuel\Core\Form::select($name, $field->field_default_value, $choices, $html_attrs);
             }
 
         } else if (in_array($field->field_type, array('checkbox', 'radio'))) {
@@ -131,7 +136,7 @@ foreach ($layout as $rows) {
                     $html_attrs_choice = $html_attrs;
                     $html_attrs_choice['id'] .= $i;
                     if ($field->field_type == 'checkbox') {
-                        $item_html = \Fuel\Core\Form::checkbox($name, $choice, in_array($choice, $default), $html_attrs_choice);
+                        $item_html = \Fuel\Core\Form::checkbox($name.'[]', $choice, in_array($choice, $default), $html_attrs_choice);
                     } else if ($field->field_type == 'radio') {
                         $item_html = \Fuel\Core\Form::radio($name, $choice, in_array($choice, $default), $html_attrs_choice);
                     }
@@ -197,3 +202,6 @@ foreach ($layout as $rows) {
         echo '</div>';
     }
 }
+
+echo \Form::submit('submit', 'Send the form');
+echo '</form>';
