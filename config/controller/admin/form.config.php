@@ -379,6 +379,8 @@ return array(
         'field[message][]' => array(
             'label' => __('Title:'),
             'form' => array(
+                'type' => 'textarea',
+                'rows' => '3',
                 'value' => __('Your message here.'),
             ),
             'populate' => function($item) {
