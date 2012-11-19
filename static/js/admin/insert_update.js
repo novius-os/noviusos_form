@@ -231,7 +231,7 @@ define(
                 show_when($field, 'message', -1 !== $.inArray(type, ['message']));
                 show_when($field, 'name', -1 !== $.inArray(type, ['hidden']));
                 show_when($field, 'details', -1 === $.inArray(type, ['hidden']));
-                show_when($field, 'mandatory', -1 === $.inArray(type, ['hidden']));
+                show_when($field, 'mandatory', -1 === $.inArray(type, ['hidden', 'checkbox']));
                 show_when($field, 'default_value', -1 === $.inArray(type, ['hidden']));
                 show_when($field, 'style', -1 !== $.inArray(type, ['message']));
                 show_when($field, 'width', -1 !== $.inArray(type, ['text']));
@@ -257,6 +257,8 @@ define(
                     }
                 });
 
+                // Generate default value before preview, because the preview uses it
+                generate_default_value($field);
                 $field.find('[name^="field[label]"]').trigger('change');
                 $field.find('[name^="field[style]"]').trigger('change');
                 generate_preview.call($field.get(0), e);
@@ -298,6 +300,47 @@ define(
                 return $context.find('[name^="field[' + field_name + ']"]');
             }
 
+            function generate_default_value($field) {
+
+                var type = find_field($field, 'type').val();
+                var $default_value = find_field($field, 'default_value');
+                var choices = find_field($field, 'choices').val();
+                var default_value_value = [];
+                $.each($default_value, function() {
+                    var $this = $(this);
+                    if (!$this.is(':checkbox') || $this.is(':checked')) {
+                        default_value_value.push($(this).val());
+                    }
+                });
+                var $new = null;
+                var name = $default_value.attr('name');
+
+                if (-1 !== $.inArray(type, ['radio', 'select'])) {
+                    var html = '<select>';
+                    $.each(choices.split("\n"), function(i, choice) {
+                        html += '<option value="' + i + '">' + choice + '</option>';
+                    });
+                    html += '</select>';
+                    $new = $(html).attr({
+                        name: $default_value.attr('name'),
+                        id: $default_value.attr('id')
+                    }).val(default_value_value[0]);
+                } else if (type == 'checkbox') {
+                    var html = '';
+                    $.each(choices.split("\n"), function(i, choice) {
+                        html += '<label><input type="checkbox" size="1" name="' + $default_value.attr('name') + '" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'selected' : '') + '> ' + choice + '</label><br />';
+                    });
+                    $new = $(html);
+                } else {
+                    $new = $(type == 'textarea' ? '<textarea rows="3" />' : '<input type="text" />').attr({
+                        name: $default_value.attr('name'),
+                        id: $default_value.attr('id')
+                    }).val(default_value_value);
+                }
+                var $parent = $default_value.closest('span');
+                $parent.empty().append($new).nosFormUI();
+            }
+
             function generate_preview(e) {
                 var $field = $(this).closest('.fieldset');
                 var type = find_field($field, 'type').val();
@@ -307,13 +350,20 @@ define(
                 var $preview = $field.data('preview');
                 var $td = $preview.find('div.preview_content');
                 var html  = '';
+                var default_value_value = [];
+                $.each(find_field($field, 'default_value'), function() {
+                    var $this = $(this);
+                    if (!$this.is(':checkbox') || $this.is(':checked')) {
+                        default_value_value.push($(this).val());
+                    }
+                });
 
                 if (type == 'text' || type == 'email' || type == 'number' || type == 'date') {
                     var size = '';
                     if (width != '') {
                         size = ' size="' + width + '"';
                     }
-                    html = '<input type="text" ' + size + ' ∕>';
+                    html = '<input type="text" ' + size + ' value="' + default_value_value.join('') + '" ∕>';
                 }
 
                 if (type == 'textarea') {
@@ -321,25 +371,25 @@ define(
                     if (height != '') {
                         cols = ' rows="' + height + '"';
                     }
-                    html = '<textarea' + cols + '></textarea>';
+                    html = '<textarea' + cols + '>' + default_value_value.join('') + '</textarea>';
                 }
 
                 if (type == 'radio') {
                     $.each(choices.split("\n"), function(i, text) {
-                        html += '<p><label><input type="radio" />' + text +'</label></p>';
+                        html += '<p><label><input type="radio" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text +'</label></p>';
                     });
                 }
 
                 if (type == 'checkbox') {
                     $.each(choices.split("\n"), function(i, text) {
-                        html += '<p><label><input type="checkbox" />' + text +'</label></p>';
+                        html += '<p><label><input type="checkbox" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text +'</label></p>';
                     });
                 }
 
                 if (type == 'select') {
                     html += '<select>';
                     $.each(choices.split("\n"), function(i, text) {
-                        html += '<option>' + text +'</option>';
+                        html += '<option value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'selected' : '') + '>' + text +'</option>';
                     });
                     html += '</select>';
                 }
@@ -367,6 +417,7 @@ define(
             // When the "field_choices" changes
             $fields_container.on('change keyup', 'textarea[name^="field[choices]"]', generate_preview);
             $fields_container.on('change keyup', '[name^="field[message]"]', generate_preview);
+            $fields_container.on('change keyup', '[name^="field[default_value]"]', generate_preview);
             $fields_container.on('change keyup', 'input[name^="field[width]"]', generate_preview);
             $fields_container.on('change keyup', 'input[name^="field[height]"]', generate_preview);
 

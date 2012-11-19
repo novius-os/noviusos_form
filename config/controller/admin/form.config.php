@@ -31,7 +31,7 @@ return array(
                     'fields' => array(
                         'view' => 'noviusos_form::admin/layout_fields',
                         'params' => array(),
-                    ),//*/
+                    ),
                 ),
                 'menu' => array(),
                 'save' => 'save',
@@ -436,20 +436,6 @@ return array(
                 'rows' => '3',
              ),
         ),
-        /*
-        'field[layout][]' => array(
-            'label' => __('Layout:'),
-            'form' => array(
-                'type' => 'select',
-                'options' => array(
-                    'one' => __('One column'),
-                    'two' => __('Two columns'),
-                    'three' => __('Three columns'),
-                    'side' => __('Side by side'),
-                ),
-            ),
-        ),*/
-
         'field[width][]' => array(
             'label' => __('Width:'),
             'template' => str_replace('{count}', '{field} {required}', __('Width: {count} characters')),
