@@ -20,5 +20,5 @@ class Controller_Admin_Enhancer extends \Nos\Controller
             'preview' => \View::forge($this->config['views']['preview'], $_POST)->render(),
         );
         \Response::json($body);
-    }a
+    }
 }
