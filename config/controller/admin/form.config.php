@@ -60,6 +60,22 @@ return array(
                 'type' => 'hidden',
             ),
         ),
+        'form_captcha' => array (
+            'label' => __('Captcha protected'),
+            'form' => array(
+                'type' => 'checkbox',
+                'value' => '1',
+                'empty' => '0',
+                'checked',
+            ),
+        ),
+        'form_submit_label' => array (
+            'label' => __("Submit button's label:"),
+            'form' => array(
+                'type' => 'text',
+                'value' => __("I'm the submit button, edit me"),
+            ),
+        ),
         'save' => array(
             'label' => '',
             'form' => array(

@@ -38,7 +38,7 @@ foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special'
                 </table>
             </div>
 
-            <table style="width: 100%; table-layout:fixed; border-spacing: 1em 0; border-collapse: separate;">
+            <table class="form_preview">
                 <colgroup>
                     <!-- 4 even columns -->
                     <col />
@@ -54,6 +54,10 @@ foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special'
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom'))) ?>"><?= __('Add a field') ?></button>
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom', 'type' => 'page_break'))) ?>"><?= __('Add a page break') ?></button>
             </p>
+            <div class="ui-widget-content submit_informations">
+                <p class="form_captcha">How much is 3 + 8?</p>
+                <p clas="form_submit_label"><input type="button" /></p>
+            </div>
         </div>
 
         <div class="lastUnit col c4 fields_container">
@@ -78,6 +82,16 @@ foreach ($layout as $field_id) {
     echo \Request::forge('noviusos_form/admin/form/render_field')->execute(array($item->fields[$field_id]));
 }
 ?>
+            <div class="accordion fieldset">
+                <h3><?= __('Submit informations') ?></h3>
+                <div>
+                    <?php
+                    $fieldset->set_config('field_template', '<p><span>{label}<br />{field}</span></p>');
+                    ?>
+                    <?= $fieldset->field('form_captcha') ?>
+                    <?= $fieldset->field('form_submit_label') ?>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -13,6 +13,7 @@ define(
             var $preview_container = $container.find('.preview_container');
             var $fields_container = $container.find('.fields_container');
             var $layout = $container.closest('form').find('[name=form_layout]');
+            var $submit_informations = $container.find('.submit_informations');
 
             // This object will be use to generate preview
             var $clone_preview = $container.find('[data-id=clone_preview]').clone().removeAttr('data-id');
@@ -107,6 +108,11 @@ define(
             $blank_slate.on('click', 'label', add_fields_blank_slate);
 
             function on_field_added($field, params) {
+                var $type = find_field($field, 'type');
+                if ($type.length == 0) {
+                    // Submit informations
+                    return;
+                }
                 // Make checkbox fill a hidden field instead (we're sending an array, we don't want "missing" values)
                 $field.find('input[type=checkbox]').each(function normaliseCheckboxes() {
                     var $checkbox = $(this);
@@ -121,7 +127,7 @@ define(
                 // The clone will be wrapped into a <tr class="preview_row">
                 var $preview = get_preview($field);
                 $preview_container[params.where == 'top' ? 'prepend' : 'append']($preview.parent());
-                $field.find('select[name^="field[type]"]').trigger('change');
+                $type.trigger('change');
             }
 
             function get_preview($field) {
@@ -170,11 +176,18 @@ define(
                 }
                 $field.siblings('.fieldset').hide();
                 set_field_padding();
+                var $submit_label = find_field($field, 'submit_label');
+                if ($submit_label.length == 0) {
+                    $submit_informations.removeClass('ui-state-active');
+                }
             }
 
-            function set_field_padding() {
+            function set_field_padding($focus) {
 
-                var $focus = $preview_container.find('.preview.ui-state-active');
+                $focus = $focus || $preview_container.find('.preview.ui-state-active');
+                if ($focus.length == 0) {
+                    $focus = $submit_informations.not(':not(.ui-state-active)');
+                }
                 if ($focus.length > 0) {
                     var pos = $focus.position();
                     $fields_container.css({
@@ -577,8 +590,6 @@ define(
                     return $(this).children().not('.padding').length < 4;
                 }).addClass('preview_row_sortable');
 
-                log($container.attr('id'));
-
                 // @TODO find a way to only connect others lists (not including itself)
                 $sortable = $preview_container.find('tr.preview_row:not(.page_break)').sortable({
                     connectWith: id + ' tr.preview_row_sortable:not(.page_break)',
@@ -760,6 +771,28 @@ define(
             setTimeout(function() {
                 refreshPreviewHeight();
             }, 100);
+
+            var $form_captcha = $container.find('[name=form_captcha]');
+            var $form_submit_label = $container.find('[name=form_submit_label]');
+
+            $form_captcha.on('change', function() {
+                $submit_informations.find('.form_captcha')[$(this).is(':checked') ? 'show' : 'hide']();
+            }).trigger('change');
+
+            $form_submit_label.on('change keyup', function() {
+                $submit_informations.find('input').val($(this).val());
+            }).trigger('change');
+
+            $submit_informations.on('click', function() {
+                $container.find('.preview').removeClass('ui-state-active');
+                var $accordion = $form_submit_label.closest('.accordion');
+                show_field($accordion);
+                hide_field();
+                set_field_padding($submit_informations);
+                $submit_informations.addClass('ui-state-active');
+                $container.find('.preview_arrow').show();
+            });
+
 
             // Firefox needs this <colgroup> to size the td[colspan] properly
             //$preview_container.closest('table').prepend($('<colgroup><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /></colgroup>'));

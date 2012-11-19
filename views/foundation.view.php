@@ -144,5 +144,5 @@ if (!$first_row) {
 }
 
 
-echo \Form::submit('submit', 'Send the form');
+echo \Form::submit('submit', $item->form_submit_label);
 echo '</form></div>';
