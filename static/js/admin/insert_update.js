@@ -231,7 +231,8 @@ define(
             });
 
             function show_when($field, name, show) {
-                $field.find('[name^="field[' + name + ']"]').closest('p')[show ? 'show' : 'hide']()
+                log(name, ' = ', show);
+                find_field($field, name).closest('p')[show ? 'show' : 'hide']()
             }
 
             // When the "field_type" changes
@@ -243,9 +244,9 @@ define(
                 show_when($field, 'label', -1 === $.inArray(type, ['separator', 'message']));
                 show_when($field, 'message', -1 !== $.inArray(type, ['message']));
                 show_when($field, 'name', -1 !== $.inArray(type, ['hidden']));
-                show_when($field, 'details', -1 === $.inArray(type, ['hidden']));
-                show_when($field, 'mandatory', -1 === $.inArray(type, ['hidden', 'checkbox']));
-                show_when($field, 'default_value', -1 === $.inArray(type, ['hidden']));
+                show_when($field, 'details', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
+                show_when($field, 'mandatory', -1 === $.inArray(type, ['hidden', 'variable', 'checkbox', 'separator']));
+                show_when($field, 'default_value', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
                 show_when($field, 'style', -1 !== $.inArray(type, ['message']));
                 show_when($field, 'width', -1 !== $.inArray(type, ['text']));
                 show_when($field, 'height', -1 !== $.inArray(type, ['textarea']));
@@ -296,22 +297,29 @@ define(
                 $new.trigger('change');
             });
 
-            // When the "field_label" changes
-            $fields_container.on('change keyup', 'input[name^="field[label]"]', function on_label_change(e) {
+            function find_field($context, field_name) {
+                return $context.find('[name^="field[' + field_name + ']"]');
+            }
+
+
+            function generate_label(e) {
                 var $field = $(this).closest('.fieldset');
                 var $preview = $field.data('preview');
+                if (!$preview) {
+                    return;
+                }
                 var $label = $preview.find('label');
-                $label.text($(this).val());
+                var is_mandatory = find_field($field, 'mandatory').is(':checked');
+                $label.text(find_field($field, 'label').val() + (is_mandatory ? ' *' : ''));
                 if ($(this).is(':visible')) {
                     $label.show();
                 } else {
                     $label.hide();
                 }
-            });
-
-            function find_field($context, field_name) {
-                return $context.find('[name^="field[' + field_name + ']"]');
             }
+            // Events that regenerates the preview label
+            $fields_container.on('change keyup', 'input[name^="field[label]"]', generate_label);
+            $fields_container.on('change', 'input[name^="field[mandatory]"]', generate_label);
 
             function generate_default_value($field) {
 
@@ -345,7 +353,8 @@ define(
                     });
                     $new = $(html);
                 } else {
-                    $new = $(type == 'textarea' ? '<textarea rows="3" />' : '<input type="text" />').attr({
+                    var html_type = (-1 !== $.inArray(type, ['email', 'number', 'date']) ? type : 'text');
+                    $new = $(type == 'textarea' ? '<textarea rows="3" />' : '<input type="' + html_type + '" />').attr({
                         name: $default_value.attr('name'),
                         id: $default_value.attr('id')
                     }).val(default_value_value);
@@ -427,7 +436,7 @@ define(
                 refreshPreviewHeight($preview.closest('tr'));
             }
 
-            // When the "field_choices" changes
+            // Events that regenerates the preview content
             $fields_container.on('change keyup', 'textarea[name^="field[choices]"]', generate_preview);
             $fields_container.on('change keyup', '[name^="field[message]"]', generate_preview);
             $fields_container.on('change keyup', '[name^="field[default_value]"]', generate_preview);

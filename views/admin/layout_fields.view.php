@@ -85,11 +85,8 @@ foreach ($layout as $field_id) {
             <div class="accordion fieldset">
                 <h3><?= __('Submit informations') ?></h3>
                 <div>
-                    <?php
-                    $fieldset->set_config('field_template', '<p><span>{label}<br />{field}</span></p>');
-                    ?>
-                    <?= $fieldset->field('form_captcha') ?>
-                    <?= $fieldset->field('form_submit_label') ?>
+                    <?= $fieldset->field('form_captcha')->set_template('<p><span>{label} {field}</span></p>') ?>
+                    <?= $fieldset->field('form_submit_label')->set_template('<p><span>{label}<br />{field}</span></p>') ?>
                 </div>
             </div>
         </div>
