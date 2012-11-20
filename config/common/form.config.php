@@ -13,9 +13,9 @@ return array(
         ),
     ),
     'actions' => array(
-        'Nos\Form\Model_Form.responses' => array(
-            'label' => __('Responses'),
-            'name' => 'responses',
+        'Nos\Form\Model_Form.answers' => array(
+            'label' => __('Answers'),
+            'name' => 'answers',
             'icon' => 'mail-closed',
             'context' => array(
                 'list' => true,
@@ -24,8 +24,8 @@ return array(
             'action' => array(
                 'action' => 'nosTabs',
                 'tab' => array(
-                    'url' => 'admin/noviusos_form/response/appdesk?form_id={{id}}',
-                    'label' => __('Responses of "{{title}}"'),
+                    'url' => 'admin/noviusos_form/answer/appdesk?form_id={{id}}',
+                    'label' => __('Answers of "{{title}}"'),
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
             ),
@@ -40,7 +40,7 @@ return array(
             ),
             'action' => array(
                 'action' => 'window.open',
-                'url' => 'admin/noviusos_form/response/appdesk/export?form_id={{id}}',
+                'url' => 'admin/noviusos_form/answer/appdesk/export?form_id={{id}}',
             ),
         ),
     ),

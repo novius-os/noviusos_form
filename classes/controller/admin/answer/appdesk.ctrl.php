@@ -10,7 +10,7 @@
 
 namespace Nos\Form;
 
-class Controller_Admin_Response_Appdesk extends \Nos\Controller_Admin_Appdesk
+class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
 {
     public function load_config()
     {
@@ -21,13 +21,13 @@ class Controller_Admin_Response_Appdesk extends \Nos\Controller_Admin_Appdesk
             $this->config['form_id'] = $form_id;
 
             $form = Model_Form::find($form_id);
-            $this->config['appdesk']['tab']['label'] = strtr(__('Responses of "{{title}}"'), array('{{title}}' => $form->form_name));
+            $this->config['appdesk']['tab']['label'] = strtr(__('Answers of "{{title}}"'), array('{{title}}' => $form->form_name));
             $this->config['appdesk']['appdesk']['buttons'] = array(
                 'Nos\Form\Model_Form.export' => array(
                     'label' => __('Export'),
                     'action' => array(
                         'action' => 'window.open',
-                        'url' => 'admin/noviusos_form/response/appdesk/export?form_id='.$form->form_id,
+                        'url' => 'admin/noviusos_form/answer/appdesk/export?form_id='.$form->form_id,
                     ),
                 ),
             );

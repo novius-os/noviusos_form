@@ -12,6 +12,22 @@ return array(
     'model' => 'Nos\Form\Model_Answer',
     'inspectors' => array(
         'date',
+        'preview' => array(
+            'appdesk' => array(
+                'vertical' => true,
+                'reloadEvent' => 'Nos\\Form\\Model_Answer',
+                'label' => __('Preview'),
+                'preview' => true,
+                'options' => array(
+                    'meta' => array(
+                        'receipt_date' => array(
+                            'label' => __('Receipt date:'),
+                        ),
+                    ),
+                    //'actions' => array('edit', 'delete', 'visualise'),
+                ),
+            )
+        ),
     ),
     'search_text' => array(
         function ($value, $query)

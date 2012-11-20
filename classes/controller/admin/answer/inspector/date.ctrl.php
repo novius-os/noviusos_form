@@ -10,6 +10,6 @@
 
 namespace Nos\Form;
 
-class Controller_Admin_Response_Inspector_Date extends \Nos\Controller_Inspector_Date
+class Controller_Admin_Answer_Inspector_Date extends \Nos\Controller_Inspector_Date
 {
 }
