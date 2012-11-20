@@ -16,10 +16,12 @@ use View;
 
 class Controller_Front extends Controller_Front_Application
 {
+
+    protected $enhancer_args = array();
+
     public function action_main($enhancer_args = array())
     {
-        $this->main_controller->addCss('static/apps/noviusos_form/css/front.css');
-        //$this->main_controller->addJs('static/apps/noviusos_form/js/___.js');
+        $this->enhancer_args = $enhancer_args;
 
         $form_id = $enhancer_args['form_id'];
         if (empty($form_id)) {
@@ -36,14 +38,14 @@ class Controller_Front extends Controller_Front_Application
 
             $errors = $this->post_answers($item);
             if (empty($errors)) {
-                return __(\Arr::get($enhancer_args, 'submission_message', 'Your answer has been saved. Thank you for your participation.'));
+                return __(\Arr::get($this->enhancer_args, 'submission_message', 'Your answer has been saved. Thank you for your participation.'));
             }
         }
 
-        return $this->render_form($item, $errors, $enhancer_args);
+        return $this->render_form($item, $errors);
     }
 
-    public function render_form($item, $errors, $enhancer_args) {
+    public function render_form($item, $errors) {
 
         $layout = explode("\n", $item->form_layout);
         array_walk($layout, function(&$v) {
@@ -102,9 +104,10 @@ class Controller_Front extends Controller_Front_Application
                 $html_attrs = array(
                     'id' => $field->field_technical_id ?: $name,
                     'class' => $field->field_technical_css,
+                    'title' => $field->field_label,
                 );
 
-                if ($enhancer_args['label_position'] == 'placeholder') {
+                if ($this->enhancer_args['label_position'] == 'placeholder') {
                     $html_attrs['placeholder'] = $field->field_label;
                 }
 
@@ -122,18 +125,17 @@ class Controller_Front extends Controller_Front_Application
                     if ($name == 'form_captcha') {
                         $value = '';
                     }
-                    if ($enhancer_args['label_position'] == 'placeholder') {
+                    if ($this->enhancer_args['label_position'] == 'placeholder') {
                         $html_attrs['class'] .= ' error';
                         $html_attrs['title'] = htmlspecialchars($errors[$name]);
-                    } else {
-                        $label_attrs['class'] = ' error';
-                        $label_attrs['title'] = htmlspecialchars($errors[$name]);
                     }
+                    $label_attrs['class'] = ' error';
+                    $label_attrs['title'] = htmlspecialchars($errors[$name]);
                 }
 
                 $html = '';
 
-                if ($enhancer_args['label_position'] == 'placeholder') {
+                if ($this->enhancer_args['label_position'] == 'placeholder') {
                     $label = '';
                 } else {
                     $label = array(
@@ -275,6 +277,7 @@ class Controller_Front extends Controller_Front_Application
                     'field' => $html,
                     'new_row' => $first_col,
                     'width' => $width,
+                    'item' => $field,
                 );
                 $first_col = false;
             }
@@ -296,7 +299,7 @@ class Controller_Front extends Controller_Front_Application
             'args' => array(
                 'item' => $item,
                 'fields' => $fields,
-                'enhancer_args' => $enhancer_args,
+                'enhancer_args' => $this->enhancer_args,
                 'errors' => $errors,
                 'form_attrs' => array(
                     'method' => 'POST',
@@ -341,13 +344,15 @@ class Controller_Front extends Controller_Front_Application
 
             // Mandatory (required)
             if (in_array($type, array('text', 'textarea', 'select', 'email', 'number', 'date')) && $field->field_mandatory && empty($value)) {
-                $errors[$name] = __('Please enter a value for the field "{label}".');
+                $errors[$name] = __('{label} Please enter a value for the field.');
             } else {
+                if ($field->field_mandatory || !empty($value))
+                // Only if it's mandatory or there is a value
                 if ($type == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $errors[$name] = __('"{value}" is not a valid email for the "{label}" field.');
+                    $errors[$name] = __('{label} "{value}" is not a valid email.');
                 }
                 if ($type == 'number' && !filter_var($value, FILTER_VALIDATE_INT)) {
-                    $errors[$name] = __('"{value}" is not a valid number for the "{label}" field.');
+                    $errors[$name] = __('{label} "{value}" is not a valid number.');
                 }
                 if ($type == 'date') {
                     if ($checkdate = preg_match($value, '`^\d{4}-\d{2}-\d{2}$`', $m)) {
@@ -355,7 +360,7 @@ class Controller_Front extends Controller_Front_Application
                         $checkdate = checkdate($month, $day, $year);
                     }
                     if (!$checkdate) {
-                        $errors[$name] = __('"{value}" is not a valid date for the "{label}" field.');
+                        $errors[$name] = __('{label} "{value}" is not a valid date.');
                     }
                 }
             }
@@ -394,9 +399,9 @@ class Controller_Front extends Controller_Front_Application
         }
 
         // data pre-processing
-        $before_submission = (array) \Event::trigger_function('noviusos_form::before_submission', array(&$data, $form), 'array');
+        $before_submission = (array) \Event::trigger_function('noviusos_form::before_submission', array(&$data, $form, $this->enhancer_args), 'array');
         if (!empty($form->form_virtual_name)) {
-            $before_submission = array_merge((array) \Event::trigger_function('noviusos_form::before_submission.' . $form->form_virtual_name, array(&$data, $form), 'array'));
+            $before_submission = array_merge((array) \Event::trigger_function('noviusos_form::before_submission.' . $form->form_virtual_name, array(&$data, $form, $this->enhancer_args), 'array'));
         }
 
         $before_submission = array_filter($before_submission, function($val) {
@@ -423,7 +428,7 @@ class Controller_Front extends Controller_Front_Application
             }
 
             // after_submission
-            \Event::trigger('noviusos_form::after_submission', array(&$answer));
+            \Event::trigger('noviusos_form::after_submission', array(&$answer, $this->enhancer_args));
             if (!empty($form->form_virtual_name)) {
                 \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array(&$answer));
             }

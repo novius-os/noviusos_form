@@ -75,7 +75,7 @@ input[type="text"][disabled], input[type="password"][disabled], input[type="date
 input.error {
     border-color: #cc0000;
 }
-label.error {
+label.error, .label.error, p.error {
     color: #cc0000;
 }
 

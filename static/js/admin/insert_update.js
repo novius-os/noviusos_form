@@ -307,7 +307,7 @@ define(
                 if (!$preview) {
                     return;
                 }
-                var $label = $preview.find('label');
+                var $label = $preview.find('label.preview_label');
                 var is_mandatory = find_field($field, 'mandatory').is(':checked');
                 $label.text(find_field($field, 'label').val() + (is_mandatory ? ' *' : ''));
                 if ($(this).is(':visible')) {
