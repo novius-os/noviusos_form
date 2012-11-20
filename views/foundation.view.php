@@ -104,7 +104,7 @@ $render_template = function($template, $args) use (&$render_template, &$render_t
 <?php
 
 foreach ($errors as $error) {
-    echo '<p class="error">'.htmlspecialchars($error).'</p>';
+    echo '<p class="error">'.nl2br(htmlspecialchars($error)).'</p>';
 }
 echo html_tag('form', $form_attrs);
 

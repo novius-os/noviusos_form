@@ -39,9 +39,21 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
 
         foreach ($fields as $index => $field) {
-            foreach ($field as $name => $value) {
+
+            // The default_value from POST is a comma-separated string of the indexes
+            // We want to store textual values (separated by \n for the multiple values of checkboxes)
+            if (in_array($field['field_type'], array('checkbox', 'select', 'radio'))) {
+                $choices = explode("\n", $field['field_choices']);
+                $default_value = explode(',', $field['field_default_value']);
+                $default_value = array_combine($default_value, $default_value);
+                $fields[$index]['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
+            }
+
+            if ($field['field_type'] == 'checkbox' && empty($values[$name])) {
                 $field_config = $this->config['fields_config']['field['.substr($name, 6).'][]']['form'];
-                if ($field_config['type'] == 'checkbox' && empty($value)) {
+                // Empty checkboxes should be populated with the 'empty' key of the configuration array
+                // We need to do it manually here, since we're not using the Fieldset class
+                if (isset($field_config['empty'])) {
                     $fields[$index][$name] = $field_config['empty'];
                 }
             }

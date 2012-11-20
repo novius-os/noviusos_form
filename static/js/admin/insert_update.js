@@ -231,7 +231,6 @@ define(
             });
 
             function show_when($field, name, show) {
-                log(name, ' = ', show);
                 find_field($field, name).closest('p')[show ? 'show' : 'hide']()
             }
 
@@ -326,13 +325,7 @@ define(
                 var type = find_field($field, 'type').val();
                 var $default_value = find_field($field, 'default_value');
                 var choices = find_field($field, 'choices').val();
-                var default_value_value = [];
-                $.each($default_value, function() {
-                    var $this = $(this);
-                    if (!$this.is(':checkbox') || $this.is(':checked')) {
-                        default_value_value.push($(this).val());
-                    }
-                });
+                var default_value_value = $default_value.val().split(',');
                 var $new = null;
                 var name = $default_value.attr('name');
 
@@ -347,9 +340,9 @@ define(
                         id: $default_value.attr('id')
                     }).val(default_value_value[0]);
                 } else if (type == 'checkbox') {
-                    var html = '';
+                    var html = '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />';
                     $.each(choices.split("\n"), function(i, choice) {
-                        html += '<label><input type="checkbox" size="1" name="' + $default_value.attr('name') + '" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'selected' : '') + '> ' + choice + '</label><br />';
+                        html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'selected' : '') + '> ' + choice + '</label><br />';
                     });
                     $new = $(html);
                 } else {
@@ -361,6 +354,18 @@ define(
                 }
                 var $parent = $default_value.closest('span');
                 $parent.empty().append($new).nosFormUI();
+
+                var $checkboxes = $new.find('input.checkbox');
+                $checkboxes.on('change', function(e) {
+                    var value = [];
+                    $checkboxes.filter(':checked').each(function() {
+                        value.push($(this).val());
+                    });
+                    $new.first().val(value.join(','));
+                    // Event doesn't seems to trigger with the hidden field on a delegated handler
+                    generate_preview.call(this, e);
+                });
+                $checkboxes.first().trigger('change');
             }
 
             function generate_preview(e) {
@@ -372,13 +377,7 @@ define(
                 var $preview = $field.data('preview');
                 var $td = $preview.find('div.preview_content');
                 var html  = '';
-                var default_value_value = [];
-                $.each(find_field($field, 'default_value'), function() {
-                    var $this = $(this);
-                    if (!$this.is(':checkbox') || $this.is(':checked')) {
-                        default_value_value.push($(this).val());
-                    }
-                });
+                var default_value_value = find_field($field, 'default_value').val().split(',');
 
                 if (type == 'text' || type == 'email' || type == 'number' || type == 'date') {
                     var size = '';

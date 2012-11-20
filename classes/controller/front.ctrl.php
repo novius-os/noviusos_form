@@ -186,7 +186,7 @@ class Controller_Front extends Controller_Front_Application
 
                     if (in_array($field->field_type, array('checkbox', 'radio'))) {
                         $html = array();
-                        $default = \Input::post($name, explode("\n", $field->field_default_value));
+                        $default = \Input::post($name, $field->field_type == 'checkbox' ? explode("\n", $field->field_default_value) : $field->field_default_value);
                         $choices = explode("\n", $field->field_choices);
                         foreach ($choices as $i => $choice) {
                             $html_attrs_choice = $html_attrs;
@@ -312,13 +312,6 @@ class Controller_Front extends Controller_Front_Application
     public function post_answers($form) {
 
         $errors = array();
-
-        $answer = Model_Answer::forge(array(
-            'answer_form_id' => $form->form_id,
-            'answer_ip' => \Input::real_ip(),
-        ), true);
-        $answer->save();
-
         $data = array();
         $fields = array();
 
@@ -341,12 +334,7 @@ class Controller_Front extends Controller_Front_Application
             $fields[$name] = $field;
         }
 
-        // data pre-processing
-        \Event::trigger_function('noviusos_form::preprocessing', array(&$data, $form));
-        if (!empty($form->form_virtual_name)) {
-            \Event::trigger_function('noviusos_form::preprocessing.' . $form->form_virtual_name, array(&$data, $form));
-        }
-
+        // Native validation
         foreach ($data as $name => $value) {
             $field = $fields[$name];
             $type = $field->field_type;
@@ -355,10 +343,10 @@ class Controller_Front extends Controller_Front_Application
             if (in_array($type, array('text', 'textarea', 'select', 'email', 'number', 'date')) && $field->field_mandatory && empty($value)) {
                 $errors[$name] = __('Please enter a value for the field "{label}".');
             } else {
-                if ($type == 'email' && filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                if ($type == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
                     $errors[$name] = __('"{value}" is not a valid email for the "{label}" field.');
                 }
-                if ($type == 'number' && filter_var($value, FILTER_VALIDATE_INT)) {
+                if ($type == 'number' && !filter_var($value, FILTER_VALIDATE_INT)) {
                     $errors[$name] = __('"{value}" is not a valid number for the "{label}" field.');
                 }
                 if ($type == 'date') {
@@ -373,10 +361,18 @@ class Controller_Front extends Controller_Front_Application
             }
         }
 
-        // data validation
-        $errors = \Arr::merge($errors, \Event::trigger('noviusos_form::validate_data', array($data, $form), 'array'));
+        // Custom validation
+        foreach((array) \Event::trigger_function('noviusos_form::data_validation', array(&$data, $form), 'array') as $array) {
+            foreach ($array as $name => $error) {
+                $errors[$name] = $error.(isset($errors[$name]) ? "\n".$errors[$name] : '');
+            }
+        }
         if (!empty($form->form_virtual_name)) {
-            $errors = \Arr::merge($errors, \Event::trigger('noviusos_form::validate_data.' . $form->form_virtual_name, array($data, $form), 'array'));
+            foreach((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $form), 'array') as $array) {
+                foreach ($array as $name => $error) {
+                    $errors[$name] = (isset($errors[$name]) ? $errors[$name]."\n" : '').$error;
+                }
+            }
         }
 
         if ($form->form_captcha && \Session::get('captcha') != \Input::post('form_captcha', 0)) {
@@ -397,16 +393,42 @@ class Controller_Front extends Controller_Front_Application
             return $errors;
         }
 
-        foreach ($data as $field_name => $value) {
-            $field = $fields[$field_name];
-            $answer_field = Model_Answer_Field::forge(array(
-                'anfi_answer_id' => $answer->answer_id,
-                'anfi_field_id' => $field->field_id,
-                'anfi_field_type' => $field->field_type,
-                'anfi_value' => $value,
-            ), true);
-            $answer_field->save();
+        // data pre-processing
+        $before_submission = (array) \Event::trigger_function('noviusos_form::before_submission', array(&$data, $form), 'array');
+        if (!empty($form->form_virtual_name)) {
+            $before_submission = array_merge((array) \Event::trigger_function('noviusos_form::before_submission.' . $form->form_virtual_name, array(&$data, $form), 'array'));
         }
+
+        $before_submission = array_filter($before_submission, function($val) {
+            return $val === false;
+        });
+
+        // We only save the answer into the database if none before_submission callback returned 'false'
+        if (count($before_submission) == 0) {
+            $answer = Model_Answer::forge(array(
+                'answer_form_id' => $form->form_id,
+                'answer_ip' => \Input::real_ip(),
+            ), true);
+            $answer->save();
+
+            foreach ($data as $field_name => $value) {
+                $field = $fields[$field_name];
+                $answer_field = Model_Answer_Field::forge(array(
+                    'anfi_answer_id' => $answer->answer_id,
+                    'anfi_field_id' => $field->field_id,
+                    'anfi_field_type' => $field->field_type,
+                    'anfi_value' => $value,
+                ), true);
+                $answer_field->save();
+            }
+
+            // after_submission
+            \Event::trigger('noviusos_form::after_submission', array(&$answer));
+            if (!empty($form->form_virtual_name)) {
+                \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array(&$answer));
+            }
+        }
+
         return $errors;
     }
 }
