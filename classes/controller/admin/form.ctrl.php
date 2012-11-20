@@ -31,9 +31,19 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $values[] = \Input::post('field.'.$name);
             $name = 'field_'.$name;
         }
+        // If there are values
         if (!empty($values[1])) {
             foreach (call_user_func_array('array_map', $values) as $value) {
                 $fields[] = array_combine(array_values($field_names), $value);
+            }
+        }
+
+        foreach ($fields as $index => $field) {
+            foreach ($field as $name => $value) {
+                $field_config = $this->config['fields_config']['field['.substr($name, 6).'][]']['form'];
+                if ($field_config['type'] == 'checkbox' && empty($value)) {
+                    $fields[$index][$name] = $field_config['empty'];
+                }
             }
         }
 
@@ -43,8 +53,11 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         );
 
         foreach ($fields as $field) {
-            $model_field = Model_Field::forge($field, false);
-            $item->fields[$model_field->field_id] = $model_field;
+            $field_id = $field['field_id'];
+            $model_field = Model_Field::find($field_id);
+            unset($field['field_id']);
+            $model_field->set($field);
+            $item->fields[$field_id] = $model_field;
         }
     }
 
@@ -100,6 +113,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $default_data['field_'.$name] = \Arr::get($field, 'form.value', '');
         }
         unset($default_data['field_id']);
+        $default_data['field_mandatory'] = 0;
         $model_field = Model_Field::forge(array_merge($default_data, $data), true);
         $model_field->save();
         return $model_field;
