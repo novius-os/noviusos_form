@@ -29,6 +29,15 @@
                         'placeholder' => __('Use placeholder'),
                     )); ?>
                 </p>
+                <p style="margin-bottom: 0.3em;">
+                    <?= __('Message displayed after submission:') ?>
+                </p>
+                <p style="margin-bottom: 0.5em;">
+                    <?= \Form::textarea('confirmation_message', \Input::get('confirmation_message', 'Your answer has been saved. Thank you for your participation.'), array(
+                    'rows' => '4',
+                    'style' => 'width: 100%',
+                )); ?>
+                </p>
             <div class="unit lastUnit"></div>
         </div>
         <div class="line">&nbsp;</div>

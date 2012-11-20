@@ -36,7 +36,7 @@ class Controller_Front extends Controller_Front_Application
 
             $errors = $this->post_answers($item);
             if (empty($errors)) {
-                return __('You answer has been saved. Thank you.');
+                return __(\Arr::get($enhancer_args, 'submission_message', 'Your answer has been saved. Thank you for your participation.'));
             }
         }
 
