@@ -30,16 +30,20 @@ class Controller_Front extends Controller_Front_Application
             return '';
         }
 
+        $errors = array();
+
         if (\Input::method() == 'POST') {
-            if ($this->post_answers($item)) {
+
+            $errors = $this->post_answers($item);
+            if (empty($errors)) {
                 return __('You answer has been saved. Thank you.');
             }
         }
 
-        return $this->render_form($item, $enhancer_args);
+        return $this->render_form($item, $errors, $enhancer_args);
     }
 
-    public function render_form($item, $enhancer_args) {
+    public function render_form($item, $errors, $enhancer_args) {
 
         $layout = explode("\n", $item->form_layout);
         array_walk($layout, function(&$v) {
@@ -57,6 +61,13 @@ class Controller_Front extends Controller_Front_Application
 
         $fields = array();
 
+        if ($item->form_captcha) {
+            $layout[] = array('captcha=4');
+            $number_1 = mt_rand(1, 50);
+            $number_2 = mt_rand(1, 50);
+            \Session::set('captcha', $number_1 + $number_2);
+        }
+
         // Loop through rows...
         foreach ($layout as $rows) {
             $first_col = true;
@@ -68,8 +79,25 @@ class Controller_Front extends Controller_Front_Application
                 $available_width = $width * 3;
                 $col_width += $available_width;
 
-                $field = $item->fields[$field_id];
-                $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
+                if ($field_id == 'captcha') {
+                    $field = (object) array(
+                        'field_name' => 'form_captcha',
+                        'field_label' => strtr(__('How much is {number_1} plus {number_2}?'), array(
+                            '{number_1}' => $number_1,
+                            '{number_2}' => $number_2,
+                        )),
+                        'field_type' => 'text',
+                        'field_mandatory' => '1',
+                        'field_technical_id' => '',
+                        'field_technical_css' => '',
+                        'field_default_value' => '',
+                        'field_virtual_name' => 'form_captcha',
+                    );
+                    $name = 'form_captcha';
+                } else {
+                    $field = $item->fields[$field_id];
+                    $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
+                }
 
                 $html_attrs = array(
                     'id' => $field->field_technical_id ?: $name,
@@ -80,9 +108,28 @@ class Controller_Front extends Controller_Front_Application
                     $html_attrs['placeholder'] = $field->field_label;
                 }
 
+                if ($field->field_mandatory) {
+                    $html_attrs['required'] = 'required';
+                }
+
                 $label_attrs = array(
                     'for' => $html_attrs['id'],
                 );
+
+                $value = \Input::post($name, $field->field_default_value);
+
+                if (!empty($errors[$name])) {
+                    if ($name == 'form_captcha') {
+                        $value = '';
+                    }
+                    if ($enhancer_args['label_position'] == 'placeholder') {
+                        $html_attrs['class'] .= ' error';
+                        $html_attrs['title'] = htmlspecialchars($errors[$name]);
+                    } else {
+                        $label_attrs['class'] = ' error';
+                        $label_attrs['title'] = htmlspecialchars($errors[$name]);
+                    }
+                }
 
                 $html = '';
 
@@ -96,8 +143,6 @@ class Controller_Front extends Controller_Front_Application
                 }
 
                 if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date'))) {
-
-                    $value = \Input::post($name, $field->field_default_value);
 
                     if (in_array($field->field_type, array('text', 'email', 'number', 'date'))) {
                         $html_attrs['type'] = $field->field_type;
@@ -235,12 +280,24 @@ class Controller_Front extends Controller_Front_Application
             }
         }
 
+        $layout = 'noviusos_form::foundation';
+        $args = array(
+            'fields' => &$fields,
+            'layout' => &$layout,
+            'item' => $item,
+        );
+        \Event::trigger_function('noviusos_form::rendering', array(&$args));
+        if (!empty($item->form_virtual_name)) {
+            \Event::trigger_function('noviusos_form::rendering.' . $item->form_virtual_name, array(&$args));
+        }
+
         $layout = array(
-            'layout' => 'noviusos_form::foundation',
+            'layout' => $layout,
             'args' => array(
                 'item' => $item,
                 'fields' => $fields,
                 'enhancer_args' => $enhancer_args,
+                'errors' => $errors,
                 'form_attrs' => array(
                     'method' => 'POST',
                     'enctype' => 'multipart/form-data',
@@ -253,6 +310,8 @@ class Controller_Front extends Controller_Front_Application
     }
 
     public function post_answers($form) {
+
+        $errors = array();
 
         $answer = Model_Answer::forge(array(
             'answer_form_id' => $form->form_id,
@@ -282,8 +341,61 @@ class Controller_Front extends Controller_Front_Application
             $fields[$name] = $field;
         }
 
-        // @todo send an event with the data
-        // @todo pre-check method. (If it returns false, don't save the data, but rather display the form again)
+        // data pre-processing
+        \Event::trigger_function('noviusos_form::preprocessing', array(&$data, $form));
+        if (!empty($form->form_virtual_name)) {
+            \Event::trigger_function('noviusos_form::preprocessing.' . $form->form_virtual_name, array(&$data, $form));
+        }
+
+        foreach ($data as $name => $value) {
+            $field = $fields[$name];
+            $type = $field->field_type;
+
+            // Mandatory (required)
+            if (in_array($type, array('text', 'textarea', 'select', 'email', 'number', 'date')) && $field->field_mandatory && empty($value)) {
+                $errors[$name] = __('Please enter a value for the field "{label}".');
+            } else {
+                if ($type == 'email' && filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $errors[$name] = __('"{value}" is not a valid email for the "{label}" field.');
+                }
+                if ($type == 'number' && filter_var($value, FILTER_VALIDATE_INT)) {
+                    $errors[$name] = __('"{value}" is not a valid number for the "{label}" field.');
+                }
+                if ($type == 'date') {
+                    if ($checkdate = preg_match($value, '`^\d{4}-\d{2}-\d{2}$`', $m)) {
+                        list($year, $month, $day) = $m;
+                        $checkdate = checkdate($month, $day, $year);
+                    }
+                    if (!$checkdate) {
+                        $errors[$name] = __('"{value}" is not a valid date for the "{label}" field.');
+                    }
+                }
+            }
+        }
+
+        // data validation
+        $errors = \Arr::merge($errors, \Event::trigger('noviusos_form::validate_data', array($data, $form), 'array'));
+        if (!empty($form->form_virtual_name)) {
+            $errors = \Arr::merge($errors, \Event::trigger('noviusos_form::validate_data.' . $form->form_virtual_name, array($data, $form), 'array'));
+        }
+
+        if ($form->form_captcha && \Session::get('captcha') != \Input::post('form_captcha', 0)) {
+            $errors['form_captcha'] = __('Incorrect captcha value.');
+        }
+
+        // Some validation errors occured
+        if (!empty($errors)) {
+            foreach ($errors as $name => &$error) {
+                if ($name == 'form_captcha') {
+                    continue;
+                }
+                $error = strtr($error, array(
+                    '{label}' => $fields[$name]->field_label,
+                    '{value}' => $data[$name],
+                ));
+            }
+            return $errors;
+        }
 
         foreach ($data as $field_name => $value) {
             $field = $fields[$field_name];
@@ -295,6 +407,6 @@ class Controller_Front extends Controller_Front_Application
             ), true);
             $answer_field->save();
         }
-        return true;
+        return $errors;
     }
 }

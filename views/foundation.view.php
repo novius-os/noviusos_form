@@ -103,6 +103,9 @@ $render_template = function($template, $args) use (&$render_template, &$render_t
 <div id="<?= $id = uniqid('form_') ?>">
 <?php
 
+foreach ($errors as $error) {
+    echo '<p class="error">'.htmlspecialchars($error).'</p>';
+}
 echo html_tag('form', $form_attrs);
 
 // Loop through fields now
