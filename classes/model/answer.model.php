@@ -34,7 +34,7 @@ class Model_Answer extends \Nos\Orm\Model
     );
 
     protected static $_belongs_to = array(
-        'folder' => array(
+        'form' => array(
             'key_from'       => 'answer_form_id',
             'model_to'       => 'Nos\Form\Model_Form',
             'key_to'         => 'form_id',
@@ -42,4 +42,16 @@ class Model_Answer extends \Nos\Orm\Model
             'cascade_delete' => false,
         ),
     );
+
+    public function getAttachment($field) {
+        return \Nos\Attachment::forge($this->form->form_id.'_'.$this->answer_id.'_'.$field->field_id, array(
+            'dir' => 'apps/noviusos_form',
+            'alias' => 'form',
+            'check' => array(__CLASS__, 'check_attachment'),
+        ));
+    }
+
+    public static function check_attachment() {
+        return \Nos\Auth::check();
+    }
 }

@@ -33,6 +33,16 @@
             var $form = $(this);
             var $submit_button = $form.find(':submit');
 
+            var $captcha = $form.find('#form_captcha');
+            var good_anwser = $captcha.data('captcha').split('-')[1];
+            $captcha.on('blur', function() {
+                if ($(this).val() != good_anwser) {
+                    this.setCustomValidity($captcha.data('customValidity'));
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+
             // Deal with multi-pages forms
             var $container = $form.find('.page_break_control');
             if ($container.length > 0) {

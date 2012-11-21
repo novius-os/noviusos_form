@@ -65,8 +65,11 @@ class Controller_Front extends Controller_Front_Application
 
         if ($item->form_captcha) {
             $layout[] = array('captcha=4');
-            $number_1 = mt_rand(1, 50);
+            $number_1 = mt_rand(1, 10);
             $number_2 = mt_rand(1, 50);
+            if (mt_rand(1, 2) == 1) {
+                list($number_2, $number_1) = array($number_1, $number_2);
+            }
             \Session::set('captcha', $number_1 + $number_2);
         }
 
@@ -128,6 +131,11 @@ class Controller_Front extends Controller_Front_Application
 
                 if ($field->field_mandatory) {
                     $html_attrs['required'] = 'required';
+                }
+
+                if ($name == 'form_captcha') {
+                    $html_attrs['data-captcha'] = mt_rand(100, 999).'-'.\Session::get('captcha').'-'.mt_rand(100, 999);
+                    $html_attrs['data-custom-validity'] = __('Incorrect captcha value.');
                 }
 
                 $label_attrs = array(
@@ -350,7 +358,7 @@ class Controller_Front extends Controller_Front_Application
             $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
             $value = null;
 
-            if ($type == 'file') {
+            if ($type == 'file' && !empty($_FILES[$name])) {
                 $files[$name] = $_FILES[$name];
             } else {
                 switch($type) {
@@ -375,9 +383,8 @@ class Controller_Front extends Controller_Front_Application
             // Mandatory (required)
             if (in_array($type, array('text', 'textarea', 'select', 'email', 'number', 'date')) && $field->field_mandatory && empty($value)) {
                 $errors[$name] = __('{label} Please enter a value for the field.');
-            } else {
-                if ($field->field_mandatory || !empty($value))
-                // Only if it's mandatory or there is a value
+            } else if (!empty($value)) {
+                // Only if there is a value
                 if ($type == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
                     $errors[$name] = __('{label} "{value}" is not a valid email.');
                 }
@@ -445,6 +452,12 @@ class Controller_Front extends Controller_Front_Application
                 'answer_ip' => \Input::real_ip(),
             ), true);
             $answer->save();
+
+            foreach ($files as $name => $file) {
+                $attachment = $answer->getAttachment($fields[$name]);
+                $attachment->set($file['tmp_name'], $file['name']);
+                $attachment->save();
+            }
 
             foreach ($data as $field_name => $value) {
                 $field = $fields[$field_name];
