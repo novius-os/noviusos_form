@@ -38,6 +38,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             $fields = preg_split("/[\n,]+/", $form->form_layout);
             $columns = array();
             $dataset = array();
+            $meta = array();
             foreach ($fields as $field) {
                 list($field_id, $width) = explode('=', $field);
                 $field = $form->fields[$field_id];
@@ -47,8 +48,12 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
 
                 $id = 'field_'.$field->field_id;
                 $column = array (
-                    'headerText' => preg_replace('/\:/', ' ', $field->field_label),
+                    'headerText' => preg_replace('/\:\s*$/', ' ', $field->field_label),
                     'dataKey' => $id,
+                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : ('string')),
+                );
+                $meta[$id] = array (
+                    'label' => $field->field_label,
                     'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : ('string')),
                 );
 
@@ -70,6 +75,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             unset($this->config['appdesk']['appdesk']['grid']['columns']['actions']);
             $this->config['appdesk']['appdesk']['grid']['columns'] = array_merge($this->config['appdesk']['appdesk']['grid']['columns'], $columns, array('actions' => $actions));
             $this->config['dataset'] = array_merge($this->config['dataset'], $dataset);
+            $this->config['appdesk']['appdesk']['inspectors']['preview']['options']['meta'] = array_merge($this->config['appdesk']['appdesk']['inspectors']['preview']['options']['meta'], $meta);
         }
 
         return $this->config;

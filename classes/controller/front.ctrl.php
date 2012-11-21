@@ -45,7 +45,8 @@ class Controller_Front extends Controller_Front_Application
         return $this->render_form($item, $errors);
     }
 
-    public function render_form($item, $errors) {
+    public function render_form($item, $errors)
+    {
 
         $layout = explode("\n", $item->form_layout);
         array_walk($layout, function(&$v) {
@@ -343,7 +344,8 @@ class Controller_Front extends Controller_Front_Application
         return \View::forge($layout['layout'], $layout['args'], false);
     }
 
-    public function post_answers($form) {
+    public function post_answers($form)
+    {
 
         $errors = array();
         $data = array();
@@ -404,13 +406,13 @@ class Controller_Front extends Controller_Front_Application
         }
 
         // Custom validation
-        foreach((array) \Event::trigger_function('noviusos_form::data_validation', array(&$data, $form), 'array') as $array) {
+        foreach ((array) \Event::trigger_function('noviusos_form::data_validation', array(&$data, $form), 'array') as $array) {
             foreach ($array as $name => $error) {
                 $errors[$name] = $error.(isset($errors[$name]) ? "\n".$errors[$name] : '');
             }
         }
         if (!empty($form->form_virtual_name)) {
-            foreach((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $form), 'array') as $array) {
+            foreach ((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $form), 'array') as $array) {
                 foreach ($array as $name => $error) {
                     $errors[$name] = (isset($errors[$name]) ? $errors[$name]."\n" : '').$error;
                 }
