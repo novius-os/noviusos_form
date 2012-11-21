@@ -24,7 +24,7 @@ return array(
                             'label' => __('Receipt date:'),
                         ),
                     ),
-                    //'actions' => array('edit', 'delete', 'visualise'),
+                    'actions' => array('Nos\Form\Model_Answer.visualize', 'Nos\Form\Model_Answer.delete'),
                 ),
             )
         ),

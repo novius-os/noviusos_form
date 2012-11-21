@@ -34,7 +34,7 @@ class Model_Answer extends \Nos\Orm\Model
     );
 
     protected static $_belongs_to = array(
-        'folder' => array(
+        'form' => array(
             'key_from'       => 'answer_form_id',
             'model_to'       => 'Nos\Form\Model_Form',
             'key_to'         => 'form_id',
