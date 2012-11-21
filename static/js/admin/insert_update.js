@@ -14,6 +14,8 @@ define(
             var $fields_container = $container.find('.fields_container');
             var $layout = $container.closest('form').find('[name=form_layout]');
             var $submit_informations = $container.find('.submit_informations');
+            $fields_container.show();
+            $submit_informations.show();
 
             // This object will be use to generate preview
             var $clone_preview = $container.find('[data-id=clone_preview]').clone().removeAttr('data-id');
@@ -379,7 +381,9 @@ define(
                 var html  = '';
                 var default_value_value = find_field($field, 'default_value').val().split(',');
 
-                if (type == 'text' || type == 'email' || type == 'number' || type == 'date') {
+                log(type);
+
+                if (type == 'text' || type == 'email' || type == 'number' || type == 'date' || type == 'file') {
                     var size = '';
                     if (width != '') {
                         size = ' size="' + width + '"';
@@ -788,7 +792,7 @@ define(
             }).trigger('change');
 
             $form_submit_label.on('change keyup', function() {
-                $submit_informations.find('input').val($(this).val());
+                $submit_informations.find('input:last').val($(this).val());
             }).trigger('change');
 
             $submit_informations.on('click', function() {

@@ -54,13 +54,13 @@ foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special'
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom'))) ?>"><?= __('Add a field') ?></button>
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom', 'type' => 'page_break'))) ?>"><?= __('Add a page break') ?></button>
             </p>
-            <div class="ui-widget-content submit_informations">
-                <p class="form_captcha">How much is 3 + 8?</p>
+            <div class="ui-widget-content submit_informations" style="display:none;">
+                <p class="form_captcha">How much is 3 + 8? <input size="3" /></p>
                 <p clas="form_submit_label"><input type="button" /></p>
             </div>
         </div>
 
-        <div class="lastUnit col c4 fields_container">
+        <div class="lastUnit col c4 fields_container" style="display:none;">
             <img class="preview_arrow show_hide" src="static/apps/noviusos_form/img/arrow-edition.png" />
             <p class="actions show_hide">
                 <button type="button" data-icon="trash" data-id="delete" class="action"><?= ('Delete') ?></button>
@@ -114,9 +114,17 @@ foreach ($layout as $field_id) {
 </div>
 
 <script type="text/javascript">
-require(['jquery-nos', 'static/apps/noviusos_form/js/admin/insert_update.js'], function($, init_form) {
-    $(function() {
-        init_form('#<?= $uniqid ?>');
+require(['jquery-nos', 'jquery-nos-loadspinner'], function($) {
+    var uniqid = '#<?= $uniqid ?>';
+    $(uniqid).find('.preview_container').loadspinner({
+        diameter : 64,
+        scaling : true
+    });
+    require(['static/apps/noviusos_form/js/admin/insert_update.js'], function(init_form) {
+        $(function() {
+            init_form(uniqid);
+            $(uniqid).find('.preview_container').loadspinner('destroy');
+        });
     });
 });
 </script>
