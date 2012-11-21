@@ -9,40 +9,9 @@
  */
 
 
-\Nos\Nos::main_controller()->addCss('static/apps/noviusos_form/css/front.css')
-//\Nos\Nos::main_controller()->addJs('static/apps/noviusos_form/js/___.js');
+\Nos\Nos::main_controller()->addCss('static/apps/noviusos_form/css/front.css');
 
-$widths = array(
-    1 => 'one',
-    2 => 'two',
-    3 => 'three',
-    4 => 'four',
-    5 => 'five',
-    6 => 'six',
-    7 => 'seven',
-    8 => 'eight',
-    9 => 'nine',
-    10 => 'ten',
-    11 => 'eleven',
-    12 => 'twelve',
-);
-
-if (in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
-    $template = '<div class="{label_class} columns">{label} {field}</div>';
-    $label_class = 'label';
-} else {
-    $template = '<div class="{label_class} columns">{label}</div><div class="{field_class} columns">{field}</div>';
-    $label_class = 'label '.$enhancer_args['label_position'];
-}
-
-// Label width will be set according to the smallest columns
-$label_width = 4;
-foreach ($fields as $field) {
-    $label_width = min($label_width, $field['width']);
-}
-
-$first_row = true;
-$col_width = 12;
+\Nos\Nos::main_controller()->addJavascript('static/apps/noviusos_form/js/foundation.js');
 
 function add_attr_to_thing(&$thing, $attr, $value) {
     if (isset($thing['callback'])) {
@@ -135,16 +104,13 @@ $render_template = function($template, $args) use (&$render_template, &$render_t
     return strtr($template, $replacements);
 };
 
-?>
-<div id="<?= $id = uniqid('form_') ?>">
-<?php
-
-foreach ($errors as $name => $error) {
-    $attrs = get_html_attrs($fields[$name]['field']);
-    $id = !empty($attrs['id']) ? $attrs['id'] : '';
-    echo '<p class="error"><label for="'.$id.'">'.nl2br(htmlspecialchars($error)).'</label></p>';
+if (in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
+    $template = '<div class="{label_class} columns">{label} {field}</div>';
+    $label_class = 'label';
+} else {
+    $template = '<div class="{label_class} columns">{label}</div><div class="{field_class} columns">{field}</div>';
+    $label_class = 'label '.$enhancer_args['label_position'];
 }
-echo html_tag('form', $form_attrs);
 
 foreach ($fields as $name => &$field) {
 
@@ -162,6 +128,47 @@ foreach ($fields as $name => &$field) {
 }
 unset($field);
 
+?>
+<div id="<?= $id = uniqid('form_') ?>">
+<?php
+
+foreach ($errors as $name => $error) {
+    $attrs = get_html_attrs($fields[$name]['field']);
+    $id = !empty($attrs['id']) ? $attrs['id'] : '';
+    echo '<p class="error"><label for="'.$id.'">'.nl2br(htmlspecialchars($error)).'</label></p>';
+}
+
+$widths = array(
+    1 => 'one',
+    2 => 'two',
+    3 => 'three',
+    4 => 'four',
+    5 => 'five',
+    6 => 'six',
+    7 => 'seven',
+    8 => 'eight',
+    9 => 'nine',
+    10 => 'ten',
+    11 => 'eleven',
+    12 => 'twelve',
+);
+
+// Label width will be set according to the smallest columns
+$label_width = 4;
+foreach ($fields as $field) {
+    $label_width = min($label_width, $field['width']);
+}
+
+$first_page = true;
+$first_row = true;
+$col_width = 12;
+
+if (empty($form_attrs['class'])) {
+    $form_attrs['class'] = '';
+}
+$form_attrs['class'] .= ' foundation';
+
+echo html_tag('form', $form_attrs);
 // Loop through fields now
 foreach ($fields as $name => $field) {
 
@@ -172,6 +179,18 @@ foreach ($fields as $name => $field) {
             }
             echo '</div>';
         }
+    }
+
+    if ($field['new_page']) {
+        if (!$first_page) {
+            echo '</div>';
+        } else {
+            $first_page = false;
+        }
+        echo '<div class="page_break">';
+    }
+
+    if ($field['new_row']) {
         if ($first_row) {
             $first_row = false;
         }
@@ -197,6 +216,42 @@ if (!$first_row) {
     echo '</div>';
 }
 
+if ($has_page_break) {
+    echo '</div>';
+}
 
-echo \Form::submit('submit', $item->form_submit_label);
+$page_break_layout = '{previous}{pagination}{next}';
+
+if ($has_page_break) {
+    ?>
+    <div class="page_break_control row">
+        <?php
+        echo strtr($page_break_layout, array(
+            '{previous}' => '
+                <div class="columns four">
+                    <a class="page_break_previous" href="">'.__('Previous page').'</a>
+                </div>',
+            '{next}' => '
+                <div class="columns four">
+                    <button type="button" class="page_break_next">'.__('Next page').'</button>'.
+                    \Form::submit('submit', $item->form_submit_label, array(
+                        'class' => 'page_break_last',
+                    )).'
+                </div>',
+            '{pagination}' => '
+                    <div class="columns four">'.
+                        strtr(__('{current} out of {total}'), array(
+                            '{current}' => '<span class="page_break_current">1</span>',
+                            '{total}' => '<span class="page_break_total">1</span>',
+                        )).'
+                    </div>',
+        ));
+?>
+    </div>
+<?php
+} else {
+    echo \Form::submit('submit', $item->form_submit_label);
+}
+
+
 echo '</form></div>';

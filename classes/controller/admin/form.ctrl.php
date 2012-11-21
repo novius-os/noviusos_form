@@ -156,7 +156,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
     public function page_break()
     {
-
         $data = array(
             'field_form_id' => '0',
             'field_virtual_name' => uniqid(),

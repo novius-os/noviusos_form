@@ -70,6 +70,16 @@ class Controller_Front extends Controller_Front_Application
             \Session::set('captcha', $number_1 + $number_2);
         }
 
+        $has_page_break = false;
+        foreach ($item->fields as $field_id => $field) {
+            if ($field->field_type == 'page_break') {
+                $has_page_break = true;
+                break;
+            }
+        }
+
+        $new_page = $has_page_break;
+
         // Loop through rows...
         foreach ($layout as $rows) {
             $first_col = true;
@@ -101,6 +111,11 @@ class Controller_Front extends Controller_Front_Application
                     $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
                 }
 
+                if ($field->field_type == 'page_break') {
+                    $new_page = true;
+                    continue;
+                }
+
                 $html_attrs = array(
                     'id' => $field->field_technical_id ?: $name,
                     'class' => $field->field_technical_css,
@@ -126,10 +141,10 @@ class Controller_Front extends Controller_Front_Application
                         $value = '';
                     }
                     if ($this->enhancer_args['label_position'] == 'placeholder') {
-                        $html_attrs['class'] .= ' error';
+                        $html_attrs['class'] .= ' user-error form-ui-invalid';
                         $html_attrs['title'] = htmlspecialchars($errors[$name]);
                     }
-                    $label_attrs['class'] = ' error';
+                    $label_attrs['class'] = ' user-error form-ui-invalid';
                     $label_attrs['title'] = htmlspecialchars($errors[$name]);
                 }
 
@@ -144,9 +159,17 @@ class Controller_Front extends Controller_Front_Application
                     );
                 }
 
-                if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date'))) {
+                if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file'))) {
 
-                    if (in_array($field->field_type, array('text', 'email', 'number', 'date'))) {
+                    if ($field->field_type == 'file' || $field->field_type == 'select') {
+                        // For the label
+                        $label = array(
+                            'callback' => 'html_tag',
+                            'args' => array('span', $label_attrs, $field->field_label),
+                        );
+                    }
+
+                    if (in_array($field->field_type, array('text', 'email', 'number', 'date', 'file'))) {
                         $html_attrs['type'] = $field->field_type;
                         if (!empty($field->field_width)) {
                             $html_attrs['size'] = $field->field_width;
@@ -167,10 +190,6 @@ class Controller_Front extends Controller_Front_Application
                             'args' => array($name, $value, $html_attrs),
                         );
                     } else if ($field->field_type == 'select') {
-                        $label = array(
-                            'callback' => 'html_tag',
-                            'args' => array('span', $label_attrs, $field->field_label),
-                        );
                         $choices = explode("\n", $field->field_choices);
                         $choices = array_combine($choices, $choices);
                         $html = array(
@@ -276,10 +295,12 @@ class Controller_Front extends Controller_Front_Application
                     'label' => $label,
                     'field' => $html,
                     'new_row' => $first_col,
+                    'new_page' => $new_page,
                     'width' => $width,
                     'item' => $field,
                 );
                 $first_col = false;
+                $new_page = false;
             }
         }
 
@@ -287,6 +308,7 @@ class Controller_Front extends Controller_Front_Application
         $args = array(
             'fields' => &$fields,
             'layout' => &$layout,
+            'enhancer_args' => $this->enhancer_args,
             'item' => $item,
         );
         \Event::trigger_function('noviusos_form::rendering', array(&$args));
@@ -300,6 +322,7 @@ class Controller_Front extends Controller_Front_Application
                 'item' => $item,
                 'fields' => $fields,
                 'enhancer_args' => $this->enhancer_args,
+                'has_page_break' => $has_page_break,
                 'errors' => $errors,
                 'form_attrs' => array(
                     'method' => 'POST',
@@ -317,6 +340,7 @@ class Controller_Front extends Controller_Front_Application
         $errors = array();
         $data = array();
         $fields = array();
+        $files = array();
 
         foreach ($form->fields as $field) {
             $type = $field->field_type;
@@ -324,16 +348,22 @@ class Controller_Front extends Controller_Front_Application
                 continue;
             }
             $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
-            switch($type) {
-                case 'checkbox':
-                    $value = implode("\n", \Input::post($name, array()));
-                    break;
+            $value = null;
 
-                default:
-                    $value = \Input::post($name, '');
+            if ($type == 'file') {
+                $files[$name] = $_FILES[$name];
+            } else {
+                switch($type) {
+                    case 'checkbox':
+                        $value = implode("\n", \Input::post($name, array()));
+                        break;
+
+                    default:
+                        $value = \Input::post($name, '');
+                }
+
+                $data[$name] = $value;
             }
-
-            $data[$name] = $value;
             $fields[$name] = $field;
         }
 
@@ -384,7 +414,7 @@ class Controller_Front extends Controller_Front_Application
             $errors['form_captcha'] = __('Incorrect captcha value.');
         }
 
-        // Some validation errors occured
+        // Some validation errors occurred
         if (!empty($errors)) {
             foreach ($errors as $name => &$error) {
                 if ($name == 'form_captcha') {
