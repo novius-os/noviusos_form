@@ -1,5 +1,10 @@
 <link rel="stylesheet" href="static/apps/noviusos_form/css/admin.css" />
 
+<?php
+if (!$item->is_new() && count($item->answers) > 0) {
+    echo \View::forge('noviusos_form::admin/warning_answers_collected', $view_params, false);
+}
+?>
 
 <div id="<?= $uniqid = uniqid('container_') ?>">
 
