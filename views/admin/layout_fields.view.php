@@ -3,6 +3,26 @@
 
 <div id="<?= $uniqid = uniqid('container_') ?>">
 
+    <?php
+        if (!$item->is_new()) {
+            $count = \Nos\Model_Wysiwyg::count(array(
+                'where' => array(
+                    array('wysiwyg_text', 'LIKE', '%&quot;form_id&quot;:&quot;'.$item->form_id.'%'),
+                ),
+            ));
+            if ($count == 0) {
+                ?>
+                <div class="line" style="margin-bottom: 1em;"">
+                    <div class="unit col c12 lastUnit" style="position:relative;">
+                        <img src="static/novius-os/admin/novius-os/img/icons/status-red.png" style="vertical-align: middle;" />
+                        <?= __('Not published') ?>.
+                        <?= __('To publish it, insert the form into a page, blog post or any other content area.') ?>
+                    </div>
+                </div>
+                <?php
+            }
+        }
+    ?>
     <div class="line">
         <div class="unit col c8" style="position:relative;">
             <p>
