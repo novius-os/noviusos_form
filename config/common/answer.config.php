@@ -7,7 +7,9 @@ return array(
     ),
     'data_mapping' => array(
         'receipt_date' => array(
-            'column'        => 'answer_created_at',
+            'value' => function ($item) {
+                return \Date::create_from_string($item->answer_created_at, 'mysql')->format('%m/%d/%Y %H:%M:%S'); //%m/%d/%Y %H:%i:%s
+            },
             'headerText'    => __('Receipt date'),
             'dataType' => 'datetime',
         ),
