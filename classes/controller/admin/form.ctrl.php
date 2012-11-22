@@ -133,7 +133,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
     public function action_render_field($item, $view = null)
     {
-
         // This action is not available from the browser. Only internal requests are authorised.
         if (!empty($view) && !\Request::is_hmvc()) {
             exit();

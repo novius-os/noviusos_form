@@ -54,6 +54,7 @@ return array(
             'form' => array(
                 'type' => 'text',
             ),
+            'expert' => true,
         ),
         'form_layout' => array (
             'form' => array(
@@ -541,6 +542,7 @@ return array(
             'populate' => function($item) {
                 return $item->field_virtual_name;
             },
+            'expert' => true,
         ),
         'field[technical_id][]' => array(
             'label' => __('ID:'),
@@ -550,6 +552,7 @@ return array(
             'populate' => function($item) {
                 return $item->field_technical_id;
             },
+            'expert' => true,
         ),
         'field[technical_css][]' => array(
             'label' => __('CSS classes:'),
@@ -559,6 +562,7 @@ return array(
             'populate' => function($item) {
                 return $item->field_technical_css;
             },
+            'expert' => true,
         ),
     ),
 );
