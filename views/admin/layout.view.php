@@ -8,6 +8,11 @@
  * @link http://www.novius-os.org
  */
 
+foreach ($fieldset->field() as $field) {
+    $field->is_expert() && $field->set_type('hidden')->set_template('{field}');
+}
+echo $fieldset->build_hidden_fields();
+
 foreach ($layout as $view) {
     if (!empty($view['view'])) {
         $view['params'] = empty($view['params']) ? array() : $view['params'];
