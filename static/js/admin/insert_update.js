@@ -381,8 +381,6 @@ define(
                 var html  = '';
                 var default_value_value = find_field($field, 'default_value').val().split(',');
 
-                log(type);
-
                 if (type == 'text' || type == 'email' || type == 'number' || type == 'date' || type == 'file') {
                     var size = '';
                     if (width != '') {
