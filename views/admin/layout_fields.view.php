@@ -107,7 +107,7 @@ foreach ($layout as $field_id) {
     echo \Request::forge('noviusos_form/admin/form/render_field')->execute(array($item->fields[$field_id]));
 }
 ?>
-            <div class="accordion fieldset">
+            <div class="accordion field_enclosure fieldset">
                 <h3><?= __('Submit informations') ?></h3>
                 <div>
                     <?= $fieldset->field('form_captcha')->set_template('<p><span>{label} {field}</span></p>') ?>

@@ -8,6 +8,7 @@
  * @link http://www.novius-os.org
  */
 
+echo '<div class="field_enclosure">';
 foreach ($fieldset->field() as $field) {
     $field->is_expert() && $field->set_type('hidden')->set_template('{field}');
 }
@@ -19,3 +20,4 @@ foreach ($layout as $view) {
         echo View::forge($view['view'], $view['params'] + $view_params, false);
     }
 }
+echo '</div>';

@@ -183,9 +183,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         $fields_config = $this->config['fields_config'];
         $fields_config['field[type][]']['form']['options'] = array('page_break' => __('Page break'));
-        foreach ($fields_config as $name => &$field_config) {
-            $field_config['template'] = "{field}\n";
-        }
         $fieldset = \Fieldset::forge(uniqid(), array('auto_id' => false));
         $fieldset->add_widgets($fields_config);
         $fieldset->populate_with_instance($item);

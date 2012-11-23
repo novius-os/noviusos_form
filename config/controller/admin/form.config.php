@@ -315,7 +315,6 @@ return array(
                     'main' => array(
                         'title' => __('Required informations for this field'),
                         'fields' => array(
-                            'field[id][]',
                             'field[label][]',
                             'field[type][]',
                             'field[choices][]',

@@ -46,7 +46,7 @@ define(
                             return;
                         }
                         j == 0 || (layout += ',');
-                        layout += $field.find('[name^="field[id]"]').val() + '=' + get_cell_colspan($preview);
+                        layout += find_field($field, 'id').val() + '=' + get_cell_colspan($preview);
                     });
                 });
                 $layout.val(layout);
@@ -56,11 +56,11 @@ define(
             $container.on('click', '[data-id=add]', function onAdd(e) {
                 e.preventDefault();
                 var params_button = $(this).data('params');
+                $blank_slate.data('params', params_button);
                 if (params_button.type == 'page_break') {
                     add_fields_blank_slate(e, 'page_break');
                 } else {
                     $(this).closest('p')[params_button.where == 'top' ? 'after' : 'before']($blank_slate);
-                    $blank_slate.data('params', params_button);
                     $blank_slate.show();
                     set_field_padding();
                 }
@@ -167,16 +167,16 @@ define(
                 // Show the appropriate field and position it
                 show_field($field);
 
-                $field.find('[name^="field[label"]').focus();
+                find_field($field, 'label').focus();
             }
 
             function show_field($field) {
                 $fields_container.find('.show_hide').show();
-                if ($field.is('.accordion')) {
+                if ($field.is('.field_enclosure') && !$field.is('.page_break')) {
                     $field.show();
                     $field.nosOnShow();
                 }
-                $field.siblings('.fieldset').hide();
+                $field.siblings('.field_enclosure').hide();
                 set_field_padding();
                 var $submit_label = find_field($field, 'submit_label');
                 if ($submit_label.length == 0) {
@@ -191,9 +191,10 @@ define(
                     $focus = $submit_informations.not(':not(.ui-state-active)');
                 }
                 if ($focus.length > 0) {
+                    var diff = $focus.is('.submit_informations') ? -15 : -29;
                     var pos = $focus.position();
                     $fields_container.css({
-                        paddingTop: Math.max(0, pos.top - 29) + 'px' // 29 = arrow height
+                        paddingTop: Math.max(0, pos.top + diff) + 'px' // 29 = arrow height
                     });
                 }
             }
@@ -239,7 +240,7 @@ define(
             // When the "field_type" changes
             $fields_container.on('change', 'select[name^="field[type]"]', function on_type_change(e) {
                 var type = $(this).val();
-                var $field = $(this).closest('.fieldset');
+                var $field = $(this).closest('.field_enclosure');
 
                 show_when($field, 'choices', -1 !== $.inArray(type, ['radio', 'checkbox', 'select']));
                 show_when($field, 'label', -1 === $.inArray(type, ['separator', 'message']));
@@ -281,7 +282,7 @@ define(
 
             $fields_container.on('change', 'select[name^="field[style]"]', function on_style_change(e) {
                 var style = $(this).val();
-                var $field = $(this).closest('.fieldset');
+                var $field = $(this).closest('.field_enclosure');
                 var $message = $field.find('[name^="field[message]"]');
                 var $new = $(style == 'p' ? '<textarea rows="4"></textarea>' : '<input type="text" />');
 
@@ -304,7 +305,7 @@ define(
 
 
             function generate_label(e) {
-                var $field = $(this).closest('.fieldset');
+                var $field = $(this).closest('.field_enclosure');
                 var $preview = $field.data('preview');
                 if (!$preview) {
                     return;
@@ -371,7 +372,7 @@ define(
             }
 
             function generate_preview(e) {
-                var $field = $(this).closest('.fieldset');
+                var $field = $(this).closest('.field_enclosure');
                 var type = find_field($field, 'type').val();
                 var choices = find_field($field, 'choices').val();
                 var width = find_field($field, 'width').val();
@@ -747,7 +748,7 @@ define(
                 refreshPreviewHeight($tr);
             }
 
-            $fields_container.children('.fieldset').each(function onEachFields() {
+            $fields_container.children('.field_enclosure').each(function onEachFields() {
                 var $field = $(this);
                 on_field_added($field, {where: 'bottom'});
                 $field.hide();
@@ -764,9 +765,9 @@ define(
                         var item = this.split('=');
                         var field_id = item[0];
                         var field_width = item[1];
-                        var $preview = $fields_container.find('[name="field[id][]"]').filter(function() {
+                        var $preview = find_field($fields_container, 'id').filter(function() {
                             return $(this).val() == field_id;
-                        }).closest('.fieldset').data('preview');
+                        }).closest('.field_enclosure').data('preview');
                         set_cell_colspan($preview, field_width);
                         if ($previous) {
                             $previous.after($preview);
