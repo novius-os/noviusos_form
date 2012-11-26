@@ -43,7 +43,8 @@ class Model_Answer extends \Nos\Orm\Model
         ),
     );
 
-    public function getAttachment($field) {
+    public function getAttachment($field)
+    {
         return \Nos\Attachment::forge($this->form->form_id.'_'.$this->answer_id.'_'.$field->field_id, array(
             'dir' => 'apps/noviusos_form',
             'alias' => 'form',
@@ -51,7 +52,8 @@ class Model_Answer extends \Nos\Orm\Model
         ));
     }
 
-    public static function check_attachment() {
+    public static function check_attachment()
+    {
         return \Nos\Auth::check();
     }
 }

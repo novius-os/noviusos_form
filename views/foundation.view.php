@@ -13,7 +13,8 @@
 
 \Nos\Nos::main_controller()->addJavascript('static/apps/noviusos_form/js/foundation.js');
 
-function add_attr_to_thing(&$thing, $attr, $value) {
+function add_attr_to_thing(&$thing, $attr, $value)
+{
     if (isset($thing['callback'])) {
         $key = false;
         if ($thing['callback'] == 'html_tag') {
@@ -36,7 +37,8 @@ function add_attr_to_thing(&$thing, $attr, $value) {
     }
 }
 
-function get_html_attrs($thing) {
+function get_html_attrs($thing)
+{
     if (isset($thing['callback'])) {
         $key = false;
         if ($thing['callback'] == 'html_tag') {
@@ -56,7 +58,8 @@ function get_html_attrs($thing) {
     return;
 }
 
-function add_content_to_thing(&$thing, $content) {
+function add_content_to_thing(&$thing, $content)
+{
     if (isset($thing['callback'])) {
         $key = false;
         if ($thing['callback'] == 'html_tag') {
@@ -225,30 +228,30 @@ $page_break_layout = '{previous}{pagination}{next}';
 if ($has_page_break) {
     ?>
     <div class="page_break_control row">
-        <?php
-        echo strtr($page_break_layout, array(
-            '{previous}' => '
-                <div class="columns four">
-                    <a class="page_break_previous" href="">'.__('Previous page').'</a>
-                </div>',
-            '{next}' => '
-                <div class="columns four">
-                    <button type="button" class="page_break_next">'.__('Next page').'</button>'.
-                    \Form::submit('submit', $item->form_submit_label, array(
-                        'class' => 'page_break_last',
+    <?php
+    echo strtr($page_break_layout, array(
+        '{previous}' => '
+            <div class="columns four">
+                <a class="page_break_previous" href="">'.__('Previous page').'</a>
+            </div>',
+        '{next}' => '
+            <div class="columns four">
+                <button type="button" class="page_break_next">'.__('Next page').'</button>'.
+                \Form::submit('submit', $item->form_submit_label, array(
+                    'class' => 'page_break_last',
+                )).'
+            </div>',
+        '{pagination}' => '
+                <div class="columns four">'.
+                    strtr(__('{current} out of {total}'), array(
+                        '{current}' => '<span class="page_break_current">1</span>',
+                        '{total}' => '<span class="page_break_total">1</span>',
                     )).'
                 </div>',
-            '{pagination}' => '
-                    <div class="columns four">'.
-                        strtr(__('{current} out of {total}'), array(
-                            '{current}' => '<span class="page_break_current">1</span>',
-                            '{total}' => '<span class="page_break_total">1</span>',
-                        )).'
-                    </div>',
-        ));
-?>
+    ));
+    ?>
     </div>
-<?php
+    <?php
 } else {
     echo \Form::submit('submit', $item->form_submit_label);
 }
