@@ -94,10 +94,13 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
 
                 $label = !empty($field) ? $field->field_label : '';
 
-                if (!empty($field) && in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'checkbox', 'radio', 'hidden', 'variable'))) {
+                if (!empty($field) && in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'checkbox', 'radio', 'hidden', 'variable', 'file'))) {
 
                     if (in_array($field->field_type, array('textarea', 'checkbox'))) {
                         $html = \Str::textToHtml($value);
+                    } else if ($field->field_type === 'file') {
+                        $attachment = $this->item->getAttachment($field);
+                        $html = '<a href="'.\Uri::base(false).$attachment->url().'" target="_blank">'.$attachment->filename().'</a>';
                     } else {
                         $html = $value;
                     }
