@@ -29,6 +29,12 @@ return array(
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
             ),
+            'enabled' =>
+                function($item) {
+                    return !$item->is_new() && \Nos\Form\Model_Answer::count(array(
+                            'where' => array(array('answer_form_id' => $item->form_id)),
+                        ));
+                }
         ),
         'Nos\Form\Model_Form.export' => array(
             'label' => __('Export'),
@@ -42,6 +48,12 @@ return array(
                 'action' => 'window.open',
                 'url' => 'admin/noviusos_form/answer/appdesk/export?form_id={{id}}',
             ),
+            'enabled' =>
+                function($item) {
+                    return !$item->is_new() && \Nos\Form\Model_Answer::count(array(
+                            'where' => array(array('answer_form_id' => $item->form_id)),
+                        ));
+                }
         ),
     ),
 );
