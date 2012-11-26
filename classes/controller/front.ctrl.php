@@ -360,7 +360,10 @@ class Controller_Front extends Controller_Front_Application
             $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
             $value = null;
 
-            if ($type == 'file' && !empty($_FILES[$name])) {
+            if ($type === 'file' && !empty($_FILES[$name])) {
+                if ($field->field_mandatory && empty($_FILES[$name]['tmp_name'])) {
+                    $errors[$name] = __('{label} Please enter a file for the field.');
+                }
                 $files[$name] = $_FILES[$name];
             } else {
                 switch($type) {
@@ -456,9 +459,11 @@ class Controller_Front extends Controller_Front_Application
             $answer->save();
 
             foreach ($files as $name => $file) {
-                $attachment = $answer->getAttachment($fields[$name]);
-                $attachment->set($file['tmp_name'], $file['name']);
-                $attachment->save();
+                if (!empty($file['tmp_name'])) {
+                    $attachment = $answer->getAttachment($fields[$name]);
+                    $attachment->set($file['tmp_name'], $file['name']);
+                    $attachment->save();
+                }
             }
 
             foreach ($data as $field_name => $value) {
