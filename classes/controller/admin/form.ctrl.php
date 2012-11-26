@@ -95,8 +95,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         if ($meta == 'page_break') {
             return $this->page_break();
         }
-        $lookup = $this->config['fields_meta']['standard'] + $this->config['fields_meta']['special'];
-        $definition = $lookup[$meta]['definition'];
+        if ($meta == 'default') {
+            $definition = $this->config['fields_meta']['default']['definition'];
+        } else {
+            $lookup = $this->config['fields_meta']['standard'] + $this->config['fields_meta']['special'];
+            $definition = $lookup[$meta]['definition'];
+        }
         $fields = array();
         $layout = $definition['layout'];
         foreach ($definition['fields_list'] as $type => $field_data) {

@@ -6,7 +6,7 @@ define(
     ],
     function($) {
         "use strict";
-        return function(id) {
+        return function(id, is_new) {
 
             var $container = $(id);
 
@@ -67,7 +67,7 @@ define(
             });
 
             function add_fields_blank_slate(e, type) {
-                e.preventDefault();
+                e && e.preventDefault();
                 var params = {
                     where: ($blank_slate.data('params') || {}).where || 'bottom',
                     type:  type || $(this).data('meta')
@@ -782,6 +782,8 @@ define(
             setTimeout(function() {
                 refreshPreviewHeight();
             }, 100);
+
+            is_new && add_fields_blank_slate(null, 'default');
 
             var $form_captcha = $container.find('[name=form_captcha]');
             var $form_submit_label = $container.find('[name=form_submit_label]');

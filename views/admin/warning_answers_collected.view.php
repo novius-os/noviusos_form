@@ -20,7 +20,9 @@ if (!$item->is_new()) {
 <div id="<?= $uniqid_close ?>" style="display:none;">
     <p><?= __('Answers to this form have already been received. Modifying the form may alter the collected data.') ?></p>
     <p>&nbsp;</p>
+    <p>&nbsp;</p>
     <p><button class="primary" onclick="return false;"><?= __("You're right, take me to the answers") ?></button></p>
+    <p>&nbsp;</p>
     <p><?= __('or') ?> <a href="" onclick="$(this).nosDialog('close'); return false;"><?= __("Don't worry, I know what I'm doing");?></a></p>
 </div>
 <?php
