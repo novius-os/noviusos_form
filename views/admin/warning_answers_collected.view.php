@@ -10,20 +10,22 @@
 $uniqid_close = uniqid('close_');
 if (!$item->is_new()) {
     $actions = $view_params['crud']['actions'];
-    $answers_url = null;
+    $action_answers = null;
     foreach ($actions as $action) {
         if ($action['name'] == 'Nos\Form\Model_Form.answers') {
-            $answers_url = $action['action']['tab']['url'];
+            $action_answers = $action['action'];
+            $action_answers['method'] = 'update';
+            $action_answers['tab']['reload'] = true;
         }
     }
     ?>
-<div id="<?= $uniqid_close ?>" style="display:none;">
-    <p><?= __('Answers to this form have already been received. Modifying the form may alter the collected data.') ?></p>
-    <p>&nbsp;</p>
-    <p><button class="primary" onclick="return false;"><?= __("You're right, take me to the answers") ?></button></p>
-    <p><?= __('or') ?> <a href="" onclick="$(this).nosDialog('close'); return false;"><?= __("Don't worry, I know what I'm doing");?></a></p>
-</div>
-<?php
+    <div id="<?= $uniqid_close ?>" style="display:none;">
+        <p><?= __('Answers to this form have already been received. Modifying the form may alter the collected data.') ?></p>
+        <p>&nbsp;</p>
+        <p><button class="primary" onclick="return false;"><?= __("You're right, take me to the answers") ?></button></p>
+        <p><?= __('or') ?> <a href="" onclick="$(this).nosDialog('close'); return false;"><?= __("Don't worry, I know what I'm doing");?></a></p>
+    </div>
+    <?php
 }
 ?>
 <script type="text/javascript">
@@ -35,10 +37,7 @@ if (!$item->is_new()) {
                 var $close = $('#<?= $uniqid_close ?>');
                 $container.find('button.primary').on('click', function() {
                     $close.nosDialog('close');
-                    $container.nosTabs('update', {
-                        url: <?= \Format::forge()->to_json($answers_url) ?>,
-                        reload: true
-                    });
+                    $container.nosAction(<?= \Format::forge()->to_json($action_answers) ?>, <?= \Format::forge($crud['dataset'])->to_json() ?>);
                 });
                 $close.show().nosFormUI();
                 $container.nosDialog({

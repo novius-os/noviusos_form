@@ -7,6 +7,9 @@ return array(
     ),
     'search_text' => 'form_name',
     'data_mapping' => array(
+        'id' => array(
+            'column'        => 'form_id',
+        ),
         'title' => array(
             'column'        => 'form_name',
             'headerText'    => __('Name'),
