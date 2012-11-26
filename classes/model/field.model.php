@@ -31,7 +31,7 @@ class Model_Field extends \Nos\Orm\Model
     );
 
     protected static $_belongs_to = array(
-        'folder' => array(
+        'form' => array(
             'key_from'       => 'field_form_id',
             'model_to'       => 'Nos\Form\Model_Form',
             'key_to'         => 'form_id',
