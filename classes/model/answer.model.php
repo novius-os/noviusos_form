@@ -49,9 +49,9 @@ class Model_Answer extends \Nos\Orm\Model
 
     public function getAttachment($field)
     {
-        return \Nos\Attachment::forge($this->form->form_id.'_'.$this->answer_id.'_'.$field->field_id, array(
-            'dir' => 'apps/noviusos_form',
-            'alias' => 'form',
+        return \Nos\Attachment::forge($this->answer_id.'_'.$field->field_id, array(
+            'dir' => 'apps'.DS.'noviusos_form'.DS.$this->form->form_id,
+            'alias' => 'form/'.$this->form->form_id,
             'check' => array(__CLASS__, 'check_attachment'),
         ));
     }
@@ -69,8 +69,8 @@ class Model_Answer extends \Nos\Orm\Model
 
     public function _event_after_delete()
     {
-        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form')) {
-            $files = \Fuel\Core\File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form', 1, array('^'.$this->_form_id_for_delete.'_'.$this->_answer_id_for_delete.'_'));
+        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete)) {
+            $files = \Fuel\Core\File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete, 1, array('^'.$this->_answer_id_for_delete.'_'));
             foreach ($files as $dir => $file) {
                 if (is_int($dir)) {
                     \Fuel\Core\File::delete(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form'.DS.$file);

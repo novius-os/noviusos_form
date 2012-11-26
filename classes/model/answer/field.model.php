@@ -23,5 +23,13 @@ class Model_Answer_Field extends \Nos\Orm\Model
             'cascade_save'   => false,
             'cascade_delete' => false,
         ),
+        'field' => array(
+            'key_from'       => 'anfi_field_id',
+            'model_to'       => 'Nos\Form\Model_Field',
+            'key_to'         => 'field_id',
+            'cascade_save'   => false,
+            'cascade_delete' => false,
+        ),
     );
+
 }

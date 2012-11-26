@@ -66,15 +66,10 @@ class Model_Form extends \Nos\Orm\Model
 
     public function _event_after_delete()
     {
-        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form')) {
-            $files = \Fuel\Core\File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form', 1, array('^'.$this->_form_id_for_delete.'_'));
-            foreach ($files as $dir => $file) {
-                if (is_int($dir)) {
-                    \Fuel\Core\File::delete(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form'.DS.$file);
-                } else {
-                    \Fuel\Core\File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form'.DS.$dir);
-                }
-            }
+        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete)) {
+            \Fuel\Core\File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete);
         }
+
+        \Nos\Attachment::delete_alias('form/'.$this->_form_id_for_delete);
     }
 }
