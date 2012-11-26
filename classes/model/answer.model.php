@@ -16,6 +16,7 @@ class Model_Answer extends \Nos\Orm\Model
     protected static $_primary_key = array('answer_id');
 
     protected static $_observers = array(
+        'Orm\\Observer_Self',
         'Orm\\Observer_CreatedAt' => array(
             'events' => array('before_insert'),
             'mysql_timestamp' => true,
@@ -29,7 +30,7 @@ class Model_Answer extends \Nos\Orm\Model
             'model_to'       => 'Nos\Form\\Model_Answer_Field',
             'key_to'         => 'anfi_answer_id',
             'cascade_save'   => false,
-            'cascade_delete' => false,
+            'cascade_delete' => true,
         ),
     );
 
@@ -43,6 +44,9 @@ class Model_Answer extends \Nos\Orm\Model
         ),
     );
 
+    protected $_form_id_for_delete = null;
+    protected $_answer_id_for_delete = null;
+
     public function getAttachment($field)
     {
         return \Nos\Attachment::forge($this->form->form_id.'_'.$this->answer_id.'_'.$field->field_id, array(
@@ -55,5 +59,25 @@ class Model_Answer extends \Nos\Orm\Model
     public static function check_attachment()
     {
         return \Nos\Auth::check();
+    }
+
+    public function _event_before_delete()
+    {
+        $this->_form_id_for_delete = $this->answer_form_id;
+        $this->_answer_id_for_delete = $this->answer_id;
+    }
+
+    public function _event_after_delete()
+    {
+        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form')) {
+            $files = \Fuel\Core\File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form', 1, array('^'.$this->_form_id_for_delete.'_'.$this->_answer_id_for_delete.'_'));
+            foreach ($files as $dir => $file) {
+                if (is_int($dir)) {
+                    \Fuel\Core\File::delete(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form'.DS.$file);
+                } else {
+                    \Fuel\Core\File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form'.DS.$dir);
+                }
+            }
+        }
     }
 }

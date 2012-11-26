@@ -16,6 +16,7 @@ class Model_Form extends \Nos\Orm\Model
     protected static $_primary_key = array('form_id');
 
     protected static $_observers = array(
+        'Orm\\Observer_Self',
         'Orm\\Observer_CreatedAt' => array(
             'events' => array('before_insert'),
             'mysql_timestamp' => true,
@@ -29,6 +30,10 @@ class Model_Form extends \Nos\Orm\Model
     );
 
     protected static $_behaviours = array(
+        'Nos\Orm_Behaviour_Contextable' => array(
+            'events' => array('before_insert'),
+            'context_property'      => 'form_context',
+        ),
         'Nos\Orm_Behaviour_Virtualname' => array(
             'events' => array('before_save', 'after_save'),
             'virtual_name_property' => 'form_virtual_name',
@@ -41,14 +46,35 @@ class Model_Form extends \Nos\Orm\Model
             'model_to'       => 'Nos\Form\\Model_Field',
             'key_to'         => 'field_form_id',
             'cascade_save'   => false,
-            'cascade_delete' => false,
+            'cascade_delete' => true,
         ),
         'answers' => array(
             'key_from'       => 'form_id',
             'model_to'       => 'Nos\Form\\Model_Answer',
             'key_to'         => 'answer_form_id',
             'cascade_save'   => false,
-            'cascade_delete' => false,
+            'cascade_delete' => true,
         ),
     );
+
+    protected $_form_id_for_delete = null;
+
+    public function _event_before_delete()
+    {
+        $this->_form_id_for_delete = $this->form_id;
+    }
+
+    public function _event_after_delete()
+    {
+        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form')) {
+            $files = \Fuel\Core\File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form', 1, array('^'.$this->_form_id_for_delete.'_'));
+            foreach ($files as $dir => $file) {
+                if (is_int($dir)) {
+                    \Fuel\Core\File::delete(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form'.DS.$file);
+                } else {
+                    \Fuel\Core\File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps/noviusos_form'.DS.$dir);
+                }
+            }
+        }
+    }
 }

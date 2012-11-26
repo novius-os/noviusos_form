@@ -17,8 +17,8 @@ class Model_Answer_Field extends \Nos\Orm\Model
 
     protected static $_belongs_to = array(
         'answer' => array(
-            'key_from'       => 'anfi_anwser_id',
-            'model_to'       => 'Nos\Form\Model_Form',
+            'key_from'       => 'anfi_answer_id',
+            'model_to'       => 'Nos\Form\Model_Answer',
             'key_to'         => 'answer_id',
             'cascade_save'   => false,
             'cascade_delete' => false,
