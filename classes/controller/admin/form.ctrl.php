@@ -16,6 +16,17 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
     public function before_save($item, $data)
     {
+        $emails = explode("\n", $item->form_submit_email);
+        $item->form_submit_email = '';
+        foreach ($emails as $email) {
+            $email = trim($email);
+            if (filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
+                $item->form_submit_email .= $email . "\n";
+            } else {
+                throw new \Exception('An email wich receive answers is not a valid.');
+            }
+        }
+
         $field_names = array();
         foreach ($this->config['fields_config'] as $name => $field) {
             if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {

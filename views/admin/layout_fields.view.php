@@ -80,8 +80,9 @@ foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special'
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom', 'type' => 'page_break'))) ?>"><?= __('Add a page break') ?></button>
             </p>
             <div class="ui-widget-content submit_informations" style="display:none;">
-                <p class="form_captcha">How much is 3 + 8? <input size="3" /></p>
-                <p clas="form_submit_label"><input type="button" /></p>
+                <p class="form_captcha"><?= __('How much is 3 + 8?') ?> <input size="3" /></p>
+                <p class="form_submit_label"><input type="button" /></p>
+                <p class="form_submit_email"><?= __("Email(s) which receive answers:") ?> <span></span><span style="display:none;"><?= __("no recipient") ?></span></p>
             </div>
         </div>
 
@@ -112,6 +113,7 @@ foreach ($layout as $field_id) {
                 <div>
                     <?= $fieldset->field('form_captcha')->set_template('<p><span>{label} {field}</span></p>') ?>
                     <?= $fieldset->field('form_submit_label')->set_template('<p><span>{label}<br />{field}</span></p>') ?>
+                    <?= $fieldset->field('form_submit_email')->set_template('<p><span>{label}<br />{field}</span></p>') ?>
                 </div>
             </div>
         </div>

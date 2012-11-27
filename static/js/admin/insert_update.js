@@ -785,8 +785,9 @@ define(
 
             is_new && add_fields_blank_slate(null, 'default');
 
-            var $form_captcha = $container.find('[name=form_captcha]');
-            var $form_submit_label = $container.find('[name=form_submit_label]');
+            var $form_captcha = $container.find('[name=form_captcha]'),
+                $form_submit_label = $container.find('[name=form_submit_label]'),
+                $form_submit_email = $container.find('[name=form_submit_email]');
 
             $form_captcha.on('change', function() {
                 $submit_informations.find('.form_captcha')[$(this).is(':checked') ? 'show' : 'hide']();
@@ -794,6 +795,15 @@ define(
 
             $form_submit_label.on('change keyup', function() {
                 $submit_informations.find('input:last').val($(this).val());
+            }).trigger('change');
+
+            $form_submit_email.on('change keyup', function() {
+                var mail = $.trim($(this).val());
+                $submit_informations.find('.form_submit_email')
+                    .find('span:first')
+                    .html(mail.replace('\n', ', ', 'g'))
+                    .end()
+                    .find('span:last')[mail ? 'hide': 'show']();
             }).trigger('change');
 
             $submit_informations.on('click', function() {

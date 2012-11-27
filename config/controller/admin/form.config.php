@@ -77,6 +77,12 @@ return array(
                 'value' => __("I'm the submit button, edit me"),
             ),
         ),
+        'form_submit_email' => array (
+            'label' => __("Email(s) which receive answers:"),
+            'form' => array(
+                'type' => 'textarea',
+            ),
+        ),
         'save' => array(
             'label' => '',
             'form' => array(
