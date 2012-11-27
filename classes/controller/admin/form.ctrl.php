@@ -222,4 +222,102 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         return $return;
     }
+
+    public function action_export($id)
+    {
+        try {
+            $this->item = $this->crud_item($id);
+            if ($this->item->is_new()) {
+                throw new \Exception($this->config['messages']['not found']);
+            }
+
+            $layout = explode("\n", $this->item->form_layout);
+            array_walk($layout, function(&$v) {
+                $v = explode(',', $v);
+            });
+
+            // Cleanup empty values
+            foreach ($layout as $a => $rows) {
+                $layout[$a] = array_filter($rows);
+                if (empty($layout[$a])) {
+                    unset($layout[$a]);
+                    continue;
+                }
+            }
+
+            $fields = array();
+            $csv = array(
+                'header' => array(),
+            );
+
+            foreach ($layout as $rows) {
+                foreach ($rows as $row) {
+                    list($field_id, $width) = explode('=', $row);
+
+                    if ($field_id == 'captcha') {
+                        continue;
+                    }
+                    $field = $this->item->fields[$field_id];
+                    if (!in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'checkbox', 'radio', 'hidden', 'variable', 'file'))) {
+                        continue;
+                    }
+
+                    $fields[] = $field;
+                    $csv['header'][] = $field->field_label;
+                    if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
+                        if (empty($csv['choices'])) {
+                            $csv['choices'] = array_fill(0, count($csv['header']) - 1, '');
+                        }
+                        $choices = explode("\n", $field->field_choices);
+                        foreach ($choices as $choice) {
+                            $csv['choices'][] = $choice;
+                        }
+
+                        $csv['header'] = array_pad($csv['header'], count($csv['header']) + count($choices) - 1, '');
+                    } else if (!empty($csv['choices'])) {
+                        $csv['choices'][] = '';
+                    }
+                }
+            }
+
+
+            foreach ($this->item->answers as $answer) {
+                $values = array();
+                foreach ($answer->fields as $answer_field) {
+                    $values[$answer_field->anfi_field_id] = $answer_field;
+                }
+
+                $csv_row = array();
+                foreach ($fields as $field) {
+                    $value = !empty($values[$field->field_id]) ? $values[$field->field_id]->anfi_value : '';
+
+                    if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
+                        $choices = explode("\n", $field->field_choices);
+                        $selected = explode("\n", $value);
+                        foreach ($choices as $choice) {
+                            $csv_row[] = in_array($choice, $selected) ? 'x' : '';
+                        }
+                    } else if ($field->field_type === 'file') {
+                        $attachment = $answer->getAttachment($field);
+                        $csv_row[] = $attachment->filename();
+                    } else {
+                        $csv_row[] = $value;
+                    }
+                }
+                $csv[] = $csv_row;
+            }
+
+            $csv = \Format::forge($csv)->to_csv();
+            \Response::forge($csv, 200, array(
+                    'Content-Type' => 'application/csv',
+                    'Content-Disposition' => 'attachment; filename='.\Nos\Orm_Behaviour_Virtualname::friendly_slug($this->item->form_name).'.csv;',
+                    'Content-Transfer-Encoding' => 'binary',
+                    'Content-Length' => \Str::length($csv),
+                ))->send(true);
+            exit();
+        } catch (\Exception $e) {
+            $this->send_error($e);
+        }
+    }
 }
+

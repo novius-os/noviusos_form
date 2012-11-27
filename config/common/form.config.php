@@ -49,7 +49,7 @@ return array(
             ),
             'action' => array(
                 'action' => 'window.open',
-                'url' => 'admin/noviusos_form/answer/appdesk/export?form_id={{id}}',
+                'url' => 'admin/noviusos_form/form/export/{{id}}',
             ),
             'enabled' =>
                 function($item) {

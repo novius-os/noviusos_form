@@ -25,9 +25,10 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             $this->config['appdesk']['appdesk']['buttons'] = array(
                 'Nos\Form\Model_Form.export' => array(
                     'label' => __('Export'),
+                    'icon' => 'document',
                     'action' => array(
                         'action' => 'window.open',
-                        'url' => 'admin/noviusos_form/answer/appdesk/export?form_id='.$form->form_id,
+                        'url' => 'admin/noviusos_form/form/export/'.$form->form_id,
                     ),
                 ),
             );
