@@ -89,6 +89,25 @@ return array(
         ),
     ),
     'fields_meta' => array(
+        'default' => array(
+            'definition' => array(
+                'layout' => "firstname=2,lastname=2\nemail=4",
+                'fields_list' => array(
+                    'firstname' => array(
+                        'field_type' => 'text',
+                        'field_label' => __('Firstname:'),
+                    ),
+                    'lastname' => array(
+                        'field_type' => 'text',
+                        'field_label' => __('Lastname:'),
+                    ),
+                    'email' => array(
+                        'field_type' => 'email',
+                        'field_label' => __('Email address:'),
+                    ),
+                ),
+            ),
+        ),
         'standard' => array(
             'single_line_text' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/textfield.png',

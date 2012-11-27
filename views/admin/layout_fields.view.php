@@ -21,7 +21,7 @@ if (!$item->is_new()) {
             <div class="unit col c12 lastUnit" style="position:relative;">
                 <img src="static/novius-os/admin/novius-os/img/icons/status-red.png" style="vertical-align: middle;" />
                 <?= __('Not published') ?>.
-                <?= __('To publish it, insert the form into a page, blog post or any other content area.') ?>
+                <?= __('To  publish the form, add it to a page, blog post or any other text editor.') ?>
             </div>
         </div>
         <?php
@@ -147,7 +147,7 @@ require(['jquery-nos', 'jquery-nos-loadspinner'], function($) {
     });
     require(['static/apps/noviusos_form/js/admin/insert_update.js'], function(init_form) {
         $(function() {
-            init_form(uniqid);
+            init_form(uniqid, <?= $crud['is_new'] ? 'true' : 'false'; ?>);
             $(uniqid).find('.preview_container').loadspinner('destroy');
         });
     });
