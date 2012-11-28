@@ -20,6 +20,9 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $item->form_submit_email = '';
         foreach ($emails as $email) {
             $email = trim($email);
+            if (empty($email)) {
+                continue;
+            }
             if (filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
                 $item->form_submit_email .= $email . "\n";
             } else {

@@ -458,16 +458,20 @@ class Controller_Front extends Controller_Front_Application
             ), true);
             $answer->save();
 
+            $mail = \Email::forge();
+            $email_data = array();
             foreach ($files as $name => $file) {
                 if (!empty($file['tmp_name'])) {
                     $attachment = $answer->getAttachment($fields[$name]);
                     $attachment->set($file['tmp_name'], $file['name']);
                     $attachment->save();
+                    $mail->attach($attachment->path());
                 }
             }
 
             foreach ($data as $field_name => $value) {
                 $field = $fields[$field_name];
+                $email_data[$field->field_label] = $value;
                 $answer_field = Model_Answer_Field::forge(array(
                     'anfi_answer_id' => $answer->answer_id,
                     'anfi_field_id' => $field->field_id,
@@ -476,6 +480,21 @@ class Controller_Front extends Controller_Front_Application
                 ), true);
                 $answer_field->save();
             }
+
+            $emails = trim($form->form_submit_email, " \n");
+            if (!empty($emails)) {
+                $emails = explode("\n", $emails);
+
+                $mail->bcc($emails);
+                $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data)));
+                $mail->subject(\Str::tr(__('You received an answer form ":form"'), array('form' => $form->form_name)));
+                try {
+                    $mail->send();
+                } catch (\Exception $e) {
+                    logger(\Fuel::L_ERROR, 'Application Form cannot send mail - '.$e->getMessage());
+                }
+            }
+
 
             // after_submission
             \Event::trigger('noviusos_form::after_submission', array(&$answer, $this->enhancer_args));

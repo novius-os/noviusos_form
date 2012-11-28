@@ -83,6 +83,11 @@ foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special'
                 <p class="form_captcha"><?= __('How much is 3 + 8?') ?> <input size="3" /></p>
                 <p class="form_submit_label"><input type="button" /></p>
                 <p class="form_submit_email"><?= __("Email(s) which receive answers:") ?> <span></span><span style="display:none;"><?= __("no recipient") ?></span></p>
+<?php
+if (!\Email::hasDefaultFrom()) {
+    echo '<p class="ui-state-error" style="padding:0.5em">', __('Your Novius OS don\'t have a default send email, no email will be sent.'), '<p>';
+}
+?>
             </div>
         </div>
 
