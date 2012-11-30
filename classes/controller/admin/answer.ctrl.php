@@ -73,14 +73,8 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
 
         // Loop through rows...
         foreach ($layout as $rows) {
-            $first_col = true;
-            $col_width = 0;
-            // ...and cols
             foreach ($rows as $row) {
                 list($field_id, $width) = explode('=', $row);
-
-                $available_width = $width * 3;
-                $col_width += $available_width;
 
                 if ($field_id == 'captcha') {
                     $field = null;
@@ -109,10 +103,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
                 $fields[] = array(
                     'label' => $label,
                     'value' => $html,
-                    'new_row' => $first_col,
-                    'width' => $width,
                 );
-                $first_col = false;
             }
         }
 
