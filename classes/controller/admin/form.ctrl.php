@@ -202,7 +202,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $fields_config = $this->config['fields_config'];
         $fields_config['field[type][]']['form']['options'] = array('page_break' => __('Page break'));
         $fieldset = \Fieldset::forge(uniqid(), array('auto_id' => false));
-        $fieldset->add_widgets($fields_config);
+        $fieldset->add_renderers($fields_config);
         $fieldset->populate_with_instance($item);
         $fields_view_params = array(
             'layout' => $this->config['fields_layout'],
