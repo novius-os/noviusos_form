@@ -58,7 +58,9 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                     'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : ('string')),
                 );
 
-                $columns[$id] = $column;
+                if (count($columns) < 3) {
+                    $columns[$id] = $column;
+                }
                 $dataset[$id] = array_merge($column, array('value' => function($item) use ($field) {
                     $answer = Model_Answer_Field::find('first', array('where' => array(
                             array('anfi_answer_id', $item->answer_id),
@@ -67,7 +69,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                     return !empty($answer) ? $answer->anfi_value : null;
                 }));
 
-                if (count($columns) === 3) {
+                if (count($columns) === 6) {
                     break;
                 }
             }
