@@ -64,7 +64,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                             array('anfi_answer_id', $item->answer_id),
                             array('anfi_field_id', $field->field_id),
                     )));
-                    return $answer->anfi_value;
+                    return !empty($answer) ? $answer->anfi_value : null;
                 }));
 
                 if (count($columns) === 3) {
