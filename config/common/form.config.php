@@ -12,6 +12,43 @@ return array(
         ),
         'title' => array(
             'column'        => 'form_name',
+            'cellFormatter' => array(
+                array(
+                    'type' => 'link',
+                    'action' => 'Nos\Form\Model_Form.edit',
+                ),
+            ),
+            'headerText'    => __('Name'),
+        ),
+        'answers_count' => array(
+            'headerText' => __('Answers'),
+            'cellFormatter' => array(
+                array(
+                    'type' => 'css',
+                    'css' => array('text-align' => 'center'),
+                ),
+                array(
+                    'type' => 'link',
+                    'action' => 'Nos\Form\Model_Form.answers',
+                ),
+            ),
+            'value' => function($item) {
+                return $item->is_new() ? 0 : \Nos\Form\Model_Answer::count(array(
+                        'where' => array(array('answer_form_id' => $item->form_id)),
+                    ));
+            },
+            'width' => 100,
+            'ensurePxWidth' => true,
+            'allowSizing' => false,
+        ),
+        'title' => array(
+            'column'        => 'form_name',
+            'cellFormatter' => array(
+                array(
+                    'type' => 'link',
+                    'action' => 'Nos\Form\Model_Form.edit',
+                ),
+            ),
             'headerText'    => __('Name'),
         ),
     ),
