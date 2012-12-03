@@ -64,7 +64,7 @@ return array(
             'action' => array(
                 'action' => 'nosTabs',
                 'tab' => array(
-                    'url' => 'admin/noviusos_form/answer/appdesk?form_id={{id}}',
+                    'url' => 'admin/noviusos_form/answer/appdesk?form_id={{_id}}',
                     'label' => __('Answers of "{{title}}"'),
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
@@ -86,7 +86,7 @@ return array(
             ),
             'action' => array(
                 'action' => 'window.open',
-                'url' => 'admin/noviusos_form/form/export/{{id}}',
+                'url' => 'admin/noviusos_form/form/export/{{_id}}',
             ),
             'enabled' =>
                 function($item) {

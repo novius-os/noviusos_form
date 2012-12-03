@@ -28,7 +28,7 @@ return array(
             'action' => array(
                 'action' => 'nosTabs',
                 'tab' => array(
-                    'url' => 'admin/noviusos_form/answer/visualize/{{id}}',
+                    'url' => 'admin/noviusos_form/answer/visualize/{{_id}}',
                     'label' => __('Answer'),
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
