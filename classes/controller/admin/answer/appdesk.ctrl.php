@@ -51,23 +51,39 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                 $column = array (
                     'headerText' => preg_replace('/\:\s*$/', ' ', $field->field_label),
                     'dataKey' => $id,
-                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : ('string')),
+                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : 'string'),
                 );
                 $meta[$id] = array (
                     'label' => $field->field_label,
-                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : ('string')),
+                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : 'string'),
                 );
 
                 if (count($columns) < 3) {
                     $columns[$id] = $column;
                 }
-                $dataset[$id] = array_merge($column, array('value' => function($item) use ($field) {
-                    $answer = Model_Answer_Field::find('first', array('where' => array(
-                            array('anfi_answer_id', $item->answer_id),
-                            array('anfi_field_id', $field->field_id),
-                    )));
-                    return !empty($answer) ? $answer->anfi_value : null;
-                }));
+                $dataset[$id] = array_merge($column, array(
+                    'value' =>
+                    function($item) use ($field)
+                    {
+                        $answer = Model_Answer_Field::find('first', array(
+                                'where' => array(
+                                    array('anfi_answer_id', $item->answer_id),
+                                    array('anfi_field_id', $field->field_id),
+                                )
+                            ));
+                        if (empty($answer) || empty($answer->anfi_value)) {
+                            return null;
+                        }
+                        if ($field->field_type === 'date') {
+                            try {
+                                return \Date::create_from_string($answer->anfi_value, 'mysql_date')->wijmoFormat();
+                            } catch (\Exception $e) {
+                                return null;
+                            }
+                        }
+                        return $answer->anfi_value;
+                    }
+                ));
 
                 if (count($columns) === 6) {
                     break;
