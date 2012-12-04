@@ -8,10 +8,11 @@ return array(
     'data_mapping' => array(
         'receipt_date' => array(
             'value' => function ($item) {
-                return \Date::create_from_string($item->answer_created_at, 'mysql')->format('%m/%d/%Y %H:%M:%S'); //%m/%d/%Y %H:%i:%s
+                return \Date::create_from_string($item->answer_created_at, 'mysql')->wijmoFormat();
             },
             'headerText'    => __('Receipt date'),
             'dataType' => 'datetime',
+            'dataFormatString' => 'f',
         ),
     ),
     'actions' => array(
