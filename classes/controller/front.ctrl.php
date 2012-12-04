@@ -397,9 +397,9 @@ class Controller_Front extends Controller_Front_Application
                     $errors[$name] = __('{label} "{value}" is not a valid number.');
                 }
                 if ($type == 'date') {
-                    if ($checkdate = preg_match($value, '`^\d{4}-\d{2}-\d{2}$`', $m)) {
-                        list($year, $month, $day) = $m;
-                        $checkdate = checkdate($month, $day, $year);
+                    if ($checkdate = preg_match('`^(\d{4})-(\d{2})-(\d{2})$`', $value, $m)) {
+                        list(, $year, $month, $day) = $m;
+                        $checkdate = checkdate((int) $month, (int) $day, (int) $year);
                     }
                     if (!$checkdate) {
                         $errors[$name] = __('{label} "{value}" is not a valid date.');
