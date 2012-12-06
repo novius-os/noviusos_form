@@ -64,9 +64,9 @@ return array(
         'Nos\Form\Model_Form.answers' => array(
             'label' => __('Answers'),
             'icon' => 'mail-closed',
-            'context' => array(
-                'list' => true,
-                'item' => true,
+            'targets' => array(
+                'grid' => true,
+                'toolbar-edit' => true,
             ),
             'action' => array(
                 'action' => 'nosTabs',
@@ -86,9 +86,9 @@ return array(
         'Nos\Form\Model_Form.export' => array(
             'label' => __('Export'),
             'icon' => 'document',
-            'context' => array(
-                'list' => true,
-                'item' => true,
+            'targets' => array(
+                'grid' => true,
+                'toolbar-edit' => true,
             ),
             'action' => array(
                 'action' => 'window.open',

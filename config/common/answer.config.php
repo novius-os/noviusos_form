@@ -31,8 +31,8 @@ return array(
                 'label' => __('Visualize'),
                 'iconClasses' => 'nos-icon16 nos-icon16-eye',
                 'primary' => true,
-                'context' => array(
-                    'list' => true,
+                'targets' => array(
+                    'grid' => true,
                 ),
                 'action' => array(
                     'action' => 'nosTabs',
