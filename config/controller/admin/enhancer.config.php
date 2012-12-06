@@ -1,4 +1,13 @@
 <?php
+/**
+ * NOVIUS OS - Web OS for digital communication
+ *
+ * @copyright  2011 Novius
+ * @license    GNU Affero General Public License v3 or (at your option) any later version
+ *             http://www.gnu.org/licenses/agpl-3.0.html
+ * @link http://www.novius-os.org
+ */
+
 return array(
     'popup' => array(
         'layout' => array(
@@ -7,7 +16,7 @@ return array(
     ),
     'preview' => array(
         'params' => array(
-            'icon' => '../static/apps/noviusos_form/img/icons/form-64.png',
+            'icon' => 'static/apps/noviusos_form/img/icons/form-64.png',
             'title' => function($enhancer_args) {
                 if (!empty($enhancer_args['form_id'])) {
                     $form = \Nos\Form\Model_Form::find($enhancer_args['form_id']);
