@@ -1,4 +1,12 @@
 <?php
+/**
+ * NOVIUS OS - Web OS for digital communication
+ *
+ * @copyright  2011 Novius
+ * @license    GNU Affero General Public License v3 or (at your option) any later version
+ *             http://www.gnu.org/licenses/agpl-3.0.html
+ * @link http://www.novius-os.org
+ */
 
 return array(
     'query' => array(
@@ -21,11 +29,10 @@ return array(
             'Nos\Form\Model_Answer.add' => false,
             'Nos\Form\Model_Answer.visualize' => array(
                 'label' => __('Visualize'),
-                'name' => 'visualize',
                 'iconClasses' => 'nos-icon16 nos-icon16-eye',
                 'primary' => true,
-                'context' => array(
-                    'list' => true,
+                'targets' => array(
+                    'grid' => true,
                 ),
                 'action' => array(
                     'action' => 'nosTabs',

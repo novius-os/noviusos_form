@@ -1,4 +1,12 @@
 <?php
+/**
+ * NOVIUS OS - Web OS for digital communication
+ *
+ * @copyright  2011 Novius
+ * @license    GNU Affero General Public License v3 or (at your option) any later version
+ *             http://www.gnu.org/licenses/agpl-3.0.html
+ * @link http://www.novius-os.org
+ */
 
 return array(
     'query' => array(
@@ -73,11 +81,10 @@ return array(
         ),
         'Nos\Form\Model_Form.answers' => array(
             'label' => __('Answers'),
-            'name' => 'answers',
             'icon' => 'mail-closed',
-            'context' => array(
-                'list' => true,
-                'item' => true,
+            'targets' => array(
+                'grid' => true,
+                'toolbar-edit' => true,
             ),
             'action' => array(
                 'action' => 'nosTabs',
@@ -87,28 +94,27 @@ return array(
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
             ),
-            'enabled' =>
+            'disabled' =>
                 function($item) {
-                    return !$item->is_new() && \Nos\Form\Model_Answer::count(array(
+                    return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
                             'where' => array(array('answer_form_id' => $item->form_id)),
                         ));
                 }
         ),
         'Nos\Form\Model_Form.export' => array(
             'label' => __('Export'),
-            'name' => 'export',
             'icon' => 'document',
-            'context' => array(
-                'list' => true,
-                'item' => true,
+            'targets' => array(
+                'grid' => true,
+                'toolbar-edit' => true,
             ),
             'action' => array(
                 'action' => 'window.open',
                 'url' => 'admin/noviusos_form/form/export/{{_id}}',
             ),
-            'enabled' =>
+            'disabled' =>
                 function($item) {
-                    return !$item->is_new() && \Nos\Form\Model_Answer::count(array(
+                    return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
                             'where' => array(array('answer_form_id' => $item->form_id)),
                         ));
                 }
