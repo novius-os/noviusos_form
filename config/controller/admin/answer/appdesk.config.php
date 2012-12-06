@@ -29,6 +29,14 @@ return array(
             )
         ),
     ),
+    'i18n' => array(
+        'item' => __('answer'),
+        'items' => __('answers'),
+        'showNbItems' => __('Showing {{x}} answers out of {{y}}'),
+        'showOneItem' => __('Show 1 answer'),
+        'showNoItem' => __('No answers'),
+        'showAll' => __('Show all answers'),
+    ),
     'search_text' => array(
         function ($value, $query)
         {

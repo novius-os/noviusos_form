@@ -52,7 +52,25 @@ return array(
             'headerText'    => __('Name'),
         ),
     ),
+    'i18n' => array(
+        // Crud
+        'successfully added' => __('Form successfully added.'),
+        'successfully saved' => __('Form successfully saved.'),
+        'successfully deleted' => __('The form has successfully been deleted!'),
+
+        // General errors
+        'item deleted' => __('This form has been deleted.'),
+        'not found' => __('Form not found'),
+
+        // Deletion popup
+        'delete an item' => __('Delete a form'),
+        'you are about to delete, confim' => __('You are about to delete the form <span style="font-weight: bold;">":title"</span>. Are you sure you want to continue?'),
+        'you are about to delete' => __('You are about to delete the form <span style="font-weight: bold;">":title"</span>.'),
+    ),
     'actions' => array(
+        'Nos\Form\Model_Form.add' => array(
+            'label' => __('Add a form'),
+        ),
         'Nos\Form\Model_Form.answers' => array(
             'label' => __('Answers'),
             'name' => 'answers',

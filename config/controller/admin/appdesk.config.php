@@ -11,4 +11,12 @@
 return array(
     'model' => 'Nos\Form\Model_Form',
     'inspectors' => array(),
+    'i18n' => array(
+        'item' => __('form'),
+        'items' => __('forms'),
+        'showNbItems' => __('Showing {{x}} forms out of {{y}}'),
+        'showOneItem' => __('Show 1 form'),
+        'showNoItem' => __('No forms'),
+        'showAll' => __('Show all forms'),
+    ),
 );
