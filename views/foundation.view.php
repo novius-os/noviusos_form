@@ -132,6 +132,9 @@ foreach ($fields as $name => &$field) {
 unset($field);
 
 ?>
+<script type="text/javascript">
+    document.write('<style type="text/css">.page_break, .page_break_control { display: block; }</style>');
+</script>
 <div id="<?= $id = uniqid('form_') ?>">
 <?php
 

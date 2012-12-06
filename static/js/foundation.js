@@ -26,7 +26,7 @@
 
     function doPagination($)
     {
-        $.webshims.polyfill('forms');
+        $.webshims.polyfill('forms forms-ext');
 
         $('form.foundation').each(function() {
 
