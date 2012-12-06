@@ -29,7 +29,6 @@ return array(
             'Nos\Form\Model_Answer.add' => false,
             'Nos\Form\Model_Answer.visualize' => array(
                 'label' => __('Visualize'),
-                'name' => 'visualize',
                 'iconClasses' => 'nos-icon16 nos-icon16-eye',
                 'primary' => true,
                 'context' => array(

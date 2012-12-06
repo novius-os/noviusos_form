@@ -63,7 +63,6 @@ return array(
     'actions' => array(
         'Nos\Form\Model_Form.answers' => array(
             'label' => __('Answers'),
-            'name' => 'answers',
             'icon' => 'mail-closed',
             'context' => array(
                 'list' => true,
@@ -77,16 +76,15 @@ return array(
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
             ),
-            'enabled' =>
+            'disabled' =>
                 function($item) {
-                    return !$item->is_new() && \Nos\Form\Model_Answer::count(array(
+                    return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
                             'where' => array(array('answer_form_id' => $item->form_id)),
                         ));
                 }
         ),
         'Nos\Form\Model_Form.export' => array(
             'label' => __('Export'),
-            'name' => 'export',
             'icon' => 'document',
             'context' => array(
                 'list' => true,
@@ -96,9 +94,9 @@ return array(
                 'action' => 'window.open',
                 'url' => 'admin/noviusos_form/form/export/{{_id}}',
             ),
-            'enabled' =>
+            'disabled' =>
                 function($item) {
-                    return !$item->is_new() && \Nos\Form\Model_Answer::count(array(
+                    return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
                             'where' => array(array('answer_form_id' => $item->form_id)),
                         ));
                 }
