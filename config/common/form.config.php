@@ -94,6 +94,9 @@ return array(
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
             ),
+            'visible' => function($params) {
+                return !isset($params['item']) || !$params['item']->is_new();
+            },
             'disabled' =>
                 function($item) {
                     return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
@@ -112,6 +115,9 @@ return array(
                 'action' => 'window.open',
                 'url' => 'admin/noviusos_form/form/export/{{_id}}',
             ),
+            'visible' => function($params) {
+                return !isset($params['item']) || !$params['item']->is_new();
+            },
             'disabled' =>
                 function($item) {
                     return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
