@@ -28,7 +28,7 @@ if (!$item->is_new()) {
     if ($count == 0) {
         ?>
         <div class="line" style="margin-bottom: 1em;"">
-            <div class="unit col c12 lastUnit" style="position:relative;">
+            <div class="col c12" style="position:relative;">
                 <img src="static/novius-os/admin/novius-os/img/icons/status-red.png" style="vertical-align: middle;" />
                 <?= __('Not published') ?>.
                 <?= __('To  publish the form, add it to a page, blog post or any other text editor.') ?>
@@ -39,7 +39,7 @@ if (!$item->is_new()) {
 }
 ?>
     <div class="line">
-        <div class="unit col c8" style="position:relative;">
+        <div class="col c8" style="position:relative;">
             <p>
                 <button type="button" data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'top'))) ?>"><?= __('Add a field') ?></button>
             </p>
@@ -101,7 +101,7 @@ if (!\Email::hasDefaultFrom()) {
             </div>
         </div>
 
-        <div class="lastUnit col c4 fields_container" style="display:none;">
+        <div class="col c4 fields_container" style="display:none;">
             <img class="preview_arrow show_hide" src="static/apps/noviusos_form/img/arrow-edition.png" />
             <p class="actions show_hide">
                 <button type="button" data-icon="trash" data-id="delete" class="action"><?= ('Delete') ?></button>
