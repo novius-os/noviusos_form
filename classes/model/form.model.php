@@ -70,6 +70,6 @@ class Model_Form extends \Nos\Orm\Model
             \Fuel\Core\File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete);
         }
 
-        \Nos\Attachment::delete_alias('form/'.$this->_form_id_for_delete);
+        \Nos\Attachment::deleteAlias('form/'.$this->_form_id_for_delete);
     }
 }
