@@ -48,7 +48,33 @@ foreach ($view_params['fields'] as $field) {
     require(['jquery-nos', 'wijmo.wijgrid'],
             function ($) {
                 $(function () {
-                    $('#<?= $uniqueId ?>').find('table').wijgrid();
+                    $('#<?= $uniqueId ?>')
+                            .find('table')
+                            .wijgrid()
+                            .end()
+                            .find('a')
+                            .each(function() {
+                                var attachment = $(this).data('attachment');
+                                $('<button type="button"></button>')
+                                        .text(<?= \Format::forge(__('Add to Media center'))->to_json() ?>)
+                                        .css('margin-left', '1em')
+                                        .insertAfter(this)
+                                        .click(function(e) {
+                                            $(this).nosDialog({
+                                                contentUrl: 'admin/noviusos_media/attachment/popup',
+                                                ajaxData: {
+                                                    attachment: attachment
+                                                },
+                                                ajax : true,
+                                                title: <?= \Format::forge(__('Save attachment as a media'))->to_json() ?>,
+                                                height: 400,
+                                                width: 700
+                                            });
+                                        });
+
+                            })
+                            .end()
+                            .nosFormUI();
                 });
             });
 </script>
