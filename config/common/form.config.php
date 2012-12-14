@@ -20,22 +20,16 @@ return array(
         ),
         'title' => array(
             'column'        => 'form_name',
-            'cellFormatter' => array(
-                array(
-                    'type' => 'link',
-                    'action' => 'Nos\Form\Model_Form.edit',
-                ),
-            ),
             'title'    => __('Name'),
         ),
         'answers_count' => array(
             'title' => __('Answers'),
             'cellFormatter' => array(
-                array(
+                'center' => array(
                     'type' => 'css',
                     'css' => array('text-align' => 'center'),
                 ),
-                array(
+                'link' => array(
                     'type' => 'link',
                     'action' => 'Nos\Form\Model_Form.answers',
                 ),
@@ -48,16 +42,6 @@ return array(
             'width' => 100,
             'ensurePxWidth' => true,
             'allowSizing' => false,
-        ),
-        'title' => array(
-            'column'        => 'form_name',
-            'cellFormatter' => array(
-                array(
-                    'type' => 'link',
-                    'action' => 'Nos\Form\Model_Form.edit',
-                ),
-            ),
-            'title'    => __('Name'),
         ),
     ),
     'i18n' => array(
