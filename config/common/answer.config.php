@@ -18,7 +18,7 @@ return array(
             'value' => function ($item) {
                 return \Date::create_from_string($item->answer_created_at, 'mysql')->wijmoFormat();
             },
-            'headerText'    => __('Receipt date'),
+            'title'    => __('Receipt date'),
             'dataType' => 'datetime',
             'dataFormatString' => 'f',
         ),

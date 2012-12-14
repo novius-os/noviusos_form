@@ -26,10 +26,10 @@ return array(
                     'action' => 'Nos\Form\Model_Form.edit',
                 ),
             ),
-            'headerText'    => __('Name'),
+            'title'    => __('Name'),
         ),
         'answers_count' => array(
-            'headerText' => __('Answers'),
+            'title' => __('Answers'),
             'cellFormatter' => array(
                 array(
                     'type' => 'css',
@@ -57,7 +57,7 @@ return array(
                     'action' => 'Nos\Form\Model_Form.edit',
                 ),
             ),
-            'headerText'    => __('Name'),
+            'title'    => __('Name'),
         ),
     ),
     'i18n' => array(
