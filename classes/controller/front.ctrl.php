@@ -21,6 +21,8 @@ class Controller_Front extends Controller_Front_Application
 
     public function action_main($enhancer_args = array())
     {
+        \Nos\I18n::current_dictionary('noviusos_form::common');
+
         $this->enhancer_args = $enhancer_args;
 
         $form_id = $enhancer_args['form_id'];
@@ -38,7 +40,7 @@ class Controller_Front extends Controller_Front_Application
 
             $errors = $this->post_answers($item);
             if (empty($errors)) {
-                return __(\Arr::get($this->enhancer_args, 'submission_message', 'Your answer has been saved. Thank you for your participation.'));
+                return \Arr::get($this->enhancer_args, 'submission_message', __('Thank you. Your answer has been sent.'));
             }
         }
 

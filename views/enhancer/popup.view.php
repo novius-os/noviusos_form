@@ -7,6 +7,9 @@
  *             http://www.gnu.org/licenses/agpl-3.0.html
  * @link http://www.novius-os.org
  */
+
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 ?>
 <p style="margin-bottom: 0.5em;">
 <?= __('Pick the form:') ?>&nbsp;
@@ -28,7 +31,7 @@
     <?= __('Message displayed after submission:') ?>
 </p>
 <p style="margin-bottom: 0.5em;">
-    <?= \Form::textarea('confirmation_message', \Arr::get($enhancer_args, 'confirmation_message', 'Your answer has been saved. Thank you for your participation.'), array(
+    <?= \Form::textarea('confirmation_message', \Arr::get($enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.')), array(
     'rows' => '4',
     'style' => 'width: 100%',
 )); ?>
