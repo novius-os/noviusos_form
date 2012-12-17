@@ -98,7 +98,7 @@ class Controller_Front extends Controller_Front_Application
                 if ($field_id == 'captcha') {
                     $field = (object) array(
                         'field_name' => 'form_captcha',
-                        'field_label' => strtr(__('How much is {number_1} plus {number_2}?'), array(
+                        'field_label' => strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array( #new var
                             '{number_1}' => $number_1,
                             '{number_2}' => $number_2,
                         )),
@@ -136,7 +136,7 @@ class Controller_Front extends Controller_Front_Application
 
                 if ($name == 'form_captcha') {
                     $html_attrs['data-captcha'] = mt_rand(100, 999).'-'.\Session::get('captcha').'-'.mt_rand(100, 999);
-                    $html_attrs['data-custom-validity'] = __('Incorrect captcha value.');
+                    $html_attrs['data-custom-validity'] = __('You have not passed the spam test. Please try again.');
                 }
 
                 $label_attrs = array(
@@ -362,7 +362,7 @@ class Controller_Front extends Controller_Front_Application
 
             if ($type === 'file' && !empty($_FILES[$name])) {
                 if ($field->field_mandatory && empty($_FILES[$name]['tmp_name'])) {
-                    $errors[$name] = __('{label} Please enter a file for the field.');
+                    $errors[$name] = __('{{label}}: Please select a file for this field.'); #new var
                 }
                 $files[$name] = $_FILES[$name];
             } else {
@@ -387,14 +387,14 @@ class Controller_Front extends Controller_Front_Application
 
             // Mandatory (required)
             if (in_array($type, array('text', 'textarea', 'select', 'email', 'number', 'date')) && $field->field_mandatory && empty($value)) {
-                $errors[$name] = __('{label} Please enter a value for the field.');
+                $errors[$name] = __('{{label}}: Please enter a value for this field.'); #new var
             } else if (!empty($value)) {
                 // Only if there is a value
                 if ($type == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $errors[$name] = __('{label} "{value}" is not a valid email.');
+                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid email.'); #new var
                 }
                 if ($type == 'number' && !filter_var($value, FILTER_VALIDATE_INT)) {
-                    $errors[$name] = __('{label} "{value}" is not a valid number.');
+                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid number.'); #new var
                 }
                 if ($type == 'date') {
                     if ($checkdate = preg_match('`^(\d{4})-(\d{2})-(\d{2})$`', $value, $m)) {
@@ -402,7 +402,7 @@ class Controller_Front extends Controller_Front_Application
                         $checkdate = checkdate((int) $month, (int) $day, (int) $year);
                     }
                     if (!$checkdate) {
-                        $errors[$name] = __('{label} "{value}" is not a valid date.');
+                        $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid date.'); #new var
                     }
                 }
             }
@@ -423,7 +423,7 @@ class Controller_Front extends Controller_Front_Application
         }
 
         if ($form->form_captcha && \Session::get('captcha') != \Input::post('form_captcha', 0)) {
-            $errors['form_captcha'] = __('Incorrect captcha value.');
+            $errors['form_captcha'] = __('You have not passed the spam test. Please try again.');
         }
 
         // Some validation errors occurred
@@ -487,11 +487,11 @@ class Controller_Front extends Controller_Front_Application
 
                 $mail->bcc($emails);
                 $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data)));
-                $mail->subject(\Str::tr(__('You received an answer form ":form"'), array('form' => $form->form_name)));
+                $mail->subject(\Str::tr(__('{{form}}: New answer'), array('form' => $form->form_name))); #new var
                 try {
                     $mail->send();
                 } catch (\Exception $e) {
-                    logger(\Fuel::L_ERROR, 'Application Form cannot send mail - '.$e->getMessage());
+                    logger(\Fuel::L_ERROR, 'The Forms application cannot send emails - '.$e->getMessage());
                 }
             }
 

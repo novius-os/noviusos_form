@@ -74,7 +74,7 @@ return array(
                 'action' => 'nosTabs',
                 'tab' => array(
                     'url' => 'admin/noviusos_form/answer/appdesk?form_id={{_id}}',
-                    'label' => __('Answers of "{{title}}"'),
+                    'label' => __('Answers to ‘{{title}}’'),
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
             ),
@@ -89,7 +89,7 @@ return array(
                 }
         ),
         'Nos\Form\Model_Form.export' => array(
-            'label' => __('Export'),
+            'label' => __('Export (spreadsheet)'),
             'icon' => 'document',
             'targets' => array(
                 'grid' => true,

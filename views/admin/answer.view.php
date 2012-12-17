@@ -17,7 +17,7 @@ echo View::forge('nos::crud/tab', $view_params, false);
 echo View::forge('nos::crud/toolbar', $view_params, false);
 ?>
 <div id="<?= $uniqueId ?>" style="margin:2em 2em 1em;">
-    <div class="title"><?= \Str::tr(__('Answer of ":form"'), array(':form' =>  $view_params['item']->form->form_name)) ?></div>
+    <div class="title"><?= \Str::tr(__('Answer to ‘{{title}}’'), array('{{title}}' =>  $view_params['item']->form->form_name)) ?></div>
     <br />
     <table>
         <thead>

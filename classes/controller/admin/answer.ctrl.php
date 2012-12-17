@@ -24,7 +24,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
     protected function get_tab_params()
     {
         $tab = parent::get_tab_params();
-        $tab['label'] = \Str::tr(__('Answer of ":form"'), array(':form' => $this->item->form->form_name));
+        $tab['label'] = \Str::tr(__('Answer to ‘{{title}}’'), array('{{title}}' => $this->item->form->form_name));
         $tab['url'] = $this->config['controller_url'].'/visualize/'.$this->item->id;
 
         return $tab;
