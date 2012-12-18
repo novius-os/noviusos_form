@@ -13,6 +13,6 @@ return array(
         'key' => 'answer_created_at',
     ),
     'appdesk' => array(
-        'label'     => __('Receipt date'),
+        'label'     => __('Answer date'),
     ),
 );

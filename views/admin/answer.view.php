@@ -92,7 +92,7 @@ foreach ($view_params['fields'] as $field) {
                             .each(function() {
                                 var attachment = $(this).data('attachment');
                                 $('<button type="button"></button>')
-                                        .text(<?= \Format::forge(__('Add to Media center'))->to_json() ?>)
+                                        .text(<?= \Format::forge(__('Save to Media Centre'))->to_json() ?>)
                                         .css('margin-left', '1em')
                                         .insertAfter(this)
                                         .click(function(e) {
@@ -102,7 +102,7 @@ foreach ($view_params['fields'] as $field) {
                                                     attachment: attachment
                                                 },
                                                 ajax : true,
-                                                title: <?= \Format::forge(__('Save attachment as a media'))->to_json() ?>,
+                                                title: <?= \Format::forge(__('Save to Media Centre'))->to_json() ?>,
                                                 height: 400,
                                                 width: 700
                                             });

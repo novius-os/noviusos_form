@@ -21,7 +21,7 @@ return array(
                 'options' => array(
                     'meta' => array(
                         'receipt_date' => array(
-                            'label' => __('Receipt date:'),
+                            'label' => __('Received on:'),
                         ),
                     ),
                     'actions' => array('Nos\Form\Model_Answer.visualize', 'Nos\Form\Model_Answer.delete'),
@@ -31,7 +31,7 @@ return array(
     ),
     'i18n' => array(
         'item' => __('answer'),
-        'items' => __('answers'),
+        'items' => __('answers'), #wtf we need a new key here (grid title, search results)
         'showNbItems' => __('Showing {{x}} answers out of {{y}}'),
         'showOneItem' => __('Show 1 answer'),
         'showNoItem' => __('No answers'),
