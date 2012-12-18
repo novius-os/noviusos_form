@@ -246,9 +246,9 @@ if ($has_page_break) {
             </div>',
         '{pagination}' => '
                 <div class="columns four">'.
-                    strtr(__('{current} out of {total}'), array(
-                        '{current}' => '<span class="page_break_current">1</span>',
-                        '{total}' => '<span class="page_break_total">1</span>',
+                    strtr(__('{{current}} out of {{total}}'), array(
+                        '{{current}}' => '<span class="page_break_current">1</span>',
+                        '{{total}}' => '<span class="page_break_total">1</span>',
                     )).'
                 </div>',
     ));

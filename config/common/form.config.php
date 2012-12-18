@@ -89,7 +89,7 @@ return array(
                 }
         ),
         'Nos\Form\Model_Form.export' => array(
-            'label' => __('Export (spreadsheet)'),
+            'label' => __('Export the answers (spreadsheet)'),
             'icon' => 'document',
             'targets' => array(
                 'grid' => true,

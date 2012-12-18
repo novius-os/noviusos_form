@@ -31,7 +31,7 @@ if (!$item->is_new()) {
             <div class="col c12" style="position:relative;">
                 <img src="static/novius-os/admin/novius-os/img/icons/status-red.png" style="vertical-align: middle;" />
                 <?= __('Not published') ?>.
-                <?= __('To  publish the form, add it to a page, blog post or any other text editor.') ?>
+                <?= __('To publish this form, add it to a page, a blog post or any other text editor.') ?>
             </div>
         </div>
         <?php
@@ -90,12 +90,12 @@ foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special'
                 <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom', 'type' => 'page_break'))) ?>"><?= __('Add a page break') ?></button>
             </p>
             <div class="ui-widget-content submit_informations" style="display:none;">
-                <p class="form_captcha"><?= __('How much is 3 + 8?') ?> <input size="3" /></p>
+                <p class="form_captcha"><?= __('Help us prevent spam: How much is 3 plus 8?') ?> <input size="3" /></p>
                 <p class="form_submit_label"><input type="button" /></p>
-                <p class="form_submit_email"><?= __("Email(s) which receive answers:") ?> <span></span><span style="display:none;"><?= __("no recipient") ?></span></p>
+                <p class="form_submit_email"><?= __("For every new answer, an email notification is sent to:") ?> <span></span><span style="display:none;"><?= __("nobody!") ?></span></p>
 <?php
 if (!\Email::hasDefaultFrom()) {
-    echo '<p class="ui-state-error" style="padding:0.5em">', __('Your Novius OS don\'t have a default send email, no email will be sent.'), '<p>';
+    echo '<p class="ui-state-error" style="padding:0.5em">', __('You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.'), '<p>';
 }
 ?>
             </div>
@@ -124,7 +124,7 @@ foreach ($layout as $field_id) {
 }
 ?>
             <div class="accordion field_enclosure fieldset">
-                <h3><?= __('Submit informations') ?></h3>
+                <h3><?= __('Form submission') ?></h3>
                 <div>
                     <?= $fieldset->field('form_captcha')->set_template('<p><span>{label} {field}</span></p>') ?>
                     <?= $fieldset->field('form_submit_label')->set_template('<p><span>{label}<br />{field}</span></p>') ?>

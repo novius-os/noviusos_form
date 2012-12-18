@@ -78,7 +78,7 @@ return array(
             ),
         ),
         'form_submit_email' => array (
-            'label' => __("Email(s) which receive answers:"),
+            'label' => __("For every new answer, an email notification is sent to:"),
             'form' => array(
                 'type' => 'textarea',
             ),
