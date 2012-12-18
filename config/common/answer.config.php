@@ -22,30 +22,42 @@ return array(
             'dataType' => 'datetime',
             'dataFormatString' => 'f',
         ),
+        'form_title' => array(
+            'value' => function($answer) {
+                return $answer->form->form_name;
+            },
+            'visible' => false,
+        ),
     ),
     'actions' => array(
         'list' => array(
             'Nos\Form\Model_Answer.edit' => false,
             'Nos\Form\Model_Answer.add' => false,
-            'Nos\Form\Model_Answer.visualize' => array(
-                'label' => __('Visualize'),
+            'Nos\Form\Model_Answer.visualise' => array(
+                'label' => __('Visualise'),
                 'iconClasses' => 'nos-icon16 nos-icon16-eye',
                 'primary' => true,
                 'targets' => array(
-                    'grid' => true,
+                    'toolbar-edit' => false,
                 ),
                 'action' => array(
                     'action' => 'nosTabs',
                     'tab' => array(
-                        'url' => 'admin/noviusos_form/answer/visualize/{{_id}}',
-                        'label' => __('Answer'),
+                        'url' => 'admin/noviusos_form/answer/visualise/{{_id}}',
+                        'label' => str_replace('{{title}}', '{{form_title}}', __('Answer to ’{{title}}’')),
                         'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                     ),
                 ),
+                'visible' => function() {
+                    return true;
+                },
+                'disabled' => function() {
+                    return false;
+                },
             ),
         ),
         'order' => array(
-            'Nos\Form\Model_Answer.visualize',
+            'Nos\Form\Model_Answer.visualise',
             'Nos\Form\Model_Answer.delete',
         ),
     ),

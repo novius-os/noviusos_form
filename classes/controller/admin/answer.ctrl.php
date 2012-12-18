@@ -24,13 +24,13 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
     protected function get_tab_params()
     {
         $tab = parent::get_tab_params();
-        $tab['label'] = \Str::tr(__('Answer to ‘{{title}}’'), array('{{title}}' => $this->item->form->form_name));
-        $tab['url'] = $this->config['controller_url'].'/visualize/'.$this->item->id;
+        $tab['label'] = strtr(__('Answer to ‘{{title}}’'), array('{{title}}' => $this->item->form->form_name));
+        $tab['url'] = $this->config['controller_url'].'/visualise/'.$this->item->id;
 
         return $tab;
     }
 
-    public function action_visualize($id)
+    public function action_visualise($id)
     {
         $this->item = $this->crud_item($id);
 
@@ -38,7 +38,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
             return $this->send_error(new \Exception($this->config['messages']['item deleted']));
         }
 
-        $this->check_permission('visualize');
+        $this->check_permission('visualise');
 
         $view_params = $this->view_params();
         $view_params['fields'] = $this->form_layout_fields();
