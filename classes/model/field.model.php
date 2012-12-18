@@ -24,13 +24,6 @@ class Model_Field extends \Nos\Orm\Model
         ),
     );
 
-    protected static $_behaviours = array(
-        'Nos\Orm_Behaviour_Virtualname' => array(
-            'events' => array('before_save', 'after_save'),
-            'virtual_name_property' => 'form_virtual_name',
-        ),
-    );
-
     protected static $_belongs_to = array(
         'form' => array(
             'key_from'       => 'field_form_id',

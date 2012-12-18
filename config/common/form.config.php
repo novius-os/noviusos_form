@@ -24,7 +24,7 @@ return array(
         ),
         'answers_count' => array(
             'title' => __('Answers'),
-            'cellFormatter' => array(
+            'cellFormatters' => array(
                 'center' => array(
                     'type' => 'css',
                     'css' => array('text-align' => 'center'),
