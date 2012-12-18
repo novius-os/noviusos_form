@@ -101,6 +101,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
                 }
 
                 $fields[] = array(
+                    'type' => $field->type,
                     'label' => $label,
                     'value' => $html,
                 );
