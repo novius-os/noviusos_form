@@ -81,6 +81,7 @@ return array(
             'label' => __("For every new answer, an email notification is sent to:"),
             'form' => array(
                 'type' => 'textarea',
+                'placeholder' => __('One email per line'),
             ),
         ),
         'save' => array(
@@ -454,6 +455,7 @@ return array(
                 'type' => 'textarea',
                 'rows' => '5',
                 'value' => '',
+                'placeholder' => __('One answer per line'),
             ),
             'populate' => function($item) {
                 return $item->field_choices;
