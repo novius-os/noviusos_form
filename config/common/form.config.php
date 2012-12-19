@@ -95,7 +95,7 @@ return array(
         ),
         'Nos\Form\Model_Form.export' => array(
             'label' => __('Export the answers (spreadsheet)'),
-            'icon' => 'document',
+            'icon' => 'extlink',
             'targets' => array(
                 'grid' => true,
                 'toolbar-edit' => true,
