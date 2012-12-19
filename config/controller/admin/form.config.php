@@ -147,7 +147,7 @@ return array(
                     'fields_list' => array(
                         'checkbox' => array(
                             'field_type' => 'checkbox',
-                            'field_choices' => "First option\nSecond option",
+                            'field_choices' => __("First option\nSecond option"),
                         ),
                     ),
                 ),
@@ -160,7 +160,7 @@ return array(
                     'fields_list' => array(
                         'select' => array(
                             'field_type' => 'select',
-                            'field_choices' => "First option\nSecond option",
+                            'field_choices' => __("First option\nSecond option"),
                         ),
                     ),
                 ),
@@ -173,7 +173,7 @@ return array(
                     'fields_list' => array(
                         'radio' => array(
                             'field_type' => 'radio',
-                            'field_choices' => "First choice\nSecond choice",
+                            'field_choices' => __("First choice\nSecond choice"),
                         ),
                     ),
                 ),
@@ -241,7 +241,7 @@ return array(
                         'gender' => array(
                             'field_type' => 'select',
                             'field_label' => __('Title:'),
-                            'field_choices' => "Ms\nMr",
+                            'field_choices' => __("Ms\nMr"),
                         ),
                         'firstname' => array(
                             'field_type' => 'text',
