@@ -236,7 +236,7 @@ return array(
                 'icon' => 'static/apps/noviusos_form/img/fields/fullname.png',
                 'title' => __('Full name'),
                 'definition' => array(
-                    'layout' => 'firstname=2,name=2',
+                    'layout' => 'gender=1,firstname=1,name=2',
                     'fields_list' => array(
                         'gender' => array(
                             'field_type' => 'select',
