@@ -123,7 +123,6 @@ return array(
                     'fields_list' => array(
                         'text' => array(
                             'field_type' => 'text',
-                            'field_label' => __('I’m the label, click to edit me:'),
                         ),
                     ),
                 ),
@@ -136,7 +135,6 @@ return array(
                     'fields_list' => array(
                         'textarea' => array(
                             'field_type' => 'textarea',
-                            'field_label' => __('I’m the label, click to edit me:'),
                         ),
                     ),
                 ),
@@ -149,7 +147,6 @@ return array(
                     'fields_list' => array(
                         'checkbox' => array(
                             'field_type' => 'checkbox',
-                            'field_label' => __('I’m the label, click to edit me:'),
                             'field_choices' => "First option\nSecond option",
                         ),
                     ),
@@ -163,7 +160,6 @@ return array(
                     'fields_list' => array(
                         'select' => array(
                             'field_type' => 'select',
-                            'field_label' => __('I’m the label, click to edit me:'),
                             'field_choices' => "First option\nSecond option",
                         ),
                     ),
@@ -177,7 +173,6 @@ return array(
                     'fields_list' => array(
                         'radio' => array(
                             'field_type' => 'radio',
-                            'field_label' => __('I’m the label, click to edit me:'),
                             'field_choices' => "First choice\nSecond choice",
                         ),
                     ),
@@ -243,6 +238,11 @@ return array(
                 'definition' => array(
                     'layout' => 'firstname=2,name=2',
                     'fields_list' => array(
+                        'gender' => array(
+                            'field_type' => 'select',
+                            'field_label' => __('Title:'),
+                            'field_choices' => "Ms\nMr",
+                        ),
                         'firstname' => array(
                             'field_type' => 'text',
                             'field_label' => __('Firstname:'),
@@ -314,6 +314,7 @@ return array(
                     'fields_list' => array(
                         'hidden' => array(
                             'field_type' => 'hidden',
+                            'field_label' => __('I’m the label for internal use only as I won’t be shown to users:'),
                         ),
                    ),
                 ),
