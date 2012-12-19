@@ -187,3 +187,13 @@ tr.preview_inserter {
     margin: -8px 0px 0px -2px;
 }
 
+.tinymce_button {
+    background: #eee;
+    border: 1px solid #ccc;
+    color: #000;
+    display: inline-block;
+    padding: 2px 4px 0;
+}
+.tinymce_button img {
+    vertical-align: middle;
+}

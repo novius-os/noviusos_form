@@ -26,15 +26,7 @@ if (!$item->is_new()) {
         ),
     ));
     if ($count == 0) {
-        ?>
-        <div class="line" style="margin-bottom: 1em;"">
-            <div class="col c12" style="position:relative;">
-                <img src="static/novius-os/admin/novius-os/img/icons/status-red.png" style="vertical-align: middle;" />
-                <?= __('Not published') ?>.
-                <?= __('To publish this form, add it to a page, a blog post or any other text editor.') ?>
-            </div>
-        </div>
-        <?php
+        echo \View::forge('noviusos_form::admin/warning_not_published', $view_params, false);
     }
 }
 ?>
