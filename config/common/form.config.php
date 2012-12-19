@@ -39,6 +39,11 @@ return array(
                         'where' => array(array('answer_form_id' => $item->form_id)),
                     ));
             },
+            'sorting_callback' => function(&$query, $sortDirection) {
+                $query->_join_relation('answers', $join);
+                $query->group_by($join['alias_from'].'.form_id');
+                $query->order_by(\Db::expr('COUNT(*)'), $sortDirection);
+            },
             'width' => 100,
             'ensurePxWidth' => true,
             'allowSizing' => false,
