@@ -19,8 +19,10 @@ echo View::forge('nos::crud/tab', $view_params, false);
 echo View::forge('nos::crud/toolbar', $view_params, false);
 
 ?>
-<div id="<?= $uniqueId ?>" style="margin:2em 2em 1em;">
-    <div class="title"><?= strtr(__('Answer to ‘{{title}}’'), array('{{title}}' =>  $view_params['item']->form->form_name)) ?></div>
+<link rel="stylesheet" href="static/apps/noviusos_form/css/admin.css" />
+
+<div id="<?= $uniqueId ?>" class="answer">
+    <h1 class="title"><?= strtr(__('Answer to ‘{{title}}’'), array('{{title}}' =>  $view_params['item']->form->form_name)) ?></h1>
     <div class="received_at"><?= strtr(__('Received on {{date}}'), array(
         '{{date}}' => \Date::formatPattern($view_params['item']->answer_created_at),
     )) ?></div>

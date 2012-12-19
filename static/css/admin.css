@@ -197,3 +197,12 @@ tr.preview_inserter {
 .tinymce_button img {
     vertical-align: middle;
 }
+
+
+.answer {
+    margin:2em 2em 1em;
+}
+
+.answer h1 {
+    margin-bottom: 1em;
+}
