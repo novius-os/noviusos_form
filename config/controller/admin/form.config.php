@@ -40,7 +40,7 @@ return array(
     ),
     'fields' => array(
         'form_name' => array (
-            'label' => __('Name'),
+            'label' => __('Title'),
             'form' => array(
                 'type' => 'text',
             ),
@@ -71,10 +71,10 @@ return array(
             ),
         ),
         'form_submit_label' => array (
-            'label' => __("Submit button's label:"),
+            'label' => __("Submit button’s label:"),
             'form' => array(
                 'type' => 'text',
-                'value' => __("I'm the submit button, edit me"),
+                'value' => __("I’m the submit button, click to edit me"),
             ),
         ),
         'form_submit_email' => array (
@@ -123,7 +123,7 @@ return array(
                     'fields_list' => array(
                         'text' => array(
                             'field_type' => 'text',
-                            'field_label' => __('Your nice question here:'),
+                            'field_label' => __('I’m the label, click to edit me:'),
                         ),
                     ),
                 ),
@@ -136,20 +136,20 @@ return array(
                     'fields_list' => array(
                         'textarea' => array(
                             'field_type' => 'textarea',
-                            'field_label' => __('Your nice question here:'),
+                            'field_label' => __('I’m the label, click to edit me:'),
                         ),
                     ),
                 ),
             ),
             'checkboxes' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/text_list_bullets.png',
-                'title' => __('Checkboxes'),
+                'title' => __('Multiple choice (checkboxes)'),
                 'definition' => array(
                     'layout' => 'checkbox=4',
                     'fields_list' => array(
                         'checkbox' => array(
                             'field_type' => 'checkbox',
-                            'field_label' => __('Your nice question here:'),
+                            'field_label' => __('I’m the label, click to edit me:'),
                             'field_choices' => "First option\nSecond option",
                         ),
                     ),
@@ -157,13 +157,13 @@ return array(
             ),
             'dropdown' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/text_list_bullets.png',
-                'title' => __('Dropdown'),
+                'title' => __('Unique choice (drop-down list)'),
                 'definition' => array(
                     'layout' => 'select=4',
                     'fields_list' => array(
                         'select' => array(
                             'field_type' => 'select',
-                            'field_label' => __('Your nice question here:'),
+                            'field_label' => __('I’m the label, click to edit me:'),
                             'field_choices' => "First option\nSecond option",
                         ),
                     ),
@@ -171,13 +171,13 @@ return array(
             ),
             'unique_choice' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/text_list_bullets.png',
-                'title' => __('Unique choice'),
+                'title' => __('Unique choice (radio buttons)'),
                 'definition' => array(
                     'layout' => 'radio=4',
                     'fields_list' => array(
                         'radio' => array(
                             'field_type' => 'radio',
-                            'field_label' => __('Please make a choice:'),
+                            'field_label' => __('I’m the label, click to edit me:'),
                             'field_choices' => "First choice\nSecond choice",
                         ),
                     ),
@@ -191,7 +191,7 @@ return array(
                     'fields_list' => array(
                         'file' => array(
                             'field_type' => 'file',
-                            'field_label' => __('Your file:'),
+                            'field_label' => __('I’m the label of a file input, click to edit me:'),
                         ),
                     ),
                 ),
@@ -200,13 +200,13 @@ return array(
         'special' => array(
             'email' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/email.png',
-                'title' => __('Email'),
+                'title' => __('Email address'),
                 'definition' => array(
                     'layout' => 'email=4',
                     'fields_list' => array(
                         'email' => array(
                             'field_type' => 'email',
-                            'field_label' => __('Your email:'),
+                            'field_label' => __('Your email address:'),
                         ),
                     ),
                 ),
@@ -219,7 +219,7 @@ return array(
                     'fields_list' => array(
                         'textarea' => array(
                             'field_type' => 'number',
-                            'field_label' => __('Your number here:'),
+                            'field_label' => __('Enter a number:'),
                         ),
                     ),
                 ),
@@ -232,7 +232,7 @@ return array(
                     'fields_list' => array(
                         'textarea' => array(
                             'field_type' => 'date',
-                            'field_label' => __('Your date here:'),
+                            'field_label' => __('Pick a date:'),
                         ),
                     ),
                 ),
@@ -338,7 +338,7 @@ return array(
                 //'classes' => 'notransform',
                 'accordions' => array(
                     'main' => array(
-                        'title' => __('Required informations for this field'),
+                        'title' => __('Required information'),
                         'fields' => array(
                             'field[label][]',
                             'field[type][]',
@@ -351,7 +351,7 @@ return array(
                         ),
                     ),
                     'optional' => array(
-                        'title' => __('Optional parameters'),
+                        'title' => __('Further options'),
                         'fields' => array(
                             'field[mandatory][]',
                             'field[default_value][]',
@@ -362,7 +362,7 @@ return array(
                         ),
                     ),
                     'technical' => array(
-                        'title' => __('Technical parameters'),
+                        'title' => __('Technical options'),
                         'fields' => array(
                             'field[virtual_name][]',
                             'field[technical_id][]',
@@ -412,18 +412,18 @@ return array(
             'label' => __('Label:'),
             'form' => array(
                 'type' => 'text',
-                'value' => __('Your nice question here:'),
+                'value' => __('I’m the label, click to edit me:'),
             ),
             'populate' => function($item) {
                 return $item->field_label;
             },
         ),
         'field[message][]' => array(
-            'label' => __('Title:'),
+            'label' => __('Message:'),
             'form' => array(
                 'type' => 'textarea',
                 'rows' => '3',
-                'value' => __('Your message here.'),
+                'value' => __('I’m a message, click to edit me.'),
             ),
             'populate' => function($item) {
                 return $item->field_message;
@@ -434,7 +434,7 @@ return array(
             'form' => array(
                 'type' => 'select',
                 'options' => array(
-                    'p' => __('Paragraph'),
+                    'p' => __('Standard'),
                     'h1' => __('Heading 1'),
                     'h2' => __('Heading 2'),
                     'h3' => __('Heading 3'),
@@ -487,7 +487,7 @@ return array(
             },
         ),*/
         'field[details][]' => array(
-            'label' => __('Field details:'),
+            'label' => __('Instructions for the user:'),
             'form' => array(
                 'type' => 'textarea',
                 'rows' => '3',
@@ -498,7 +498,7 @@ return array(
         ),
         'field[width][]' => array(
             'label' => __('Width:'),
-            'template' => str_replace('{count}', '{field} {required}', __('Width: {count} characters')),
+            'template' => str_replace('{{count}}', '{field} {required}', __('Width: {{count}} characters')),
             'form' => array(
                 'type' => 'text',
                 'value' => '',
@@ -510,7 +510,7 @@ return array(
         ),
         'field[height][]' => array(
             'label' => '',
-            'template' => str_replace('{count}', '{field} {required}', __('Height: {count} lines')),
+            'template' => str_replace('{{count}}', '{field} {required}', __('Height: {{count}} lines')),
             'form' => array(
                 'type' => 'text',
                 'size' => '3',
@@ -522,7 +522,7 @@ return array(
         ),
         'field[limited_to][]' => array(
             'label' => '',
-            'template' => str_replace('{count}', '{field} {required}', __('Limited to {count} characters')),
+            'template' => str_replace('{{count}}', '{field} {required}', __('Limited to {{count}} characters')),
             'form' => array(
                 'type' => 'text',
                 'size' => '3',

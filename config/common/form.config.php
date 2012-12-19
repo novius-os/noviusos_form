@@ -20,7 +20,7 @@ return array(
         ),
         'title' => array(
             'column'        => 'form_name',
-            'title'    => __('Name'),
+            'title'    => __('Title'),
         ),
         'answers_count' => array(
             'title' => __('Answers'),
