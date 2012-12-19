@@ -308,6 +308,7 @@ return array(
             'hidden' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/shading.png',
                 'title' => __('Hidden'),
+                'expert' => true,
                 'definition' => array(
                     'layout' => 'hidden=4',
                     'fields_list' => array(
@@ -320,6 +321,7 @@ return array(
             'variable' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/pencil.png',
                 'title' => __('Variable'),
+                'expert' => true,
                 'definition' => array(
                     'layout' => 'variable=4',
                     'fields_list' => array(

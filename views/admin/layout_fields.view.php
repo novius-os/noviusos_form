@@ -51,24 +51,24 @@ if (!$item->is_new()) {
                         <th><?= __('Special fields'); ?></th>
                     </tr>
                     <tr>
-                        <td style="width: 50%">
 <?php
-foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.standard') as $type => $meta) {
+foreach (array('standard', 'special') as $type) {
     ?>
-                                <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
+                        <td style="width: 50%">
+    <?php
+    foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.'.$type) as $type => $meta) {
+        if (!empty($meta['expert']) && !\Session::user()->user_expert) {
+            continue;
+        }
+        ?>
+        <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
+        <?php
+    }
+    ?>
+                        </td>
     <?php
 }
 ?>
-                        </td>
-                        <td style="width: 50%">
-<?php
-foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.special') as $type => $meta) {
-    ?>
-                                <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
-    <?php
-}
-?>
-                        </td>
                     </tr>
                 </table>
             </div>
