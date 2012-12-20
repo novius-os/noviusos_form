@@ -1,86 +1,117 @@
 /* Requires: normalize.css */
 /* Global Reset & Standards ---------------------- */
-*, *:before, *:after { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+.foundation *, .foundation *:before, .foundation *:after { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 
 /* The Grid ---------------------- */
-.row { width: 940px; max-width: 100%; min-width: 768px; margin: 0 auto; }
-.row .row { width: auto; max-width: none; min-width: 0; margin: 0 -0px; }
-.row.collapse .column, .row.collapse .columns { padding: 0; }
-.row .row { width: auto; max-width: none; min-width: 0; margin: 0 0px; }
-.row .row.collapse { margin: 0; }
+.foundation .row { width: 940px; max-width: 100%; min-width: 768px; margin: 0 auto; }
+.foundation .row .row { width: auto; max-width: none; min-width: 0; margin: 0 -0px; }
+.foundation .row.collapse .column, .foundation .row.collapse .columns { padding: 0; }
+.foundation .row .row { width: auto; max-width: none; min-width: 0; margin: 0 0px; }
+.foundation .row .row.collapse { margin: 0; }
 
-.column, .columns { float: left; min-height: 1px; padding: 0 0; position: relative; }
-.column.centered, .columns.centered { float: none; margin: 0 auto; }
+.foundation .column, .foundation .columns { float: left; min-height: 1px; padding: 0 0; position: relative; }
+.foundation .column.centered, .foundation .columns.centered { float: none; margin: 0 auto; }
 
 [class*="column"] + [class*="column"]:last-child { float: right; }
 [class*="column"] + [class*="column"].end { float: left; }
 
-.one, .row .one { width: 8.33333%; }
-.two, .row .two { width: 16.66667%; }
-.three, .row .three { width: 25%; }
-.four, .row .four { width: 33.33333%; }
-.five, .row .five { width: 41.66667%; }
-.six, .row .six { width: 50%; }
-.seven, .row .seven { width: 58.33333%; }
-.eight, .row .eight { width: 66.66667%; }
-.nine, .row .nine { width: 75%; }
-.ten, .row .ten { width: 83.33333%; }
-.eleven, .row .eleven { width: 91.66667%; }
-.twelve, .row .twelve { width: 100%; }
+.foundation .one, .foundation .row .one { width: 8.33333%; }
+.foundation .two, .foundation .row .two { width: 16.66667%; }
+.foundation .three, .foundation .row .three { width: 25%; }
+.foundation .four, .foundation .row .four { width: 33.33333%; }
+.foundation .five, .foundation .row .five { width: 41.66667%; }
+.foundation .six, .foundation .row .six { width: 50%; }
+.foundation .seven, .foundation .row .seven { width: 58.33333%; }
+.foundation .eight, .foundation .row .eight { width: 66.66667%; }
+.foundation .nine, .foundation .row .nine { width: 75%; }
+.foundation .ten, .foundation .row .ten { width: 83.33333%; }
+.foundation .eleven, .foundation .row .eleven { width: 91.66667%; }
+.foundation .twelve, .foundation .row .twelve { width: 100%; }
 
 /* Nicolas Gallagher's micro clearfix */
-.row { *zoom: 1; }
-.row:before, .row:after { content: " "; display: table; }
-.row:after { clear: both; }
+.foundation .row { *zoom: 1; }
+.foundation .row:before, .foundation .row:after { content: " "; display: table; }
+.foundation .row:after { clear: both; }
 
-.row {
-    margin: 15px 0;
+.foundation .row {
+    margin: 15px 0 25px;
 }
 
 
-.input_text, .select, .textarea {
-    display: block; font-size: 14px; margin: 0 0 12px 0; padding: 6px;
+.foundation .input_text, .foundation .select, .foundation .textarea {
+    display: block; font-size: 14px; margin: 0; padding: 6px;
 }
-.input_text {
+.foundation .input_text {
     width: 100%;
 }
-.input_text[cols], .input_text[size] {
+.foundation .input_text[cols], .foundation .input_text[size] {
     width: auto;
 }
 
-.column, .columns {
+.foundation .column, .foundation .columns {
     padding-right: 10px;
 }
 
-.label {
+.foundation .label {
     display: block;
     padding: 6px 10px;
 }
-.label.right {
+.foundation .label.right {
     text-align: right;
 }
-.label.left {
+.foundation .label.left {
     text-align: left;
 }
 
-label[for] {
+.foundation label[for] {
     cursor: pointer;
 }
 
-
-input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea { background-color: white; font-family: inherit; border: 1px solid #cccccc; -webkit-border-radius: 2px; -moz-border-radius: 2px; -ms-border-radius: 2px; -o-border-radius: 2px; border-radius: 2px; -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); color: rgba(0, 0, 0, 0.75); -webkit-transition: all 0.15s linear; -moz-transition: all 0.15s linear; -o-transition: all 0.15s linear; transition: all 0.15s linear; }
-input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, textarea:focus { background: #fafafa; outline: none !important; border-color: #b3b3b3; }
-input[type="text"][disabled], input[type="password"][disabled], input[type="date"][disabled], input[type="datetime"][disabled], input[type="email"][disabled], input[type="number"][disabled], input[type="search"][disabled], input[type="tel"][disabled], input[type="time"][disabled], input[type="url"][disabled], textarea[disabled] { background-color: #ddd; }
+.foundation input[type="text"], .foundation input[type="password"], .foundation input[type="date"], .foundation input[type="datetime"], .foundation input[type="email"], .foundation input[type="number"], .foundation input[type="search"], .foundation input[type="tel"], .foundation input[type="time"], .foundation input[type="url"], .foundation textarea {
+    background-color: white;
+    font-family: inherit;
+    border: 1px solid #cccccc;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.75);
+    -webkit-transition: all 0.15s linear;
+    -moz-transition: all 0.15s linear;
+    -o-transition: all 0.15s linear;
+    transition: all 0.15s linear;
+}
+.foundation input[type="text"]:focus, .foundation input[type="password"]:focus, .foundation input[type="date"]:focus, .foundation input[type="datetime"]:focus, .foundation input[type="email"]:focus, .foundation input[type="number"]:focus, .foundation input[type="search"]:focus, .foundation input[type="tel"]:focus, .foundation input[type="time"]:focus, .foundation input[type="url"]:focus, .foundation textarea:focus {
+    background: #fafafa;
+    outline: none !important;
+    border-color: #b3b3b3;
+}
+.foundation input[type="text"][disabled], .foundation input[type="password"][disabled], .foundation input[type="date"][disabled], .foundation input[type="datetime"][disabled], .foundation input[type="email"][disabled], .foundation input[type="number"][disabled], .foundation input[type="search"][disabled], .foundation input[type="tel"][disabled], .foundation input[type="time"][disabled], .foundation input[type="url"][disabled], .foundation textarea[disabled] {
+    background-color: #ddd;
+}
 
 /* Don't move the :focus pseudo selector, or it won't work in Chrome */
-input.form-ui-invalid, input:focus.form-ui-invalid, textarea.form-ui-invalid, textarea:focus.form-ui-invalid {
+.foundation input.form-ui-invalid, .foundation input:focus.form-ui-invalid, .foundation textarea.form-ui-invalid, .foundation textarea:focus.form-ui-invalid {
     border-color: #cc0000;
 }
-label.error, .label.error, p.error {
+.foundation label.error, .foundation .label.error, .foundation p.error {
     color: #cc0000;
 }
 
-div.page_break {
+.foundation input, .foundation select, .foundation textarea {
+    margin-bottom: 0;
+}
+.foundation p.instructions {
+    font-style: italic;
+    font-size: 90%;
+    margin-top: 0.1em;
+}
+
+.foundation div.page_break {
     border: 1px solid #cccccc;
     margin-bottom: 2em;
     padding: 1em 2em;
@@ -88,10 +119,10 @@ div.page_break {
     -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); color: rgba(0, 0, 0, 0.75);
 }
 
-.page_break_control .columns {
+.foundation .page_break_control .columns {
     text-align: center;
 }
 
-textarea { height: auto; }
+.foundation textarea { height: auto; }
 
-select, textarea { width: 100%; }
+.foundation select, .foundation textarea { width: 100%; }
