@@ -108,10 +108,10 @@ $render_template = function($template, $args) use (&$render_template, &$render_t
 };
 
 if (in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
-    $template = '<div class="{label_class} columns">{label} {field}</div>';
+    $template = '<div class="{label_class} columns">{label} {field} {instructions}</div>';
     $label_class = 'label';
 } else {
-    $template = '<div class="{label_class} columns">{label}</div><div class="{field_class} columns">{field}</div>';
+    $template = '<div class="{label_class} columns">{label}</div><div class="{field_class} columns">{field} {instructions}</div>';
     $label_class = 'label '.$enhancer_args['label_position'];
 }
 
@@ -210,6 +210,7 @@ foreach ($fields as $name => $field) {
     echo $render_template($template, array(
         'label' => $field['label'],
         'field' => $field['field'],
+        'instructions' => $field['instructions'],
         'label_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$label_width],
         'field_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$available_width - $label_width],
     ));

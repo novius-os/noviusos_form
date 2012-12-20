@@ -170,6 +170,15 @@ class Controller_Front extends Controller_Front_Application
                     );
                 }
 
+                if (!in_array($field->field_type, array('radio', 'checkbox', 'select')) && !empty($field->field_details)) {
+                    $instructions = array(
+                        'callback' => 'html_tag',
+                        'args' => array('p', array('class' => 'instructions'), $field->field_details),
+                    );
+                } else {
+                    $instructions = '';
+                }
+
                 if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file'))) {
 
                     if ($field->field_type == 'file' || $field->field_type == 'select') {
@@ -305,6 +314,7 @@ class Controller_Front extends Controller_Front_Application
                 $fields[$name] = array(
                     'label' => $label,
                     'field' => $html,
+                    'instructions' => $instructions,
                     'new_row' => $first_col,
                     'new_page' => $new_page,
                     'width' => $width,

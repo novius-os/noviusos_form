@@ -377,6 +377,7 @@ define(
                 var choices = find_field($field, 'choices').val();
                 var width = find_field($field, 'width').val();
                 var height = find_field($field, 'height').val();
+                var details = find_field($field, 'details').val();
                 var $preview = $field.data('preview');
                 var $td = $preview.find('div.preview_content');
                 var html  = '';
@@ -433,6 +434,10 @@ define(
                     //$preview.find('.resizable').removeClass('.resizable');
                 }
 
+                if (details != '') {
+                    html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
+                }
+
                 $td.html(html);
 
                 refreshPreviewHeight($preview.closest('tr'));
@@ -444,6 +449,7 @@ define(
             $fields_container.on('change keyup', '[name^="field[default_value]"]', generate_preview);
             $fields_container.on('change keyup', 'input[name^="field[width]"]', generate_preview);
             $fields_container.on('change keyup', 'input[name^="field[height]"]', generate_preview);
+            $fields_container.on('change keyup', 'textarea[name^="field[details]"]', generate_preview);
 
             function refreshPreviewHeight($tr) {
                 ($tr || $preview_container.find('tr')).css('height', '').each(function sameHeight() {

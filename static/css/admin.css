@@ -180,6 +180,10 @@ tr.preview_inserter {
 .preview_content select {
     max-width: 100%;
 }
+.preview_content .details {
+    font-style: italic;
+    padding: 0.5em;
+}
 .preview .handle img {
     position: absolute;
     left: 50%;
