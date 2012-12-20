@@ -59,9 +59,8 @@ return array(
         'not found' => 'We cannot find this form. Are you sure it exists?',
 
         // Deletion popup
-        'delete an item' => 'Deleting the form {{title}}', #new var
+        'delete an item' => 'Deleting the form ‘{{title}}’', #new var
         'you are about to delete, confim' => 'Last chance, there’s no undo. Do you really want to delete this form?',
-        'you are about to delete' => __('You are about to delete the form <span style="font-weight: bold;">":title"</span>.'), #to be deleted
     ),
     'actions' => array(
         'Nos\Form\Model_Form.add' => array(
