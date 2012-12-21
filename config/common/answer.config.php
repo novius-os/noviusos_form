@@ -29,6 +29,24 @@ return array(
             'visible' => false,
         ),
     ),
+    'i18n' => array(
+        // Crud
+        'notification item deleted' => __('The answer has been deleted.'),
+
+        // General errors
+        'notification item does not exist anymore' => __('This form doesn’t exist any more. It has been answer.'),
+        'notification item not found' => __('We cannot find this answer. Are you sure it exists?'),
+
+        // Deletion popup
+        'deleting item title' => __('Deleting the answer ‘{{title}}’'),
+        'deleting confirmation' => __('Last chance, there’s no undo. Do you really want to delete this answer?'),
+
+        # Delete action's labels
+        'deleting button 1 item' => __('Delete this answer'),
+
+        '1 item' => __('1 answer'),
+        'N items' => __('{{count}} answers'),
+    ),
     'actions' => array(
         'list' => array(
             'Nos\Form\Model_Answer.edit' => false,

@@ -51,16 +51,22 @@ return array(
     ),
     'i18n' => array(
         // Crud
-        'successfully added' => __('All good! Your new form has been added.'),
-        'successfully deleted' => __('The form has been deleted.'),
+        'notification item added' => __('All good! Your new form has been added.'),
+        'notification item deleted' => __('The form has been deleted.'),
 
         // General errors
-        'item deleted' => 'This form doesn’t exist any more. It has been deleted.',
-        'not found' => 'We cannot find this form. Are you sure it exists?',
+        'notification item does not exist anymore' => __('This form doesn’t exist any more. It has been deleted.'),
+        'notification item not found' => __('We cannot find this form. Are you sure it exists?'),
 
         // Deletion popup
-        'delete an item' => 'Deleting the form ‘{{title}}’', #new var
-        'you are about to delete, confim' => 'Last chance, there’s no undo. Do you really want to delete this form?',
+        'deleting item title' => __('Deleting the form ‘{{title}}’'),
+        'deleting confirmation' => __('Last chance, there’s no undo. Do you really want to delete this form?'),
+
+        # Delete action's labels
+        'deleting button 1 item' => __('Delete this form'),
+
+        '1 item' => __('1 form'),
+        'N items' => __('{{count}} forms'),
     ),
     'actions' => array(
         'Nos\Form\Model_Form.add' => array(
