@@ -11,8 +11,6 @@
 return array(
     'name'    => 'Form',
     'version' => '0.2-alpha',
-    'icon16' => 'static/apps/noviusos_form/img/icons/form-16.png',
-    'icon64'  => 'static/apps/noviusos_form/img/icons/form-64.png',
     'provider' => array(
         'name' => 'Novius OS',
     ),
@@ -30,7 +28,6 @@ return array(
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-32.png',
                 ),
             ),
-            'icon64'  => 'static/apps/noviusos_form/img/icons/form-64.png',
         ),
     ),
     'enhancers' => array(
