@@ -113,18 +113,20 @@ tr.preview_inserter {
 
 .fields_container p.actions {
     text-align: center;
-    margin-bottom: 1em;
+    position: relative;
+    height: 40px;
+    padding: 0;
+    margin: 0;
 }
 .fields_container button.action {
     width: 49%;
 }
 
 .preview_arrow {
-    position: relative;
-    top: 29px; /* image height = 29px */
+    position: absolute;
+    top: 40px;
     left: -35px;
 }
-
 
 .preview.ui-sortable-helper {
     padding: 0;

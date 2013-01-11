@@ -191,7 +191,7 @@ define(
                     $focus = $submit_informations.not(':not(.ui-state-active)');
                 }
                 if ($focus.length > 0) {
-                    var diff = $focus.is('.submit_informations') ? -15 : -29;
+                    var diff = $focus.is('.submit_informations') ? 14 : -40;
                     var pos = $focus.position();
                     $fields_container.css({
                         paddingTop: Math.max(0, pos.top + diff) + 'px' // 29 = arrow height

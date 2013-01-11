@@ -32,7 +32,7 @@ if (!$item->is_new()) {
 ?>
     <div class="line">
         <div class="col c8" style="position:relative;">
-            <p>
+            <p style="height: 40px;">
                 <button type="button" data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'top'))) ?>"><?= __('Add a field') ?></button>
             </p>
 
@@ -94,10 +94,10 @@ if (!\Email::hasDefaultFrom()) {
         </div>
 
         <div class="col c4 fields_container" style="display:none;">
-            <img class="preview_arrow show_hide" src="static/apps/noviusos_form/img/arrow-edition.png" />
             <p class="actions show_hide">
                 <button type="button" data-icon="trash" data-id="delete" class="action"><?= ('Delete') ?></button>
                 <button type="button" data-icon="copy" data-id="copy" class="action"><?= ('Duplicate') ?></button>
+                <img class="preview_arrow show_hide" src="static/apps/noviusos_form/img/arrow-edition.png" />
             </p>
 <?php
 $layout = explode("\n", $item->form_layout);
