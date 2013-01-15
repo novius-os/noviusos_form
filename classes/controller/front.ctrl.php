@@ -421,13 +421,13 @@ class Controller_Front extends Controller_Front_Application
         }
 
         // Custom validation
-        foreach ((array) \Event::trigger_function('noviusos_form::data_validation', array(&$data, $form), 'array') as $array) {
+        foreach ((array) \Event::trigger_function('noviusos_form::data_validation', array(&$data, $fields, $form), 'array') as $array) {
             foreach ($array as $name => $error) {
                 $errors[$name] = $error.(isset($errors[$name]) ? "\n".$errors[$name] : '');
             }
         }
         if (!empty($form->form_virtual_name)) {
-            foreach ((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $form), 'array') as $array) {
+            foreach ((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $fields, $form), 'array') as $array) {
                 foreach ($array as $name => $error) {
                     $errors[$name] = (isset($errors[$name]) ? $errors[$name]."\n" : '').$error;
                 }
