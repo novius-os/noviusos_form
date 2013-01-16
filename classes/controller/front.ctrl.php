@@ -101,8 +101,8 @@ class Controller_Front extends Controller_Front_Application
                     $field = (object) array(
                         'field_name' => 'form_captcha',
                         'field_label' => strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array( #new var
-                            '{number_1}' => $number_1,
-                            '{number_2}' => $number_2,
+                            '{{number_1}}' => $number_1,
+                            '{{number_2}}' => $number_2,
                         )),
                         'field_type' => 'text',
                         'field_mandatory' => '1',
