@@ -342,7 +342,7 @@ return array(
                 //'classes' => 'notransform',
                 'accordions' => array(
                     'main' => array(
-                        'title' => __('Required information'),
+                        'title' => __('Properties (mandatory)'),
                         'fields' => array(
                             'field[label][]',
                             'field[type][]',
