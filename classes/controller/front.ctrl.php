@@ -499,7 +499,7 @@ class Controller_Front extends Controller_Front_Application
 
                 $mail->bcc($emails);
                 $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data)));
-                $mail->subject(\Str::tr(__('{{form}}: New answer'), array('form' => $form->form_name))); #new var
+                $mail->subject(strtr(__('{{form}}: New answer'), array('{{form}}' => $form->form_name))); #new var
                 try {
                     $mail->send();
                 } catch (\Exception $e) {
