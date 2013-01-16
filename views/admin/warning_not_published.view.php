@@ -16,7 +16,7 @@
         <?= __('To publish this form, add it to a page, a blog post or any other text editor.') ?>
         <?= \View::forge('nos::admin/tooltip', array(
             'title' => '',
-            'content' => strtr(__('<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click to reveal the list of applications you can enhance your text with.</p>'), array(
+            'content' => strtr(__('<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>'), array(
                 '{{preview}}' => '<span class="tinymce_button"><img src="static/novius-os/admin/vendor/tinymce/themes/nos/img/enhancer.gif" /> '.__('Applications').'</span>',
             )),
         ), false) ?>
