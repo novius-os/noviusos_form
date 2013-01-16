@@ -39,10 +39,9 @@ return array(
 
         // Deletion popup
         'deleting item title' => __('Deleting the answer ‘{{title}}’'),
-        'deleting confirmation' => __('Last chance, there’s no undo. Do you really want to delete this answer?'),
 
         # Delete action's labels
-        'deleting button 1 item' => __('Delete this answer'),
+        'deleting button 1 item' => __('Yes, delete this answer'),
 
         '1 item' => __('1 answer'),
         'N items' => __('{{count}} answers'),

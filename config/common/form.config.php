@@ -60,10 +60,9 @@ return array(
 
         // Deletion popup
         'deleting item title' => __('Deleting the form ‘{{title}}’'),
-        'deleting confirmation' => __('Last chance, there’s no undo. Do you really want to delete this form?'),
 
         # Delete action's labels
-        'deleting button 1 item' => __('Delete this form'),
+        'deleting button 1 item' => __('Yes, delete this form'),
 
         '1 item' => __('1 form'),
         'N items' => __('{{count}} forms'),
