@@ -37,9 +37,11 @@ echo View::forge('nos::crud/toolbar', $view_params, false);
         <tbody>
 <?php
 
+$has_page_break = false;
 // Page 1 has no page break, so we need to add one manually
 foreach ($view_params['fields'] as $field) {
     if ($field['type'] === 'page_break') {
+        $has_page_break = true;
         array_unshift($view_params['fields'], $field);
         break;
     }
@@ -59,7 +61,7 @@ foreach ($view_params['fields'] as $field) {
         <tr>
             <td><?= $field['label'] ?></td>
             <td><?= $field['value']  ?></td>
-            <td></td>
+            <?= $has_page_break ? '<td></td>' : '' ?>
         </tr>
         <?php
     }
@@ -78,7 +80,7 @@ foreach ($view_params['fields'] as $field) {
                                 rowStyleFormatter: function headerColumnRowStyleFormatter(args) {
                                     if (!((args.state & $.wijmo.wijgrid.renderState.rendering) && (args.type & $.wijmo.wijgrid.rowType.data))) return;
                                     // data[2] will be null for rows with <td colspan="2">
-                                    if (args.data[2] == null) {
+                                    if (<?= ($has_page_break ? 'true' : 'false').' && '; ?> args.data[2] == null) {
                                         args.$rows.removeClass('ui-state-active wijmo-wijgrid-datarow').addClass('ui-widget ui-state-default wijmo-wijgrid-headerrow').removeClass('wijgridtd');
                                         args.$rows.find('div.wijmo-wijgrid-innercell').each(function() {
                                             if ($(this).find('.wijmo-wijgrid-headertext').length == 0) {
