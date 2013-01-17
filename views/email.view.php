@@ -10,6 +10,6 @@
 
 foreach ($data as $label => $value) {
     echo '<div>', e($label), '</div>';
-    echo '<div>', e($value), '</div>';
+    echo '<div>', \Str::textToHtml(e($value)), '</div>';
     echo '<br />';
 }

@@ -342,7 +342,7 @@ return array(
                 //'classes' => 'notransform',
                 'accordions' => array(
                     'main' => array(
-                        'title' => __('Properties (mandatory)'),
+                        'title' => __('Properties'),
                         'fields' => array(
                             'field[label][]',
                             'field[type][]',
@@ -408,6 +408,9 @@ return array(
                 ),
                 'value' => 'text',
             ),
+            'validation' => array(
+                'required',
+            ),
             'populate' => function($item) {
                 return $item->field_type;
             },
@@ -417,6 +420,9 @@ return array(
             'form' => array(
                 'type' => 'text',
                 'value' => __('I’m the label, click to edit me:'),
+            ),
+            'validation' => array(
+                'required',
             ),
             'populate' => function($item) {
                 return $item->field_label;
@@ -428,6 +434,9 @@ return array(
                 'type' => 'textarea',
                 'rows' => '3',
                 'value' => __('I’m a message, click to edit me.'),
+            ),
+            'validation' => array(
+                'required',
             ),
             'populate' => function($item) {
                 return $item->field_message;
