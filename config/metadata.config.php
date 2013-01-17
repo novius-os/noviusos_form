@@ -18,6 +18,7 @@ return array(
     'permission' => array(
 
     ),
+    'i18n_file' => 'noviusos_form::metadata',
     'launchers' => array(
         'noviusos_form' => array(
             'name'    => 'Forms',
