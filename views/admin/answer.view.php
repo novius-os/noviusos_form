@@ -95,6 +95,9 @@ foreach ($view_params['fields'] as $field) {
                             .find('a')
                             .each(function() {
                                 var attachment = $(this).data('attachment');
+                                if (!attachment) {
+                                    return;
+                                }
                                 $('<button type="button"></button>')
                                         .text(<?= \Format::forge(__('Save to Media Centre'))->to_json() ?>)
                                         .css('margin-left', '1em')
