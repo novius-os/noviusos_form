@@ -9,7 +9,7 @@
  */
 
 return array(
-    'name'    => 'Form',
+    'name'    => 'Forms',
     'version' => '0.2-alpha',
     'provider' => array(
         'name' => 'Novius OS',
