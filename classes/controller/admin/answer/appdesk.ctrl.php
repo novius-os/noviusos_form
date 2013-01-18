@@ -22,6 +22,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
 
             $form = Model_Form::find($form_id);
             $this->config['appdesk']['tab']['label'] = strtr(__('Answers to ‘{{title}}’'), array('{{title}}' => $form->form_name));
+            $this->config['i18n']['gridTitle'] = $this->config['appdesk']['tab']['label'];
             $this->config['appdesk']['appdesk']['buttons'] = array(
                 'Nos\Form\Model_Form.export' => array(
                     'label' => __('Export (spreadsheet)'),

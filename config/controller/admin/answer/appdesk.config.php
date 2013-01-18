@@ -31,7 +31,7 @@ return array(
     ),
     'i18n' => array(
         'item' => __('answer'),
-        'items' => __('answers'), #wtf we need a new key here (grid title, search results)
+        'items' => __('answers'),
         'showNbItems' => __('Showing {{x}} answers out of {{y}}'),
         'showOneItem' => __('Show 1 answer'),
         'showNoItem' => __('No answers'),
