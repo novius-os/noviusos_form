@@ -7,6 +7,9 @@
  *             http://www.gnu.org/licenses/agpl-3.0.html
  * @link http://www.novius-os.org
  */
+
+Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
+
 ?>
 
 <div class="line" style="margin: -2em 0 3em;">

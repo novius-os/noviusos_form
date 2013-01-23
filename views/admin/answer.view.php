@@ -8,7 +8,7 @@
  * @link http://www.novius-os.org
  */
 
-Nos\I18n::current_dictionary(array('nos::common'));
+Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
 
 $uniqueId = uniqid('answer_');
 $view_params['container_id'] = $uniqueId;

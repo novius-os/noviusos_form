@@ -81,7 +81,7 @@ return array(
     '{{current}} out of {{total}}' => '{{current}} sur {{total}}',
 
     #: views/admin/warning_answers_collected.view.php:24
-    'Answers to this form have already been received. Modifying the form may alter the collected data.' => 'Des réponses à ce formulaire ont déjà été reçues. Le modifier pourraitsupprimer des données collectées.',
+    'Answers to this form have already been received. Modifying the form may alter the collected data.' => 'Des réponses à ce formulaire ont déjà été reçues. Le modifier pourrait supprimer des données collectées.',
 
     #: views/admin/warning_answers_collected.view.php:27
     'You’re right, take me to the answers' => 'C’est vrai, allons voir les réponses',
@@ -119,7 +119,7 @@ return array(
     'nobody!' => 'personne&nbsp;!',
 
     #: views/admin/layout_fields.view.php:90
-    'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Il y a un souci&nbsp;: Votre Novius OS n’est pas configuré pour envoyer desemails. Demandez à votre développeur de le configurer.',
+    'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Il y a un souci&nbsp;: Votre Novius OS n’est pas configuré pour envoyer des emails. Demandez à votre développeur de le configurer.',
 
     #: views/admin/layout_fields.view.php:119
     'Form submission' => 'Envoi du formulaire',
@@ -128,10 +128,10 @@ return array(
     'Not published' => 'Non publié',
 
     #: views/admin/warning_not_published.view.php:16
-    'To publish this form, add it to a page, a blog post or any other text editor.' => 'Pour publier ce formulaire, ajoutez-le à une page, un billet de blog ou toutautre éditeur de texte.',
+    'To publish this form, add it to a page, a blog post or any other text editor.' => 'Pour publier ce formulaire, ajoutez-le à une page, un billet de blog ou tout autre éditeur de texte.',
 
     #: views/admin/warning_not_published.view.php:19
-    '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>La plupart des éditeurs de texte de Novius OS (aussi appelés éditeursWYSIWYG) ont ce bouton {{preview}} dans la barre d’outils.</p><p>Cliquezpour accéder à la liste des applications permettant d’enrichir voscontenus.</p>',
+    '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>La plupart des éditeurs de texte de Novius OS (aussi appelés éditeurs WYSIWYG) ont ce bouton {{preview}} dans la barre d’outils.</p><p>Cliquez pour accéder à la liste des applications permettant d’enrichir vos contenus.</p>',
 
     #: views/admin/warning_not_published.view.php:20
     'Applications' => 'Applications',
@@ -304,7 +304,7 @@ return array(
     'Hidden' => 'Caché',
 
     #: config/controller/admin/form.config.php:318
-    'I’m the label for internal use only as I won’t be shown to users:' => 'Je suis le libellé pour usage interne uniquement puisque les utilisateurs nevont me voir :',
+    'I’m the label for internal use only as I won’t be shown to users:' => 'Je suis le libellé pour usage interne uniquement puisque les utilisateurs ne vont me voir :',
 
     #: config/controller/admin/form.config.php:325
     #: config/controller/admin/form.config.php:407
@@ -457,7 +457,7 @@ return array(
 
     #. Deletion popup
     #: config/common/answer.config.php:41
-    'Deleting the answer ‘{{title}}’' => 'Supprimer le titre «&nbsp;{{title}}&nbsp;»',
+    'Deleting the answer ‘{{title}}’' => 'Supprimer le réponse «&nbsp;{{title}}&nbsp;»',
 
     #. Delete action's labels
     #: config/common/answer.config.php:44

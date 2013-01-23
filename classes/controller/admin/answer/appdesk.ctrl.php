@@ -12,6 +12,12 @@ namespace Nos\Form;
 
 class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
 {
+    public function prepare_i18n()
+    {
+        parent::prepare_i18n();
+        \Nos\I18n::current_dictionary('noviusos_form::common');
+    }
+
     public function load_config()
     {
         parent::load_config();

@@ -14,6 +14,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 {
     protected static $to_delete = array();
 
+    public function prepare_i18n()
+    {
+        parent::prepare_i18n();
+        \Nos\I18n::current_dictionary('noviusos_form::common');
+    }
+
     public function before_save($item, $data)
     {
         $emails = explode("\n", $item->form_submit_email);
@@ -26,7 +32,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             if (filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
                 $item->form_submit_email .= $email . "\n";
             } else {
-                throw new \Exception('An email wich receive answers is not a valid.');
+                throw new \Exception('An email which receive answers is not a valid.');
             }
         }
 
