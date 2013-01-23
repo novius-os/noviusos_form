@@ -56,7 +56,7 @@ return array(
 
         // General errors
         'notification item does not exist anymore' => __('This form doesn’t exist any more. It has been deleted.'),
-        'notification item not found' => __('We cannot find this form. Are you sure it exists?'),
+        'notification item not found' => __('We cannot find this form.'),
 
         // Deletion popup
         'deleting item title' => __('Deleting the form ‘{{title}}’'),

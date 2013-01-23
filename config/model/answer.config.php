@@ -10,6 +10,6 @@
 
 return array(
     'title_property'  => function($item) {
-        return \Str::tr(__('Answer received :date'), array('date' => $item->answer_created_at));
+        return strtr(__('Answer received on {{date}}'), array('{{date}}' => $item->answer_created_at));
     },
 );

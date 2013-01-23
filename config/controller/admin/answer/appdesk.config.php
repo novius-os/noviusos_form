@@ -33,8 +33,9 @@ return array(
         'item' => __('answer'),
         'items' => __('answers'),
         'showNbItems' => __('Showing {{x}} answers out of {{y}}'),
-        'showOneItem' => __('Show 1 answer'),
+        'showOneItem' => __('Showing 1 answer'),
         'showNoItem' => __('No answers'),
+        // Note to translator: This is the action that clears the 'Search' field
         'showAll' => __('Show all answers'),
     ),
     'search_text' => array(

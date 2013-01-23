@@ -81,6 +81,7 @@ return array(
             'label' => __("For every new answer, an email notification is sent to:"),
             'form' => array(
                 'type' => 'textarea',
+                // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One email per line'),
             ),
         ),
@@ -89,6 +90,7 @@ return array(
             'form' => array(
                 'type' => 'submit',
                 'tag' => 'button',
+                // Note to translator: This is a submit button
                 'value' => __('Save'),
                 'class' => 'primary',
                 'data-icon' => 'check',
@@ -394,11 +396,11 @@ return array(
                 'options' => array(
                     'text' => __('Single line text'),
                     'textarea' => __('Paragraph text'),
-                    'checkbox' => __('Checkboxes'),
-                    'select' => __('Dropdown'),
-                    'radio' => __('Multiple choices'),
+                    'checkbox' => __('Multiple choice (checkboxes)'),
+                    'select' => __('Unique choice (drop-down list)'),
+                    'radio' => __('Unique choice (radio buttons)'),
                     'file' => __('File'),
-                    'email' => __('Email'),
+                    'email' => __('Email address'),
                     'number' => __('Number'),
                     'date' => __('Date'),
                     'message' => __('Message'),
@@ -464,6 +466,7 @@ return array(
                 'type' => 'textarea',
                 'rows' => '5',
                 'value' => '',
+                // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One answer per line'),
             ),
             'populate' => function($item) {

@@ -15,8 +15,9 @@ return array(
         'item' => __('form'),
         'items' => __('forms'),
         'showNbItems' => __('Showing {{x}} forms out of {{y}}'),
-        'showOneItem' => __('Show 1 form'),
+        'showOneItem' => __('Showing 1 form'),
         'showNoItem' => __('No forms'),
+        // Note to translator: This is the action that clears the 'Search' field
         'showAll' => __('Show all forms'),
     ),
 );

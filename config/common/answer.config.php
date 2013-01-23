@@ -34,8 +34,8 @@ return array(
         'notification item deleted' => __('The answer has been deleted.'),
 
         // General errors
-        'notification item does not exist anymore' => __('This form doesn’t exist any more. It has been answer.'),
-        'notification item not found' => __('We cannot find this answer. Are you sure it exists?'),
+        'notification item does not exist anymore' => __('This answer doesn’t exist any more. It has been deleted.'),
+        'notification item not found' => __('We cannot find this answer.'),
 
         // Deletion popup
         'deleting item title' => __('Deleting the answer ‘{{title}}’'),
