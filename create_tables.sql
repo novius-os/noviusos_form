@@ -1,15 +1,19 @@
 CREATE TABLE IF NOT EXISTS `nos_form` (
   `form_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `form_context` varchar(25) NOT NULL,
   `form_name` varchar(255) NOT NULL,
-  `form_virtual_name` varchar(31) NOT NULL,
+  `form_virtual_name` varchar(30) NOT NULL,
   `form_manager_id` int(10) unsigned DEFAULT NULL,
   `form_client_email_field_id` int(10) unsigned DEFAULT NULL,
   `form_layout` text NOT NULL,
+  `form_captcha` tinyint(1) NOT NULL,
+  `form_submit_label` varchar(255) NOT NULL,
+  `form_submit_email` text,
   `form_created_at` datetime NOT NULL,
   `form_updated_at` datetime NOT NULL,
-  PRIMARY KEY (`form_id`)
-)  DEFAULT CHARSET=utf8;
-
+  PRIMARY KEY (`form_id`),
+  KEY `form_context` (`form_context`)
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `nos_form_answer` (
   `answer_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -20,16 +24,15 @@ CREATE TABLE IF NOT EXISTS `nos_form_answer` (
   KEY `response_form_id` (`answer_form_id`)
 ) DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE IF NOT EXISTS `nos_form_answer_field` (
   `anfi_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `anfi_answer_id` int(10) unsigned NOT NULL,
   `anfi_field_id` int(10) unsigned NOT NULL,
-  `anfi_value` varchar(255) NOT NULL,
+  `anfi_field_type` varchar(100) NOT NULL,
+  `anfi_value` text NOT NULL,
   PRIMARY KEY (`anfi_id`),
-  UNIQUE KEY `anfi_answer_id` (`anfi_answer_id`,`anfi_field_id`)
+  KEY `anfi_answer_id` (`anfi_answer_id`,`anfi_field_id`)
 ) DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE IF NOT EXISTS `nos_form_field` (
   `field_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -37,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `nos_form_field` (
   `field_type` varchar(100) NOT NULL,
   `field_label` varchar(255) NOT NULL,
   `field_message` text NOT NULL,
-  `field_virtual_name` varchar(31) NOT NULL,
+  `field_virtual_name` varchar(30) NOT NULL,
   `field_choices` text NOT NULL,
   `field_created_at` datetime NOT NULL,
   `field_mandatory` tinyint(1) NOT NULL,
@@ -47,11 +50,10 @@ CREATE TABLE IF NOT EXISTS `nos_form_field` (
   `field_width` tinyint(4) NOT NULL,
   `field_height` tinyint(4) NOT NULL,
   `field_limited_to` int(11) NOT NULL,
-  `field_origin` varchar(31) NOT NULL,
-  `field_origin_var` varchar(31) NOT NULL,
-  `field_technical_id` varchar(32) NOT NULL,
+  `field_origin` varchar(30) NOT NULL,
+  `field_origin_var` varchar(30) NOT NULL,
+  `field_technical_id` varchar(30) NOT NULL,
   `field_technical_css` varchar(100) NOT NULL,
   PRIMARY KEY (`field_id`),
   KEY `field_form_id` (`field_form_id`)
-)  DEFAULT CHARSET=utf8;
-
+) DEFAULT CHARSET=utf8;
