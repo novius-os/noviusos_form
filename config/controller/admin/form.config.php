@@ -8,6 +8,8 @@
  * @link http://www.novius-os.org
  */
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 return array(
     'controller_url' => 'admin/noviusos_form/form',
     'model' => 'Nos\Form\Model_Form',
@@ -549,7 +551,7 @@ return array(
             },
         ),
         'field[origin][]' => array(
-            'label' => 'Origin',
+            'label' => __('Origin'),
             'form' => array(
                 'type' => 'select',
                 'options' => array(
@@ -565,7 +567,7 @@ return array(
             },
         ),
         'field[origin_var][]' => array(
-            'label' => 'Variable name',
+            'label' => __('Variable name'),
             'form' => array(
                 'type' => 'text',
                 'value' => '',

@@ -12,6 +12,12 @@ namespace Nos\Form;
 
 class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
 {
+    public function prepare_i18n()
+    {
+        parent::prepare_i18n();
+        \Nos\I18n::current_dictionary('noviusos_form::common');
+    }
+
     protected function crud_item($id)
     {
         if (empty($id)) {

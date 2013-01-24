@@ -8,6 +8,8 @@
  * @link http://www.novius-os.org
  */
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 return array(
     'model' => 'Nos\Form\Model_Form',
     'inspectors' => array(),

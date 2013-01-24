@@ -8,6 +8,8 @@
  * @link http://www.novius-os.org
  */
 
+Nos\I18n::current_dictionary('noviusos_form::common', 'nos::common');
+
 return array(
     'model' => 'Nos\Form\Model_Answer',
     'inspectors' => array(
@@ -16,7 +18,6 @@ return array(
             'appdesk' => array(
                 'vertical' => true,
                 'reloadEvent' => 'Nos\\Form\\Model_Answer',
-                'label' => __('Preview'),
                 'preview' => true,
                 'options' => array(
                     'meta' => array(
@@ -25,6 +26,11 @@ return array(
                         ),
                     ),
                     'actions' => array('Nos\Form\Model_Answer.visualize', 'Nos\Form\Model_Answer.delete'),
+                    'texts' => array(
+                        // Note to translator: 'Preview' here is a label, not an action
+                        'headerDefault' => __('Preview'),
+                        'selectItem' => __('No answer selected'),
+                    ),
                 ),
             )
         ),

@@ -8,6 +8,8 @@
  * @link http://www.novius-os.org
  */
 
+Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
+
 $uniqid_close = uniqid('close_');
 if (!$item->is_new()) {
     $actions = $view_params['crud']['actions'];

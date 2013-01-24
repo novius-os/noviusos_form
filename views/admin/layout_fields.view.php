@@ -7,6 +7,9 @@
  *             http://www.gnu.org/licenses/agpl-3.0.html
  * @link http://www.novius-os.org
  */
+
+Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
+
 ?>
 <link rel="stylesheet" href="static/apps/noviusos_form/css/admin.css" />
 
@@ -94,9 +97,9 @@ if (!\Email::hasDefaultFrom()) {
         </div>
 
         <div class="col c4 fields_container" style="display:none;">
-            <p class="actions show_hide">
-                <button type="button" data-icon="trash" data-id="delete" class="action"><?= ('Delete') ?></button>
-                <button type="button" data-icon="copy" data-id="copy" class="action"><?= ('Duplicate') ?></button>
+            <p class="actions show_hide" style="text-align: left;">
+                <button type="button" data-icon="trash" data-id="delete" class="action"><?= __('Delete') ?></button>
+                <?php /*<button type="button" data-icon="copy" data-id="copy" class="action"><?= __('Duplicate') ?></button> */ ?>
                 <img class="preview_arrow show_hide" src="static/apps/noviusos_form/img/arrow-edition.png" />
             </p>
 <?php
