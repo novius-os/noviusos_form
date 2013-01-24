@@ -10,15 +10,20 @@
 
 Nos\I18n::current_dictionary('noviusos_form::common');
 
+$id = uniqid();
 ?>
 <p style="margin-bottom: 0.5em;">
-<?= __('Select a form:') ?>&nbsp;
+    <label><?= __('Select a form:') ?>&nbsp;
 <?php
-    $forms = Nos\Form\Controller_Admin_Form::array_pluck(\Nos\Form\Model_Form::find('all'), 'form_name', 'form_id');
+    $forms = Nos\Form\Controller_Admin_Form::array_pluck(\Nos\Form\Model_Form::find('all', array(
+        'where' => array(array('context', \Arr::get($enhancer_args, 'nosContext', \Nos\Tools_Context::defaultContext())),
+    ))), 'form_name', 'form_id');
     echo \Fuel\Core\Form::select('form_id', \Arr::get($enhancer_args, 'form_id', ''), $forms);
 ?>
+    </label>
 </p>
 <p style="margin-bottom: 0.5em;">
+    <label>
     <?= __('Label position') ?>&nbsp;
     <?= \Form::select('label_position', \Arr::get($enhancer_args, 'label_position', 'top'), array(
         'top' => __('Top aligned'),
@@ -26,13 +31,38 @@ Nos\I18n::current_dictionary('noviusos_form::common');
         'right' => __('Right aligned'),
         'placeholder' => __('In the field (placeholder)'),
     )); ?>
+    </label>
 </p>
 <p style="margin-bottom: 0.3em;">
-    <?= __('Message shown to the user after she/he submitted the form:') ?>
+    <?= __('Once the user submitted the form') ?>
 </p>
-<p style="margin-bottom: 0.5em;">
+<p style="margin-bottom: 0.3em;" class="enhancer_after_submit" id="<?= $id ?>">
+    <label><input type="radio" name="after_submit" value="message" <?=  \Arr::get($enhancer_args, 'after_submit', 'message') === 'message' ? 'checked' : '' ?> />&nbsp;<?= __('Display a message') ?></label>
+    <label><input type="radio" name="after_submit" value="page_id" <?=  \Arr::get($enhancer_args, 'after_submit', 'message') === 'page_id' ? 'checked' : '' ?> />&nbsp;<?= __('Redirect to a page') ?></label>
+</p>
+<p style="display:none;margin-bottom: 0.5em;" class="enhancer_confirmation_message">
     <?= \Form::textarea('confirmation_message', \Arr::get($enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.')), array(
     'rows' => '4',
     'style' => 'width: 100%',
 )); ?>
 </p>
+<div style="display:none;margin-bottom: 0.5em;" class="enhancer_confirmation_page_id">
+    <?= \Nos\Page\Renderer_Selector::renderer(array(
+        'input_name' => 'confirmation_page_id',
+        'selected' => array(
+            'id' => \Arr::get($enhancer_args, 'confirmation_page_id', null),
+        ),
+        'treeOptions' => array(
+            'context' => \Arr::get($enhancer_args, 'nosContext', \Nos\Tools_Context::defaultContext()),
+        ),
+    )); ?>
+</div>
+<script type="text/javascript">
+    require(
+        ['static/apps/noviusos_form/js/admin/enhancer.js'],
+        function($) {
+            $(function() {
+                $('#<?= $id ?>').parent().appFormEnhancerPopup();
+            });
+        });
+</script>

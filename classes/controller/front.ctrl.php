@@ -40,7 +40,18 @@ class Controller_Front extends Controller_Front_Application
 
             $errors = $this->post_answers($item);
             if (empty($errors)) {
-                return \Arr::get($this->enhancer_args, 'submission_message', __('Thank you. Your answer has been sent.'));
+                $after_submit = \Arr::get($this->enhancer_args, 'after_submit', 'message');
+                if ($after_submit === 'page_id') {
+                    $page_id = \Arr::get($this->enhancer_args, 'confirmation_page_id', null);
+                    if (!empty($page_id)) {
+                        $page = \Nos\Page\Model_Page::find($page_id);
+                        if (!empty($page)) {
+                            \Response::redirect($page->url());
+                        }
+                    }
+                }
+
+                return \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'));
             }
         }
 
