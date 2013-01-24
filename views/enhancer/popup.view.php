@@ -15,10 +15,14 @@ $id = uniqid();
 <p style="margin-bottom: 0.5em;">
     <label><?= __('Select a form:') ?>&nbsp;
 <?php
-    $forms = Nos\Form\Controller_Admin_Form::array_pluck(\Nos\Form\Model_Form::find('all', array(
-        'where' => array(array('context', \Arr::get($enhancer_args, 'nosContext', \Nos\Tools_Context::defaultContext())),
-    ))), 'form_name', 'form_id');
-    echo \Fuel\Core\Form::select('form_id', \Arr::get($enhancer_args, 'form_id', ''), $forms);
+$options = array();
+$nosContext = \Arr::get($enhancer_args, 'nosContext', null);
+if (!empty($nosContext)) {
+    $options['where'] = array(array('context', $nosContext));
+}
+
+$forms = Nos\Form\Controller_Admin_Form::array_pluck(\Nos\Form\Model_Form::find('all', $options), 'form_name', 'form_id');
+echo \Fuel\Core\Form::select('form_id', \Arr::get($enhancer_args, 'form_id', ''), $forms);
 ?>
     </label>
 </p>
