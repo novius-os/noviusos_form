@@ -57,7 +57,7 @@ return array(
     'Select a form:' => 'Sélectionner un formulaire&nbsp;:',
 
     #: views/enhancer/popup.view.php:22
-    'Label position' => 'Position des libellés',
+    'Label position:' => 'Position des libellés&nbsp;:',
 
     #: views/enhancer/popup.view.php:24
     'Top aligned' => 'Au-dessus du champ',

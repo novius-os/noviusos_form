@@ -28,7 +28,7 @@ echo \Fuel\Core\Form::select('form_id', \Arr::get($enhancer_args, 'form_id', '')
 </p>
 <p style="margin-bottom: 0.5em;">
     <label>
-    <?= __('Label position') ?>&nbsp;
+    <?= __('Label position:') ?>&nbsp;
     <?= \Form::select('label_position', \Arr::get($enhancer_args, 'label_position', 'top'), array(
         'top' => __('Top aligned'),
         'left' => __('Left aligned'),
