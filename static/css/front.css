@@ -3,10 +3,10 @@
 .foundation *, .foundation *:before, .foundation *:after { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 
 /* The Grid ---------------------- */
-.foundation .row { width: 940px; max-width: 100%; min-width: 768px; margin: 0 auto; }
-.foundation .row .row { width: auto; max-width: none; min-width: 0; margin: 0 -0px; }
+.foundation .row { margin: 0 auto; }
+.foundation .row .row { margin: 0 -0px; }
 .foundation .row.collapse .column, .foundation .row.collapse .columns { padding: 0; }
-.foundation .row .row { width: auto; max-width: none; min-width: 0; margin: 0 0px; }
+.foundation .row .row { margin: 0 0px; }
 .foundation .row .row.collapse { margin: 0; }
 
 .foundation .column, .foundation .columns { float: left; min-height: 1px; padding: 0 0; position: relative; }
