@@ -50,6 +50,7 @@ return array(
             'ensurePxWidth' => true,
             'allowSizing' => false,
         ),
+        'context' => true,
     ),
     'i18n' => array(
         // Crud
