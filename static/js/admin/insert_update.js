@@ -14,7 +14,7 @@ define(
     ],
     function($) {
         "use strict";
-        return function(id, is_new) {
+        return function(id, options, is_new) {
 
             var $container = $(id);
 
@@ -236,7 +236,7 @@ define(
                 e.preventDefault();
                 // Don't bubble to .preview container
                 e.stopPropagation();
-                if (confirm('Are you sure?')) {
+                if (confirm($.nosCleanupTranslation(options.textDelete))) {
                     delete_preview.call($preview_container.find('.preview.ui-state-active'));
                 }
             });

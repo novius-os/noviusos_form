@@ -159,7 +159,9 @@ require(['jquery-nos', 'jquery-nos-loadspinner'], function($) {
     });
     require(['static/apps/noviusos_form/js/admin/insert_update.js'], function(init_form) {
         $(function() {
-            init_form(uniqid, <?= $crud['is_new'] ? 'true' : 'false'; ?>);
+            init_form(uniqid, <?= \Format::forge()->to_json(array(
+                'textDelete' => __('Are you sure?'),
+            )) ?>,<?= $crud['is_new'] ? 'true' : 'false'; ?>);
             $(uniqid).find('.preview_container').loadspinner('destroy');
         });
     });
