@@ -21,6 +21,9 @@ return array(
     'require_js' => array(
         'static/apps/noviusos_form/js/admin/insert_update.js',
     ),
+    'views' => array(
+        'delete' => 'noviusos_form::admin/popup_delete',
+    ),
     'layout' => array(
         'standard' => array(
             'view' => 'nos::form/layout_standard',

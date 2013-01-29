@@ -23,7 +23,7 @@ if (!$item->is_new()) {
     }
     ?>
     <div id="<?= $uniqid_close ?>" style="display:none;">
-        <p><?= __('Answers to this form have already been received. Modifying the form may alter the collected data.') ?></p>
+        <p><?= __('Modifying the form may alter the collected data.') ?></p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p><button class="primary" onclick="return false;"><?= __("You’re right, take me to the answers") ?></button></p>
@@ -46,7 +46,7 @@ if (!$item->is_new()) {
                 });
                 $close.show().nosFormUI();
                 $container.nosDialog({
-                    title: <?= \Format::forge()->to_json(__('This form is collecting data')) ?>,
+                    title: <?= \Format::forge()->to_json(__('Answers to this form have already been received')) ?>,
                     content: $close,
                     width: 500,
                     height: 200,
