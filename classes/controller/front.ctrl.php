@@ -111,7 +111,7 @@ class Controller_Front extends Controller_Front_Application
                 if ($field_id == 'captcha') {
                     $field = (object) array(
                         'field_name' => 'form_captcha',
-                        'field_label' => strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array( #new var
+                        'field_label' => strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array(
                             '{{number_1}}' => $number_1,
                             '{{number_2}}' => $number_2,
                         )),
@@ -385,7 +385,7 @@ class Controller_Front extends Controller_Front_Application
 
             if ($type === 'file' && !empty($_FILES[$name])) {
                 if ($field->field_mandatory && empty($_FILES[$name]['tmp_name'])) {
-                    $errors[$name] = __('{{label}}: Please select a file for this field.'); #new var
+                    $errors[$name] = __('{{label}}: Please select a file for this field.');
                 }
                 $files[$name] = $_FILES[$name];
             } else {
@@ -410,14 +410,14 @@ class Controller_Front extends Controller_Front_Application
 
             // Mandatory (required)
             if (in_array($type, array('text', 'textarea', 'select', 'email', 'number', 'date')) && $field->field_mandatory && empty($value)) {
-                $errors[$name] = __('{{label}}: Please enter a value for this field.'); #new var
+                $errors[$name] = __('{{label}}: Please enter a value for this field.');
             } else if (!empty($value)) {
                 // Only if there is a value
                 if ($type == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid email.'); #new var
+                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid email.');
                 }
                 if ($type == 'number' && !filter_var($value, FILTER_VALIDATE_INT)) {
-                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid number.'); #new var
+                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid number.');
                 }
                 if ($type == 'date') {
                     if ($checkdate = preg_match('`^(\d{4})-(\d{2})-(\d{2})$`', $value, $m)) {
@@ -425,7 +425,7 @@ class Controller_Front extends Controller_Front_Application
                         $checkdate = checkdate((int) $month, (int) $day, (int) $year);
                     }
                     if (!$checkdate) {
-                        $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid date.'); #new var
+                        $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid date.');
                     }
                 }
             }
@@ -456,8 +456,8 @@ class Controller_Front extends Controller_Front_Application
                     continue;
                 }
                 $error = strtr($error, array(
-                    '{label}' => $fields[$name]->field_label,
-                    '{value}' => $data[$name],
+                    '{{label}}' => $fields[$name]->field_label,
+                    '{{value}}' => $data[$name],
                 ));
             }
             return $errors;
@@ -510,7 +510,7 @@ class Controller_Front extends Controller_Front_Application
 
                 $mail->bcc($emails);
                 $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data)));
-                $mail->subject(strtr(__('{{form}}: New answer'), array('{{form}}' => $form->form_name))); #new var
+                $mail->subject(strtr(__('{{form}}: New answer'), array('{{form}}' => $form->form_name)));
                 try {
                     $mail->send();
                 } catch (\Exception $e) {
