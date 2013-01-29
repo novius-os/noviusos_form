@@ -554,7 +554,7 @@ return array(
             },
         ),
         'field[origin][]' => array(
-            'label' => __('Origin'),
+            'label' => __('Origin:'),
             'form' => array(
                 'type' => 'select',
                 'options' => array(
@@ -570,7 +570,7 @@ return array(
             },
         ),
         'field[origin_var][]' => array(
-            'label' => __('Variable name'),
+            'label' => __('Variable name:'),
             'form' => array(
                 'type' => 'text',
                 'value' => '',

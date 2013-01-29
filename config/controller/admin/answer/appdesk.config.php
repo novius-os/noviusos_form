@@ -29,7 +29,7 @@ return array(
                     'texts' => array(
                         // Note to translator: 'Preview' here is a label, not an action
                         'headerDefault' => __('Preview'),
-                        'selectItem' => __('No answer selected'),
+                        'selectItem' => __('Click on an answer to preview it.'),
                     ),
                 ),
             )
