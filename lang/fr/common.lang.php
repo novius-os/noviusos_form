@@ -81,7 +81,8 @@ return array(
     '{{current}} out of {{total}}' => '{{current}} sur {{total}}',
 
     #: views/admin/warning_answers_collected.view.php:24
-    'Answers to this form have already been received. Modifying the form may alter the collected data.' => 'Des réponses à ce formulaire ont déjà été reçues. Le modifier pourrait supprimer des données collectées.',
+    'Answers to this form have already been received' => 'Des réponses à ce formulaire ont déjà été reçues',
+    'Modifying the form may alter the collected data.' => 'Le modifier pourrait supprimer des données collectées.',
 
     #: views/admin/warning_answers_collected.view.php:27
     'You’re right, take me to the answers' => 'C’est vrai, allons voir les réponses',
@@ -91,9 +92,6 @@ return array(
 
     #: views/admin/warning_answers_collected.view.php:29
     'Don’t worry, I know what I’m doing' => 'Ne vous inquiétez pas, je sais ce que je fais',
-
-    #: views/admin/warning_answers_collected.view.php:47
-    'This form is collecting data' => 'Ce formulaire reçoit des données',
 
     #: views/admin/layout_fields.view.php:36
     #: views/admin/layout_fields.view.php:81
