@@ -67,6 +67,8 @@ return array(
         # Delete action's labels
         'deleting button 1 item' => __('Yes, delete this form'),
 
+        'deleting wrong confirmation' => __('We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.'),
+
         '1 item' => __('1 form'),
         'N items' => __('{{count}} forms'),
     ),
