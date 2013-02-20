@@ -1,15 +1,33 @@
 <?php
 
-// Generated on 29/01/2013 19:08:29
+// Generated on 20/02/2013 17:43:50
 
-// 161 out of 161 messages are translated (100%).
-// 618 out of 618 words are translated (100%).
+// 165 out of 165 messages are translated (100%).
+// 632 out of 632 words are translated (100%).
 
 return array(
-    #: classes/controller/front.ctrl.php:54
+    #: classes/controller/admin/answer.ctrl.php:33
+    #: views/admin/answer.view.php:25
+    'Answer to ‘{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
+
+    #: classes/controller/admin/answer.ctrl.php:107
+    'No file attached.' => 'Aucun fichier joint.',
+
     #: classes/controller/admin/enhancer.ctrl.php:26
+    #: classes/controller/front.ctrl.php:54
     #: views/enhancer/popup.view.php:48
     'Thank you. Your answer has been sent.' => 'Merci. Votre réponse a été envoyée.',
+
+    #: classes/controller/admin/form.ctrl.php:195
+    #: classes/controller/admin/form.ctrl.php:209
+    'Page break' => 'Saut de page',
+
+    #: classes/controller/admin/answer/appdesk.ctrl.php:30
+    #: config/common/form.config.php:90
+    'Answers to ‘{{title}}’' => 'Réponses à «&nbsp;{{title}}&nbsp;»',
+
+    #: classes/controller/admin/answer/appdesk.ctrl.php:34
+    'Export (spreadsheet)' => 'Exporter (tableur)',
 
     #: classes/controller/front.ctrl.php:114
     'Help us prevent spam: How much is {{number_1}} plus {{number_2}}?' => 'Aidez-nous à lutter contre le spam: Combien font {{number_1}} plus {{number_2}}&nbsp;?',
@@ -36,149 +54,8 @@ return array(
     #: classes/controller/front.ctrl.php:513
     '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
 
-    #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:90
-    'Answers to ‘{{title}}’' => 'Réponses à «&nbsp;{{title}}&nbsp;»',
-
-    #: classes/controller/admin/answer/appdesk.ctrl.php:34
-    'Export (spreadsheet)' => 'Exporter (tableur)',
-
-    #: classes/controller/admin/answer.ctrl.php:33
-    #: views/admin/answer.view.php:25
-    'Answer to ‘{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
-
-    #: classes/controller/admin/answer.ctrl.php:107
-    'No file attached.' => 'Aucun fichier joint.',
-
-    #: classes/controller/admin/form.ctrl.php:195
-    #: classes/controller/admin/form.ctrl.php:209
-    'Page break' => 'Saut de page',
-
-    #: views/enhancer/popup.view.php:16
-    'Select a form:' => 'Sélectionner un formulaire&nbsp;:',
-
-    #: views/enhancer/popup.view.php:31
-    'Label position:' => 'Position des libellés&nbsp;:',
-
-    #: views/enhancer/popup.view.php:33
-    'Top aligned' => 'Au-dessus du champ',
-
-    #: views/enhancer/popup.view.php:34
-    'Left aligned' => 'À gauche du champ, aligné à gauche',
-
-    #: views/enhancer/popup.view.php:35
-    'Right aligned' => 'À gauche du champ, aligné à droite',
-
-    #: views/enhancer/popup.view.php:36
-    'In the field (placeholder)' => 'Dans le champ (placeholder)',
-
-    #: views/enhancer/popup.view.php:41
-    'Once the user submitted the form' => 'Une fois que l’utilisateur a envoyé le formulaire',
-
-    #: views/enhancer/popup.view.php:44
-    'Display a message' => 'Afficher un message',
-
-    #: views/enhancer/popup.view.php:45
-    'Redirect to a page' => 'Rediriger vers une page',
-
-    #: views/foundation.view.php:238
-    'Previous page' => 'Page précédente',
-
-    #: views/foundation.view.php:242
-    'Next page' => 'Page suivante',
-
-    #: views/foundation.view.php:249
-    '{{current}} out of {{total}}' => '{{current}} sur {{total}}',
-
-    #: views/admin/warning_answers_collected.view.php:26
-    'Modifying the form may alter the collected data.' => 'Le modifier pourrait supprimer des données collectées.',
-
-    #: views/admin/warning_answers_collected.view.php:29
-    'You’re right, take me to the answers' => 'C’est vrai, allons voir les réponses',
-
-    #: views/admin/warning_answers_collected.view.php:31
-    'or' => 'ou',
-
-    #: views/admin/warning_answers_collected.view.php:31
-    'Don’t worry, I know what I’m doing' => 'Ne vous inquiétez pas, je sais ce que je fais',
-
-    #: views/admin/warning_answers_collected.view.php:49
-    'Answers to this form have already been received' => 'Des réponses à ce formulaire ont déjà été reçues',
-
-    #: views/admin/layout_fields.view.php:39
-    #: views/admin/layout_fields.view.php:84
-    'Add a field' => 'Ajouter un champ',
-
-    #: views/admin/layout_fields.view.php:45
-    'Standard fields' => 'Champs standards',
-
-    #: views/admin/layout_fields.view.php:46
-    'Special fields' => 'Champs spéciaux',
-
-    #: views/admin/layout_fields.view.php:85
-    'Add a page break' => 'Ajouter un saut de page',
-
-    #: views/admin/layout_fields.view.php:88
-    'Help us prevent spam: How much is 3 plus 8?' => 'Aidez-nous à lutter contre le spam&nbsp;: Combien font 3 plus 8&nbsp;?',
-
-    #: views/admin/layout_fields.view.php:90
-    #: config/controller/admin/form.config.php:86
-    'For every new answer, an email notification is sent to:' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;:',
-
-    #: views/admin/layout_fields.view.php:90
-    'nobody!' => 'personne&nbsp;!',
-
-    #: views/admin/layout_fields.view.php:93
-    'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Il y a un souci&nbsp;: Votre Novius OS n’est pas configuré pour envoyer des emails. Demandez à votre développeur de le configurer.',
-
-    #: views/admin/layout_fields.view.php:101
-    'Delete' => 'Supprimer',
-
-    #: views/admin/layout_fields.view.php:130
-    'Form submission' => 'Envoi du formulaire',
-
-    #: views/admin/layout_fields.view.php:171
-    'Are you sure?' => 'Êtes-vous sur(e)&nbsp;?',
-
-    #: views/admin/popup_delete.view.php:25
-    'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
-
-    #: views/admin/popup_delete.view.php:26
-    'This form has already received <strong>{{count}} answers</strong>.' => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
-
-    #: views/admin/popup_delete.view.php:31
-    'Yes, I want to delete this form and the {{count}} answers received.' => 'Oui, je veux supprimer ce formulaire et les {{count}} réponses reçues.',
-
-    #: views/admin/warning_not_published.view.php:18
-    'Not published' => 'Non publié',
-
-    #: views/admin/warning_not_published.view.php:19
-    'To publish this form, add it to a page, a blog post or any other text editor.' => 'Pour publier ce formulaire, ajoutez-le à une page, un billet de blog ou tout autre éditeur de texte.',
-
-    #: views/admin/warning_not_published.view.php:22
-    '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>La plupart des éditeurs de texte de Novius OS (aussi appelés éditeurs WYSIWYG) ont ce bouton {{preview}} dans la barre d’outils.</p><p>Cliquez pour accéder à la liste des applications permettant d’enrichir vos contenus.</p>',
-
-    #: views/admin/warning_not_published.view.php:23
-    'Applications' => 'Applications',
-
-    #: views/admin/answer.view.php:15
-    'Cancel' => 'Annuler',
-
-    #: views/admin/answer.view.php:26
-    'Received on {{date}}' => 'Reçue le {{date}}',
-
-    #: views/admin/answer.view.php:33
-    'Question' => 'Question',
-
-    #: views/admin/answer.view.php:34
-    'Answer' => 'Réponse',
-
-    #: views/admin/answer.view.php:55
-    'Page {{number}}' => 'Page {{number}}',
-
-    #: views/admin/answer.view.php:102
-    #: views/admin/answer.view.php:112
-    'Add to Media Centre' => 'Ajouter à la Médiathèque',
+    #: config/controller/admin/enhancer.config.php:28
+    'Form' => 'Formulaire',
 
     #: config/controller/admin/answer/inspector/date.config.php:18
     'Answer date' => 'Date de la réponse',
@@ -191,7 +68,7 @@ return array(
     'Preview' => 'Prévisualisation',
 
     #: config/controller/admin/answer/appdesk.config.php:32
-    'Click on an anwser to preview it.' => 'Cliquez sur une réponse pour la prévisualiser.',
+    'Click on an answer to preview it.' => 'Cliquez sur une réponse pour la prévisualiser.',
 
     #: config/controller/admin/answer/appdesk.config.php:39
     'answer' => 'réponse',
@@ -231,6 +108,10 @@ return array(
 
     #: config/controller/admin/form.config.php:82
     'I’m the submit button, click to edit me' => 'Je suis le bouton d’envoi, cliquez pour me modifier',
+
+    #: config/controller/admin/form.config.php:86
+    #: views/admin/layout_fields.view.php:90
+    'For every new answer, an email notification is sent to:' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;:',
 
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
     #: config/controller/admin/form.config.php:90
@@ -312,7 +193,7 @@ return array(
     'Title:' => 'Civilité :',
 
     #: config/controller/admin/form.config.php:252
-    'Ms\nMr' => 'M.\nMme',
+    'Ms\nMr' => 'Mme\nM.',
 
     #: config/controller/admin/form.config.php:260
     'Name:' => 'Nom :',
@@ -435,9 +316,6 @@ return array(
     #: config/controller/admin/form.config.php:604
     'CSS classes:' => 'Classes CSS&nbsp;:',
 
-    #: config/controller/admin/enhancer.config.php:28
-    'Form' => 'Formulaire',
-
     #: config/controller/admin/appdesk.config.php:17
     'form' => 'formulaire',
 
@@ -457,8 +335,39 @@ return array(
     #: config/controller/admin/appdesk.config.php:23
     'Show all forms' => 'Afficher tous les formulaires',
 
-    #: config/model/answer.config.php:13
-    'Answer received on {{date}}' => 'Réponse reçue le {{date}}',
+    #: config/common/answer.config.php:23
+    'Received on' => 'Reçue le',
+
+    #. Crud
+    #: config/common/answer.config.php:36
+    'The answer has been deleted.' => 'La réponse a été supprimée.',
+
+    #. General errors
+    #: config/common/answer.config.php:39
+    'This answer doesn’t exist any more. It has been deleted.' => 'Cette réponse n’existe plus. Elle a été supprimée.',
+
+    #: config/common/answer.config.php:40
+    'We cannot find this answer.' => 'Nous n’arrivons pas trouver cette réponse.',
+
+    #. Deletion popup
+    #: config/common/answer.config.php:43
+    'Deleting the answer ‘{{title}}’' => 'Supprimer le réponse «&nbsp;{{title}}&nbsp;»',
+
+    #. Delete action's labels
+    #: config/common/answer.config.php:46
+    'Yes, delete this answer' => 'Oui, supprimer cette réponse',
+
+    #: config/common/answer.config.php:48
+    '1 answer' => '1 réponse',
+
+    #: config/common/answer.config.php:49
+    '{{count}} answers' => '{{count}} réponses',
+
+    #: config/common/answer.config.php:56
+    'Visualise' => 'Visualiser',
+
+    #: config/common/answer.config.php:66
+    'Answer to ’{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
 
     #: config/common/form.config.php:28
     #: config/common/form.config.php:80
@@ -498,38 +407,141 @@ return array(
     #: config/common/form.config.php:105
     'Export the answers (spreadsheet)' => 'Exporter les réponses (tableur)',
 
-    #: config/common/answer.config.php:23
-    'Received on' => 'Reçue le',
+    #: config/model/answer.config.php:13
+    'Answer received on {{date}}' => 'Réponse reçue le {{date}}',
 
-    #. Crud
-    #: config/common/answer.config.php:36
-    'The answer has been deleted.' => 'La réponse a été supprimée.',
+    #: views/foundation.view.php:238
+    'Previous page' => 'Page précédente',
 
-    #. General errors
-    #: config/common/answer.config.php:39
-    'This answer doesn’t exist any more. It has been deleted.' => 'Cette réponse n’existe plus. Elle a été supprimée.',
+    #: views/foundation.view.php:242
+    'Next page' => 'Page suivante',
 
-    #: config/common/answer.config.php:40
-    'We cannot find this answer.' => 'Nous n’arrivons pas trouver cette réponse.',
+    #: views/foundation.view.php:249
+    '{{current}} out of {{total}}' => '{{current}} sur {{total}}',
 
-    #. Deletion popup
-    #: config/common/answer.config.php:43
-    'Deleting the answer ‘{{title}}’' => 'Supprimer le réponse «&nbsp;{{title}}&nbsp;»',
+    #: views/admin/warning_not_published.view.php:18
+    'Not published' => 'Non publié',
 
-    #. Delete action's labels
-    #: config/common/answer.config.php:46
-    'Yes, delete this answer' => 'Oui, supprimer cette réponse',
+    #: views/admin/warning_not_published.view.php:19
+    'To publish this form, add it to a page, a blog post or any other text editor.' => 'Pour publier ce formulaire, ajoutez-le à une page, un billet de blog ou tout autre éditeur de texte.',
 
-    #: config/common/answer.config.php:48
-    '1 answer' => '1 réponse',
+    #: views/admin/warning_not_published.view.php:22
+    '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>La plupart des éditeurs de texte de Novius OS (aussi appelés éditeurs WYSIWYG) ont ce bouton {{preview}} dans la barre d’outils.</p><p>Cliquez pour accéder à la liste des applications permettant d’enrichir vos contenus.</p>',
 
-    #: config/common/answer.config.php:49
-    '{{count}} answers' => '{{count}} réponses',
+    #: views/admin/warning_not_published.view.php:23
+    'Applications' => 'Applications',
 
-    #: config/common/answer.config.php:56
-    'Visualise' => 'Visualiser',
+    #: views/admin/layout_fields.view.php:39
+    #: views/admin/layout_fields.view.php:84
+    'Add a field' => 'Ajouter un champ',
 
-    #: config/common/answer.config.php:66
-    'Answer to ’{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
+    #: views/admin/layout_fields.view.php:45
+    'Standard fields' => 'Champs standards',
+
+    #: views/admin/layout_fields.view.php:46
+    'Special fields' => 'Champs spéciaux',
+
+    #: views/admin/layout_fields.view.php:85
+    'Add a page break' => 'Ajouter un saut de page',
+
+    #: views/admin/layout_fields.view.php:88
+    'Help us prevent spam: How much is 3 plus 8?' => 'Aidez-nous à lutter contre le spam&nbsp;: Combien font 3 plus 8&nbsp;?',
+
+    #: views/admin/layout_fields.view.php:90
+    'nobody!' => 'personne&nbsp;!',
+
+    #: views/admin/layout_fields.view.php:93
+    'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Il y a un souci&nbsp;: Votre Novius OS n’est pas configuré pour envoyer des emails. Demandez à votre développeur de le configurer.',
+
+    #: views/admin/layout_fields.view.php:101
+    'Delete' => 'Supprimer',
+
+    #: views/admin/layout_fields.view.php:130
+    'Form submission' => 'Envoi du formulaire',
+
+    #: views/admin/layout_fields.view.php:171
+    'Are you sure?' => 'Êtes-vous sur(e)&nbsp;?',
+
+    #: views/admin/answer.view.php:15
+    'Cancel' => 'Annuler',
+
+    #: views/admin/answer.view.php:26
+    'Received on {{date}}' => 'Reçue le {{date}}',
+
+    #: views/admin/answer.view.php:33
+    'Question' => 'Question',
+
+    #: views/admin/answer.view.php:34
+    'Answer' => 'Réponse',
+
+    #: views/admin/answer.view.php:55
+    'Page {{number}}' => 'Page {{number}}',
+
+    #: views/admin/answer.view.php:102
+    #: views/admin/answer.view.php:112
+    'Add to Media Centre' => 'Ajouter à la Médiathèque',
+
+    #: views/admin/popup_delete.view.php:25
+    'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
+
+    #: views/admin/popup_delete.view.php:26
+    'This form has already received <strong>{{count}} answers</strong>.' => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
+
+    #: views/admin/popup_delete.view.php:31
+    'Yes, I want to delete this form and the {{count}} answers received.' => 'Oui, je veux supprimer ce formulaire et les {{count}} réponses reçues.',
+
+    #: views/admin/warning_answers_collected.view.php:26
+    'Modifying the form may alter the collected data.' => 'Le modifier pourrait supprimer des données collectées.',
+
+    #: views/admin/warning_answers_collected.view.php:29
+    'You’re right, take me to the answers' => 'C’est vrai, allons voir les réponses',
+
+    #: views/admin/warning_answers_collected.view.php:31
+    'or' => 'ou',
+
+    #: views/admin/warning_answers_collected.view.php:31
+    'Don’t worry, I know what I’m doing' => 'Ne vous inquiétez pas, je sais ce que je fais',
+
+    #: views/admin/warning_answers_collected.view.php:49
+    'Answers to this form have already been received' => 'Des réponses à ce formulaire ont déjà été reçues',
+
+    #: views/enhancer/popup.view.php:16
+    'Select a form:' => 'Sélectionner un formulaire&nbsp;:',
+
+    #: views/enhancer/popup.view.php:31
+    'Label position:' => 'Position des libellés&nbsp;:',
+
+    #: views/enhancer/popup.view.php:33
+    'Top aligned' => 'Au-dessus du champ',
+
+    #: views/enhancer/popup.view.php:34
+    'Left aligned' => 'À gauche du champ, aligné à gauche',
+
+    #: views/enhancer/popup.view.php:35
+    'Right aligned' => 'À gauche du champ, aligné à droite',
+
+    #: views/enhancer/popup.view.php:36
+    'In the field (placeholder)' => 'Dans le champ (placeholder)',
+
+    #: views/enhancer/popup.view.php:41
+    'Once the user submitted the form' => 'Une fois que l’utilisateur a envoyé le formulaire',
+
+    #: views/enhancer/popup.view.php:44
+    'Display a message' => 'Afficher un message',
+
+    #: views/enhancer/popup.view.php:45
+    'Redirect to a page' => 'Rediriger vers une page',
+
+    #. Overwritten
+    'Click on an anwser to preview it.' => 'Cliquez sur une réponse pour la prévisualiser.',
+
+    #. Overwritten
+    'First optionnSecond option' => 'Premier choixnDeuxième choix',
+
+    #. Overwritten
+    'First choicenSecond choice' => 'Premier choixnDeuxième choix',
+
+    #. Overwritten
+    'MsnMr' => 'M.nMme',
 
 );
