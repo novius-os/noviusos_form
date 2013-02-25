@@ -233,7 +233,7 @@ return array(
                 'definition' => array(
                     'layout' => 'date=4',
                     'fields_list' => array(
-                        'textarea' => array(
+                        'date' => array(
                             'field_type' => 'date',
                             'field_label' => __('Pick a date:'),
                         ),
