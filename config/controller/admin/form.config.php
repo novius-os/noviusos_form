@@ -72,7 +72,6 @@ return array(
                 'type' => 'checkbox',
                 'value' => '1',
                 'empty' => '0',
-                'checked',
             ),
         ),
         'form_submit_label' => array (
