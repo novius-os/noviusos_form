@@ -651,8 +651,14 @@ define(
                         set_cell_colspan(ui.placeholder, get_cell_colspan(ui.helper));
                     },
                     update: function onSortableUpdate(e, ui) {
+                        var $tr = ui.item.closest('tr');
                         // Restore original height
-                        ui.item.closest('tr').css('height', '');
+                        $tr.css('height', '');
+
+                        // Resize the current line on drop, or the lines above would be all messed up because the total
+                        // colspan of a line below can exceed 4
+                        $tr.children().css('height', $tr.css('height'));
+                        resize_to_best($tr, ui.item.get(0));
 
                         // Re-initialise everything
                         init_all();
