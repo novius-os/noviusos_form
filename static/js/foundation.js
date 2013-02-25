@@ -34,7 +34,7 @@
             var $submit_button = $form.find(':submit');
 
             var $captcha = $form.find('#form_captcha');
-            var good_anwser = $captcha.data('captcha').split('-')[1];
+            var good_anwser = $captcha.size() ? $captcha.data('captcha').split('-')[1] : null;
             $captcha.on('blur', function() {
                 if ($(this).val() != good_anwser) {
                     this.setCustomValidity($captcha.data('customValidity'));

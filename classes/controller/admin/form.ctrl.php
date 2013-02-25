@@ -20,6 +20,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         \Nos\I18n::current_dictionary('noviusos_form::common');
     }
 
+    protected function init_item()
+    {
+        $this->item->form_captcha = 1;
+        parent::init_item();
+    }
+
     public function before_save($item, $data)
     {
         $emails = explode("\n", $item->form_submit_email);
