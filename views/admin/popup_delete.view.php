@@ -16,11 +16,7 @@ $answer_count = count($item->answers);
 <input type="hidden" name="id" value="<?= $item->{$crud['pk']} ?>" />
 <div id="<?= $uniqid = uniqid('id_') ?>" class="fieldset standalone">
 <p><?php
-if ($answer_count == 0) {
-    ?>
-    <p><?= $crud['config']['i18n']['deleting confirmation']; ?></p>
-    <?php
-} else {
+if ($answer_count > 0) {
     ?>
     <p><?= strtr(__(
         $answer_count == 1 ? __('This form has already received <strong>one answer</strong>.')
