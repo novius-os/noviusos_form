@@ -264,9 +264,9 @@ define(
                 show_when($field, 'origin', -1 !== $.inArray(type, ['hidden', 'variable']));
                 show_when($field, 'origin_var', -1 !== $.inArray(type, ['hidden', 'variable']));
 
-                // The 'type' field is for sure in the first ui-accordion-content so we know $field IS an .accordion too
+                // The 'type' field is for sure in the first wijmo-wijaccordion-content so we know $field IS an .accordion too
                 // So the selectedIndex is for sure '0'
-                $field.find('.ui-accordion-content').each(function() {
+                $field.find('.wijmo-wijaccordion-content').each(function() {
                     var $accordion_content = $(this);
                     // We need to select the appropriate index with wijaccordion() prior to changing the style or it's all messed up
                     if ($accordion_content.find(':input').filter(function() {
