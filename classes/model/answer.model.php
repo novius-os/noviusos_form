@@ -15,6 +15,13 @@ class Model_Answer extends \Nos\Orm\Model
     protected static $_table_name = 'nos_form_answer';
     protected static $_primary_key = array('answer_id');
 
+    protected static $_properties = array(
+        'answer_id',
+        'answer_form_id',
+        'answer_ip',
+        'answer_created_at',
+    );
+
     protected static $_observers = array(
         'Orm\\Observer_Self',
         'Orm\\Observer_CreatedAt' => array(

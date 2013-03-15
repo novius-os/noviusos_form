@@ -15,6 +15,21 @@ class Model_Form extends \Nos\Orm\Model
     protected static $_table_name = 'nos_form';
     protected static $_primary_key = array('form_id');
 
+    protected static $_properties = array(
+        'form_id',
+        'form_context',
+        'form_name',
+        'form_virtual_name',
+        'form_manager_id',
+        'form_client_email_field_id',
+        'form_layout',
+        'form_captcha',
+        'form_submit_label',
+        'form_submit_email',
+        'form_created_at',
+        'form_updated_at',
+    );
+
     protected static $_observers = array(
         'Orm\\Observer_Self',
         'Orm\\Observer_CreatedAt' => array(

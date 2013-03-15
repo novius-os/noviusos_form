@@ -15,6 +15,14 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_table_name = 'nos_form_field';
     protected static $_primary_key = array('field_id');
 
+    protected static $_properties = array(
+        'anfi_id',
+        'anfi_answer_id',
+        'anfi_field_id',
+        'anfi_field_type',
+        'anfi_value',
+    );
+
     protected static $_observers = array(
         'Orm\\Observer_Self',
         'Orm\\Observer_CreatedAt' => array(
