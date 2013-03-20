@@ -51,6 +51,7 @@
                 var $current_label = $container.find('.page_break_current');
                 var $total_label   = $container.find('.page_break_total');
                 var $pages = $container.siblings('.page_break');
+                var $progress_field   = $container.find('#progress');
 
                 var current_page  = 0;
                 var $current_page = $pages.eq(current_page);
@@ -71,6 +72,7 @@
                     $previous_link[current_page == 0 ? 'hide' : 'show']();
                     $next_button[current_page == total_pages - 1 ? 'hide' : 'show']();
                     $submit_button[current_page == total_pages - 1 ? 'show' : 'hide']();
+                    $progress_field.val((current_page+1) / total_pages) ;
                 }
 
                 $previous_link.on('click', function(e) {
