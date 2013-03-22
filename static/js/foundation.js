@@ -5,8 +5,8 @@
         (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
             g.src=src;
             g.onload = callback;
-            g.onreadystatechange = function() { // IE 6-7
-                if (this.readyState == 'complete') {
+            g.onreadystatechange = function() { // IE 6-7-8
+                if (this.readyState == 'complete' || this.readyState == 'loaded') {
                     callback();
                 }
             }
