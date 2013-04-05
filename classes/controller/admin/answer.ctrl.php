@@ -44,7 +44,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
             return $this->send_error(new \Exception($this->config['messages']['item deleted']));
         }
 
-        $this->check_permission('visualise');
+        $this->checkPermission('visualise');
 
         $view_params = $this->view_params();
         $view_params['fields'] = $this->form_layout_fields();

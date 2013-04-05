@@ -11,7 +11,7 @@
 echo '<div class="field_enclosure">';
 $has_restricted_fields = false;
 foreach ($fieldset->field() as $field) {
-    if ($field->is_restricted()) {
+    if ($field->isRestricted()) {
         if (!$has_restricted) {
             echo '<div style="display:none;">';
             $has_restricted_fields = true;
