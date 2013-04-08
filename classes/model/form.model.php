@@ -15,19 +15,71 @@ class Model_Form extends \Nos\Orm\Model
     protected static $_table_name = 'nos_form';
     protected static $_primary_key = array('form_id');
 
+    protected static $_title_property = 'form_name';
     protected static $_properties = array(
-        'form_id',
-        'form_context',
-        'form_name',
-        'form_virtual_name',
-        'form_manager_id',
-        'form_client_email_field_id',
-        'form_layout',
-        'form_captcha',
-        'form_submit_label',
-        'form_submit_email',
-        'form_created_at',
-        'form_updated_at',
+        'form_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'form_context' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'form_name' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'form_virtual_name' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'form_manager_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => true,
+            'convert_empty_to_null' => true,
+        ),
+        'form_client_email_field_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => true,
+            'convert_empty_to_null' => true,
+        ),
+        'form_layout' => array(
+            'default' => null,
+            'data_type' => 'text',
+            'null' => false,
+        ),
+        'form_captcha' => array(
+            'default' => null,
+            'data_type' => 'tinyint',
+            'null' => false,
+        ),
+        'form_submit_label' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'form_submit_email' => array(
+            'default' => null,
+            'data_type' => 'text',
+            'null' => true,
+            'convert_empty_to_null' => true,
+        ),
+        'form_created_at' => array(
+            'default' => null,
+            'data_type' => 'datetime',
+            'null' => false,
+        ),
+        'form_updated_at' => array(
+            'default' => null,
+            'data_type' => 'datetime',
+            'null' => false,
+        ),
     );
 
     protected static $_observers = array(

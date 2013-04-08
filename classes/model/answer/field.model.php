@@ -15,6 +15,34 @@ class Model_Answer_Field extends \Nos\Orm\Model
     protected static $_table_name = 'nos_form_answer_field';
     protected static $_primary_key = array('anfi_id');
 
+    protected static $_properties = array(
+        'anfi_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'anfi_answer_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'anfi_field_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'anfi_field_type' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'anfi_value' => array(
+            'default' => null,
+            'data_type' => 'text',
+            'null' => false,
+        ),
+    );
+
     protected static $_belongs_to = array(
         'answer' => array(
             'key_from'       => 'anfi_answer_id',
