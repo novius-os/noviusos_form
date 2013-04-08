@@ -25,6 +25,11 @@ class Controller_Front extends Controller_Front_Application
 
         $this->enhancer_args = $enhancer_args;
 
+        \Nos\Nos::main_controller()->addCacheSuffixHandler(array(
+            'type' => 'GET',
+            'keys' => 'message',
+        ));
+
         $form_id = $enhancer_args['form_id'];
         if (empty($form_id)) {
             return '';
@@ -36,7 +41,8 @@ class Controller_Front extends Controller_Front_Application
 
         $errors = array();
 
-        if (\Input::method() == 'POST' && \Input::post('_form_id') == $item->form_id) {
+        // Post handler with redirect
+        if (\Input::method() == 'POST' && \Input::post('_form_id') == $form_id) {
 
             $errors = $this->post_answers($item);
             if (empty($errors)) {
@@ -51,8 +57,13 @@ class Controller_Front extends Controller_Front_Application
                     }
                 }
 
-                return \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'));
+                \Response::redirect(\Nos\Nos::main_controller()->getUrl().'?message='.$form_id);
             }
+        }
+
+        // Confirmation message
+        if (\Input::get('message', 0) == $form_id) {
+            return \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'));
         }
 
         return $this->render_form($item, $errors);
