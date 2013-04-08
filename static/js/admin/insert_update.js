@@ -333,17 +333,17 @@ define(
                 if (-1 !== $.inArray(type, ['radio', 'select'])) {
                     var html = '<select>';
                     $.each(choices.split("\n"), function(i, choice) {
-                        html += '<option value="' + i + '">' + choice + '</option>';
+                        html += '<option value="' + i + '" ' + (default_value_value[0] == choice ? 'selected' : '') + '>' + choice + '</option>';
                     });
                     html += '</select>';
                     $new = $(html).attr({
                         name: $default_value.attr('name'),
                         id: $default_value.attr('id')
-                    }).val(default_value_value[0]);
+                    });
                 } else if (type == 'checkbox') {
                     var html = '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />';
                     $.each(choices.split("\n"), function(i, choice) {
-                        html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'selected' : '') + '> ' + choice + '</label><br />';
+                        html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'checked' : '') + '> ' + choice + '</label><br />';
                     });
                     $new = $(html);
                 } else {

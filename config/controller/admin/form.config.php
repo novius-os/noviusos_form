@@ -472,6 +472,9 @@ return array(
             'form' => array(
                 'type' => 'text',
             ),
+            'populate' => function($item) {
+                return str_replace("\n", ',', $item->field_default_value);
+            }
         ),
         /*'field_name' => array(
             'label' => __('Name:'),
