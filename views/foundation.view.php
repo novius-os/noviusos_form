@@ -13,62 +13,65 @@
 
 \Nos\Nos::main_controller()->addJavascript('static/apps/noviusos_form/js/foundation.js');
 
-function add_attr_to_thing(&$thing, $attr, $value)
-{
-    if (isset($thing['callback'])) {
-        $key = false;
-        if ($thing['callback'] == 'html_tag') {
-            $key = 1;
-        }
-        if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
-            if (in_array($thing['callback'][1], array('select', 'checkbox'))) {
-                $key = 3;
-            } else {
-                $key = 2;
+
+if (!function_exists('noviusos_form_foundation_add_attr_to_thing')) {
+    function noviusos_form_foundation_add_attr_to_thing(&$thing, $attr, $value)
+    {
+        if (isset($thing['callback'])) {
+            $key = false;
+            if ($thing['callback'] == 'html_tag') {
+                $key = 1;
             }
-        }
-        if (false !== $key) {
-            if (!isset($thing['args'][$key][$attr])) {
-                $thing['args'][$key][$attr] = $value;
-            } else {
-                $thing['args'][$key][$attr] .= ' '.$value;
+            if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
+                if (in_array($thing['callback'][1], array('select', 'checkbox'))) {
+                    $key = 3;
+                } else {
+                    $key = 2;
+                }
+            }
+            if (false !== $key) {
+                if (!isset($thing['args'][$key][$attr])) {
+                    $thing['args'][$key][$attr] = $value;
+                } else {
+                    $thing['args'][$key][$attr] .= ' '.$value;
+                }
             }
         }
     }
-}
 
-function get_html_attrs($thing)
-{
-    if (isset($thing['callback'])) {
-        $key = false;
-        if ($thing['callback'] == 'html_tag') {
-            $key = 1;
-        }
-        if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
-            if (in_array($thing['callback'][1], array('select', 'checkbox'))) {
-                $key = 3;
-            } else {
-                $key = 2;
+    function noviusos_form_foundation_get_html_attrs($thing)
+    {
+        if (isset($thing['callback'])) {
+            $key = false;
+            if ($thing['callback'] == 'html_tag') {
+                $key = 1;
+            }
+            if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
+                if (in_array($thing['callback'][1], array('select', 'checkbox'))) {
+                    $key = 3;
+                } else {
+                    $key = 2;
+                }
+            }
+            if (false !== $key) {
+                return $thing['args'][$key];
             }
         }
-        if (false !== $key) {
-            return $thing['args'][$key];
-        }
+        return;
     }
-    return;
-}
 
-function add_content_to_thing(&$thing, $content)
-{
-    if (isset($thing['callback'])) {
-        $key = false;
-        if ($thing['callback'] == 'html_tag') {
-            $key = 2;
+    function noviusos_form_foundation_add_content_to_thing(&$thing, $content)
+    {
+        if (isset($thing['callback'])) {
+            $key = false;
+            if ($thing['callback'] == 'html_tag') {
+                $key = 2;
+            }
+            if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
+                $key = 0;
+            }
+            $thing['args'][$key] .= $content;
         }
-        if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
-            $key = 0;
-        }
-        $thing['args'][$key] .= $content;
     }
 }
 
@@ -117,15 +120,15 @@ if (in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
 
 foreach ($fields as $name => &$field) {
 
-    add_attr_to_thing($field['label'], 'class', $label_class);
-    add_attr_to_thing($field['field'], 'class', 'input_text');
+    noviusos_form_foundation_add_attr_to_thing($field['label'], 'class', $label_class);
+    noviusos_form_foundation_add_attr_to_thing($field['field'], 'class', 'input_text');
 
     if (!empty($field['item']->field_mandatory)) {
         // For fields using a label, add a <span> at the end
-        add_content_to_thing($field['label'], ' <span clas="required">*</span>');
+        noviusos_form_foundation_add_content_to_thing($field['label'], ' <span clas="required">*</span>');
         if ($enhancer_args['label_position'] == 'placeholder') {
             // For placeholder, add * at the end of placeholder's text
-            add_attr_to_thing($field['field'], 'placeholder', ' *');
+            noviusos_form_foundation_add_attr_to_thing($field['field'], 'placeholder', ' *');
         }
     }
 }
@@ -139,7 +142,7 @@ unset($field);
 <?php
 
 foreach ($errors as $name => $error) {
-    $attrs = get_html_attrs($fields[$name]['field']);
+    $attrs = noviusos_form_foundation_get_html_attrs($fields[$name]['field']);
     $id = !empty($attrs['id']) ? $attrs['id'] : '';
     echo '<p class="error"><label for="'.$id.'">'.nl2br(htmlspecialchars($error)).'</label></p>';
 }
