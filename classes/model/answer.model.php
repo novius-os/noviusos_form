@@ -16,10 +16,26 @@ class Model_Answer extends \Nos\Orm\Model
     protected static $_primary_key = array('answer_id');
 
     protected static $_properties = array(
-        'answer_id',
-        'answer_form_id',
-        'answer_ip',
-        'answer_created_at',
+        'answer_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'answer_form_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'answer_ip' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'answer_created_at' => array(
+            'default' => null,
+            'data_type' => 'datetime',
+            'null' => false,
+        ),
     );
 
     protected static $_observers = array(

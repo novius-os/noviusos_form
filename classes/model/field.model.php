@@ -16,25 +16,101 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_primary_key = array('field_id');
 
     protected static $_properties = array(
-        'field_id',
-        'field_form_id',
-        'field_type',
-        'field_label',
-        'field_message',
-        'field_virtual_name',
-        'field_choices',
-        'field_created_at',
-        'field_mandatory',
-        'field_default_value',
-        'field_details',
-        'field_style',
-        'field_width',
-        'field_height',
-        'field_limited_to',
-        'field_origin',
-        'field_origin_var',
-        'field_technical_id',
-        'field_technical_css',
+        'field_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'field_form_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => false,
+        ),
+        'field_type' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_label' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_message' => array(
+            'default' => null,
+            'data_type' => 'text',
+            'null' => false,
+        ),
+        'field_virtual_name' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_choices' => array(
+            'default' => null,
+            'data_type' => 'text',
+            'null' => false,
+        ),
+        'field_created_at' => array(
+            'default' => null,
+            'data_type' => 'datetime',
+            'null' => false,
+        ),
+        'field_mandatory' => array(
+            'default' => null,
+            'data_type' => 'tinyint',
+            'null' => false,
+        ),
+        'field_default_value' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_details' => array(
+            'default' => null,
+            'data_type' => 'text',
+            'null' => false,
+        ),
+        'field_style' => array(
+            'default' => null,
+            'data_type' => 'enum',
+            'null' => false,
+        ),
+        'field_width' => array(
+            'default' => null,
+            'data_type' => 'tinyint',
+            'null' => false,
+        ),
+        'field_height' => array(
+            'default' => null,
+            'data_type' => 'tinyint',
+            'null' => false,
+        ),
+        'field_limited_to' => array(
+            'default' => null,
+            'data_type' => 'int',
+            'null' => false,
+        ),
+        'field_origin' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_origin_var' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_technical_id' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_technical_css' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
     );
 
     protected static $_observers = array(
