@@ -21,7 +21,7 @@ if (!empty($nosContext)) {
     $options['where'] = array(array('context', $nosContext));
 }
 
-$forms = Nos\Form\Controller_Admin_Form::array_pluck(\Nos\Form\Model_Form::find('all', $options), 'form_name', 'form_id');
+$forms = \Arr::pluck(\Nos\Form\Model_Form::find('all', $options), 'form_name', 'form_id');
 echo \Fuel\Core\Form::select('form_id', \Arr::get($enhancer_args, 'form_id', ''), $forms);
 ?>
     </label>
