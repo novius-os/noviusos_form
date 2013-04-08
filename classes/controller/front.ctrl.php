@@ -36,7 +36,7 @@ class Controller_Front extends Controller_Front_Application
 
         $errors = array();
 
-        if (\Input::method() == 'POST') {
+        if (\Input::method() == 'POST' && \Input::post('_form_id') == $item->form_id) {
 
             $errors = $this->post_answers($item);
             if (empty($errors)) {
@@ -84,8 +84,9 @@ class Controller_Front extends Controller_Front_Application
             if (mt_rand(1, 2) == 1) {
                 list($number_2, $number_1) = array($number_1, $number_2);
             }
-            \Session::set('captcha', $number_1 + $number_2);
+            \Session::set('captcha.'.$item->form_id, $number_1 + $number_2);
         }
+        $layout[] = array('_form_id=4');
 
         $has_page_break = false;
         foreach ($item->fields as $field_id => $field) {
@@ -123,6 +124,17 @@ class Controller_Front extends Controller_Front_Application
                         'field_virtual_name' => 'form_captcha',
                     );
                     $name = 'form_captcha';
+                } else if ($field_id == '_form_id') {
+                    $field = (object) array(
+                        'field_label' => '',
+                        'field_type' => 'hidden',
+                        'field_mandatory' => '1',
+                        'field_technical_id' => '',
+                        'field_technical_css' => '',
+                        'field_default_value' => $item->form_id,
+                        'field_origin' => '',
+                    );
+                    $name = '_form_id';
                 } else {
                     $field = $item->fields[$field_id];
                     $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
@@ -148,7 +160,7 @@ class Controller_Front extends Controller_Front_Application
                 }
 
                 if ($name == 'form_captcha') {
-                    $html_attrs['data-captcha'] = mt_rand(100, 999).'-'.\Session::get('captcha').'-'.mt_rand(100, 999);
+                    $html_attrs['data-captcha'] = mt_rand(100, 999).'-'.\Session::get('captcha.'.$item->form_id).'-'.mt_rand(100, 999);
                     $html_attrs['data-custom-validity'] = __('You have not passed the spam test. Please try again.');
                 }
 
@@ -445,7 +457,7 @@ class Controller_Front extends Controller_Front_Application
             }
         }
 
-        if ($form->form_captcha && \Session::get('captcha') != \Input::post('form_captcha', 0)) {
+        if ($form->form_captcha && \Session::get('captcha.'.$form->form_id) != \Input::post('form_captcha', 0)) {
             $errors['form_captcha'] = __('You have not passed the spam test. Please try again.');
         }
 
