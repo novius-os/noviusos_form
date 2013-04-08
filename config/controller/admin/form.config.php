@@ -350,33 +350,33 @@ return array(
                     'main' => array(
                         'title' => __('Properties'),
                         'fields' => array(
-                            'field[label][]',
-                            'field[type][]',
-                            'field[choices][]',
-                            'field[style][]',
-                            'field[message][]',
-                            //'field[name][]',
-                            'field[origin][]',
-                            'field[origin_var][]',
+                            'field_label',
+                            'field_type',
+                            'field_choices',
+                            'field_style',
+                            'field_message',
+                            //'field_name',
+                            'field_origin',
+                            'field_origin_var',
                         ),
                     ),
                     'optional' => array(
                         'title' => __('Further options'),
                         'fields' => array(
-                            'field[mandatory][]',
-                            'field[default_value][]',
-                            'field[details][]',
-                            'field[width][]',
-                            'field[height][]',
-                            'field[limited_to][]',
+                            'field_mandatory',
+                            'field_default_value',
+                            'field_details',
+                            'field_width',
+                            'field_height',
+                            'field_limited_to',
                         ),
                     ),
                     'technical' => array(
                         'title' => __('Technical options'),
                         'fields' => array(
-                            'field[virtual_name][]',
-                            'field[technical_id][]',
-                            'field[technical_css][]',
+                            'field_virtual_name',
+                            'field_technical_id',
+                            'field_technical_css',
                         ),
                     ),
                 ),
@@ -384,16 +384,13 @@ return array(
         ),
     ),
     'fields_config' => array(
-        'field[id][]' => array(
+        'field_id' => array(
             'form' => array(
                 'type' => 'hidden',
                 'value' => '0',
             ),
-            'populate' => function($item) {
-                return $item->field_id;
-            },
         ),
-        'field[type][]' => array(
+        'field_type' => array(
             'label' => __('Type:'),
             'form' => array(
                 'type' => 'select',
@@ -417,11 +414,8 @@ return array(
             'validation' => array(
                 'required',
             ),
-            'populate' => function($item) {
-                return $item->field_type;
-            },
         ),
-        'field[label][]' => array(
+        'field_label' => array(
             'label' => __('Label:'),
             'form' => array(
                 'type' => 'text',
@@ -430,11 +424,8 @@ return array(
             'validation' => array(
                 'required',
             ),
-            'populate' => function($item) {
-                return $item->field_label;
-            },
         ),
-        'field[message][]' => array(
+        'field_message' => array(
             'label' => __('Message:'),
             'form' => array(
                 'type' => 'textarea',
@@ -444,11 +435,8 @@ return array(
             'validation' => array(
                 'required',
             ),
-            'populate' => function($item) {
-                return $item->field_message;
-            },
         ),
-        'field[style][]' => array(
+        'field_style' => array(
             'label' => __('Style:'),
             'form' => array(
                 'type' => 'select',
@@ -460,11 +448,8 @@ return array(
                 ),
                 'value' => 'p',
             ),
-            'populate' => function($item) {
-                return $item->field_style;
-            },
         ),
-        'field[choices][]' => array(
+        'field_choices' => array(
             'label' => __('Answers:'),
             'form' => array(
                 'type' => 'textarea',
@@ -473,31 +458,22 @@ return array(
                 // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One answer per line'),
             ),
-            'populate' => function($item) {
-                return $item->field_choices;
-            },
         ),
-        'field[mandatory][]' => array(
+        'field_mandatory' => array(
             'label' => __('Mandatory'),
             'form' => array(
                 'type' => 'checkbox',
                 'value' => '1',
                 'empty' => '0',
             ),
-            'populate' => function($item) {
-                return $item->field_mandatory;
-            },
         ),
-        'field[default_value][]' => array(
+        'field_default_value' => array(
             'label' => __('Default value:'),
             'form' => array(
                 'type' => 'text',
             ),
-            'populate' => function($item) {
-                return $item->field_default_value;
-            },
         ),
-        /*'field[name][]' => array(
+        /*'field_name' => array(
             'label' => __('Name:'),
             'form' => array(
                 'type' => 'text',
@@ -507,17 +483,14 @@ return array(
                 return $item->field_name;
             },
         ),*/
-        'field[details][]' => array(
+        'field_details' => array(
             'label' => __('Instructions for the user:'),
             'form' => array(
                 'type' => 'textarea',
                 'rows' => '3',
              ),
-            'populate' => function($item) {
-                return $item->field_details;
-            },
         ),
-        'field[width][]' => array(
+        'field_width' => array(
             'label' => __('Width:'),
             'template' => str_replace('{{count}}', '{field} {required}', __('Width: {{count}} characters')),
             'form' => array(
@@ -529,7 +502,7 @@ return array(
                 return empty($item->field_width) ? '' : $item->field_width;
             },
         ),
-        'field[height][]' => array(
+        'field_height' => array(
             'label' => '',
             'template' => str_replace('{{count}}', '{field} {required}', __('Height: {{count}} lines')),
             'form' => array(
@@ -541,7 +514,7 @@ return array(
                 return empty($item->field_height) ? '' : $item->field_height;
             },
         ),
-        'field[limited_to][]' => array(
+        'field_limited_to' => array(
             'label' => '',
             'template' => str_replace('{{count}}', '{field} {required}', __('Limited to {{count}} characters')),
             'form' => array(
@@ -552,7 +525,7 @@ return array(
                 return empty($item->field_limited_to) ? '' : $item->field_limited_to;
             },
         ),
-        'field[origin][]' => array(
+        'field_origin' => array(
             'label' => __('Origin:'),
             'form' => array(
                 'type' => 'select',
@@ -564,49 +537,34 @@ return array(
                     'session' => 'Session',
                 ),
             ),
-            'populate' => function($item) {
-                return $item->field_origin;
-            },
         ),
-        'field[origin_var][]' => array(
+        'field_origin_var' => array(
             'label' => __('Variable name:'),
             'form' => array(
                 'type' => 'text',
                 'value' => '',
             ),
-            'populate' => function($item) {
-                return $item->field_origin_var;
-            },
         ),
-        'field[virtual_name][]' => array(
+        'field_virtual_name' => array(
             'label' => __('Virtual field name:'),
             'form' => array(
                 'type' => 'text',
                 'value' => '',
             ),
-            'populate' => function($item) {
-                return $item->field_virtual_name;
-            },
             'expert' => true,
         ),
-        'field[technical_id][]' => array(
+        'field_technical_id' => array(
             'label' => __('ID:'),
             'form' => array(
                 'type' => 'text',
             ),
-            'populate' => function($item) {
-                return $item->field_technical_id;
-            },
             'expert' => true,
         ),
-        'field[technical_css][]' => array(
+        'field_technical_css' => array(
             'label' => __('CSS classes:'),
             'form' => array(
                 'type' => 'text',
             ),
-            'populate' => function($item) {
-                return $item->field_technical_css;
-            },
             'expert' => true,
         ),
     ),

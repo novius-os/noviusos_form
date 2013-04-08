@@ -54,7 +54,7 @@ define(
                             return;
                         }
                         j == 0 || (layout += ',');
-                        layout += find_field($field, 'id').val() + '=' + get_cell_colspan($preview);
+                        layout += find_field($field, 'field_id').val() + '=' + get_cell_colspan($preview);
                     });
                 });
                 $layout.val(layout);
@@ -118,21 +118,11 @@ define(
             $blank_slate.on('click', 'label', add_fields_blank_slate);
 
             function on_field_added($field, params) {
-                var $type = find_field($field, 'type');
+                var $type = find_field($field, 'field_type');
                 if ($type.length == 0) {
                     // Submit informations
                     return;
                 }
-                // Make checkbox fill a hidden field instead (we're sending an array, we don't want "missing" values)
-                $field.find('input[type=checkbox]').each(function normaliseCheckboxes() {
-                    var $checkbox = $(this);
-                    var name     = $checkbox.attr('name');
-                    var $hidden   = $('<input type="hidden" value="" />');
-                    $hidden.insertAfter($checkbox);
-                    $checkbox.on('change', function() {
-                        $hidden.attr('name', $(this).is(':checked') ? '' : name);
-                    }).trigger('change');
-                });
 
                 // The clone will be wrapped into a <tr class="preview_row">
                 var $preview = get_preview($field);
@@ -175,7 +165,7 @@ define(
                 // Show the appropriate field and position it
                 show_field($field);
 
-                find_field($field, 'label').focus();
+                find_field($field, 'field_label').focus();
             }
 
             function show_field($field) {
@@ -186,7 +176,7 @@ define(
                 }
                 $field.siblings('.field_enclosure').hide();
                 set_field_padding();
-                var $submit_label = find_field($field, 'submit_label');
+                var $submit_label = find_field($field, 'field_submit_label');
                 if ($submit_label.length == 0) {
                     $submit_informations.removeClass('ui-state-active');
                 }
@@ -246,23 +236,23 @@ define(
             }
 
             // When the "field_type" changes
-            $fields_container.on('change', 'select[name^="field[type]"]', function on_type_change(e) {
+            $fields_container.on('change', 'select[name*="[field_type]"]', function on_type_change(e) {
                 var type = $(this).val();
                 var $field = $(this).closest('.field_enclosure');
 
-                show_when($field, 'choices', -1 !== $.inArray(type, ['radio', 'checkbox', 'select']));
-                show_when($field, 'label', -1 === $.inArray(type, ['separator', 'message']));
-                show_when($field, 'message', -1 !== $.inArray(type, ['message']));
-                show_when($field, 'name', -1 !== $.inArray(type, ['hidden']));
-                show_when($field, 'details', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
-                show_when($field, 'mandatory', -1 === $.inArray(type, ['hidden', 'variable', 'checkbox', 'separator']));
-                show_when($field, 'default_value', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
-                show_when($field, 'style', -1 !== $.inArray(type, ['message']));
-                show_when($field, 'width', -1 !== $.inArray(type, ['text']));
-                show_when($field, 'height', -1 !== $.inArray(type, ['textarea']));
-                show_when($field, 'limited_to', -1 !== $.inArray(type, ['text']));
-                show_when($field, 'origin', -1 !== $.inArray(type, ['hidden', 'variable']));
-                show_when($field, 'origin_var', -1 !== $.inArray(type, ['hidden', 'variable']));
+                show_when($field, 'field_choices', -1 !== $.inArray(type, ['radio', 'checkbox', 'select']));
+                show_when($field, 'field_label', -1 === $.inArray(type, ['separator', 'message']));
+                show_when($field, 'field_message', -1 !== $.inArray(type, ['message']));
+                show_when($field, 'field_name', -1 !== $.inArray(type, ['hidden']));
+                show_when($field, 'field_details', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
+                show_when($field, 'field_mandatory', -1 === $.inArray(type, ['hidden', 'variable', 'checkbox', 'separator']));
+                show_when($field, 'field_default_value', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
+                show_when($field, 'field_style', -1 !== $.inArray(type, ['message']));
+                show_when($field, 'field_width', -1 !== $.inArray(type, ['text']));
+                show_when($field, 'field_height', -1 !== $.inArray(type, ['textarea']));
+                show_when($field, 'field_limited_to', -1 !== $.inArray(type, ['text']));
+                show_when($field, 'field_origin', -1 !== $.inArray(type, ['hidden', 'variable']));
+                show_when($field, 'field_origin_var', -1 !== $.inArray(type, ['hidden', 'variable']));
 
                 // The 'type' field is for sure in the first wijmo-wijaccordion-content so we know $field IS an .accordion too
                 // So the selectedIndex is for sure '0'
@@ -283,15 +273,15 @@ define(
 
                 // Generate default value before preview, because the preview uses it
                 generate_default_value($field);
-                $field.find('[name^="field[label]"]').trigger('change');
-                $field.find('[name^="field[style]"]').trigger('change');
+                $field.find('[name*="[field_label]"]').trigger('change');
+                $field.find('[name*="[field_style]"]').trigger('change');
                 generate_preview.call($field.get(0), e);
             });
 
-            $fields_container.on('change', 'select[name^="field[style]"]', function on_style_change(e) {
+            $fields_container.on('change', 'select[name*="[field_style]"]', function on_style_change(e) {
                 var style = $(this).val();
                 var $field = $(this).closest('.field_enclosure');
-                var $message = $field.find('[name^="field[message]"]');
+                var $message = $field.find('[name*="[field_message]"]');
                 var $new = $(style == 'p' ? '<textarea rows="4"></textarea>' : '<input type="text" />');
 
                 $new.attr({
@@ -308,7 +298,7 @@ define(
             });
 
             function find_field($context, field_name) {
-                return $context.find('[name^="field[' + field_name + ']"]');
+                return $context.find('[name*="[' + field_name + ']"]');
             }
 
 
@@ -319,8 +309,8 @@ define(
                     return;
                 }
                 var $label = $preview.find('label.preview_label');
-                var is_mandatory = find_field($field, 'mandatory').is(':checked');
-                $label.text(find_field($field, 'label').val() + (is_mandatory ? ' *' : ''));
+                var is_mandatory = find_field($field, 'field_mandatory').is(':checked');
+                $label.text(find_field($field, 'field_label').val() + (is_mandatory ? ' *' : ''));
                 if ($(this).is(':visible')) {
                     $label.show();
                 } else {
@@ -328,14 +318,14 @@ define(
                 }
             }
             // Events that regenerates the preview label
-            $fields_container.on('change keyup', 'input[name^="field[label]"]', generate_label);
-            $fields_container.on('change', 'input[name^="field[mandatory]"]', generate_label);
+            $fields_container.on('change keyup', 'input[name*="[field_label]"]', generate_label);
+            $fields_container.on('change', 'input[name*="[field_mandatory]"]', generate_label);
 
             function generate_default_value($field) {
 
-                var type = find_field($field, 'type').val();
-                var $default_value = find_field($field, 'default_value');
-                var choices = find_field($field, 'choices').val();
+                var type = find_field($field, 'field_type').val();
+                var $default_value = find_field($field, 'field_default_value');
+                var choices = find_field($field, 'field_choices').val();
                 var default_value_value = $default_value.val().split(',');
                 var $new = null;
                 var name = $default_value.attr('name');
@@ -381,15 +371,15 @@ define(
 
             function generate_preview(e) {
                 var $field = $(this).closest('.field_enclosure');
-                var type = find_field($field, 'type').val();
-                var choices = find_field($field, 'choices').val();
-                var width = find_field($field, 'width').val();
-                var height = find_field($field, 'height').val();
-                var details = find_field($field, 'details').val();
+                var type = find_field($field, 'field_type').val();
+                var choices = find_field($field, 'field_choices').val();
+                var width = find_field($field, 'field_width').val();
+                var height = find_field($field, 'field_height').val();
+                var details = find_field($field, 'field_details').val();
                 var $preview = $field.data('preview');
                 var $td = $preview.find('div.preview_content');
                 var html  = '';
-                var default_value_value = find_field($field, 'default_value').val().split(',');
+                var default_value_value = find_field($field, 'field_default_value').val().split(',');
 
                 if (type == 'text' || type == 'email' || type == 'number' || type == 'date' || type == 'file') {
                     var size = '';
@@ -428,8 +418,8 @@ define(
                 }
 
                 if (type == 'message') {
-                    var message = find_field($field, 'message').val().replace(/\n/g, '<br />');
-                    var style = find_field($field, 'style').val();
+                    var message = find_field($field, 'field_message').val().replace(/\n/g, '<br />');
+                    var style = find_field($field, 'field_style').val();
                     html += '<' + style + '>' + message + '</' + style + '>';
                 }
 
@@ -452,12 +442,12 @@ define(
             }
 
             // Events that regenerates the preview content
-            $fields_container.on('change keyup', 'textarea[name^="field[choices]"]', generate_preview);
-            $fields_container.on('change keyup', '[name^="field[message]"]', generate_preview);
-            $fields_container.on('change keyup', '[name^="field[default_value]"]', generate_preview);
-            $fields_container.on('change keyup', 'input[name^="field[width]"]', generate_preview);
-            $fields_container.on('change keyup', 'input[name^="field[height]"]', generate_preview);
-            $fields_container.on('change keyup', 'textarea[name^="field[details]"]', generate_preview);
+            $fields_container.on('change keyup', 'textarea[name*="[field_choices]"]', generate_preview);
+            $fields_container.on('change keyup', '[name*="[field_message]"]', generate_preview);
+            $fields_container.on('change keyup', '[name*="[field_default_value]"]', generate_preview);
+            $fields_container.on('change keyup', 'input[name*="[field_width]"]', generate_preview);
+            $fields_container.on('change keyup', 'input[name*="[field_height]"]', generate_preview);
+            $fields_container.on('change keyup', 'textarea[name*="[field_details]"]', generate_preview);
 
             function refreshPreviewHeight($tr) {
                 ($tr || $preview_container.find('tr')).css('height', '').each(function sameHeight() {
@@ -783,7 +773,7 @@ define(
                         var item = this.split('=');
                         var field_id = item[0];
                         var field_width = item[1];
-                        var $preview = find_field($fields_container, 'id').filter(function() {
+                        var $preview = find_field($fields_container, 'field_id').filter(function() {
                             return $(this).val() == field_id;
                         }).closest('.field_enclosure').data('preview');
                         set_cell_colspan($preview, field_width);

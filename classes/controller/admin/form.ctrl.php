@@ -42,30 +42,21 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             }
         }
 
-        $field_names = array();
-        foreach ($this->config['fields_config'] as $name => $field) {
-            if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
-                continue;
-            }
-            $name = str_replace(array('field[', '][]'), '', $name);
-            $field_names[] = $name;
-        }
-        // null is for the first argument of array_map() to transpose the matrix
-        $values = array(null);
-        $fields = array();
-        foreach ($field_names as &$name) {
-            $values[] = \Input::post('field.'.$name);
-            $name = 'field_'.$name;
-        }
-        // If there are values
-        if (!empty($values[1])) {
-            foreach (call_user_func_array('array_map', $values) as $value) {
-                $fields[] = array_combine(array_values($field_names), $value);
+        $fields = \Input::post('field', array());
+
+        // Empty checkboxes should be populated with the 'empty' key of the configuration array
+        // We need to do it manually here, since we're not using the Fieldset class
+        foreach ($this->config['fields_config'] as $name => $config) {
+            if (isset($config['form']['type']) && $config['form']['type'] == 'checkbox') {
+                foreach ($fields as $index => $field) {
+                    if (empty($field[$name]) && isset($config['form']['empty'])) {
+                        $fields[$index][$name] = $config['form']['empty'];
+                    }
+                }
             }
         }
 
         foreach ($fields as $index => $field) {
-
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
             if (in_array($field['field_type'], array('checkbox', 'select', 'radio'))) {
@@ -74,25 +65,22 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 $default_value = array_combine($default_value, $default_value);
                 $fields[$index]['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
             }
-
-            if ($field['field_type'] == 'checkbox' && empty($values[$name])) {
-                $field_config = $this->config['fields_config']['field['.substr($name, 6).'][]']['form'];
-                // Empty checkboxes should be populated with the 'empty' key of the configuration array
-                // We need to do it manually here, since we're not using the Fieldset class
-                if (isset($field_config['empty'])) {
-                    $fields[$index][$name] = $field_config['empty'];
-                }
-            }
         }
 
         static::$to_delete = array_diff(
             array_keys($item->fields),
-            static::array_pluck($fields, 'field_id')
+            \Arr::pluck($fields, 'field_id')
         );
 
         foreach ($fields as $field) {
             $field_id = $field['field_id'];
             $model_field = Model_Field::find($field_id);
+            foreach($this->config['fields_config'] as $config) {
+                if (isset($config['before_save']) && is_callable($config['before_save'])) {
+                    $before_save = $config['before_save'];
+                    $before_save($model_field, $field);
+                }
+            }
             unset($field['field_id']);
             $model_field->set($field);
             $item->fields[$field_id] = $model_field;
@@ -151,8 +139,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
                 continue;
             }
-            $name = str_replace(array('field[', '][]'), '', $name);
-            $default_data['field_'.$name] = \Arr::get($field, 'form.value', '');
+            $default_data[$name] = \Arr::get($field, 'form.value', '');
         }
         unset($default_data['field_id']);
         $default_data['field_mandatory'] = 0;
@@ -161,26 +148,37 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return $model_field;
     }
 
-    public function action_render_field($item, $view = null)
+    public function action_render_field($item)
     {
-        // This action is not available from the browser. Only internal requests are authorised.
-        if (!empty($view) && !\Request::is_hmvc()) {
-            exit();
-        } else {
-            $view = 'noviusos_form::admin/layout';
-        }
-
         if ($item->field_type == 'page_break') {
             return $this->render_page_break($item);
         }
 
-        $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $item, array('save' => false));
+        static $auto_id_increment = 1;
+
+        $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $item, array('save' => false, 'auto_id' => false));
+        // Override auto_id generation so it don't use the name (because we replace it below)
+        $auto_id = uniqid('auto_id_');
+        foreach ($fieldset->field() as $field) {
+            if ($field->get_attribute('id') == '') {
+                $field->set_attribute('id', $auto_id.$auto_id_increment++);
+            }
+        }
+
         $fields_view_params = array(
             'layout' => $this->config['fields_layout'],
             'fieldset' => $fieldset,
         );
         $fields_view_params['view_params'] = &$fields_view_params;
-        return \View::forge($view, $fields_view_params, false);
+
+        // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
+        $replaces = array();
+        foreach ($this->config['fields_config'] as $name => $field_config) {
+            $replaces[$name] = "field[{$item->field_id}][$name]";
+        }
+        $return = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render().$fieldset->build_append();
+
+        return strtr($return, $replaces);
     }
 
     public function page_break()
@@ -193,8 +191,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
                 continue;
             }
-            $name = str_replace(array('field[', '][]'), '', $name);
-            $data['field_'.$name] = '';
+            $data[$name] = '';
         }
         unset($data['field_id']);
         $data['field_type'] = 'page_break';
@@ -210,47 +207,34 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
     public function render_page_break($item)
     {
+        static $auto_id_increment = 1;
 
         $fields_config = $this->config['fields_config'];
-        $fields_config['field[type][]']['form']['options'] = array('page_break' => __('Page break'));
-        $fieldset = \Fieldset::forge(uniqid(), array('auto_id' => false));
-        $fieldset->add_renderers($fields_config);
-        $fieldset->populate_with_instance($item);
+        $fields_config['field_type']['form']['options'] = array('page_break' => __('Page break'));
+        $fieldset = \Fieldset::build_from_config($fields_config, $item, array('save' => false, 'auto_id' => false));
+
+        // Override auto_id generation so it don't use the name (because we replace it below)
+        $auto_id = uniqid('auto_id_');
+        foreach ($fieldset->field() as $field) {
+            if ($field->get_attribute('id') == '') {
+                $field->set_attribute('id', $auto_id.$auto_id_increment++);
+            }
+        }
+
         $fields_view_params = array(
             'layout' => $this->config['fields_layout'],
             'fieldset' => $fieldset,
         );
         $fields_view_params['view_params'] = &$fields_view_params;
-        return \View::forge('noviusos_form::admin/page_break', $fields_view_params, false);
-    }
 
-    /**
-     * Pluck an array of values from an array.
-     *
-     * @param  array   $array  collection of arrays to pluck from
-     * @param  string  $key    key of the value to pluck
-     * @param  string  $index  optional return array index key, true for original index
-     * @return array   array of plucked values
-     */
-    public static function array_pluck($array, $key, $index = null)
-    {
-        $return = array();
-        $get_deep = strpos($key, '.') !== false;
-
-        if ( ! $index) {
-            foreach ($array as $i => $a) {
-                $return[] = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$key} :
-                    ($get_deep ? static::get($a, $key) : $a[$key]);
-            }
-        } else {
-            foreach ($array as $i => $a) {
-                $index !== true and $i = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$index} : $a[$index];
-                $return[$i] = (is_object($a) and ! ($a instanceof \ArrayAccess)) ? $a->{$key} :
-                    ($get_deep ? static::get($a, $key) : $a[$key]);
-            }
+        // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
+        $replaces = array();
+        foreach ($this->config['fields_config'] as $name => $field_config) {
+            $replaces[$name] = "field[{$item->field_id}][$name]";
         }
+        $return = (string) \View::forge('noviusos_form::admin/page_break', $fields_view_params, false);
 
-        return $return;
+        return strtr($return, $replaces);
     }
 
     public function action_export($id)

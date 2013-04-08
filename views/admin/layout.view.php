@@ -12,7 +12,7 @@ echo '<div class="field_enclosure">';
 $has_restricted_fields = false;
 foreach ($fieldset->field() as $field) {
     if ($field->isRestricted()) {
-        if (!$has_restricted) {
+        if (!$has_restricted_fields) {
             echo '<div style="display:none;">';
             $has_restricted_fields = true;
         }
