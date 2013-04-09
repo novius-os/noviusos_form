@@ -75,7 +75,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         foreach ($fields as $field) {
             $field_id = $field['field_id'];
             $model_field = Model_Field::find($field_id);
-            foreach($this->config['fields_config'] as $config) {
+            foreach ($this->config['fields_config'] as $config) {
                 if (isset($config['before_save']) && is_callable($config['before_save'])) {
                     $before_save = $config['before_save'];
                     $before_save($model_field, $field);
