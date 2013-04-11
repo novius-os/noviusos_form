@@ -12,7 +12,9 @@ namespace Nos\Form;
 
 class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 {
-    protected static $to_delete = array();
+    protected $to_delete = array();
+    protected $fields_fieldset = array();
+    protected $fields_data = array();
 
     public function prepare_i18n()
     {
@@ -42,65 +44,52 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             }
         }
 
-        $fields = \Input::post('field', array());
+        $fields_data = \Input::post('field', array());
 
-        // Empty checkboxes should be populated with the 'empty' key of the configuration array
-        // We need to do it manually here, since we're not using the Fieldset class
-        foreach ($this->config['fields_config'] as $name => $config) {
-            if (isset($config['form']['type']) && $config['form']['type'] == 'checkbox') {
-                foreach ($fields as $index => $field) {
-                    if (empty($field[$name]) && isset($config['form']['empty'])) {
-                        $fields[$index][$name] = $config['form']['empty'];
-                    }
-                }
-            }
-        }
-
-        foreach ($fields as $index => $field) {
+        foreach ($fields_data as $index => $field) {
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
             if (in_array($field['field_type'], array('checkbox', 'select', 'radio'))) {
                 $choices = explode("\n", $field['field_choices']);
                 $default_value = explode(',', $field['field_default_value']);
                 $default_value = array_combine($default_value, $default_value);
-                $fields[$index]['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
+                $fields_data[$index]['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
             }
         }
 
-        static::$to_delete = array_diff(
+        $this->to_delete = array_diff(
             array_keys($item->fields),
-            \Arr::pluck($fields, 'field_id')
+            \Arr::pluck($fields_data, 'field_id')
         );
 
-        foreach ($fields as $field) {
-            $field_id = $field['field_id'];
-            $model_field = Model_Field::find($field_id);
-            foreach ($this->config['fields_config'] as $config) {
-                if (isset($config['before_save']) && is_callable($config['before_save'])) {
-                    $before_save = $config['before_save'];
-                    $before_save($model_field, $field);
-                }
-            }
-            unset($field['field_id']);
-            $model_field->set($field);
-            $item->fields[$field_id] = $model_field;
+        foreach ($fields_data as $field_id => $field_data) {
+            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config($this->config['fields_config'], array(
+                'save' => false,
+            ));
+            $this->fields_data[$field_id] = $field_data;
+            $item->fields[$field_id] = Model_Field::find($field_id);
         }
     }
 
     public function save($item, $data)
     {
         $return = parent::save($item, $data);
-        foreach ($item->fields as $field) {
-            if (in_array($field->field_id, static::$to_delete)) {
+        // Save form fields
+        foreach ($this->fields_fieldset as $field_id => $fieldset) {
+            if (in_array($field_id, $this->to_delete)) {
                 continue;
             }
+            $field = $item->fields[$field_id];
             $field->field_form_id = $item->form_id;
-            $field->save();
+            $fieldset->validation()->run($this->fields_data[$field_id]);
+            $fieldset->triggerComplete($field, $fieldset->validated());
         }
-        foreach (static::$to_delete as $field_id) {
+        // Delete fields
+        foreach ($this->to_delete as $field_id) {
             $item->fields[$field_id]->delete();
             unset($item->fields[$field_id]);
         }
+        $this->to_delete = array();
         return $return;
     }
 
