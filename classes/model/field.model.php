@@ -116,7 +116,6 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_observers = array(
         'Orm\\Observer_Self',
         'Orm\\Observer_CreatedAt' => array(
-            'events' => array('before_insert'),
             'mysql_timestamp' => true,
             'property' => 'field_created_at',
         ),

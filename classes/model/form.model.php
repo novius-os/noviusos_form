@@ -85,12 +85,10 @@ class Model_Form extends \Nos\Orm\Model
     protected static $_observers = array(
         'Orm\\Observer_Self',
         'Orm\\Observer_CreatedAt' => array(
-            'events' => array('before_insert'),
             'mysql_timestamp' => true,
             'property' => 'form_created_at',
         ),
         'Orm\\Observer_UpdatedAt' => array(
-            'events' => array('before_save'),
             'mysql_timestamp' => true,
             'property' => 'form_updated_at',
         ),
@@ -98,11 +96,9 @@ class Model_Form extends \Nos\Orm\Model
 
     protected static $_behaviours = array(
         'Nos\Orm_Behaviour_Contextable' => array(
-            'events' => array('before_insert'),
             'context_property'      => 'form_context',
         ),
         'Nos\Orm_Behaviour_Virtualname' => array(
-            'events' => array('before_save', 'after_save'),
             'virtual_name_property' => 'form_virtual_name',
         ),
     );
