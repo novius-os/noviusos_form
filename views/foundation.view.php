@@ -230,25 +230,25 @@ if ($has_page_break) {
     echo '</div>';
 }
 
-$page_break_layout = '{previous}{pagination}{next}';
+$page_break_layout = __('{{previous}}{{pagination}}{{next}}');
 
 if ($has_page_break) {
     ?>
     <div class="page_break_control row">
     <?php
     echo strtr($page_break_layout, array(
-        '{previous}' => '
+        '{{previous}}' => '
             <div class="columns four">
                 <a class="page_break_previous" href="">'.__('Previous page').'</a>
             </div>',
-        '{next}' => '
+        '{{next}}' => '
             <div class="columns four">
                 <button type="button" class="page_break_next">'.__('Next page').'</button>'.
                 \Form::submit('submit', $item->form_submit_label, array(
                     'class' => 'page_break_last',
                 )).'
             </div>',
-        '{pagination}' => '
+        '{{pagination}}' => '
                 <div class="columns four"> <progress id="progress"></progress> '.
                     strtr(__('{{current}} out of {{total}}'), array(
                         '{{current}}' => '<span class="page_break_current">1</span>',
