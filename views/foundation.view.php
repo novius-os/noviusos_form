@@ -12,7 +12,7 @@
 \Nos\Nos::main_controller()->addCss('static/apps/noviusos_form/css/front.css');
 \Nos\Nos::main_controller()->addJavascript('static/apps/noviusos_form/js/foundation.js');
 
-\Nos\I18n::current_dictionary('noviusos_form::common');
+\Nos\I18n::current_dictionary('noviusos_form::front');
 
 if (!function_exists('noviusos_form_foundation_add_attr_to_thing')) {
     function noviusos_form_foundation_add_attr_to_thing(&$thing, $attr, $value)
