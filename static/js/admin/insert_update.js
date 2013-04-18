@@ -278,6 +278,11 @@ define(
                 generate_preview.call($field.get(0), e);
             });
 
+            $fields_container.on('blur', 'textarea[name*="[field_choices]"]', function regenerate_default_value(e) {
+                var $field = $(this).closest('.field_enclosure');
+                generate_default_value($field);
+            });
+
             $fields_container.on('change', 'select[name*="[field_style]"]', function on_style_change(e) {
                 var style = $(this).val();
                 var $field = $(this).closest('.field_enclosure');
@@ -326,7 +331,12 @@ define(
                 var type = find_field($field, 'field_type').val();
                 var $default_value = find_field($field, 'field_default_value');
                 var choices = find_field($field, 'field_choices').val();
-                var default_value_value = $default_value.val().split("\n");
+                var default_value_value = $default_value.val();
+                if (default_value_value.match(/^[0-9,]+$/)) {
+                    default_value_value = default_value_value.split(',');
+                } else {
+                    default_value_value = default_value_value.split("\n")
+                }
                 var $new = null;
                 var name = $default_value.attr('name');
 
