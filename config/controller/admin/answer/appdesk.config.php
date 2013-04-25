@@ -25,7 +25,7 @@ return array(
                             'label' => __('Received on:'),
                         ),
                     ),
-                    'actions' => array('Nos\Form\Model_Answer.visualize', 'Nos\Form\Model_Answer.delete'),
+                    'actions' => array('Nos\Form\Model_Answer.visualise', 'Nos\Form\Model_Answer.delete'),
                     'texts' => array(
                         // Note to translator: 'Preview' here is a label, not an action
                         'headerDefault' => __('Preview'),

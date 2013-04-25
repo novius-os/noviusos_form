@@ -269,7 +269,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                     $csv['header'][] = $field->field_label;
                     if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
                         if (empty($csv['choices'])) {
-                            $csv['choices'] = array_fill(0, count($csv['header']) - 1, '');
+                            $fill = count($csv['header']) - 1;
+                            $fill > 0 and $csv['choices'] = array_fill(0, $fill, '');
                         }
                         $choices = explode("\n", $field->field_choices);
                         foreach ($choices as $choice) {
