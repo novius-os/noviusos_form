@@ -470,22 +470,10 @@ return array(
         'field_default_value' => array(
             'label' => __('Default value:'),
             'form' => array(
-                'type' => 'text',
+                // Textarea is needed to preserve \n to store multiple default values (checkboxes)
+                'type' => 'textarea',
             ),
-            'populate' => function($item) {
-                return str_replace("\n", ',', $item->field_default_value);
-            }
         ),
-        /*'field_name' => array(
-            'label' => __('Name:'),
-            'form' => array(
-                'type' => 'text',
-            ),
-            'dont_save' => true,
-            'populate' => function($item) {
-                return $item->field_name;
-            },
-        ),*/
         'field_details' => array(
             'label' => __('Instructions for the user:'),
             'form' => array(

@@ -57,7 +57,7 @@ return array(
                 'iconClasses' => 'nos-icon16 nos-icon16-eye',
                 'primary' => true,
                 'targets' => array(
-                    'toolbar-edit' => false,
+                    'grid' => true,
                 ),
                 'action' => array(
                     'action' => 'nosTabs',
@@ -67,12 +67,8 @@ return array(
                         'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                     ),
                 ),
-                'visible' => function() {
-                    return true;
-                },
-                'disabled' => function() {
-                    return false;
-                },
+                'visible' => true,
+                'disabled' => false,
             ),
         ),
         'order' => array(

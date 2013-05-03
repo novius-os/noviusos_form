@@ -21,7 +21,7 @@ class Controller_Front extends Controller_Front_Application
 
     public function action_main($enhancer_args = array())
     {
-        \Nos\I18n::current_dictionary('noviusos_form::common');
+        \Nos\I18n::current_dictionary('noviusos_form::front');
 
         $this->enhancer_args = $enhancer_args;
 
