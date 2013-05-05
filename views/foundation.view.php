@@ -125,7 +125,7 @@ foreach ($fields as $name => &$field) {
 
     if (!empty($field['item']->field_mandatory)) {
         // For fields using a label, add a <span> at the end
-        noviusos_form_foundation_add_content_to_thing($field['label'], ' <span clas="required">*</span>');
+        noviusos_form_foundation_add_content_to_thing($field['label'], ' <span class="required">*</span>');
         if ($enhancer_args['label_position'] == 'placeholder') {
             // For placeholder, add * at the end of placeholder's text
             noviusos_form_foundation_add_attr_to_thing($field['field'], 'placeholder', ' *');
