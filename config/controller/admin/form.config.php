@@ -485,7 +485,7 @@ return array(
             'label' => __('Width:'),
             'template' => str_replace('{{count}}', '{field} {required}', __('Width: {{count}} characters')),
             'form' => array(
-                'type' => 'text',
+                'type' => 'number',
                 'value' => '',
                 'size' => '3',
             ),
@@ -497,7 +497,7 @@ return array(
             'label' => '',
             'template' => str_replace('{{count}}', '{field} {required}', __('Height: {{count}} lines')),
             'form' => array(
-                'type' => 'text',
+                'type' => 'number',
                 'size' => '3',
                 'value' => '3',
             ),
@@ -509,7 +509,7 @@ return array(
             'label' => '',
             'template' => str_replace('{{count}}', '{field} {required}', __('Limited to {{count}} characters')),
             'form' => array(
-                'type' => 'text',
+                'type' => 'number',
                 'size' => '3',
             ),
             'populate' => function($item) {
