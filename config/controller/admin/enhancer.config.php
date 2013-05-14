@@ -10,10 +10,82 @@
 
 Nos\I18n::current_dictionary('noviusos_form::common');
 
+$id = uniqid('enhancer_popup_');
+
 return array(
     'popup' => array(
         'layout' => array(
-            'view' => 'noviusos_form::enhancer/popup',
+            'fields' => array(
+                'view' => 'nos::form/fields',
+                'params' => array(
+                    'fields' => array(
+                        'form_id',
+                        'label_position',
+                        'after_submit',
+                        'confirmation_message',
+                        'confirmation_page_id',
+                    ),
+                    'begin' => '<div id="'.$id.'">',
+                    'end' => '</div>',
+                ),
+            ),
+            'js' => array(
+                'view' => 'noviusos_form::enhancer/js',
+                'params' => array(
+                    'id' => $id,
+                ),
+            ),
+        ),
+    ),
+    'fields' => array(
+        'form_id' => array(
+            'label' => __('Select a form:'),
+            'form' => array(
+                'type' => 'select',
+            ),
+        ),
+        'label_position' => array(
+            'label' => __('Label position:'),
+            'form' => array(
+                'type' => 'select',
+                'options' => array(
+                    'top' => __('Top aligned'),
+                    'left' => __('Left aligned'),
+                    'right' => __('Right aligned'),
+                    'placeholder' => __('In the field (placeholder)'),
+                ),
+                'value' => 'top',
+            ),
+        ),
+        'after_submit' => array(
+            'label' => __('Once the user submitted the form'),
+            'form' => array(
+                'type' => 'radio',
+                'value' => 'message',
+                'options' => array(
+                    'message' => __('Display a message'),
+                    'page_id' => __('Redirect to a page'),
+                ),
+                'class' => 'enhancer_after_submit',
+            ),
+        ),
+        'confirmation_message' => array(
+            'label' => '',
+            'form' => array(
+                'type' => 'textarea',
+                'value' => __('Thank you. Your answer has been sent.'),
+                'class' => 'enhancer_confirmation_message',
+                'style' => 'width:100%;display:none;',
+                'rows' => '4',
+            ),
+        ),
+        'confirmation_page_id' => array(
+            'label' => '',
+            'renderer' => 'Nos\Page\Renderer_Selector',
+            'renderer_options' => array(
+                'context' => '{{_parent_context}}',
+            ),
+            'template' => '<div style="width:100%;display:none;" class="enhancer_confirmation_page_id">{field}</div>',
         ),
     ),
     'preview' => array(

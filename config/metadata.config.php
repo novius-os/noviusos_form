@@ -42,7 +42,7 @@ return array(
             'dialog' => array(
                 'contentUrl' => 'admin/noviusos_form/enhancer/popup',
                 'width' => 450,
-                'height' => 400,
+                'height' => 410,
                 'ajax' => true,
             ),
         ),

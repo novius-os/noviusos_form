@@ -18,21 +18,22 @@ define(
                 return this.each(function() {
                     var $confirmation_message = $(this).find('.enhancer_confirmation_message'),
                         $confirmation_page_id = $(this).find('.enhancer_confirmation_page_id'),
-                        $radios = $(this).find('.enhancer_after_submit')
-                            .find(':radio')
-                            .click(function(e) {
-                                var $radio = $(this);
-                                if ($radio.val() === 'message') {
-                                    $confirmation_message.show().nosOnShow();
-                                    $confirmation_page_id.hide();
-                                } else {
-                                    $confirmation_message.hide();
-                                    $confirmation_page_id.show().nosOnShow();
-                                }
-                            })
-                            .end();
+                        $radios = $(this).find('.enhancer_after_submit');
 
-                    $radios.find(':radio:checked').triggerHandler('click');
+                    $radios = $radios.find(':radio').add($radios.filter(':radio'));
+
+                    $radios
+                        .click(function(e) {
+                            var $radio = $(this);
+                            if ($radio.val() === 'message') {
+                                $confirmation_message.show().nosOnShow();
+                                $confirmation_page_id.hide();
+                            } else {
+                                $confirmation_message.hide();
+                                $confirmation_page_id.show().nosOnShow();
+                            }
+                        })
+                        .filter(':checked').triggerHandler('click');
                 });
             }
         });

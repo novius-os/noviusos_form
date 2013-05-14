@@ -12,6 +12,25 @@ namespace Nos\Form;
 
 class Controller_Admin_Enhancer extends \Nos\Controller_Admin_Enhancer
 {
+    public function prepare_i18n()
+    {
+        parent::prepare_i18n();
+        \Nos\I18n::current_dictionary('noviusos_form::common');
+    }
+
+    protected function config_build()
+    {
+        parent::config_build();
+        $this->config['fields']['form_id']['form']['options'] = \Arr::pluck(
+            Model_Form::find('all', array(
+                'where' => array(
+                    array('context', $this->placeholders['_parent_context']),
+                ),
+            )),
+            'form_name',
+            'form_id'
+        );
+    }
 
     public function action_save(array $args = null)
     {
