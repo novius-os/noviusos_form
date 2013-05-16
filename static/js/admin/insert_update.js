@@ -96,6 +96,7 @@ define(
                         }
                         var $previews = $(); // $([]) in jQuery < 1.4
                         $fields_container.append($fields);
+                        $fields = $fields.not('script');
                         $fields.nosFormUI();
                         $fields.each(function() {
                             var $field = $(this);
