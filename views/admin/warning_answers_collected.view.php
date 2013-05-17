@@ -26,7 +26,7 @@ if (!$item->is_new()) {
         <p><?= __('Modifying the form may alter the collected data.') ?></p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
-        <p><button class="primary" onclick="return false;"><?= __("You’re right, take me to the answers") ?></button></p>
+        <p><button class="ui-priority-primary" onclick="return false;"><?= __("You’re right, take me to the answers") ?></button></p>
         <p>&nbsp;</p>
         <p><?= __('or') ?> <a href="" onclick="$(this).nosDialog('close'); return false;"><?= __("Don’t worry, I know what I’m doing");?></a></p>
     </div>
@@ -40,7 +40,7 @@ if (!$item->is_new()) {
             $(function () {
                 var $container = $('#<?= $fieldset->form()->get_attribute('id') ?>');
                 var $close = $('#<?= $uniqid_close ?>');
-                $container.find('button.primary').on('click', function() {
+                $container.find('button.ui-priority-primary').on('click', function() {
                     $close.nosDialog('close');
                     $container.nosAction(<?= \Format::forge()->to_json($action_answers) ?>, <?= \Format::forge($crud['dataset'])->to_json() ?>);
                 });
