@@ -80,6 +80,18 @@ class Model_Form extends \Nos\Orm\Model
             'data_type' => 'datetime',
             'null' => false,
         ),
+        'form_created_by_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => true,
+            'convert_empty_to_null' => true,
+        ),
+        'form_updated_by_id' => array(
+            'default' => null,
+            'data_type' => 'int unsigned',
+            'null' => true,
+            'convert_empty_to_null' => true,
+        ),
     );
 
     protected static $_observers = array(
@@ -100,6 +112,10 @@ class Model_Form extends \Nos\Orm\Model
         ),
         'Nos\Orm_Behaviour_Virtualname' => array(
             'virtual_name_property' => 'form_virtual_name',
+        ),
+        'Nos\Orm_Behaviour_Author' => array(
+            'created_by_property' => 'form_created_by_id',
+            'updated_by_property' => 'form_updated_by_id',
         ),
     );
 
