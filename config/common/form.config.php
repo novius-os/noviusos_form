@@ -73,10 +73,36 @@ return array(
         'N items' => __('{{count}} forms'),
     ),
     'actions' => array(
-        'Nos\Form\Model_Form.add' => array(
+        'add' => array(
             'label' => __('Add a form'),
+            // 'visible' is needed to hide the button from the toolbar...
+            'visible' => array(
+                'check_permission' => function() {
+                    return \Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                },
+            ),
+            // ... and 'disabled' is needed deny adding a new item using direct access (used by Controller_Crud)
+            'disabled' => array(
+                'check_permission' => function() {
+                    return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                },
+            ),
         ),
-        'Nos\Form\Model_Form.answers' => array(
+        'edit' => array(
+            'disabled' => array(
+                'check_permission' => function($item) {
+                    return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                }
+            ),
+        ),
+        'delete' => array(
+            'disabled' => array(
+                'check_permission' => function($item) {
+                    return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                }
+            ),
+        ),
+        'answers' => array(
             'label' => __('Answers'),
             'icon' => 'mail-closed',
             'targets' => array(
@@ -91,17 +117,22 @@ return array(
                     'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
                 ),
             ),
-            'visible' => function($params) {
-                return !isset($params['item']) || !$params['item']->is_new();
-            },
-            'disabled' =>
-                function($item) {
-                    return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
-                            'where' => array(array('answer_form_id' => $item->form_id)),
-                        ));
+            'visible' => array(
+                'check_is_new' => function($params) {
+                    return !isset($params['item']) || !$params['item']->is_new();
+                },
+            ),
+            'disabled' => array(
+                'check_empty' => function($item) {
+                    if ($item->is_new() || !\Nos\Form\Model_Answer::count(array(
+                        'where' => array(array('answer_form_id' => $item->form_id)),
+                    ))) {
+                        return __('There is no answers yet.');
+                    }
                 }
+            ),
         ),
-        'Nos\Form\Model_Form.export' => array(
+        'export' => array(
             'label' => __('Export the answers (spreadsheet)'),
             'icon' => 'extlink',
             'targets' => array(
@@ -115,12 +146,15 @@ return array(
             'visible' => function($params) {
                 return !isset($params['item']) || !$params['item']->is_new();
             },
-            'disabled' =>
-                function($item) {
-                    return $item->is_new() || !\Nos\Form\Model_Answer::count(array(
-                            'where' => array(array('answer_form_id' => $item->form_id)),
-                        ));
-                }
+            'disabled' => array(
+                'check_empty' => function($item) {
+                    if ($item->is_new() || !\Nos\Form\Model_Answer::count(array(
+                        'where' => array(array('answer_form_id' => $item->form_id)),
+                    ))) {
+                        return __('There is no answers yet.');
+                    }
+                },
+            ),
         ),
     ),
 );

@@ -50,9 +50,9 @@ return array(
     ),
     'actions' => array(
         'list' => array(
-            'Nos\Form\Model_Answer.edit' => false,
-            'Nos\Form\Model_Answer.add' => false,
-            'Nos\Form\Model_Answer.visualise' => array(
+            'edit' => false,
+            'add' => false,
+            'visualise' => array(
                 'label' => __('Visualise'),
                 'iconClasses' => 'nos-icon16 nos-icon16-eye',
                 'primary' => true,
@@ -69,6 +69,13 @@ return array(
                 ),
                 'visible' => true,
                 'disabled' => false,
+            ),
+            'delete' => array(
+                'disabled' => array(
+                    'check_permission' => function($item) {
+                        return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                    }
+                ),
             ),
         ),
         'order' => array(
