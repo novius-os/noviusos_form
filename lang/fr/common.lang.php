@@ -479,7 +479,7 @@ return array(
 
     #. Deletion popup
     #: config/common/answer.config.php:43
-    'Deleting the answer ‘{{title}}’' => 'Supprimer le réponse «&nbsp;{{title}}&nbsp;»',
+    'Deleting the answer ‘{{title}}’' => 'Supprimer la réponse «&nbsp;{{title}}&nbsp;»',
 
     #. Delete action's labels
     #: config/common/answer.config.php:46
