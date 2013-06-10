@@ -78,27 +78,27 @@ return array(
             // 'visible' is needed to hide the button from the toolbar...
             'visible' => array(
                 'check_permission' => function() {
-                    return \Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                    return \Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 },
             ),
             // ... and 'disabled' is needed deny adding a new item using direct access (used by Controller_Crud)
             'disabled' => array(
                 'check_permission' => function() {
-                    return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                    return !\Nos\User\Permission::atLeast('noviusos_form::all', '1_write', 2);
                 },
             ),
         ),
         'edit' => array(
             'disabled' => array(
                 'check_permission' => function($item) {
-                    return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                    return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 }
             ),
         ),
         'delete' => array(
             'disabled' => array(
                 'check_permission' => function($item) {
-                    return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                    return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 }
             ),
         ),

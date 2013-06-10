@@ -73,7 +73,7 @@ return array(
             'delete' => array(
                 'disabled' => array(
                     'check_permission' => function($item) {
-                        return !\Nos\User\Permission::checkOrEmpty('noviusos_form::level', 'write');
+                        return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                     }
                 ),
             ),
