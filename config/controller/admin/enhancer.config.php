@@ -52,7 +52,7 @@ return array(
                     'top' => __('Top aligned'),
                     'left' => __('Left aligned'),
                     'right' => __('Right aligned'),
-                    'placeholder' => __('In the field (placeholder)'),
+                    'placeholder' => __('In the field (placeholder), for text fields only'),
                 ),
                 'value' => 'top',
             ),

@@ -215,7 +215,7 @@ class Controller_Front extends Controller_Front_Application
 
                 if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file'))) {
 
-                    if ($field->field_type == 'file' || $field->field_type == 'select') {
+                    if (in_array($field->field_type, array('file', 'select', 'date'))) {
                         // For the label
                         $label = array(
                             'callback' => 'html_tag',
