@@ -71,7 +71,6 @@ class Controller_Front extends Controller_Front_Application
 
     public function render_form($item, $errors)
     {
-
         $layout = explode("\n", $item->form_layout);
         array_walk($layout, function(&$v) {
             $v = explode(',', $v);
@@ -392,38 +391,49 @@ class Controller_Front extends Controller_Front_Application
 
     public function post_answers($form)
     {
-
         $errors = array();
         $data = array();
         $fields = array();
         $files = array();
 
-        foreach ($form->fields as $field) {
-            $type = $field->field_type;
-            if (in_array($type, array('message', 'variable', 'separator', 'page_break'))) {
-                continue;
-            }
-            $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
-            $value = null;
 
-            if ($type === 'file' && !empty($_FILES[$name])) {
-                if ($field->field_mandatory && empty($_FILES[$name]['tmp_name'])) {
-                    $errors[$name] = __('{{label}}: Please select a file for this field.');
+        $layout = $form->form_layout;
+        $layout = explode("\n", $layout);
+        array_walk($layout, function(&$v) {
+            $v = explode(',', $v);
+        });
+
+        // Fetching the fields according to their layout position
+        foreach ($layout as $row => $cols) {
+            foreach ($cols as $field_layout) {
+                list($field_id, ) = explode('=', $field_layout);
+                $field = $form->fields[$field_id];
+                $type = $field->field_type;
+                if (in_array($type, array('message', 'variable', 'separator', 'page_break'))) {
+                    continue;
                 }
-                $files[$name] = $_FILES[$name];
-            } else {
-                switch($type) {
-                    case 'checkbox':
-                        $value = implode("\n", \Input::post($name, array()));
-                        break;
+                $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
+                $value = null;
 
-                    default:
-                        $value = \Input::post($name, '');
+                if ($type === 'file' && !empty($_FILES[$name])) {
+                    if ($field->field_mandatory && empty($_FILES[$name]['tmp_name'])) {
+                        $errors[$name] = __('{{label}}: Please select a file for this field.');
+                    }
+                    $files[$name] = $_FILES[$name];
+                } else {
+                    switch($type) {
+                        case 'checkbox':
+                            $value = implode("\n", \Input::post($name, array()));
+                            break;
+
+                        default:
+                            $value = \Input::post($name, '');
+                    }
+
+                    $data[$name] = $value;
                 }
-
-                $data[$name] = $value;
+                $fields[$name] = $field;
             }
-            $fields[$name] = $field;
         }
 
         // Native validation
@@ -540,7 +550,6 @@ class Controller_Front extends Controller_Front_Application
                     logger(\Fuel::L_ERROR, 'The Forms application cannot send emails - '.$e->getMessage());
                 }
             }
-
 
             // after_submission
             \Event::trigger('noviusos_form::after_submission', array(&$answer, $this->enhancer_args));
