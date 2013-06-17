@@ -84,7 +84,7 @@ return array(
             // ... and 'disabled' is needed deny adding a new item using direct access (used by Controller_Crud)
             'disabled' => array(
                 'check_permission' => function() {
-                    return !\Nos\User\Permission::atLeast('noviusos_form::all', '1_write', 2);
+                    return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 },
             ),
         ),
