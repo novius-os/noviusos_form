@@ -8,10 +8,18 @@
  * @link http://www.novius-os.org
  */
 $id = uniqid('form_');
+
+$sites = \Nos\Tools_Context::sites();
+if (count($sites) === 1) {
+    $message = __('No forms are available in {{context}}. Go ahead, <a>add you first form in this language.</a>');
+} else {
+    $message = __('No forms are available in {{context}}. Go ahead, <a>add you first form in this context.</a>');
+}
 ?>
 <p>&nbsp;</p>
 <p>
-    <?= strtr(__('You don’t have any form to add. Go ahead, <a>add your first form.</a>'), array(
+    <?= strtr($message, array(
+        '{{context}}' => \Nos\Tools_Context::contextLabel($params['_parent_context']),
         '<a>' => '<a href="#" id="'.$id.'">',
     ));
     ?>
