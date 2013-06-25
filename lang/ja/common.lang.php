@@ -1,13 +1,13 @@
 <?php
 
-// Generated on 16/04/2013 19:15:50
+// Generated on 25/06/2013 11:06:52
 
-// 147 out of 150 messages are translated (98%).
-// 543 out of 550 words are translated (98%).
+// 146 out of 156 messages are translated (93%).
+// 539 out of 605 words are translated (93%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:90
+    #: config/common/form.config.php:116
     'Answers to ‘{{title}}’' => '‘{{title}}’に回答する',
 
     #: classes/controller/admin/answer/appdesk.ctrl.php:34
@@ -24,36 +24,15 @@ return array(
     #: classes/controller/admin/form.ctrl.php:202
     'Page break' => 'ページ区切り',
 
-    #: classes/controller/admin/enhancer.ctrl.php:26
-    #: views/enhancer/popup.view.php:48
+    #: classes/controller/admin/enhancer.ctrl.php:52
+    #: config/controller/admin/enhancer.config.php:76
     'Thank you. Your answer has been sent.' => 'ありがとうございます。メッセージが送信されました。',
 
-    #: views/enhancer/popup.view.php:16
-    'Select a form:' => 'フォームを選択:',
+    #: views/enhancer/blank_slate.view.php:14
+    'No forms are available in {{context}}. Go ahead, <a>add you first form in this language.</a>' => '',
 
-    #: views/enhancer/popup.view.php:31
-    'Label position:' => 'ラベルの位置: ',
-
-    #: views/enhancer/popup.view.php:33
-    'Top aligned' => '上揃え',
-
-    #: views/enhancer/popup.view.php:34
-    'Left aligned' => '左揃え',
-
-    #: views/enhancer/popup.view.php:35
-    'Right aligned' => '右揃え',
-
-    #: views/enhancer/popup.view.php:36
-    'In the field (placeholder)' => 'プレースホルダ (フィールド内の文字)',
-
-    #: views/enhancer/popup.view.php:41
-    'Once the user submitted the form' => '訪問者がメッセージを送信すると、',
-
-    #: views/enhancer/popup.view.php:44
-    'Display a message' => 'メッセージを表示',
-
-    #: views/enhancer/popup.view.php:45
-    'Redirect to a page' => 'リダイレクトするページ',
+    #: views/enhancer/blank_slate.view.php:16
+    'No forms are available in {{context}}. Go ahead, <a>add you first form in this context.</a>' => '',
 
     #: views/admin/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'フォームを変更すると、受け取ったメッセージを変更することがあります。',
@@ -105,6 +84,12 @@ return array(
     #: views/admin/layout_fields.view.php:171
     'Are you sure?' => 'よろしいですか？',
 
+    #: views/admin/permissions.view.php:7
+    'Can add, edit and delete forms and answers' => '',
+
+    #: views/admin/permissions.view.php:14
+    'Can visualise answers only' => '',
+
     #: views/admin/popup_delete.view.php:21
     'This form has already received <strong>one answer</strong>.' => 'このフォームには<strong>1件のメッセージ</strong>があります。',
 
@@ -144,6 +129,9 @@ return array(
     #: views/admin/answer.view.php:102
     #: views/admin/answer.view.php:112
     'Add to Media Centre' => 'メディアセンターに追加',
+
+    #: config/permissions.config.php:11
+    'Permissions for this application' => '',
 
     #: config/controller/admin/answer/inspector/date.config.php:18
     'Answer date' => '送信日時',
@@ -370,37 +358,64 @@ return array(
     #: config/controller/admin/form.config.php:471
     'Default value:' => 'デフォルト値:',
 
-    #: config/controller/admin/form.config.php:490
+    #: config/controller/admin/form.config.php:478
     'Instructions for the user:' => '訪問者向けの説明',
 
-    #: config/controller/admin/form.config.php:497
+    #: config/controller/admin/form.config.php:485
     'Width:' => '幅:',
 
-    #: config/controller/admin/form.config.php:498
+    #: config/controller/admin/form.config.php:486
     'Width: {{count}} characters' => '幅: {{count}} 文字',
 
-    #: config/controller/admin/form.config.php:510
+    #: config/controller/admin/form.config.php:498
     'Height: {{count}} lines' => '高さ: {{count}} 行',
 
-    #: config/controller/admin/form.config.php:522
+    #: config/controller/admin/form.config.php:510
     'Limited to {{count}} characters' => '最大{{count}}文字まで',
 
-    #: config/controller/admin/form.config.php:532
+    #: config/controller/admin/form.config.php:520
     'Origin:' => '生成元:',
 
-    #: config/controller/admin/form.config.php:545
+    #: config/controller/admin/form.config.php:533
     'Variable name:' => '変数名:',
 
-    #: config/controller/admin/form.config.php:552
+    #: config/controller/admin/form.config.php:540
     'Virtual field name:' => 'システム内部での名称(アルファベット推奨):',
 
-    #: config/controller/admin/form.config.php:560
+    #: config/controller/admin/form.config.php:548
     'ID:' => 'ID:',
 
-    #: config/controller/admin/form.config.php:567
+    #: config/controller/admin/form.config.php:555
     'CSS classes:' => 'CSS クラス:',
 
-    #: config/controller/admin/enhancer.config.php:28
+    #: config/controller/admin/enhancer.config.php:42
+    'Select a form:' => 'フォームを選択:',
+
+    #: config/controller/admin/enhancer.config.php:48
+    'Label position:' => 'ラベルの位置: ',
+
+    #: config/controller/admin/enhancer.config.php:52
+    'Top aligned' => '上揃え',
+
+    #: config/controller/admin/enhancer.config.php:53
+    'Left aligned' => '左揃え',
+
+    #: config/controller/admin/enhancer.config.php:54
+    'Right aligned' => '右揃え',
+
+    #: config/controller/admin/enhancer.config.php:55
+    'In the field (placeholder), for text fields only' => '',
+
+    #: config/controller/admin/enhancer.config.php:61
+    'Once the user submitted the form' => '訪問者がメッセージを送信すると、',
+
+    #: config/controller/admin/enhancer.config.php:66
+    'Display a message' => 'メッセージを表示',
+
+    #: config/controller/admin/enhancer.config.php:67
+    'Redirect to a page' => 'リダイレクトするページ',
+
+    #: config/controller/admin/enhancer.config.php:100
     'Form' => 'フォーム',
 
     #: config/controller/admin/appdesk.config.php:17
@@ -426,7 +441,7 @@ return array(
     'Answer received on {{date}}' => '{{date}}に受け取ったメッセージ',
 
     #: config/common/form.config.php:28
-    #: config/common/form.config.php:80
+    #: config/common/form.config.php:106
     'Answers' => 'メッセージ',
 
     #. Crud
@@ -460,7 +475,11 @@ return array(
     #: config/common/form.config.php:73
     '{{count}} forms' => '{{count}}つのフォーム',
 
-    #: config/common/form.config.php:105
+    #: config/common/form.config.php:130
+    #: config/common/form.config.php:154
+    'There is no answers yet.' => '',
+
+    #: config/common/form.config.php:136
     'Export the answers (spreadsheet)' => 'メッセージをエクスポート (スプレッドシート)',
 
     #: config/common/answer.config.php:23

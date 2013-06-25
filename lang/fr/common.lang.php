@@ -1,13 +1,13 @@
 <?php
 
-// Generated on 16/04/2013 19:15:50
+// Generated on 25/06/2013 11:06:52
 
-// 147 out of 150 messages are translated (98%).
-// 543 out of 550 words are translated (98%).
+// 146 out of 156 messages are translated (93%).
+// 539 out of 605 words are translated (93%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:90
+    #: config/common/form.config.php:116
     'Answers to ‘{{title}}’' => 'Réponses à «&nbsp;{{title}}&nbsp;»',
 
     #: classes/controller/admin/answer/appdesk.ctrl.php:34
@@ -24,36 +24,15 @@ return array(
     #: classes/controller/admin/form.ctrl.php:202
     'Page break' => 'Saut de page',
 
-    #: classes/controller/admin/enhancer.ctrl.php:26
-    #: views/enhancer/popup.view.php:48
+    #: classes/controller/admin/enhancer.ctrl.php:52
+    #: config/controller/admin/enhancer.config.php:76
     'Thank you. Your answer has been sent.' => 'Merci. Votre réponse a été envoyée.',
 
-    #: views/enhancer/popup.view.php:16
-    'Select a form:' => 'Sélectionner un formulaire&nbsp;:',
+    #: views/enhancer/blank_slate.view.php:14
+    'No forms are available in {{context}}. Go ahead, <a>add you first form in this language.</a>' => '',
 
-    #: views/enhancer/popup.view.php:31
-    'Label position:' => 'Position des libellés&nbsp;:',
-
-    #: views/enhancer/popup.view.php:33
-    'Top aligned' => 'Au-dessus du champ',
-
-    #: views/enhancer/popup.view.php:34
-    'Left aligned' => 'À gauche du champ, aligné à gauche',
-
-    #: views/enhancer/popup.view.php:35
-    'Right aligned' => 'À gauche du champ, aligné à droite',
-
-    #: views/enhancer/popup.view.php:36
-    'In the field (placeholder)' => 'Dans le champ (placeholder)',
-
-    #: views/enhancer/popup.view.php:41
-    'Once the user submitted the form' => 'Une fois que l’utilisateur a envoyé le formulaire',
-
-    #: views/enhancer/popup.view.php:44
-    'Display a message' => 'Afficher un message',
-
-    #: views/enhancer/popup.view.php:45
-    'Redirect to a page' => 'Rediriger vers une page',
+    #: views/enhancer/blank_slate.view.php:16
+    'No forms are available in {{context}}. Go ahead, <a>add you first form in this context.</a>' => '',
 
     #: views/admin/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'Le modifier pourrait supprimer des données collectées.',
@@ -105,6 +84,12 @@ return array(
     #: views/admin/layout_fields.view.php:171
     'Are you sure?' => 'Êtes-vous sur(e)&nbsp;?',
 
+    #: views/admin/permissions.view.php:7
+    'Can add, edit and delete forms and answers' => '',
+
+    #: views/admin/permissions.view.php:14
+    'Can visualise answers only' => '',
+
     #: views/admin/popup_delete.view.php:21
     'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
 
@@ -144,6 +129,9 @@ return array(
     #: views/admin/answer.view.php:102
     #: views/admin/answer.view.php:112
     'Add to Media Centre' => 'Ajouter à la Médiathèque',
+
+    #: config/permissions.config.php:11
+    'Permissions for this application' => '',
 
     #: config/controller/admin/answer/inspector/date.config.php:18
     'Answer date' => 'Date de la réponse',
@@ -370,37 +358,64 @@ return array(
     #: config/controller/admin/form.config.php:471
     'Default value:' => 'Valeur par défaut&nbsp;:',
 
-    #: config/controller/admin/form.config.php:490
+    #: config/controller/admin/form.config.php:478
     'Instructions for the user:' => 'Indications pour l’utilisateur&nbsp;:',
 
-    #: config/controller/admin/form.config.php:497
+    #: config/controller/admin/form.config.php:485
     'Width:' => 'Largeur&nbsp;:',
 
-    #: config/controller/admin/form.config.php:498
+    #: config/controller/admin/form.config.php:486
     'Width: {{count}} characters' => 'Largeur&nbsp;: {{count}} caractères',
 
-    #: config/controller/admin/form.config.php:510
+    #: config/controller/admin/form.config.php:498
     'Height: {{count}} lines' => 'Hauteur&nbsp;: {{count}} lignes',
 
-    #: config/controller/admin/form.config.php:522
+    #: config/controller/admin/form.config.php:510
     'Limited to {{count}} characters' => 'Limité à {{count}} caractères',
 
-    #: config/controller/admin/form.config.php:532
+    #: config/controller/admin/form.config.php:520
     'Origin:' => 'Origine&nbsp;:',
 
-    #: config/controller/admin/form.config.php:545
+    #: config/controller/admin/form.config.php:533
     'Variable name:' => 'Nom de la variable&nbsp;:',
 
-    #: config/controller/admin/form.config.php:552
+    #: config/controller/admin/form.config.php:540
     'Virtual field name:' => 'Nom virtuel du champ&nbsp;:',
 
-    #: config/controller/admin/form.config.php:560
+    #: config/controller/admin/form.config.php:548
     'ID:' => 'ID&nbsp;:',
 
-    #: config/controller/admin/form.config.php:567
+    #: config/controller/admin/form.config.php:555
     'CSS classes:' => 'Classes CSS&nbsp;:',
 
-    #: config/controller/admin/enhancer.config.php:28
+    #: config/controller/admin/enhancer.config.php:42
+    'Select a form:' => 'Sélectionner un formulaire&nbsp;:',
+
+    #: config/controller/admin/enhancer.config.php:48
+    'Label position:' => 'Position des libellés&nbsp;:',
+
+    #: config/controller/admin/enhancer.config.php:52
+    'Top aligned' => 'Au-dessus du champ',
+
+    #: config/controller/admin/enhancer.config.php:53
+    'Left aligned' => 'À gauche du champ, aligné à gauche',
+
+    #: config/controller/admin/enhancer.config.php:54
+    'Right aligned' => 'À gauche du champ, aligné à droite',
+
+    #: config/controller/admin/enhancer.config.php:55
+    'In the field (placeholder), for text fields only' => '',
+
+    #: config/controller/admin/enhancer.config.php:61
+    'Once the user submitted the form' => 'Une fois que l’utilisateur a envoyé le formulaire',
+
+    #: config/controller/admin/enhancer.config.php:66
+    'Display a message' => 'Afficher un message',
+
+    #: config/controller/admin/enhancer.config.php:67
+    'Redirect to a page' => 'Rediriger vers une page',
+
+    #: config/controller/admin/enhancer.config.php:100
     'Form' => 'Formulaire',
 
     #: config/controller/admin/appdesk.config.php:17
@@ -426,7 +441,7 @@ return array(
     'Answer received on {{date}}' => 'Réponse reçue le {{date}}',
 
     #: config/common/form.config.php:28
-    #: config/common/form.config.php:80
+    #: config/common/form.config.php:106
     'Answers' => 'Réponses',
 
     #. Crud
@@ -460,7 +475,11 @@ return array(
     #: config/common/form.config.php:73
     '{{count}} forms' => '{{count}} formulaires',
 
-    #: config/common/form.config.php:105
+    #: config/common/form.config.php:130
+    #: config/common/form.config.php:154
+    'There is no answers yet.' => '',
+
+    #: config/common/form.config.php:136
     'Export the answers (spreadsheet)' => 'Exporter les réponses (tableur)',
 
     #: config/common/answer.config.php:23
