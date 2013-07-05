@@ -1,12 +1,12 @@
 <?php
 
-// Generated on 25/06/2013 11:06:52
+// Generated on 05/07/2013 14:57:58
 
-// 1 out of 2 messages are translated (50%).
-// 1 out of 2 words are translated (50%).
+// 2 out of 2 messages are translated (100%).
+// 2 out of 2 words are translated (100%).
 
 return array(
-    'Forms' => '',
+    'Forms' => 'フォーム',
 
     'Form' => 'フォーム',
 
