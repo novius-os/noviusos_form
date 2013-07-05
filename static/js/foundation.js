@@ -72,7 +72,7 @@
                     $previous_link[current_page == 0 ? 'hide' : 'show']();
                     $next_button[current_page == total_pages - 1 ? 'hide' : 'show']();
                     $submit_button[current_page == total_pages - 1 ? 'show' : 'hide']();
-                    $progress_field.val((current_page+1) / total_pages) ;
+                    $progress_field.val(current_page + 1) ;
                 }
 
                 $previous_link.on('click', function(e) {

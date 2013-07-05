@@ -135,9 +135,6 @@ foreach ($fields as $name => &$field) {
 unset($field);
 
 ?>
-<script type="text/javascript">
-    document.write('<style type="text/css">.page_break, .page_break_control { display: block; }</style>');
-</script>
 <div class="noviusos_form noviusos_enhancer" id="<?= $id = uniqid('form_') ?>">
 <?php
 
@@ -226,13 +223,13 @@ if (!$first_row) {
     echo '</div>';
 }
 
-if ($has_page_break) {
+if ($page_break_count > 0) {
     echo '</div>';
 }
 
 $page_break_layout = __('{{previous}}{{pagination}}{{next}}');
 
-if ($has_page_break) {
+if ($page_break_count > 0) {
     ?>
     <div class="page_break_control row">
     <?php
@@ -249,10 +246,10 @@ if ($has_page_break) {
                 )).'
             </div>',
         '{{pagination}}' => '
-                <div class="columns four"> <progress id="progress"></progress> '.
+                <div class="columns four"> <progress id="progress" value="1" max="'.($page_break_count + 1).'"></progress> '.
                     strtr(__('{{current}} out of {{total}}'), array(
                         '{{current}}' => '<span class="page_break_current">1</span>',
-                        '{{total}}' => '<span class="page_break_total">1</span>',
+                        '{{total}}' => '<span class="page_break_total">'.($page_break_count + 1).'</span>',
                     )).'
                 </div>',
     ));

@@ -98,15 +98,14 @@ class Controller_Front extends Controller_Front_Application
         }
         $layout[] = array('_form_id=4');
 
-        $has_page_break = false;
+        $page_break_count = 0;
         foreach ($item->fields as $field_id => $field) {
             if ($field->field_type == 'page_break') {
-                $has_page_break = true;
-                break;
+                $page_break_count++;
             }
         }
 
-        $new_page = $has_page_break;
+        $new_page = $page_break_count > 0;
 
         // Loop through rows...
         foreach ($layout as $rows) {
@@ -376,7 +375,7 @@ class Controller_Front extends Controller_Front_Application
                 'item' => $item,
                 'fields' => $fields,
                 'enhancer_args' => $this->enhancer_args,
-                'has_page_break' => $has_page_break,
+                'page_break_count' => $page_break_count,
                 'errors' => $errors,
                 'form_attrs' => array(
                     'method' => 'POST',
