@@ -174,7 +174,7 @@ if (empty($form_attrs['class'])) {
 }
 $form_attrs['class'] .= ' foundation';
 
-echo html_tag('form', $form_attrs);
+echo '<form '.array_to_attr($form_attrs).'>';
 // Loop through fields now
 foreach ($fields as $name => $field) {
 
