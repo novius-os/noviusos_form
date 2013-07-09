@@ -102,7 +102,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
                         $attachment = $this->item->getAttachment($field);
                         $url = $attachment->url();
                         if ($url !== false) {
-                            $html = '<a data-attachment="'.$attachment->url().'" href="'.\Uri::base(false).$url.'" target="_blank">'.$attachment->filename().'</a>';
+                            $html = '<a data-attachment="'.$attachment->url(false).'" href="'.$url.'" target="_blank">'.$attachment->filename().'</a>';
                         } else {
                             $html = __('No file attached.');
                         }
