@@ -52,12 +52,12 @@ class Controller_Front extends Controller_Front_Application
                     if (!empty($page_id)) {
                         $page = \Nos\Page\Model_Page::find($page_id);
                         if (!empty($page)) {
-                            \Response::redirect($page->url());
+                            \Response::redirect(\Nos\Tools_Url::encodePath($page->url()));
                         }
                     }
                 }
 
-                \Response::redirect(\Nos\Nos::main_controller()->getUrl().'?message='.$form_id);
+                \Response::redirect(\Nos\Tools_Url::encodePath(\Nos\Nos::main_controller()->getUrl()).'?message='.$form_id);
             }
         }
 

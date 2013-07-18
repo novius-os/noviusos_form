@@ -100,9 +100,12 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
                         $html = \Str::textToHtml($value);
                     } else if ($field->field_type === 'file') {
                         $attachment = $this->item->getAttachment($field);
-                        $url = $attachment->url();
+                        $url = $attachment->url(false);
                         if ($url !== false) {
-                            $html = '<a data-attachment="'.$attachment->url(false).'" href="'.$url.'" target="_blank">'.$attachment->filename().'</a>';
+                            $html = $attachment->htmlAnchor(array(
+                                'data-attachment' => $url,
+                                'target' => '_blank'
+                            ));
                         } else {
                             $html = __('No file attached.');
                         }
