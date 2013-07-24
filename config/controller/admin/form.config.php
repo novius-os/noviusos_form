@@ -82,7 +82,7 @@ return array(
             ),
         ),
         'form_submit_email' => array (
-            'label' => __("For every new answer, an email notification is sent to:"),
+            'label' => __("For every new answer, an email notification is sent to: (one email per line)"),
             'form' => array(
                 'type' => 'textarea',
                 // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
