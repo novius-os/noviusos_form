@@ -11,7 +11,7 @@
 Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
 
 ?>
-<link rel="stylesheet" href="static/apps/noviusos_form/css/admin.css" />
+<link rel="stylesheet" href="<?= Uri::base(false) ?>static/apps/noviusos_form/css/admin.css" />
 
 <?php
 if (!$item->is_new() && count($item->answers) > 0) {

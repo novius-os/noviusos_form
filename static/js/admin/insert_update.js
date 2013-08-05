@@ -38,6 +38,7 @@ define(
             });
 
             var col_size = Math.round($preview_container.outerWidth() / 4);
+            $preview_container.width($preview_container.outerWidth() - $preview_container.width());
 
             // Fill in the hidden field form_layout upon save
             $container.closest('form').on('submit', function computeLayout(e) {

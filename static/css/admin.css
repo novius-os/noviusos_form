@@ -1,3 +1,8 @@
+/* http://stackoverflow.com/questions/15275199/ie10-table-layoutfixed-broken-if-colspan-is-used */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    table colgroup { display: table-row; }
+    table colgroup col { display: table-cell; }
+}
 
 .field_blank_slate td {
     vertical-align: top;
