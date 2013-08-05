@@ -10,11 +10,16 @@
 $id = uniqid('form_');
 
 $sites = \Nos\Tools_Context::sites();
-if (count($sites) === 1) {
-    $message = __('No forms are available in {{context}}. Go ahead, <a>add you first form in this language.</a>');
+if ($params['form_count'] === 0) {
+    $message = __('How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:').
+        __('<ul><li><a>Add your first form</a> (a new tab will open).</li>
+<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></uL>');
+} else if (count($sites) === 1) {
+    $message = __('No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.');
 } else {
-    $message = __('No forms are available in {{context}}. Go ahead, <a>add you first form in this context.</a>');
+    $message = __('No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.');
 }
+
 ?>
 <p>&nbsp;</p>
 <p>
