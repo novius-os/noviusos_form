@@ -70,6 +70,10 @@ return array(
     'For every new answer, an email notification is sent to: (one email per line)' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;: (un email par ligne)',
 
     #: views/admin/layout_fields.view.php:90
+    #: config/controller/admin/form.config.php:85
+    'For every new answer, an email notification is sent to:' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;:',
+
+    #: views/admin/layout_fields.view.php:90
     'nobody!' => 'personne&nbsp;!',
 
     #: views/admin/layout_fields.view.php:93
