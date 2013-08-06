@@ -493,6 +493,7 @@ define(
                     }
                     var cell_size = Math.round($item.outerWidth() / col_size);
                     cell_size = Math.max(1, Math.min(max_cell_size, cell_size));
+                    cell_size = parseInt($item.attr('colspan')) || cell_size;
                     cell_sizes.push(cell_size);
                     total_size += cell_size;
                     $cell.data('colspan', cell_size);
@@ -504,13 +505,13 @@ define(
 
                 // If total size overflow the 4 columns, we need to shrink one of them
                 if (total_size > 4) {
-                    //log("CELL WIDTHS = ", size.join(','), $preview, total_size);
+                    //log("CELL WIDTHS = ", cell_sizes.join(','), total_size);
 
                     if (priority === undefined || priority == null) {
                         priority = $widest.get(0);
-                        //console.log('priority was not set, automatically using ', priority);
+                        //log('priority was not set, automatically using ', priority);
                     } else {
-                        //console.log('using defined priority ', priority);
+                        //log('using defined priority ', priority);
                     }
 
                     var total_shrink_needed = total_size - 4;
@@ -518,7 +519,7 @@ define(
                     var $shrink_me = $cells.filter(function() {
                         return $(this).data('colspan') > 1 && this != priority;
                     });
-                    //console.log('shrinkable items are', $shrink_me);
+                    //log('shrinkable items are', $shrink_me);
                     $shrink_me.closest('td.preview').each(function() {
                         var $cell = $(this);
                         var size = $cell.data('colspan');
@@ -526,19 +527,20 @@ define(
                         while((size - shrink_by > 1) && (total_shrink_needed - shrink_by) > 0) {
                             shrink_by++;
                         };
-                        //console.log('shrinking ', this, ' by ', shrink_by);
+                        //log('shrinking ', this, ' by ', shrink_by);
                         total_shrink_needed -= shrink_by;
                         $cell.data('colspan', size - shrink_by);
                     });
                     // We need to shrink priority now...
                     if (total_shrink_needed > 0) {
-                        $(priority).data('colspan', $(priority).data('size') - total_shrink_needed);
+                        //log('shrinking priority cell', priority, ' by ', total_shrink_needed);
+                        $(priority).data('colspan', $(priority).data('colspan') - total_shrink_needed);
                     }
                 }
 
                 // Resize the <td> according to the new resized valued
                 $tr.find('td.preview').each(function() {
-                    //console.log('col size = ', $(this).data('size'));
+                    //log('col size = ', $(this).data('colspan'));
                     set_cell_colspan($(this), $(this).data('colspan'));
                     $(this).removeData('colspan');
                 });
@@ -547,10 +549,10 @@ define(
                 if (total_size < 4) {
                     var $padding = $('<td class="padding">&nbsp;</td>');
                     set_cell_colspan($padding, (4 - total_size));
-                    //console.log('adding a padding cell with size = ', (4 - total_size), $padding, ' to ', $tr);
+                    //log('adding a padding cell with size = ', (4 - total_size), $padding, ' to ', $tr);
                     $tr.append($padding);
                 } else {
-                    //console.log('no padding neeeded');
+                    //log('no padding neeeded');
                 }
             }
 
@@ -617,6 +619,8 @@ define(
                     return $(this).children().not('.padding').length < 4;
                 }).addClass('preview_row_sortable');
 
+                var field_colspan;
+
                 // @TODO find a way to only connect others lists (not including itself)
                 $sortable = $preview_container.find('tr.preview_row:not(.page_break)').sortable({
                     connectWith: id + ' tr.preview_row_sortable:not(.page_break)',
@@ -660,6 +664,7 @@ define(
                         // Resize the current line on drop, or the lines above would be all messed up because the total
                         // colspan of a line below can exceed 4
                         $tr.children().css('height', $tr.css('height'));
+                        set_cell_colspan(ui.item, field_colspan);
                         resize_to_best($tr, ui.item.get(0));
 
                         // Re-initialise everything
@@ -683,6 +688,9 @@ define(
 
                         // Handle overflow (> 4 columns)
                         resize_to_best($tr, ui.placeholder.get(0));
+
+                        // Save appropriate colspan for the dragged field
+                        field_colspan = get_cell_colspan(ui.placeholder);
                     },
                     out: function onSortableOut(e, ui) {
                         var $tr = ui.placeholder.closest('tr');
