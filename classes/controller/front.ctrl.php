@@ -63,7 +63,9 @@ class Controller_Front extends Controller_Front_Application
 
         // Confirmation message
         if (\Input::get('message', 0) == $form_id) {
-            return \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'));
+            return \View::forge('noviusos_form::message', array(
+                'message' => \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'))
+            ), false);
         }
 
         return $this->render_form($item, $errors);
