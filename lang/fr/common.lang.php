@@ -411,7 +411,7 @@ return array(
     'In the field (placeholder), for text fields only' => '',
 
     #: config/controller/admin/enhancer.config.php:61
-    'Once the user submitted the form' => 'Une fois que l’utilisateur a envoyé le formulaire',
+    'Once the user submitted the form' => 'Une fois que l’utilisateur a envoyé le formulaire&nbsp;:',
 
     #: config/controller/admin/enhancer.config.php:66
     'Display a message' => 'Afficher un message',

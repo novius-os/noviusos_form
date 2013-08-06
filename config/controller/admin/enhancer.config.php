@@ -58,7 +58,7 @@ return array(
             ),
         ),
         'after_submit' => array(
-            'label' => __('Once the user submitted the form'),
+            'label' => __('Once the user submitted the form:'),
             'form' => array(
                 'type' => 'radio',
                 'value' => 'message',
