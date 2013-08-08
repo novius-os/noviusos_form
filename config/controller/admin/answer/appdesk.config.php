@@ -21,7 +21,7 @@ return array(
                 'preview' => true,
                 'options' => array(
                     'meta' => array(
-                        'receipt_date' => array(
+                        'receipt_date_preview' => array(
                             'label' => __('Received on:'),
                         ),
                     ),

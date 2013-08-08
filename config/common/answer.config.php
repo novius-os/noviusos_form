@@ -24,6 +24,11 @@ return array(
             'dataType' => 'datetime',
             'dataFormatString' => 'f',
         ),
+        'receipt_date_preview' => array(
+            'value' => function($item) {
+                return \Date::formatPattern($item->answer_created_at);
+            },
+        ),
         'form_title' => array(
             'value' => function($answer) {
                 return $answer->form->form_name;

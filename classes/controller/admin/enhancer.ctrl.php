@@ -36,6 +36,8 @@ class Controller_Admin_Enhancer extends \Nos\Controller_Admin_Enhancer
             unset($this->config['fields']);
             $this->config['popup']['view'] = 'noviusos_form::enhancer/blank_slate';
             $this->config['popup']['params'] = $this->placeholders;
+            // Other's contexts count (this one is empty).
+            $this->config['popup']['params']['form_count'] = Model_Form::count();
         }
     }
 
