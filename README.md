@@ -6,11 +6,11 @@ The ‘Forms’ application for Novius OS allows you to create and publish forms
 
 ## Requirements
 
-* Forms runs on Novius OS Chiba 2.
+* ‘Forms’ runs on Novius OS Chiba 2.
 
 ## Installation
 
-* [How to install a Novius OS application](http://docs.novius-os.org/page-to-be-created)
+* [How to install a Novius OS application](http://community.novius-os.org/how-to-install-a-nos-app.html)
 
 ## Support
 
@@ -18,10 +18,10 @@ The ‘Forms’ application for Novius OS allows you to create and publish forms
 
 ## Demo & further information
 
-* Try Forms at [demo.novius-os.org](http://demo.novius-os.org/admin).
+* Try ‘Forms’ at [demo.novius-os.org](http://demo.novius-os.org/admin).
 * [Watch the screencast](http://www.youtube.com/watch?v=mptrVkmsw5g&list=PL49B38887F978ED5E) on YouTube.
-* [An extension to support Japanese addresses](https://github.com/ounziw/jaaddress) is available. It has been developed by Fumito Mizuno.
+* [An extension to support Japanese addresses](https://github.com/ounziw/jaaddress) has been developed by Fumito Mizuno.
 
 ## License
 
-Forms is licensed under [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.html) or (at your option) any later version.
+‘Forms’ is licensed under [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.html) or (at your option) any later version.
