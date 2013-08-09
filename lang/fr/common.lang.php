@@ -1,9 +1,9 @@
 <?php
 
-// Generated on 05/07/2013 14:57:58
+// Generated on 09/08/2013 10:16:42
 
-// 146 out of 156 messages are translated (93%).
-// 539 out of 605 words are translated (93%).
+// 159 out of 159 messages are translated (100%).
+// 664 out of 664 words are translated (100%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
@@ -17,22 +17,28 @@ return array(
     #: views/admin/answer.view.php:25
     'Answer to ‘{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
 
-    #: classes/controller/admin/answer.ctrl.php:107
+    #: classes/controller/admin/answer.ctrl.php:110
     'No file attached.' => 'Aucun fichier joint.',
 
     #: classes/controller/admin/form.ctrl.php:187
     #: classes/controller/admin/form.ctrl.php:202
     'Page break' => 'Saut de page',
 
-    #: classes/controller/admin/enhancer.ctrl.php:52
+    #: classes/controller/admin/enhancer.ctrl.php:54
     #: config/controller/admin/enhancer.config.php:76
     'Thank you. Your answer has been sent.' => 'Merci. Votre réponse a été envoyée.',
 
     #: views/enhancer/blank_slate.view.php:14
-    'No forms are available in {{context}}. Go ahead, <a>add you first form in this language.</a>' => '',
+    'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => 'Voilà qui est frustrant, vous n’avez aucun formulaire à ajouter. Mais, pas de panique, il vous faut simplement&nbsp;:',
 
-    #: views/enhancer/blank_slate.view.php:16
-    'No forms are available in {{context}}. Go ahead, <a>add you first form in this context.</a>' => '',
+    #: views/enhancer/blank_slate.view.php:15
+    '<ul><li><a>Add your first form</a> (a new tab will open).</li>\n<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></uL>' => '<ul><li><a>Ajoutez votre premier formulaire</a> (s’ouvre dans un nouvel onglet).</li>\n<li>Une fois que vous aurez terminé (ça ne sera pas long), revenez à cet onglet pour insérer votre beau formulaire tout neuf.</li></uL>',
+
+    #: views/enhancer/blank_slate.view.php:18
+    'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => 'Aucun formulaire n’est disponible en {{context}}. Allez-y, <a>ajoutez votre premier formulaire dans cette langue</a>.',
+
+    #: views/enhancer/blank_slate.view.php:20
+    'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => 'Aucun formulaire n’est disponible en {{context}}. Allez-y, <a>ajoutez votre premier formulaire dans ce contexte</a>.',
 
     #: views/admin/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'Le modifier pourrait supprimer des données collectées.',
@@ -66,11 +72,6 @@ return array(
     'Help us prevent spam: How much is 3 plus 8?' => 'Aidez-nous à lutter contre le spam&nbsp;: Combien font 3 plus 8&nbsp;?',
 
     #: views/admin/layout_fields.view.php:90
-    #: config/controller/admin/form.config.php:85
-    'For every new answer, an email notification is sent to: (one email per line)' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;: (un email par ligne)',
-
-    #: views/admin/layout_fields.view.php:90
-    #: config/controller/admin/form.config.php:85
     'For every new answer, an email notification is sent to:' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;:',
 
     #: views/admin/layout_fields.view.php:90
@@ -88,19 +89,19 @@ return array(
     #: views/admin/layout_fields.view.php:171
     'Are you sure?' => 'Êtes-vous sur(e)&nbsp;?',
 
-    #: views/admin/permissions.view.php:7
-    'Can add, edit and delete forms and answers' => '',
+    #: views/admin/permissions.view.php:15
+    'Can add, edit and delete forms and answers' => 'Peut ajouter, modifier et supprimer des formulaires et réponses',
 
-    #: views/admin/permissions.view.php:14
-    'Can visualise answers only' => '',
-
-    #: views/admin/popup_delete.view.php:21
-    'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
+    #: views/admin/permissions.view.php:22
+    'Can visualise answers only' => 'Peut uniquement visualiser les réponses',
 
     #: views/admin/popup_delete.view.php:22
+    'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
+
+    #: views/admin/popup_delete.view.php:23
     'This form has already received <strong>{{count}} answers</strong>.' => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
 
-    #: views/admin/popup_delete.view.php:27
+    #: views/admin/popup_delete.view.php:28
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Oui, je veux supprimer ce formulaire et les {{count}} réponses reçues.',
 
     #: views/admin/warning_not_published.view.php:18
@@ -135,7 +136,7 @@ return array(
     'Add to Media Centre' => 'Ajouter à la Médiathèque',
 
     #: config/permissions.config.php:11
-    'Permissions for this application' => '',
+    'Permissions for this application' => 'Droits d’accès pour cette application',
 
     #: config/controller/admin/answer/inspector/date.config.php:18
     'Answer date' => 'Date de la réponse',
@@ -189,6 +190,9 @@ return array(
     #: config/controller/admin/form.config.php:81
     'I’m the submit button, click to edit me' => 'Je suis le bouton d’envoi, cliquez pour me modifier',
 
+    #: config/controller/admin/form.config.php:85
+    'For every new answer, an email notification is sent to: (one email per line)' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;: (un email par ligne)',
+
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
     #: config/controller/admin/form.config.php:89
     'One email per line' => 'Un email par ligne',
@@ -221,7 +225,7 @@ return array(
 
     #: config/controller/admin/form.config.php:157
     #: config/controller/admin/form.config.php:170
-    'First option\nSecond option' => '',
+    'First option\nSecond option' => 'Premier choix\nSecond choix',
 
     #: config/controller/admin/form.config.php:164
     #: config/controller/admin/form.config.php:401
@@ -232,7 +236,7 @@ return array(
     'Unique choice (radio buttons)' => 'Choix unique (boutons radio)',
 
     #: config/controller/admin/form.config.php:183
-    'First choice\nSecond choice' => '',
+    'First choice\nSecond choice' => 'Premier choix\nSecond choix',
 
     #: config/controller/admin/form.config.php:190
     #: config/controller/admin/form.config.php:403
@@ -269,7 +273,7 @@ return array(
     'Title:' => 'Civilité :',
 
     #: config/controller/admin/form.config.php:251
-    'Ms\nMr' => '',
+    'Ms\nMr' => 'Mme\nM.',
 
     #: config/controller/admin/form.config.php:259
     'Name:' => 'Nom :',
@@ -408,10 +412,10 @@ return array(
     'Right aligned' => 'À gauche du champ, aligné à droite',
 
     #: config/controller/admin/enhancer.config.php:55
-    'In the field (placeholder), for text fields only' => '',
+    'In the field (placeholder), for text fields only' => 'Dans le champ (placeholder), pour les champs textes uniquement',
 
     #: config/controller/admin/enhancer.config.php:61
-    'Once the user submitted the form' => 'Une fois que l’utilisateur a envoyé le formulaire&nbsp;:',
+    'Once the user submitted the form:' => 'Une fois que l’utilisateur a envoyé le formulaire&nbsp;:',
 
     #: config/controller/admin/enhancer.config.php:66
     'Display a message' => 'Afficher un message',
@@ -481,7 +485,7 @@ return array(
 
     #: config/common/form.config.php:130
     #: config/common/form.config.php:154
-    'There is no answers yet.' => '',
+    'There is no answers yet.' => 'Il n’y a pas de réponse pour le moment.',
 
     #: config/common/form.config.php:136
     'Export the answers (spreadsheet)' => 'Exporter les réponses (tableur)',
@@ -490,34 +494,34 @@ return array(
     'Received on' => 'Reçue le',
 
     #. Crud
-    #: config/common/answer.config.php:36
+    #: config/common/answer.config.php:41
     'The answer has been deleted.' => 'La réponse a été supprimée.',
 
     #. General errors
-    #: config/common/answer.config.php:39
+    #: config/common/answer.config.php:44
     'This answer doesn’t exist any more. It has been deleted.' => 'Cette réponse n’existe plus. Elle a été supprimée.',
 
-    #: config/common/answer.config.php:40
+    #: config/common/answer.config.php:45
     'We cannot find this answer.' => 'Nous n’arrivons pas trouver cette réponse.',
 
     #. Deletion popup
-    #: config/common/answer.config.php:43
+    #: config/common/answer.config.php:48
     'Deleting the answer ‘{{title}}’' => 'Supprimer la réponse «&nbsp;{{title}}&nbsp;»',
 
     #. Delete action's labels
-    #: config/common/answer.config.php:46
+    #: config/common/answer.config.php:51
     'Yes, delete this answer' => 'Oui, supprimer cette réponse',
 
-    #: config/common/answer.config.php:48
+    #: config/common/answer.config.php:53
     '1 answer' => '1 réponse',
 
-    #: config/common/answer.config.php:49
+    #: config/common/answer.config.php:54
     '{{count}} answers' => '{{count}} réponses',
 
-    #: config/common/answer.config.php:56
+    #: config/common/answer.config.php:61
     'Visualise' => 'Visualiser',
 
-    #: config/common/answer.config.php:66
+    #: config/common/answer.config.php:71
     'Answer to ’{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
 
 );
