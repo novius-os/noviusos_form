@@ -12,8 +12,10 @@ $id = uniqid('form_');
 $sites = \Nos\Tools_Context::sites();
 if ($params['form_count'] === 0) {
     $message = __('How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:').
-        __('<ul><li><a>Add your first form</a> (a new tab will open).</li>
-<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></uL>');
+        strtr(__('<ul><li><a>Add your first form</a> (a new tab will open).</li>
+<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>'), array(
+            '<ul>' => '<ul style="margin:0.5em 0 0.5em 1em; list-style:disc none outside; line-height:1.2em;">'
+        ));
 } else if (count($sites) === 1) {
     $message = __('No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.');
 } else {
@@ -22,7 +24,7 @@ if ($params['form_count'] === 0) {
 
 ?>
 <p>&nbsp;</p>
-<p>
+<p style="line-height:1.2em;">
     <?= strtr($message, array(
         '{{context}}' => \Nos\Tools_Context::contextLabel($params['_parent_context']),
         '<a>' => '<a href="#" id="'.$id.'">',

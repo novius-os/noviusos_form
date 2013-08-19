@@ -41,8 +41,8 @@ return array(
             'previewUrl' => 'admin/noviusos_form/enhancer/preview',
             'dialog' => array(
                 'contentUrl' => 'admin/noviusos_form/enhancer/popup',
-                'width' => 450,
-                'height' => 410,
+                'width' => 480,
+                'height' => 440,
                 'ajax' => true,
             ),
         ),
