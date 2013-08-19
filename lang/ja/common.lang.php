@@ -1,9 +1,9 @@
 <?php
 
-// Generated on 05/07/2013 14:57:58
+// Generated on 19/08/2013 18:12:14
 
-// 146 out of 156 messages are translated (93%).
-// 539 out of 605 words are translated (93%).
+// 145 out of 159 messages are translated (91%).
+// 533 out of 664 words are translated (91%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
@@ -17,22 +17,28 @@ return array(
     #: views/admin/answer.view.php:25
     'Answer to ‘{{title}}’' => '‘{{title}}’に回答する',
 
-    #: classes/controller/admin/answer.ctrl.php:107
+    #: classes/controller/admin/answer.ctrl.php:110
     'No file attached.' => 'ファイルが添付されていません。',
 
     #: classes/controller/admin/form.ctrl.php:187
     #: classes/controller/admin/form.ctrl.php:202
     'Page break' => 'ページ区切り',
 
-    #: classes/controller/admin/enhancer.ctrl.php:52
+    #: classes/controller/admin/enhancer.ctrl.php:54
     #: config/controller/admin/enhancer.config.php:76
     'Thank you. Your answer has been sent.' => 'ありがとうございます。メッセージが送信されました。',
 
     #: views/enhancer/blank_slate.view.php:14
-    'No forms are available in {{context}}. Go ahead, <a>add you first form in this language.</a>' => '',
+    'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => '',
 
-    #: views/enhancer/blank_slate.view.php:16
-    'No forms are available in {{context}}. Go ahead, <a>add you first form in this context.</a>' => '',
+    #: views/enhancer/blank_slate.view.php:15
+    '<ul><li><a>Add your first form</a> (a new tab will open).</li>'."\n".'<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '',
+
+    #: views/enhancer/blank_slate.view.php:18
+    'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => '',
+
+    #: views/enhancer/blank_slate.view.php:20
+    'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => '',
 
     #: views/admin/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'フォームを変更すると、受け取ったメッセージを変更することがあります。',
@@ -66,7 +72,6 @@ return array(
     'Help us prevent spam: How much is 3 plus 8?' => 'スパム防止用です。3たす8はいくつですか？',
 
     #: views/admin/layout_fields.view.php:90
-    #: config/controller/admin/form.config.php:85
     'For every new answer, an email notification is sent to:' => 'メッセージを受け取ると、下記のメールアドレスに通知を送ります:',
 
     #: views/admin/layout_fields.view.php:90
@@ -84,19 +89,19 @@ return array(
     #: views/admin/layout_fields.view.php:171
     'Are you sure?' => 'よろしいですか？',
 
-    #: views/admin/permissions.view.php:7
+    #: views/admin/permissions.view.php:15
     'Can add, edit and delete forms and answers' => '',
 
-    #: views/admin/permissions.view.php:14
+    #: views/admin/permissions.view.php:22
     'Can visualise answers only' => '',
 
-    #: views/admin/popup_delete.view.php:21
+    #: views/admin/popup_delete.view.php:22
     'This form has already received <strong>one answer</strong>.' => 'このフォームには<strong>1件のメッセージ</strong>があります。',
 
-    #: views/admin/popup_delete.view.php:22
+    #: views/admin/popup_delete.view.php:23
     'This form has already received <strong>{{count}} answers</strong>.' => 'このフォームには<strong>{{count}} 件のメッセージ</strong>があります。',
 
-    #: views/admin/popup_delete.view.php:27
+    #: views/admin/popup_delete.view.php:28
     'Yes, I want to delete this form and the {{count}} answers received.' => 'はい、このフォームを削除し、このフォームの{{count}}件のメッセージを削除します。',
 
     #: views/admin/warning_not_published.view.php:18
@@ -185,6 +190,9 @@ return array(
     #: config/controller/admin/form.config.php:81
     'I’m the submit button, click to edit me' => '送信ボタンの文言です。クリックして編集してください。',
 
+    #: config/controller/admin/form.config.php:85
+    'For every new answer, an email notification is sent to: (one email per line)' => '',
+
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
     #: config/controller/admin/form.config.php:89
     'One email per line' => 'メールアドレス毎に改行してください',
@@ -217,7 +225,7 @@ return array(
 
     #: config/controller/admin/form.config.php:157
     #: config/controller/admin/form.config.php:170
-    'First option\nSecond option' => '',
+    'First option'."\n".'Second option' => '',
 
     #: config/controller/admin/form.config.php:164
     #: config/controller/admin/form.config.php:401
@@ -228,7 +236,7 @@ return array(
     'Unique choice (radio buttons)' => 'ラジオボタン (単一選択)',
 
     #: config/controller/admin/form.config.php:183
-    'First choice\nSecond choice' => '',
+    'First choice'."\n".'Second choice' => '',
 
     #: config/controller/admin/form.config.php:190
     #: config/controller/admin/form.config.php:403
@@ -265,7 +273,7 @@ return array(
     'Title:' => 'タイトル:',
 
     #: config/controller/admin/form.config.php:251
-    'Ms\nMr' => '',
+    'Ms'."\n".'Mr' => '',
 
     #: config/controller/admin/form.config.php:259
     'Name:' => '名:',
@@ -407,7 +415,7 @@ return array(
     'In the field (placeholder), for text fields only' => '',
 
     #: config/controller/admin/enhancer.config.php:61
-    'Once the user submitted the form' => '訪問者がメッセージを送信すると、',
+    'Once the user submitted the form:' => '',
 
     #: config/controller/admin/enhancer.config.php:66
     'Display a message' => 'メッセージを表示',
@@ -486,34 +494,34 @@ return array(
     'Received on' => '受信日時',
 
     #. Crud
-    #: config/common/answer.config.php:36
+    #: config/common/answer.config.php:41
     'The answer has been deleted.' => 'メッセージは削除されました。',
 
     #. General errors
-    #: config/common/answer.config.php:39
+    #: config/common/answer.config.php:44
     'This answer doesn’t exist any more. It has been deleted.' => 'このメッセージは存在しません。削除されました。',
 
-    #: config/common/answer.config.php:40
+    #: config/common/answer.config.php:45
     'We cannot find this answer.' => 'メッセージが見つかりませんでした。',
 
     #. Deletion popup
-    #: config/common/answer.config.php:43
+    #: config/common/answer.config.php:48
     'Deleting the answer ‘{{title}}’' => 'メッセージ‘{{title}}’を削除します',
 
     #. Delete action's labels
-    #: config/common/answer.config.php:46
+    #: config/common/answer.config.php:51
     'Yes, delete this answer' => 'はい、このメッセージを削除します',
 
-    #: config/common/answer.config.php:48
+    #: config/common/answer.config.php:53
     '1 answer' => '1件のメッセージ',
 
-    #: config/common/answer.config.php:49
+    #: config/common/answer.config.php:54
     '{{count}} answers' => '{{count}}件のメッセージ',
 
-    #: config/common/answer.config.php:56
+    #: config/common/answer.config.php:61
     'Visualise' => '閲覧',
 
-    #: config/common/answer.config.php:66
+    #: config/common/answer.config.php:71
     'Answer to ’{{title}}’' => '’{{title}}’へのメッセージ',
 
 );

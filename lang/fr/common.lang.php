@@ -1,6 +1,6 @@
 <?php
 
-// Generated on 09/08/2013 10:16:42
+// Generated on 19/08/2013 18:12:14
 
 // 159 out of 159 messages are translated (100%).
 // 664 out of 664 words are translated (100%).
@@ -32,7 +32,7 @@ return array(
     'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => 'Voilà qui est frustrant, vous n’avez aucun formulaire à ajouter. Mais, pas de panique, il vous faut simplement&nbsp;:',
 
     #: views/enhancer/blank_slate.view.php:15
-    '<ul><li><a>Add your first form</a> (a new tab will open).</li>\n<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>Ajoutez votre premier formulaire</a> (s’ouvre dans un nouvel onglet).</li>\n<li>Une fois que vous aurez terminé (ça ne sera pas long), revenez à cet onglet pour insérer votre beau formulaire tout neuf.</li></ul>',
+    '<ul><li><a>Add your first form</a> (a new tab will open).</li>'."\n".'<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>Ajoutez votre premier formulaire</a> (s’ouvre dans un nouvel onglet).</li>'."\n".'<li>Une fois que vous aurez terminé (ça ne sera pas long), revenez à cet onglet pour insérer votre beau formulaire tout neuf.</li></ul>',
 
     #: views/enhancer/blank_slate.view.php:18
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => 'Aucun formulaire n’est disponible en {{context}}. Allez-y, <a>ajoutez votre premier formulaire dans cette langue</a>.',
@@ -225,7 +225,7 @@ return array(
 
     #: config/controller/admin/form.config.php:157
     #: config/controller/admin/form.config.php:170
-    'First option\nSecond option' => 'Premier choix\nSecond choix',
+    'First option'."\n".'Second option' => 'Premier choix'."\n".'Second choix',
 
     #: config/controller/admin/form.config.php:164
     #: config/controller/admin/form.config.php:401
@@ -236,7 +236,7 @@ return array(
     'Unique choice (radio buttons)' => 'Choix unique (boutons radio)',
 
     #: config/controller/admin/form.config.php:183
-    'First choice\nSecond choice' => 'Premier choix\nSecond choix',
+    'First choice'."\n".'Second choice' => 'Premier choix'."\n".'Second choix',
 
     #: config/controller/admin/form.config.php:190
     #: config/controller/admin/form.config.php:403
@@ -273,7 +273,7 @@ return array(
     'Title:' => 'Civilité :',
 
     #: config/controller/admin/form.config.php:251
-    'Ms\nMr' => 'Mme\nM.',
+    'Ms'."\n".'Mr' => 'Mme'."\n".'M.',
 
     #: config/controller/admin/form.config.php:259
     'Name:' => 'Nom :',
