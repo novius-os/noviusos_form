@@ -9,6 +9,8 @@
  */
 $id = uniqid('form_');
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 $sites = \Nos\Tools_Context::sites();
 if ($params['form_count'] === 0) {
     $message = __('How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:').
