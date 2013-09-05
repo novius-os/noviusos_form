@@ -39,7 +39,6 @@ return array(
                     ),
                 ),
                 'menu' => array(),
-                'save' => 'save',
             ),
         ),
     ),
@@ -87,17 +86,6 @@ return array(
                 'type' => 'textarea',
                 // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One email per line'),
-            ),
-        ),
-        'save' => array(
-            'label' => '',
-            'form' => array(
-                'type' => 'submit',
-                'tag' => 'button',
-                // Note to translator: This is a submit button
-                'value' => __('Save'),
-                'class' => 'ui-priority-primary',
-                'data-icon' => 'check',
             ),
         ),
     ),
