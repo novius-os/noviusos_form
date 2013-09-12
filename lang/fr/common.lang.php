@@ -197,10 +197,6 @@ return array(
     #: config/controller/admin/form.config.php:89
     'One email per line' => 'Un email par ligne',
 
-    #. Note to translator: This is a submit button
-    #: config/controller/admin/form.config.php:98
-    'Save' => 'Enregistrer',
-
     #: config/controller/admin/form.config.php:111
     #: config/controller/admin/form.config.php:255
     'Firstname:' => 'Prénom :',

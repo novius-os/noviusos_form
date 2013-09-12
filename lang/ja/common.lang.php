@@ -197,10 +197,6 @@ return array(
     #: config/controller/admin/form.config.php:89
     'One email per line' => 'メールアドレス毎に改行してください',
 
-    #. Note to translator: This is a submit button
-    #: config/controller/admin/form.config.php:98
-    'Save' => '保存',
-
     #: config/controller/admin/form.config.php:111
     #: config/controller/admin/form.config.php:255
     'Firstname:' => '名:',
