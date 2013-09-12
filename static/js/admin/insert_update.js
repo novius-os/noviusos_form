@@ -256,6 +256,12 @@ define(
                 show_when($field, 'field_origin', -1 !== $.inArray(type, ['hidden', 'variable']));
                 show_when($field, 'field_origin_var', -1 !== $.inArray(type, ['hidden', 'variable']));
 
+                // if the mandatory field is not visible, it needs to be unchecked...
+                var $field_mandatory = find_field($field, 'field_mandatory');
+                if ($field_mandatory.closest('p').css('display') === 'none') {
+                    $field_mandatory.prop('checked', false);
+                }
+
                 // The 'type' field is for sure in the first wijmo-wijaccordion-content so we know $field IS an .accordion too
                 // So the selectedIndex is for sure '0'
                 $field.find('.wijmo-wijaccordion-content').each(function() {
