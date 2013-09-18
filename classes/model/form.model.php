@@ -36,6 +36,7 @@ class Model_Form extends \Nos\Orm\Model
             'default' => null,
             'data_type' => 'varchar',
             'null' => false,
+            'character_maximum_length' => 100,
         ),
         'form_manager_id' => array(
             'default' => null,
