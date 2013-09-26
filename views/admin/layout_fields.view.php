@@ -104,13 +104,13 @@ if (!\Email::hasDefaultFrom()) {
             </p>
 <?php
 $layout = explode("\n", $item->form_layout);
-array_walk($layout, function(&$v) {
+array_walk($layout, function (&$v) {
     $v = explode(',', $v);
 });
 $layout = \Arr::flatten($layout);
 // Remove empty values
 $layout = array_filter($layout);
-array_walk($layout, function(&$v) {
+array_walk($layout, function (&$v) {
     $v = explode('=', $v);
     $v = $v[0];
 });

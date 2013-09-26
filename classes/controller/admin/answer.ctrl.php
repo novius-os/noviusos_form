@@ -62,7 +62,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
         }
 
         $layout = explode("\n", $form->form_layout);
-        array_walk($layout, function(&$v) {
+        array_walk($layout, function (&$v) {
             $v = explode(',', $v);
         });
 

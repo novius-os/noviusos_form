@@ -59,5 +59,4 @@ class Model_Answer_Field extends \Nos\Orm\Model
             'cascade_delete' => false,
         ),
     );
-
 }

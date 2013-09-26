@@ -36,12 +36,12 @@ return array(
                     'action' => 'Nos\Form\Model_Form.answers',
                 ),
             ),
-            'value' => function($item) {
+            'value' => function ($item) {
                 return $item->is_new() ? 0 : \Nos\Form\Model_Answer::count(array(
                         'where' => array(array('answer_form_id' => $item->form_id)),
                     ));
             },
-            'sorting_callback' => function(&$query, $sortDirection) {
+            'sorting_callback' => function (&$query, $sortDirection) {
                 $query->_join_relation('answers', $join);
                 $query->group_by($join['alias_from'].'.form_id');
                 $query->order_by(\Db::expr('COUNT(*)'), $sortDirection);
@@ -77,27 +77,27 @@ return array(
             'label' => __('Add a form'),
             // 'visible' is needed to hide the button from the toolbar...
             'visible' => array(
-                'check_permission' => function() {
+                'check_permission' => function () {
                     return \Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 },
             ),
             // ... and 'disabled' is needed deny adding a new item using direct access (used by Controller_Crud)
             'disabled' => array(
-                'check_permission' => function() {
+                'check_permission' => function () {
                     return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 },
             ),
         ),
         'edit' => array(
             'disabled' => array(
-                'check_permission' => function($item) {
+                'check_permission' => function ($item) {
                     return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 }
             ),
         ),
         'delete' => array(
             'disabled' => array(
-                'check_permission' => function($item) {
+                'check_permission' => function ($item) {
                     return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 }
             ),
@@ -118,12 +118,12 @@ return array(
                 ),
             ),
             'visible' => array(
-                'check_is_new' => function($params) {
+                'check_is_new' => function ($params) {
                     return !isset($params['item']) || !$params['item']->is_new();
                 },
             ),
             'disabled' => array(
-                'check_empty' => function($item) {
+                'check_empty' => function ($item) {
                     if ($item->is_new() || !\Nos\Form\Model_Answer::count(array(
                         'where' => array(array('answer_form_id' => $item->form_id)),
                     ))) {
@@ -143,11 +143,11 @@ return array(
                 'action' => 'window.open',
                 'url' => 'admin/noviusos_form/form/export/{{_id}}',
             ),
-            'visible' => function($params) {
+            'visible' => function ($params) {
                 return !isset($params['item']) || !$params['item']->is_new();
             },
             'disabled' => array(
-                'check_empty' => function($item) {
+                'check_empty' => function ($item) {
                     if ($item->is_new() || !\Nos\Form\Model_Answer::count(array(
                         'where' => array(array('answer_form_id' => $item->form_id)),
                     ))) {

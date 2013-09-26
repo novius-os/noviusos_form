@@ -235,7 +235,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             }
 
             $layout = explode("\n", $this->item->form_layout);
-            array_walk($layout, function(&$v) {
+            array_walk($layout, function (&$v) {
                 $v = explode(',', $v);
             });
 
@@ -324,4 +324,3 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
     }
 }
-
