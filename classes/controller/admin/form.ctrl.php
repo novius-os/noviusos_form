@@ -292,11 +292,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 ob_end_clean();
             }
 
-            // Patch for Format->to_csv(), use two consecutive double-quote for enclosure, not escaping with a backslash
-            \Config::load('format', true);
-            $enclosure = \Config::get('format.csv.enclosure', '"');
-            \Config::set('format.csv.escape', $enclosure);
-
             // Enable garbage collector
             gc_enable();
 
