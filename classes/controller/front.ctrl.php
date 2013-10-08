@@ -556,9 +556,9 @@ class Controller_Front extends Controller_Front_Application
             }
 
             // after_submission
-            \Event::trigger('noviusos_form::after_submission', array($answer, $this->enhancer_args));
+            \Event::trigger('noviusos_form::after_submission', array('answer' => $answer, 'enhancer_args' => $this->enhancer_args));
             if (!empty($form->form_virtual_name)) {
-                \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array($answer));
+                \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array('answer' => $answer, 'enhancer_args' => $this->enhancer_args));
             }
         }
 
