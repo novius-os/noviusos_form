@@ -25,12 +25,12 @@ return array(
             'dataFormatString' => 'f',
         ),
         'receipt_date_preview' => array(
-            'value' => function($item) {
+            'value' => function ($item) {
                 return \Date::formatPattern($item->answer_created_at);
             },
         ),
         'form_title' => array(
-            'value' => function($answer) {
+            'value' => function ($answer) {
                 return $answer->form->form_name;
             },
             'visible' => false,
@@ -77,7 +77,7 @@ return array(
             ),
             'delete' => array(
                 'disabled' => array(
-                    'check_permission' => function($item) {
+                    'check_permission' => function ($item) {
                         return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                     }
                 ),

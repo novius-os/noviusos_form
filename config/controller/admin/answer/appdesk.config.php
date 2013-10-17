@@ -45,8 +45,7 @@ return array(
         'showAll' => __('Show all answers'),
     ),
     'search_text' => array(
-        function ($value, $query)
-        {
+        function ($value, $query) {
             $query->related('fields', array('where' => array(
                 array('anfi_field_type', 'IN', array('text', 'textarea', 'checkbox', 'select', 'radio', 'email', 'number')),
                 array('anfi_value', 'LIKE', '%'.$value.'%'),
@@ -61,8 +60,7 @@ return array(
     ),
     'inputs' => array(
         'form_id' =>
-            function ($value, $query)
-            {
+            function ($value, $query) {
                 if ($value) {
                     $query->where(array('answer_form_id', '=', $value));
                 }

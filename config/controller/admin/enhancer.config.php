@@ -90,7 +90,7 @@ return array(
     ),
     'preview' => array(
         'params' => array(
-            'title' => function($enhancer_args) {
+            'title' => function ($enhancer_args) {
                 if (!empty($enhancer_args['form_id'])) {
                     $form = \Nos\Form\Model_Form::find($enhancer_args['form_id']);
                 }

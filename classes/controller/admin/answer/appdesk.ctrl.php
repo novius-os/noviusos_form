@@ -73,8 +73,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                 }
                 $dataset[$id] = array_merge($column, array(
                     'value' =>
-                    function($item) use ($field)
-                    {
+                    function ($item) use ($field) {
                         $answer = Model_Answer_Field::find('first', array(
                                 'where' => array(
                                     array('anfi_answer_id', $item->answer_id),

@@ -76,7 +76,7 @@ if (!function_exists('noviusos_form_foundation_add_attr_to_thing')) {
 }
 
 $render_thing = null;
-$render_thing = function($thing) use(&$render_thing, &$render_template) {
+$render_thing = function ($thing) use (&$render_thing, &$render_template) {
     if (is_string($thing)) {
         return $thing;
     }
@@ -102,7 +102,7 @@ $render_thing = function($thing) use(&$render_thing, &$render_template) {
 };
 
 $render_template = null;
-$render_template = function($template, $args) use (&$render_template, &$render_thing) {
+$render_template = function ($template, $args) use (&$render_template, &$render_thing) {
     $replacements = array();
     foreach ($args as $name => $value) {
         $replacements['{' . $name . '}'] = $render_thing($value);

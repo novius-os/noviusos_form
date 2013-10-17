@@ -8,7 +8,32 @@
  * @link http://www.novius-os.org
  */
 
-foreach ($data as $label => $value) {
-    echo '<h3>', e($label), '</h3>';
-    echo '<div>', \Str::textToHtml(e($value)), '</div>';
+\Nos\I18n::current_dictionary('noviusos_form::front');
+$url = \Nos\Nos::main_controller()->getUrl();
+?>
+<style type="text/css">
+body {
+    font: 12px Verdana, Arial, Helvetica, sans-serif;
+    color: #000000;
 }
+table {
+    border-top:1px solid #CCCCCC;
+}
+th, td {
+    font-size: 12px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #000000;
+    text-align: left;
+    vertical-align: top;
+    border-bottom:1px solid #CCCCCC;
+}
+</style>
+<p><?= __('Message sent by:') ?> <a href="<?= $url ?>"><?= $url ?></a></p>
+<table border="0" cellspacing="0" cellpadding="3">
+<?php
+foreach ($data as $label => $value) {
+    echo '<tr><th>', e($label), '</th><th>:</th>';
+    echo '<td>', \Str::textToHtml(e($value)), '</td></tr>';
+}
+?>
+</table>

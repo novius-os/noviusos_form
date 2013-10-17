@@ -74,7 +74,7 @@ class Controller_Front extends Controller_Front_Application
     public function render_form($item, $errors)
     {
         $layout = explode("\n", $item->form_layout);
-        array_walk($layout, function(&$v) {
+        array_walk($layout, function (&$v) {
             $v = explode(',', $v);
         });
 
@@ -400,7 +400,7 @@ class Controller_Front extends Controller_Front_Application
 
         $layout = $form->form_layout;
         $layout = explode("\n", $layout);
-        array_walk($layout, function(&$v) {
+        array_walk($layout, function (&$v) {
             $v = explode(',', $v);
         });
 
@@ -503,7 +503,7 @@ class Controller_Front extends Controller_Front_Application
             $before_submission = array_merge((array) \Event::trigger_function('noviusos_form::before_submission.' . $form->form_virtual_name, array(&$data, $form, $this->enhancer_args), 'array'));
         }
 
-        $before_submission = array_filter($before_submission, function($val) {
+        $before_submission = array_filter($before_submission, function ($val) {
             return $val === false;
         });
 
@@ -556,9 +556,19 @@ class Controller_Front extends Controller_Front_Application
             }
 
             // after_submission
-            \Event::trigger('noviusos_form::after_submission', array(&$answer, $this->enhancer_args));
+            \Event::trigger('noviusos_form::after_submission', array(
+                'answer' => $answer,
+                'enhancer_args' => $this->enhancer_args,
+                0 => $answer, //For consistency. Deprecated. To remove when made BC
+                1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
+            ));
             if (!empty($form->form_virtual_name)) {
-                \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array(&$answer));
+                \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array(
+                    'answer' => $answer,
+                    'enhancer_args' => $this->enhancer_args,
+                    0 => $answer, //For consistency. Deprecated. To remove when made BC
+                    1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
+                ));
             }
         }
 

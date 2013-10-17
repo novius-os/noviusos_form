@@ -9,7 +9,7 @@
  */
 
 return array(
-    'title_property'  => function($item) {
+    'title_property'  => function ($item) {
         return strtr(__('Answer received on {{date}}'), array('{{date}}' => $item->answer_created_at));
     },
 );

@@ -477,7 +477,7 @@ return array(
                 'value' => '',
                 'size' => '3',
             ),
-            'populate' => function($item) {
+            'populate' => function ($item) {
                 return empty($item->field_width) ? '' : $item->field_width;
             },
         ),
@@ -489,7 +489,7 @@ return array(
                 'size' => '3',
                 'value' => '3',
             ),
-            'populate' => function($item) {
+            'populate' => function ($item) {
                 return empty($item->field_height) ? '' : $item->field_height;
             },
         ),
@@ -500,7 +500,7 @@ return array(
                 'type' => 'number',
                 'size' => '3',
             ),
-            'populate' => function($item) {
+            'populate' => function ($item) {
                 return empty($item->field_limited_to) ? '' : $item->field_limited_to;
             },
         ),
