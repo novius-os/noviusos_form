@@ -525,10 +525,14 @@ class Controller_Front extends Controller_Front_Application
                     $mail->attach($attachment->path());
                 }
             }
-
+            $reply_to = '';
             foreach ($data as $field_name => $value) {
                 $field = $fields[$field_name];
                 $email_data[$field->field_label] = $value;
+                if (($field->field_type == 'email') && !empty($value) && empty($reply_to)) {
+                    // save first non empty email as potential "reply_to"
+                    $reply_to = $value;
+                }
                 $answer_field = Model_Answer_Field::forge(array(
                     'anfi_answer_id' => $answer->answer_id,
                     'anfi_field_id' => $field->field_id,
@@ -543,6 +547,9 @@ class Controller_Front extends Controller_Front_Application
                 $emails = explode("\n", $emails);
 
                 $mail->bcc($emails);
+                if (!empty($reply_to) && !empty($this->app_config['add_replyto_to_first_email'])) {
+                    $mail->reply_to($reply_to);
+                }
                 $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data)));
                 $mail->subject(strtr(__('{{form}}: New answer'), array(
                     '&nbsp;' => ' ',
