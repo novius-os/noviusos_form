@@ -46,4 +46,5 @@ return array(
     #: views/foundation.view.php:249
     '{{current}} out of {{total}}' => '{{current}} sur {{total}}',
 
+    'Message sent by:' => 'Message envoyé par :',
 );
