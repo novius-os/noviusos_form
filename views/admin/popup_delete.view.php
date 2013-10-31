@@ -19,12 +19,13 @@ $answer_count = count($item->answers);
 <?php
 if ($answer_count > 0) {
     ?>
-    <p><?= strtr(__(
-        $answer_count == 1 ? __('This form has already received <strong>one answer</strong>.')
-            : __('This form has already received <strong>{{count}} answers</strong>.')
-    ), array(
-        '{{count}}' => $answer_count,
-    )) ?></p>
+    <p><?= strtr(n__(
+            'This form has already received <strong>one answer</strong>.',
+            'This form has already received <strong>{{count}} answers</strong>.',
+            $answer_count
+        ), array(
+            '{{count}}' => $answer_count,
+        )) ?></p>
     <p><?= $crud['config']['i18n']['deleting confirmation number'] ?></p>
     <p><?= strtr(__('Yes, I want to delete this form and the {{count}} answers received.'), array(
         '{{count}}' => '<input class="verification" data-verification="'.$answer_count.'" size="'.(mb_strlen($answer_count) + 1).'" />',
