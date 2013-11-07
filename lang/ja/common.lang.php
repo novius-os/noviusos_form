@@ -96,10 +96,9 @@ return array(
     'Can visualise answers only' => '',
 
     #: views/admin/popup_delete.view.php:22
-    'This form has already received <strong>one answer</strong>.' => 'このフォームには<strong>1件のメッセージ</strong>があります。',
-
-    #: views/admin/popup_delete.view.php:23
-    'This form has already received <strong>{{count}} answers</strong>.' => 'このフォームには<strong>{{count}} 件のメッセージ</strong>があります。',
+    'This form has already received <strong>one answer</strong>.' => array(
+        0 => 'このフォームには<strong>{{count}} 件のメッセージ</strong>があります。',
+    ),
 
     #: views/admin/popup_delete.view.php:28
     'Yes, I want to delete this form and the {{count}} answers received.' => 'はい、このフォームを削除し、このフォームの{{count}}件のメッセージを削除します。',

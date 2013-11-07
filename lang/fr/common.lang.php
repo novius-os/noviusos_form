@@ -96,10 +96,10 @@ return array(
     'Can visualise answers only' => 'Peut uniquement visualiser les réponses',
 
     #: views/admin/popup_delete.view.php:22
-    'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
-
-    #: views/admin/popup_delete.view.php:23
-    'This form has already received <strong>{{count}} answers</strong>.' => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
+    'This form has already received <strong>one answer</strong>.' => array(
+        0 => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
+        1 => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
+    ),
 
     #: views/admin/popup_delete.view.php:28
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Oui, je veux supprimer ce formulaire et les {{count}} réponses reçues.',
