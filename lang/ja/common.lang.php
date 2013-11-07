@@ -158,10 +158,9 @@ return array(
     'answers' => 'メッセージ',
 
     #: config/controller/admin/answer/appdesk.config.php:41
-    'Showing {{x}} answers out of {{y}}' => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
-
-    #: config/controller/admin/answer/appdesk.config.php:42
-    'Showing 1 answer' => '1件のメッセージを表示しています',
+    'Showing 1 answer out of {{y}}' => array(
+        0 => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
+    ),
 
     #: config/controller/admin/answer/appdesk.config.php:43
     'No answers' => 'メッセージ無し',
@@ -429,10 +428,9 @@ return array(
     'forms' => 'フォーム',
 
     #: config/controller/admin/appdesk.config.php:19
-    'Showing {{x}} forms out of {{y}}' => '{{y}}つのフォームのうち、{{x}}つを表示しています',
-
-    #: config/controller/admin/appdesk.config.php:20
-    'Showing 1 form' => '1つのフォームを表示しています',
+    'Showing 1 form out of {{y}}' => array(
+        0 => '{{y}}つのフォームのうち、{{x}}つを表示しています',
+    ),
 
     #: config/controller/admin/appdesk.config.php:21
     'No forms' => 'フォームがありません',
@@ -468,16 +466,17 @@ return array(
 
     #. Delete action's labels
     #: config/common/form.config.php:68
-    'Yes, delete this form' => 'はい、このフォームを削除します',
+    'Yes, delete this form' => array(
+        0 => 'はい、このフォームを削除します',
+    ),
 
     #: config/common/form.config.php:70
     'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => '入力した数字が間違っているため、このフォームを削除できません。もう一度試してください。',
 
     #: config/common/form.config.php:72
-    '1 form' => '1つのフォーム',
-
-    #: config/common/form.config.php:73
-    '{{count}} forms' => '{{count}}つのフォーム',
+    '1 form' => array(
+        0 => '{{count}}つのフォーム',
+    ),
 
     #: config/common/form.config.php:130
     #: config/common/form.config.php:154
@@ -506,13 +505,14 @@ return array(
 
     #. Delete action's labels
     #: config/common/answer.config.php:51
-    'Yes, delete this answer' => 'はい、このメッセージを削除します',
+    'Yes, delete this answer' => array(
+        0 => 'はい、このメッセージを削除します',
+    ),
 
     #: config/common/answer.config.php:53
-    '1 answer' => '1件のメッセージ',
-
-    #: config/common/answer.config.php:54
-    '{{count}} answers' => '{{count}}件のメッセージ',
+    '1 answer' => array(
+        0 => '{{count}}件のメッセージ',
+    ),
 
     #: config/common/answer.config.php:61
     'Visualise' => '閲覧',

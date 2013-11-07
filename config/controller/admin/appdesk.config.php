@@ -16,8 +16,14 @@ return array(
     'i18n' => array(
         'item' => __('form'),
         'items' => __('forms'),
-        'showNbItems' => __('Showing {{x}} forms out of {{y}}'),
-        'showOneItem' => __('Showing 1 form'),
+        'NItems' => n__(
+            '1 form',
+            '{{count}} forms'
+        ),
+        'showNbItems' => n__(
+            'Showing 1 form out of {{y}}',
+            'Showing {{x}} forms out of {{y}}'
+        ),
         'showNoItem' => __('No forms'),
         // Note to translator: This is the action that clears the 'Search' field
         'showAll' => __('Show all forms'),

@@ -65,12 +65,17 @@ return array(
         'deleting item title' => __('Deleting the form ‘{{title}}’'),
 
         # Delete action's labels
-        'deleting button 1 item' => __('Yes, delete this form'),
+        'deleting button N items' => n__(
+            'Yes, delete this form',
+            'Yes, delete these {{count}} forms'
+        ),
 
         'deleting wrong confirmation' => __('We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.'),
 
-        '1 item' => __('1 form'),
-        'N items' => __('{{count}} forms'),
+        'N items' => n__(
+            '1 form',
+            '{{count}} forms'
+        ),
     ),
     'actions' => array(
         'add' => array(

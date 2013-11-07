@@ -158,10 +158,10 @@ return array(
     'answers' => 'réponses',
 
     #: config/controller/admin/answer/appdesk.config.php:41
-    'Showing {{x}} answers out of {{y}}' => '{{x}} réponses sur {{y}} affichées',
-
-    #: config/controller/admin/answer/appdesk.config.php:42
-    'Showing 1 answer' => '1 réponse affichée',
+    'Showing 1 answer out of {{y}}' => array(
+        '1 réponse sur {{y}} affichée',
+        '{{x}} réponses sur {{y}} affichées',
+    ),
 
     #: config/controller/admin/answer/appdesk.config.php:43
     'No answers' => 'Pas de réponse',
@@ -429,10 +429,10 @@ return array(
     'forms' => 'formulaires',
 
     #: config/controller/admin/appdesk.config.php:19
-    'Showing {{x}} forms out of {{y}}' => '{{x}} formulaires sur {{y}} affichés',
-
-    #: config/controller/admin/appdesk.config.php:20
-    'Showing 1 form' => '1 formulaire affiché',
+    'Showing 1 form out of {{y}}' => array(
+        '1 formulaire sur {{y}} affiché',
+        '{{x}} formulaires sur {{y}} affichés',
+    ),
 
     #: config/controller/admin/appdesk.config.php:21
     'No forms' => 'Pas de formulaire',
@@ -468,16 +468,19 @@ return array(
 
     #. Delete action's labels
     #: config/common/form.config.php:68
-    'Yes, delete this form' => 'Oui, supprimer ce formulaire',
+    'Yes, delete this form' => array(
+        0 => 'Oui, supprimer ce formulaire',
+        1 => 'Oui, supprimer ces {{count}} formulaires',
+    ),
 
     #: config/common/form.config.php:70
     'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => 'Nous ne pouvons supprimer ce formulaire car le nombre de réponses indiqué est faux. Merci de le corriger.',
 
     #: config/common/form.config.php:72
-    '1 form' => '1 formulaire',
-
-    #: config/common/form.config.php:73
-    '{{count}} forms' => '{{count}} formulaires',
+    '1 form' => array(
+        0 => '1 formulaire',
+        1 => '{{count}} formulaires',
+    ),
 
     #: config/common/form.config.php:130
     #: config/common/form.config.php:154
@@ -506,13 +509,16 @@ return array(
 
     #. Delete action's labels
     #: config/common/answer.config.php:51
-    'Yes, delete this answer' => 'Oui, supprimer cette réponse',
+    'Yes, delete this answer' => array(
+        0 => 'Oui, supprimer cette réponse',
+        1 => 'Oui, supprimer ces {{count}} réponses',
+    ),
 
     #: config/common/answer.config.php:53
-    '1 answer' => '1 réponse',
-
-    #: config/common/answer.config.php:54
-    '{{count}} answers' => '{{count}} réponses',
+    '1 answer' => array(
+        0 => '1 réponse',
+        1 => '{{count}} réponses',
+    ),
 
     #: config/common/answer.config.php:61
     'Visualise' => 'Visualiser',
