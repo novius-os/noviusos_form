@@ -29,7 +29,7 @@ return array(
             'view' => 'nos::form/layout_standard',
             'params' => array(
                 'title' => 'form_name',
-                'subtitle' => array('form_virtual_name'),
+                'subtitle' => array('form_submit_email', 'form_virtual_name'),
                 'medias' => array(),
                 'large' => true,
                 'content' => array(
@@ -81,12 +81,15 @@ return array(
             ),
         ),
         'form_submit_email' => array (
-            'label' => __("For every new answer, an email notification is sent to: (one email per line)"),
+            'label' => __("For every new answer, an email notification is sent to:"),
             'form' => array(
+                'description' => __("One email per line"),
                 'type' => 'textarea',
                 // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One email per line'),
+                'cols' => 50,
             ),
+            'template' => '<div><span style="vertical-align:top;">{label}</span> <span style="display: inline-block;">{field}<br />{description}</span></div>',
         ),
     ),
     'fields_meta' => array(

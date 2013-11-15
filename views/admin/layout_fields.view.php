@@ -22,6 +22,12 @@ if (!$item->is_new() && count($item->answers) > 0) {
 <div id="<?= $uniqid = uniqid('container_') ?>">
 
 <?php
+if (!\Email::hasDefaultFrom()) {
+    echo '<div class="line"><div class="col c12 ui-state-error" style="padding:0.5em;">',
+        __('You have a problem here: Your Novius OS is not set up to send emails. '.
+            'You’ll have to ask your developer to set it up for you.'),
+        '</div></div>';
+}
 if (!$item->is_new()) {
     $count = \Nos\Model_Wysiwyg::count(array(
         'where' => array(
@@ -87,12 +93,6 @@ foreach (array('standard', 'special') as $type) {
             <div class="ui-widget-content submit_informations" style="display:none;">
                 <p class="form_captcha"><?= __('Help us prevent spam: How much is 3 plus 8?') ?> <input size="3" /></p>
                 <p class="form_submit_label"><input type="button" /></p>
-                <p class="form_submit_email"><?= __("For every new answer, an email notification is sent to:") ?> <span></span><span style="display:none;"><?= __("nobody!") ?></span></p>
-<?php
-if (!\Email::hasDefaultFrom()) {
-    echo '<p class="ui-state-error" style="padding:0.5em">', __('You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.'), '<p>';
-}
-?>
             </div>
         </div>
 
@@ -123,7 +123,6 @@ foreach ($layout as $field_id) {
                 <div>
                     <?= $fieldset->field('form_captcha')->set_template('<p><span>{label} {field}</span></p>') ?>
                     <?= $fieldset->field('form_submit_label')->set_template('<p><span>{label}<br />{field}</span></p>') ?>
-                    <?= $fieldset->field('form_submit_email')->set_template('<p><span>{label}<br />{field}</span></p>') ?>
                 </div>
             </div>
         </div>

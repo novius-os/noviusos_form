@@ -12,8 +12,8 @@ Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
 
 ?>
 
-<div class="line" style="margin: -2em 0 3em;">
-    <div class="col c12" style="position:relative;">
+<div class="line" style="margin: 1em 0 2em;">
+    <div class="col c12">
         <img src="static/novius-os/admin/novius-os/img/icons/status-red.png" style="vertical-align: middle;" />
         <?= __('Not published') ?>.
         <?= __('To publish this form, add it to a page, a blog post or any other text editor.') ?>
