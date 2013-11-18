@@ -297,9 +297,13 @@ class Controller_Front extends Controller_Front_Application
                 } else if ($field->field_type == 'message') {
                     $label = '';
                     $type = in_array($field->field_style, array('p', 'h1', 'h2', 'h3')) ? $field->field_style : 'p';
+                    $html_attrs = array(
+                        'id' => $field->field_technical_id,
+                        'class' => 'label_text '.$field->field_technical_css,
+                    );
                     $html = array(
                         'callback' => 'html_tag',
-                        'args' => array($type, array('class' => 'label_text'), nl2br($field->field_message)),
+                        'args' => array($type, $html_attrs, nl2br($field->field_message)),
                     );
 
                 } else if ($field->field_type == 'separator') {
