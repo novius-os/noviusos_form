@@ -256,7 +256,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
             foreach ($layout as $rows) {
                 foreach ($rows as $row) {
-                    list($field_id, $width) = explode('=', $row);
+                    list($field_id) = explode('=', $row);
 
                     if ($field_id == 'captcha') {
                         continue;

@@ -409,7 +409,7 @@ class Controller_Front extends Controller_Front_Application
         });
 
         // Fetching the fields according to their layout position
-        foreach ($layout as $row => $cols) {
+        foreach ($layout as $cols) {
             foreach ($cols as $field_layout) {
                 list($field_id, ) = explode('=', $field_layout);
                 $field = $form->fields[$field_id];

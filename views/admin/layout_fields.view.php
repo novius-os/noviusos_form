@@ -24,8 +24,10 @@ if (!$item->is_new() && count($item->answers) > 0) {
 <?php
 if (!\Email::hasDefaultFrom()) {
     echo '<div class="line"><div class="col c12 ui-state-error" style="padding:0.5em;">',
-        __('You have a problem here: Your Novius OS is not set up to send emails. '.
-            'You’ll have to ask your developer to set it up for you.'),
+        __(
+            'You have a problem here: Your Novius OS is not set up to send emails. '.
+            'You’ll have to ask your developer to set it up for you.'
+        ),
         '</div></div>';
 }
 if (!$item->is_new()) {
