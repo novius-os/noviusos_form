@@ -48,10 +48,15 @@ return array(
         'deleting item title' => __('Deleting the answer ‘{{title}}’'),
 
         # Delete action's labels
-        'deleting button 1 item' => __('Yes, delete this answer'),
+        'deleting button N items' => n__(
+            'Yes, delete this answer',
+            'Yes, delete these {{count}} answers'
+        ),
 
-        '1 item' => __('1 answer'),
-        'N items' => __('{{count}} answers'),
+        'N items' => n__(
+            '1 answer',
+            '{{count}} answers'
+        ),
     ),
     'actions' => array(
         'list' => array(

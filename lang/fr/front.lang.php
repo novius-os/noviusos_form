@@ -1,9 +1,9 @@
 <?php
 
-// Generated on 19/08/2013 18:12:14
+// Generated on 07/11/2013 15:24:52
 
-// 12 out of 13 messages are translated (92%).
-// 75 out of 76 words are translated (92%).
+// 13 out of 13 messages are translated (100%).
+// 76 out of 76 words are translated (100%).
 
 return array(
     #: classes/controller/front.ctrl.php:67
@@ -31,7 +31,7 @@ return array(
     #: classes/controller/front.ctrl.php:461
     '{{label}}: ‘{{value}}’ is not a valid date.' => '{{label}}&nbsp;: {{value}} n’est pas une date valide.',
 
-    #: classes/controller/front.ctrl.php:546
+    #: classes/controller/front.ctrl.php:556
     '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
 
     #: views/foundation.view.php:229
@@ -46,5 +46,4 @@ return array(
     #: views/foundation.view.php:249
     '{{current}} out of {{total}}' => '{{current}} sur {{total}}',
 
-    'Message sent by:' => 'Message envoyé par :',
 );

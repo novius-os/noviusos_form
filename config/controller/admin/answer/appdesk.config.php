@@ -38,8 +38,14 @@ return array(
     'i18n' => array(
         'item' => __('answer'),
         'items' => __('answers'),
-        'showNbItems' => __('Showing {{x}} answers out of {{y}}'),
-        'showOneItem' => __('Showing 1 answer'),
+        'NItems' => n__(
+            '1 answer',
+            '{{count}} answers'
+        ),
+        'showNbItems' => n__(
+            'Showing 1 answer out of {{y}}',
+            'Showing {{x}} answers out of {{y}}'
+        ),
         'showNoItem' => __('No answers'),
         // Note to translator: This is the action that clears the 'Search' field
         'showAll' => __('Show all answers'),
