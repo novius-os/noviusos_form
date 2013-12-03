@@ -1,13 +1,13 @@
 <?php
 
-// Generated on 07/11/2013 15:24:52
+// Generated on 02/12/2013 17:53:33
 
-// 154 out of 154 messages are translated (100%).
-// 649 out of 649 words are translated (100%).
+// 157 out of 157 messages are translated (100%).
+// 651 out of 651 words are translated (100%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:121
+    #: config/common/form.config.php:116
     'Answers to ‘{{title}}’' => '‘{{title}}’に回答する',
 
     #: classes/controller/admin/answer/appdesk.ctrl.php:36
@@ -31,14 +31,14 @@ return array(
     #: views/enhancer/blank_slate.view.php:16
     'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => '',
 
-    #: views/enhancer/blank_slate.view.php:17
+    #: views/enhancer/blank_slate.view.php:19
     '<ul><li><a>Add your first form</a> (a new tab will open).</li>
 <li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '',
 
-    #: views/enhancer/blank_slate.view.php:22
+    #: views/enhancer/blank_slate.view.php:27
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => '',
 
-    #: views/enhancer/blank_slate.view.php:24
+    #: views/enhancer/blank_slate.view.php:29
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => '',
 
     #: views/email.view.php:31
@@ -59,38 +59,32 @@ return array(
     #: views/admin/warning_answers_collected.view.php:49
     'Answers to this form have already been received' => 'このフォームには、既に受理したメッセージがあります。',
 
-    #: views/admin/layout_fields.view.php:39
-    #: views/admin/layout_fields.view.php:84
-    'Add a field' => 'フィールドを追加',
-
-    #: views/admin/layout_fields.view.php:45
-    'Standard fields' => '標準フィールド',
-
-    #: views/admin/layout_fields.view.php:46
-    'Special fields' => '拡張フィールド',
-
-    #: views/admin/layout_fields.view.php:85
-    'Add a page break' => 'ページ区切りを追加',
-
-    #: views/admin/layout_fields.view.php:88
-    'Help us prevent spam: How much is 3 plus 8?' => 'スパム防止用です。3たす8はいくつですか？',
-
-    #: views/admin/layout_fields.view.php:90
-    'For every new answer, an email notification is sent to:' => 'メッセージを受け取ると、下記のメールアドレスに通知を送ります:',
-
-    #: views/admin/layout_fields.view.php:90
-    'nobody!' => '送信しない',
-
-    #: views/admin/layout_fields.view.php:93
+    #: views/admin/layout_fields.view.php:28
     'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => '問題が発生しました。現在、Novius OS はメールを送信するように設定されていません。開発者に連絡し、設定をお願いしてください。',
 
-    #: views/admin/layout_fields.view.php:101
+    #: views/admin/layout_fields.view.php:47
+    #: views/admin/layout_fields.view.php:92
+    'Add a field' => 'フィールドを追加',
+
+    #: views/admin/layout_fields.view.php:53
+    'Standard fields' => '標準フィールド',
+
+    #: views/admin/layout_fields.view.php:54
+    'Special fields' => '拡張フィールド',
+
+    #: views/admin/layout_fields.view.php:93
+    'Add a page break' => 'ページ区切りを追加',
+
+    #: views/admin/layout_fields.view.php:96
+    'Help us prevent spam: How much is 3 plus 8?' => 'スパム防止用です。3たす8はいくつですか？',
+
+    #: views/admin/layout_fields.view.php:103
     'Delete' => '削除',
 
-    #: views/admin/layout_fields.view.php:130
+    #: views/admin/layout_fields.view.php:132
     'Form submission' => 'フォーム送信',
 
-    #: views/admin/layout_fields.view.php:171
+    #: views/admin/layout_fields.view.php:172
     'Are you sure?' => 'よろしいですか？',
 
     #: views/admin/permissions.view.php:15
@@ -99,12 +93,13 @@ return array(
     #: views/admin/permissions.view.php:22
     'Can visualise answers only' => '',
 
-    #: views/admin/popup_delete.view.php:22
-    'This form has already received <strong>one answer</strong>.' => array(
-        0 => 'このフォームには<strong>{{count}} 件のメッセージ</strong>があります。',
-    ),
+    #: views/admin/popup_delete.view.php:24
+    'This form has already received <strong>one answer</strong>.' => 'このフォームには<strong>1件のメッセージ</strong>があります。',
 
-    #: views/admin/popup_delete.view.php:29
+    #: views/admin/popup_delete.view.php:25
+    'This form has already received <strong>{{count}} answers</strong>.' => 'このフォームには<strong>{{count}} 件のメッセージ</strong>があります。',
+
+    #: views/admin/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'はい、このフォームを削除し、このフォームの{{count}}件のメッセージを削除します。',
 
     #: views/admin/warning_not_published.view.php:18
@@ -160,26 +155,21 @@ return array(
     #: config/controller/admin/answer/appdesk.config.php:40
     'answers' => 'メッセージ',
 
+    #: config/controller/admin/answer/appdesk.config.php:41
+    'Showing {{x}} answers out of {{y}}' => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
+
     #: config/controller/admin/answer/appdesk.config.php:42
-    #: config/common/answer.config.php:57
-    '1 answer' => array(
-        0 => '{{count}}件のメッセージ',
-    ),
+    'Showing 1 answer' => '1件のメッセージを表示しています',
 
-    #: config/controller/admin/answer/appdesk.config.php:46
-    'Showing 1 answer out of {{y}}' => array(
-        0 => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
-    ),
-
-    #: config/controller/admin/answer/appdesk.config.php:49
+    #: config/controller/admin/answer/appdesk.config.php:43
     'No answers' => 'メッセージ無し',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/answer/appdesk.config.php:51
+    #: config/controller/admin/answer/appdesk.config.php:45
     'Show all answers' => 'メッセージを全て表示する',
 
     #: config/controller/admin/form.config.php:18
-    #: config/common/form.config.php:82
+    #: config/common/form.config.php:77
     'Add a form' => 'フォームを追加',
 
     #: config/controller/admin/form.config.php:47
@@ -199,208 +189,209 @@ return array(
     'I’m the submit button, click to edit me' => '送信ボタンの文言です。クリックして編集してください。',
 
     #: config/controller/admin/form.config.php:84
-    'For every new answer, an email notification is sent to: (one email per line)' => '',
+    'For every new answer, an email notification is sent to:' => 'メッセージを受け取ると、下記のメールアドレスに通知を送ります:',
 
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-    #: config/controller/admin/form.config.php:88
+    #: config/controller/admin/form.config.php:86
+    #: config/controller/admin/form.config.php:89
     'One email per line' => 'メールアドレス毎に改行してください',
 
-    #: config/controller/admin/form.config.php:99
-    #: config/controller/admin/form.config.php:243
+    #: config/controller/admin/form.config.php:102
+    #: config/controller/admin/form.config.php:246
     'Firstname:' => '名:',
 
-    #: config/controller/admin/form.config.php:103
+    #: config/controller/admin/form.config.php:106
     'Lastname:' => '姓:',
 
-    #: config/controller/admin/form.config.php:107
+    #: config/controller/admin/form.config.php:110
     'Email address:' => 'メールアドレス:',
 
-    #: config/controller/admin/form.config.php:115
-    #: config/controller/admin/form.config.php:386
+    #: config/controller/admin/form.config.php:118
+    #: config/controller/admin/form.config.php:389
     'Single line text' => '一行テキスト',
 
-    #: config/controller/admin/form.config.php:127
-    #: config/controller/admin/form.config.php:387
+    #: config/controller/admin/form.config.php:130
+    #: config/controller/admin/form.config.php:390
     'Paragraph text' => '複数行テキスト',
 
-    #: config/controller/admin/form.config.php:139
-    #: config/controller/admin/form.config.php:388
+    #: config/controller/admin/form.config.php:142
+    #: config/controller/admin/form.config.php:391
     'Multiple choice (checkboxes)' => 'チェックボックス (複数選択可)',
 
-    #: config/controller/admin/form.config.php:145
-    #: config/controller/admin/form.config.php:158
+    #: config/controller/admin/form.config.php:148
+    #: config/controller/admin/form.config.php:161
     'First option
 Second option' => '',
 
-    #: config/controller/admin/form.config.php:152
-    #: config/controller/admin/form.config.php:389
+    #: config/controller/admin/form.config.php:155
+    #: config/controller/admin/form.config.php:392
     'Unique choice (drop-down list)' => 'ドロップダウン (単一選択)',
 
-    #: config/controller/admin/form.config.php:165
-    #: config/controller/admin/form.config.php:390
+    #: config/controller/admin/form.config.php:168
+    #: config/controller/admin/form.config.php:393
     'Unique choice (radio buttons)' => 'ラジオボタン (単一選択)',
 
-    #: config/controller/admin/form.config.php:171
+    #: config/controller/admin/form.config.php:174
     'First choice
 Second choice' => '',
 
-    #: config/controller/admin/form.config.php:178
-    #: config/controller/admin/form.config.php:391
+    #: config/controller/admin/form.config.php:181
+    #: config/controller/admin/form.config.php:394
     'File' => 'ファイル',
 
-    #: config/controller/admin/form.config.php:184
+    #: config/controller/admin/form.config.php:187
     'I’m the label of a file input, click to edit me:' => 'ファイル挿入ラベルの文言です。クリックして編集してください。',
 
-    #: config/controller/admin/form.config.php:193
-    #: config/controller/admin/form.config.php:392
+    #: config/controller/admin/form.config.php:196
+    #: config/controller/admin/form.config.php:395
     'Email address' => 'メールアドレス',
 
-    #: config/controller/admin/form.config.php:199
+    #: config/controller/admin/form.config.php:202
     'Your email address:' => 'あなたのメールアドレス:',
 
-    #: config/controller/admin/form.config.php:206
-    #: config/controller/admin/form.config.php:393
+    #: config/controller/admin/form.config.php:209
+    #: config/controller/admin/form.config.php:396
     'Number' => '数値',
 
-    #: config/controller/admin/form.config.php:212
+    #: config/controller/admin/form.config.php:215
     'Enter a number:' => '数値を入力:',
 
-    #: config/controller/admin/form.config.php:219
-    #: config/controller/admin/form.config.php:394
+    #: config/controller/admin/form.config.php:222
+    #: config/controller/admin/form.config.php:397
     'Date' => '日付',
 
-    #: config/controller/admin/form.config.php:225
+    #: config/controller/admin/form.config.php:228
     'Pick a date:' => '日付を選択:',
 
-    #: config/controller/admin/form.config.php:232
+    #: config/controller/admin/form.config.php:235
     'Full name' => '氏名',
 
-    #: config/controller/admin/form.config.php:238
+    #: config/controller/admin/form.config.php:241
     'Title:' => 'タイトル:',
 
-    #: config/controller/admin/form.config.php:239
+    #: config/controller/admin/form.config.php:242
     'Ms
 Mr' => '',
 
-    #: config/controller/admin/form.config.php:247
+    #: config/controller/admin/form.config.php:250
     'Name:' => '名:',
 
-    #: config/controller/admin/form.config.php:254
+    #: config/controller/admin/form.config.php:257
     'Address' => '住所',
 
-    #: config/controller/admin/form.config.php:260
+    #: config/controller/admin/form.config.php:263
     'First address line:' => '住所1:',
 
-    #: config/controller/admin/form.config.php:264
+    #: config/controller/admin/form.config.php:267
     'Second address line:' => '住所2:',
 
-    #: config/controller/admin/form.config.php:268
+    #: config/controller/admin/form.config.php:271
     'Postal code:' => '郵便番号:',
 
-    #: config/controller/admin/form.config.php:272
+    #: config/controller/admin/form.config.php:275
     'City:' => '市:',
 
-    #: config/controller/admin/form.config.php:279
-    #: config/controller/admin/form.config.php:395
+    #: config/controller/admin/form.config.php:282
+    #: config/controller/admin/form.config.php:398
     'Message' => 'メッセージ',
 
-    #: config/controller/admin/form.config.php:285
-    #: config/controller/admin/form.config.php:417
+    #: config/controller/admin/form.config.php:288
+    #: config/controller/admin/form.config.php:420
     'Message:' => 'メッセージ:',
 
-    #: config/controller/admin/form.config.php:292
-    #: config/controller/admin/form.config.php:297
-    #: config/controller/admin/form.config.php:397
+    #: config/controller/admin/form.config.php:295
+    #: config/controller/admin/form.config.php:300
+    #: config/controller/admin/form.config.php:400
     'Separator' => '区切り文字',
 
-    #: config/controller/admin/form.config.php:305
-    #: config/controller/admin/form.config.php:396
+    #: config/controller/admin/form.config.php:308
+    #: config/controller/admin/form.config.php:399
     'Hidden' => '隠しフィールド',
 
-    #: config/controller/admin/form.config.php:312
+    #: config/controller/admin/form.config.php:315
     'I’m the label for internal use only as I won’t be shown to users:' => '内部でのみ使用するラベル。訪問者には表示されません。',
 
-    #: config/controller/admin/form.config.php:319
-    #: config/controller/admin/form.config.php:398
+    #: config/controller/admin/form.config.php:322
+    #: config/controller/admin/form.config.php:401
     'Variable' => '変数',
 
-    #: config/controller/admin/form.config.php:339
+    #: config/controller/admin/form.config.php:342
     'Properties' => 'プロパティ',
 
-    #: config/controller/admin/form.config.php:352
+    #: config/controller/admin/form.config.php:355
     'Further options' => '詳細オプション',
 
-    #: config/controller/admin/form.config.php:363
+    #: config/controller/admin/form.config.php:366
     'Technical options' => '技術的なオプション',
 
-    #: config/controller/admin/form.config.php:382
+    #: config/controller/admin/form.config.php:385
     'Type:' => '種類:',
 
-    #: config/controller/admin/form.config.php:407
+    #: config/controller/admin/form.config.php:410
     'Label:' => 'ラベル:',
 
-    #: config/controller/admin/form.config.php:410
+    #: config/controller/admin/form.config.php:413
     'I’m the label, click to edit me:' => 'ここにラベルを記入します。クリックして編集してください。',
 
-    #: config/controller/admin/form.config.php:421
+    #: config/controller/admin/form.config.php:424
     'I’m a message, click to edit me.' => 'ここにメッセージを記入します。クリックして編集してください。',
 
-    #: config/controller/admin/form.config.php:428
+    #: config/controller/admin/form.config.php:431
     'Style:' => 'スタイル:',
 
-    #: config/controller/admin/form.config.php:432
+    #: config/controller/admin/form.config.php:435
     'Standard' => '標準',
 
-    #: config/controller/admin/form.config.php:433
+    #: config/controller/admin/form.config.php:436
     'Heading 1' => '大見出し H1',
 
-    #: config/controller/admin/form.config.php:434
+    #: config/controller/admin/form.config.php:437
     'Heading 2' => '中見出し H2',
 
-    #: config/controller/admin/form.config.php:435
+    #: config/controller/admin/form.config.php:438
     'Heading 3' => '小見出し H3',
 
-    #: config/controller/admin/form.config.php:441
+    #: config/controller/admin/form.config.php:444
     'Answers:' => '選択肢:',
 
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-    #: config/controller/admin/form.config.php:447
+    #: config/controller/admin/form.config.php:450
     'One answer per line' => '1行に1項目',
 
-    #: config/controller/admin/form.config.php:451
+    #: config/controller/admin/form.config.php:454
     'Mandatory' => '必須',
 
-    #: config/controller/admin/form.config.php:459
+    #: config/controller/admin/form.config.php:462
     'Default value:' => 'デフォルト値:',
 
-    #: config/controller/admin/form.config.php:466
+    #: config/controller/admin/form.config.php:469
     'Instructions for the user:' => '訪問者向けの説明',
 
-    #: config/controller/admin/form.config.php:473
+    #: config/controller/admin/form.config.php:476
     'Width:' => '幅:',
 
-    #: config/controller/admin/form.config.php:474
+    #: config/controller/admin/form.config.php:477
     'Width: {{count}} characters' => '幅: {{count}} 文字',
 
-    #: config/controller/admin/form.config.php:486
+    #: config/controller/admin/form.config.php:489
     'Height: {{count}} lines' => '高さ: {{count}} 行',
 
-    #: config/controller/admin/form.config.php:498
+    #: config/controller/admin/form.config.php:501
     'Limited to {{count}} characters' => '最大{{count}}文字まで',
 
-    #: config/controller/admin/form.config.php:508
+    #: config/controller/admin/form.config.php:511
     'Origin:' => '生成元:',
 
-    #: config/controller/admin/form.config.php:521
+    #: config/controller/admin/form.config.php:524
     'Variable name:' => '変数名:',
 
-    #: config/controller/admin/form.config.php:528
+    #: config/controller/admin/form.config.php:531
     'Virtual field name:' => 'システム内部での名称(アルファベット推奨):',
 
-    #: config/controller/admin/form.config.php:536
+    #: config/controller/admin/form.config.php:539
     'ID:' => 'ID:',
 
-    #: config/controller/admin/form.config.php:543
+    #: config/controller/admin/form.config.php:546
     'CSS classes:' => 'CSS クラス:',
 
     #: config/controller/admin/enhancer.config.php:42
@@ -439,29 +430,24 @@ Mr' => '',
     #: config/controller/admin/appdesk.config.php:18
     'forms' => 'フォーム',
 
+    #: config/controller/admin/appdesk.config.php:19
+    'Showing {{x}} forms out of {{y}}' => '{{y}}つのフォームのうち、{{x}}つを表示しています',
+
     #: config/controller/admin/appdesk.config.php:20
-    #: config/common/form.config.php:76
-    '1 form' => array(
-        0 => '{{count}}つのフォーム',
-    ),
+    'Showing 1 form' => '1つのフォームを表示しています',
 
-    #: config/controller/admin/appdesk.config.php:24
-    'Showing 1 form out of {{y}}' => array(
-        0 => '{{y}}つのフォームのうち、{{x}}つを表示しています',
-    ),
-
-    #: config/controller/admin/appdesk.config.php:27
+    #: config/controller/admin/appdesk.config.php:21
     'No forms' => 'フォームがありません',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/appdesk.config.php:29
+    #: config/controller/admin/appdesk.config.php:23
     'Show all forms' => 'フォームを全て表示',
 
     #: config/model/answer.config.php:13
     'Answer received on {{date}}' => '{{date}}に受け取ったメッセージ',
 
     #: config/common/form.config.php:28
-    #: config/common/form.config.php:111
+    #: config/common/form.config.php:106
     'Answers' => 'メッセージ',
 
     #. Crud
@@ -482,19 +468,24 @@ Mr' => '',
     #: config/common/form.config.php:65
     'Deleting the form ‘{{title}}’' => 'フォーム‘{{title}}’を削除します',
 
-    #: config/common/form.config.php:69
-    'Yes, delete this form' => array(
-        0 => 'はい、このフォームを削除します',
-    ),
+    #. Delete action's labels
+    #: config/common/form.config.php:68
+    'Yes, delete this form' => 'はい、このフォームを削除します',
 
-    #: config/common/form.config.php:73
+    #: config/common/form.config.php:70
     'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => '入力した数字が間違っているため、このフォームを削除できません。もう一度試してください。',
 
-    #: config/common/form.config.php:135
-    #: config/common/form.config.php:159
+    #: config/common/form.config.php:72
+    '1 form' => '1つのフォーム',
+
+    #: config/common/form.config.php:73
+    '{{count}} forms' => '{{count}}つのフォーム',
+
+    #: config/common/form.config.php:130
+    #: config/common/form.config.php:154
     'There is no answers yet.' => '',
 
-    #: config/common/form.config.php:141
+    #: config/common/form.config.php:136
     'Export the answers (spreadsheet)' => 'メッセージをエクスポート (スプレッドシート)',
 
     #: config/common/answer.config.php:23
@@ -515,15 +506,20 @@ Mr' => '',
     #: config/common/answer.config.php:48
     'Deleting the answer ‘{{title}}’' => 'メッセージ‘{{title}}’を削除します',
 
-    #: config/common/answer.config.php:52
-    'Yes, delete this answer' => array(
-        0 => 'はい、このメッセージを削除します',
-    ),
+    #. Delete action's labels
+    #: config/common/answer.config.php:51
+    'Yes, delete this answer' => 'はい、このメッセージを削除します',
 
-    #: config/common/answer.config.php:66
+    #: config/common/answer.config.php:53
+    '1 answer' => '1件のメッセージ',
+
+    #: config/common/answer.config.php:54
+    '{{count}} answers' => '{{count}}件のメッセージ',
+
+    #: config/common/answer.config.php:61
     'Visualise' => '閲覧',
 
-    #: config/common/answer.config.php:76
+    #: config/common/answer.config.php:71
     'Answer to ’{{title}}’' => '’{{title}}’へのメッセージ',
 
 );

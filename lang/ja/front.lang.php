@@ -1,6 +1,6 @@
 <?php
 
-// Generated on 07/11/2013 15:24:52
+// Generated on 02/12/2013 17:53:33
 
 // 13 out of 13 messages are translated (100%).
 // 76 out of 76 words are translated (100%).
@@ -13,25 +13,25 @@ return array(
     'Help us prevent spam: How much is {{number_1}} plus {{number_2}}?' => 'スパム防止用です。{{number_1}} たす {{number_2}} はいくつ？',
 
     #: classes/controller/front.ctrl.php:175
-    #: classes/controller/front.ctrl.php:482
+    #: classes/controller/front.ctrl.php:486
     'You have not passed the spam test. Please try again.' => 'スパム防止チェックに失敗しました。もう一度試してください。',
 
-    #: classes/controller/front.ctrl.php:420
+    #: classes/controller/front.ctrl.php:424
     '{{label}}: Please select a file for this field.' => '{{label}}: このフィールドのファイルを選択してください。',
 
-    #: classes/controller/front.ctrl.php:446
+    #: classes/controller/front.ctrl.php:450
     '{{label}}: Please enter a value for this field.' => '{{label}}: このフィールドの値を選択してください。',
 
-    #: classes/controller/front.ctrl.php:450
+    #: classes/controller/front.ctrl.php:454
     '{{label}}: ‘{{value}}’ is not a valid email.' => '{{label}}: ‘{{value}}’ はメールアドレスではありません。',
 
-    #: classes/controller/front.ctrl.php:453
+    #: classes/controller/front.ctrl.php:457
     '{{label}}: ‘{{value}}’ is not a valid number.' => '{{label}}: ‘{{value}}’ は数字ではありません。',
 
-    #: classes/controller/front.ctrl.php:461
+    #: classes/controller/front.ctrl.php:465
     '{{label}}: ‘{{value}}’ is not a valid date.' => '{{label}}: ‘{{value}}’ は日付ではありません。',
 
-    #: classes/controller/front.ctrl.php:556
+    #: classes/controller/front.ctrl.php:560
     '{{form}}: New answer' => '{{form}}: 新しいメッセージ',
 
     #: views/foundation.view.php:229

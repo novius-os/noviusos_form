@@ -1,13 +1,13 @@
 <?php
 
-// Generated on 07/11/2013 15:24:52
+// Generated on 02/12/2013 17:53:33
 
-// 154 out of 154 messages are translated (100%).
-// 649 out of 649 words are translated (100%).
+// 157 out of 157 messages are translated (100%).
+// 651 out of 651 words are translated (100%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:121
+    #: config/common/form.config.php:116
     'Answers to ‘{{title}}’' => 'Réponses à «&nbsp;{{title}}&nbsp;»',
 
     #: classes/controller/admin/answer/appdesk.ctrl.php:36
@@ -31,15 +31,15 @@ return array(
     #: views/enhancer/blank_slate.view.php:16
     'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => 'Voilà qui est frustrant, vous n’avez aucun formulaire à ajouter. Mais, pas de panique, il vous faut simplement&nbsp;:',
 
-    #: views/enhancer/blank_slate.view.php:17
+    #: views/enhancer/blank_slate.view.php:19
     '<ul><li><a>Add your first form</a> (a new tab will open).</li>
 <li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>Ajoutez votre premier formulaire</a> (s’ouvre dans un nouvel onglet).</li>
 <li>Une fois que vous aurez terminé (ça ne sera pas long), revenez à cet onglet pour insérer votre beau formulaire tout neuf.</li></ul>',
 
-    #: views/enhancer/blank_slate.view.php:22
+    #: views/enhancer/blank_slate.view.php:27
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => 'Aucun formulaire n’est disponible en {{context}}. Allez-y, <a>ajoutez votre premier formulaire dans cette langue</a>.',
 
-    #: views/enhancer/blank_slate.view.php:24
+    #: views/enhancer/blank_slate.view.php:29
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => 'Aucun formulaire n’est disponible en {{context}}. Allez-y, <a>ajoutez votre premier formulaire dans ce contexte</a>.',
 
     #: views/email.view.php:31
@@ -60,38 +60,32 @@ return array(
     #: views/admin/warning_answers_collected.view.php:49
     'Answers to this form have already been received' => 'Des réponses à ce formulaire ont déjà été reçues',
 
-    #: views/admin/layout_fields.view.php:39
-    #: views/admin/layout_fields.view.php:84
-    'Add a field' => 'Ajouter un champ',
-
-    #: views/admin/layout_fields.view.php:45
-    'Standard fields' => 'Champs standards',
-
-    #: views/admin/layout_fields.view.php:46
-    'Special fields' => 'Champs spéciaux',
-
-    #: views/admin/layout_fields.view.php:85
-    'Add a page break' => 'Ajouter un saut de page',
-
-    #: views/admin/layout_fields.view.php:88
-    'Help us prevent spam: How much is 3 plus 8?' => 'Aidez-nous à lutter contre le spam&nbsp;: Combien font 3 plus 8&nbsp;?',
-
-    #: views/admin/layout_fields.view.php:90
-    'For every new answer, an email notification is sent to:' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;:',
-
-    #: views/admin/layout_fields.view.php:90
-    'nobody!' => 'personne&nbsp;!',
-
-    #: views/admin/layout_fields.view.php:93
+    #: views/admin/layout_fields.view.php:28
     'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Il y a un souci&nbsp;: Votre Novius OS n’est pas configuré pour envoyer des emails. Demandez à votre développeur de le configurer.',
 
-    #: views/admin/layout_fields.view.php:101
+    #: views/admin/layout_fields.view.php:47
+    #: views/admin/layout_fields.view.php:92
+    'Add a field' => 'Ajouter un champ',
+
+    #: views/admin/layout_fields.view.php:53
+    'Standard fields' => 'Champs standards',
+
+    #: views/admin/layout_fields.view.php:54
+    'Special fields' => 'Champs spéciaux',
+
+    #: views/admin/layout_fields.view.php:93
+    'Add a page break' => 'Ajouter un saut de page',
+
+    #: views/admin/layout_fields.view.php:96
+    'Help us prevent spam: How much is 3 plus 8?' => 'Aidez-nous à lutter contre le spam&nbsp;: Combien font 3 plus 8&nbsp;?',
+
+    #: views/admin/layout_fields.view.php:103
     'Delete' => 'Supprimer',
 
-    #: views/admin/layout_fields.view.php:130
+    #: views/admin/layout_fields.view.php:132
     'Form submission' => 'Envoi du formulaire',
 
-    #: views/admin/layout_fields.view.php:171
+    #: views/admin/layout_fields.view.php:172
     'Are you sure?' => 'Êtes-vous sur(e)&nbsp;?',
 
     #: views/admin/permissions.view.php:15
@@ -100,13 +94,13 @@ return array(
     #: views/admin/permissions.view.php:22
     'Can visualise answers only' => 'Peut uniquement visualiser les réponses',
 
-    #: views/admin/popup_delete.view.php:22
-    'This form has already received <strong>one answer</strong>.' => array(
-        0 => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
-        1 => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
-    ),
+    #: views/admin/popup_delete.view.php:24
+    'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
 
-    #: views/admin/popup_delete.view.php:29
+    #: views/admin/popup_delete.view.php:25
+    'This form has already received <strong>{{count}} answers</strong>.' => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
+
+    #: views/admin/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Oui, je veux supprimer ce formulaire et les {{count}} réponses reçues.',
 
     #: views/admin/warning_not_published.view.php:18
@@ -162,28 +156,21 @@ return array(
     #: config/controller/admin/answer/appdesk.config.php:40
     'answers' => 'réponses',
 
+    #: config/controller/admin/answer/appdesk.config.php:41
+    'Showing {{x}} answers out of {{y}}' => '{{x}} réponses sur {{y}} affichées',
+
     #: config/controller/admin/answer/appdesk.config.php:42
-    #: config/common/answer.config.php:57
-    '1 answer' => array(
-        0 => '1 réponse',
-        1 => '{{count}} réponses',
-    ),
+    'Showing 1 answer' => '1 réponse affichée',
 
-    #: config/controller/admin/answer/appdesk.config.php:46
-    'Showing 1 answer out of {{y}}' => array(
-        0 => '1 réponse sur {{y}} affichée',
-        1 => '{{x}} réponses sur {{y}} affichées',
-    ),
-
-    #: config/controller/admin/answer/appdesk.config.php:49
+    #: config/controller/admin/answer/appdesk.config.php:43
     'No answers' => 'Pas de réponse',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/answer/appdesk.config.php:51
+    #: config/controller/admin/answer/appdesk.config.php:45
     'Show all answers' => 'Afficher toutes les réponses',
 
     #: config/controller/admin/form.config.php:18
-    #: config/common/form.config.php:82
+    #: config/common/form.config.php:77
     'Add a form' => 'Ajouter un formulaire',
 
     #: config/controller/admin/form.config.php:47
@@ -203,211 +190,212 @@ return array(
     'I’m the submit button, click to edit me' => 'Je suis le bouton d’envoi, cliquez pour me modifier',
 
     #: config/controller/admin/form.config.php:84
-    'For every new answer, an email notification is sent to: (one email per line)' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;: (un email par ligne)',
+    'For every new answer, an email notification is sent to:' => 'Pour chaque nouvelle réponse, une notification est envoyée par email à&nbsp;:',
 
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-    #: config/controller/admin/form.config.php:88
+    #: config/controller/admin/form.config.php:86
+    #: config/controller/admin/form.config.php:89
     'One email per line' => 'Un email par ligne',
 
-    #: config/controller/admin/form.config.php:99
-    #: config/controller/admin/form.config.php:243
+    #: config/controller/admin/form.config.php:102
+    #: config/controller/admin/form.config.php:246
     'Firstname:' => 'Prénom :',
 
-    #: config/controller/admin/form.config.php:103
+    #: config/controller/admin/form.config.php:106
     'Lastname:' => 'Nom :',
 
-    #: config/controller/admin/form.config.php:107
+    #: config/controller/admin/form.config.php:110
     'Email address:' => 'Email :',
 
-    #: config/controller/admin/form.config.php:115
-    #: config/controller/admin/form.config.php:386
+    #: config/controller/admin/form.config.php:118
+    #: config/controller/admin/form.config.php:389
     'Single line text' => 'Texte (une ligne)',
 
-    #: config/controller/admin/form.config.php:127
-    #: config/controller/admin/form.config.php:387
+    #: config/controller/admin/form.config.php:130
+    #: config/controller/admin/form.config.php:390
     'Paragraph text' => 'Texte (plusieurs lignes)',
 
-    #: config/controller/admin/form.config.php:139
-    #: config/controller/admin/form.config.php:388
+    #: config/controller/admin/form.config.php:142
+    #: config/controller/admin/form.config.php:391
     'Multiple choice (checkboxes)' => 'Choix multiple (cases à cocher)',
 
-    #: config/controller/admin/form.config.php:145
-    #: config/controller/admin/form.config.php:158
+    #: config/controller/admin/form.config.php:148
+    #: config/controller/admin/form.config.php:161
     'First option
 Second option' => 'Premier choix
 Second choix',
 
-    #: config/controller/admin/form.config.php:152
-    #: config/controller/admin/form.config.php:389
+    #: config/controller/admin/form.config.php:155
+    #: config/controller/admin/form.config.php:392
     'Unique choice (drop-down list)' => 'Choix unique (liste déroulante)',
 
-    #: config/controller/admin/form.config.php:165
-    #: config/controller/admin/form.config.php:390
+    #: config/controller/admin/form.config.php:168
+    #: config/controller/admin/form.config.php:393
     'Unique choice (radio buttons)' => 'Choix unique (boutons radio)',
 
-    #: config/controller/admin/form.config.php:171
+    #: config/controller/admin/form.config.php:174
     'First choice
 Second choice' => 'Premier choix
 Second choix',
 
-    #: config/controller/admin/form.config.php:178
-    #: config/controller/admin/form.config.php:391
+    #: config/controller/admin/form.config.php:181
+    #: config/controller/admin/form.config.php:394
     'File' => 'Fichier',
 
-    #: config/controller/admin/form.config.php:184
+    #: config/controller/admin/form.config.php:187
     'I’m the label of a file input, click to edit me:' => 'Je suis le libellé d’un champ fichier, cliquez pour me modifier',
 
-    #: config/controller/admin/form.config.php:193
-    #: config/controller/admin/form.config.php:392
+    #: config/controller/admin/form.config.php:196
+    #: config/controller/admin/form.config.php:395
     'Email address' => 'Email',
 
-    #: config/controller/admin/form.config.php:199
+    #: config/controller/admin/form.config.php:202
     'Your email address:' => 'Votre email :',
 
-    #: config/controller/admin/form.config.php:206
-    #: config/controller/admin/form.config.php:393
+    #: config/controller/admin/form.config.php:209
+    #: config/controller/admin/form.config.php:396
     'Number' => 'Nombre',
 
-    #: config/controller/admin/form.config.php:212
+    #: config/controller/admin/form.config.php:215
     'Enter a number:' => 'Entrez un nombre :',
 
-    #: config/controller/admin/form.config.php:219
-    #: config/controller/admin/form.config.php:394
+    #: config/controller/admin/form.config.php:222
+    #: config/controller/admin/form.config.php:397
     'Date' => 'Date',
 
-    #: config/controller/admin/form.config.php:225
+    #: config/controller/admin/form.config.php:228
     'Pick a date:' => 'Choisissez une date :',
 
-    #: config/controller/admin/form.config.php:232
+    #: config/controller/admin/form.config.php:235
     'Full name' => 'Prénom, Nom',
 
-    #: config/controller/admin/form.config.php:238
+    #: config/controller/admin/form.config.php:241
     'Title:' => 'Civilité :',
 
-    #: config/controller/admin/form.config.php:239
+    #: config/controller/admin/form.config.php:242
     'Ms
 Mr' => 'Mme
 M.',
 
-    #: config/controller/admin/form.config.php:247
+    #: config/controller/admin/form.config.php:250
     'Name:' => 'Nom :',
 
-    #: config/controller/admin/form.config.php:254
+    #: config/controller/admin/form.config.php:257
     'Address' => 'Adresse',
 
-    #: config/controller/admin/form.config.php:260
+    #: config/controller/admin/form.config.php:263
     'First address line:' => 'Adresse (ligne 1) :',
 
-    #: config/controller/admin/form.config.php:264
+    #: config/controller/admin/form.config.php:267
     'Second address line:' => 'Adresse (ligne 2) :',
 
-    #: config/controller/admin/form.config.php:268
+    #: config/controller/admin/form.config.php:271
     'Postal code:' => 'Code postal :',
 
-    #: config/controller/admin/form.config.php:272
+    #: config/controller/admin/form.config.php:275
     'City:' => 'Ville',
 
-    #: config/controller/admin/form.config.php:279
-    #: config/controller/admin/form.config.php:395
+    #: config/controller/admin/form.config.php:282
+    #: config/controller/admin/form.config.php:398
     'Message' => 'Message',
 
-    #: config/controller/admin/form.config.php:285
-    #: config/controller/admin/form.config.php:417
+    #: config/controller/admin/form.config.php:288
+    #: config/controller/admin/form.config.php:420
     'Message:' => 'Message :',
 
-    #: config/controller/admin/form.config.php:292
-    #: config/controller/admin/form.config.php:297
-    #: config/controller/admin/form.config.php:397
+    #: config/controller/admin/form.config.php:295
+    #: config/controller/admin/form.config.php:300
+    #: config/controller/admin/form.config.php:400
     'Separator' => 'Séparateur',
 
-    #: config/controller/admin/form.config.php:305
-    #: config/controller/admin/form.config.php:396
+    #: config/controller/admin/form.config.php:308
+    #: config/controller/admin/form.config.php:399
     'Hidden' => 'Caché',
 
-    #: config/controller/admin/form.config.php:312
+    #: config/controller/admin/form.config.php:315
     'I’m the label for internal use only as I won’t be shown to users:' => 'Je suis le libellé pour usage interne uniquement puisque les utilisateurs ne vont me voir :',
 
-    #: config/controller/admin/form.config.php:319
-    #: config/controller/admin/form.config.php:398
+    #: config/controller/admin/form.config.php:322
+    #: config/controller/admin/form.config.php:401
     'Variable' => 'Variable',
 
-    #: config/controller/admin/form.config.php:339
+    #: config/controller/admin/form.config.php:342
     'Properties' => 'Propriétés',
 
-    #: config/controller/admin/form.config.php:352
+    #: config/controller/admin/form.config.php:355
     'Further options' => 'Plus d’options',
 
-    #: config/controller/admin/form.config.php:363
+    #: config/controller/admin/form.config.php:366
     'Technical options' => 'Options techniques',
 
-    #: config/controller/admin/form.config.php:382
+    #: config/controller/admin/form.config.php:385
     'Type:' => 'Type&nbsp;:',
 
-    #: config/controller/admin/form.config.php:407
+    #: config/controller/admin/form.config.php:410
     'Label:' => 'Label&nbsp;:',
 
-    #: config/controller/admin/form.config.php:410
+    #: config/controller/admin/form.config.php:413
     'I’m the label, click to edit me:' => 'Je suis le libellé, cliquez pour me modifier :',
 
-    #: config/controller/admin/form.config.php:421
+    #: config/controller/admin/form.config.php:424
     'I’m a message, click to edit me.' => 'Je suis un message, cliquez pour me modifier.',
 
-    #: config/controller/admin/form.config.php:428
+    #: config/controller/admin/form.config.php:431
     'Style:' => 'Style&nbsp;:',
 
-    #: config/controller/admin/form.config.php:432
+    #: config/controller/admin/form.config.php:435
     'Standard' => 'Standard',
 
-    #: config/controller/admin/form.config.php:433
+    #: config/controller/admin/form.config.php:436
     'Heading 1' => 'Titre 1',
 
-    #: config/controller/admin/form.config.php:434
+    #: config/controller/admin/form.config.php:437
     'Heading 2' => 'Titre 2',
 
-    #: config/controller/admin/form.config.php:435
+    #: config/controller/admin/form.config.php:438
     'Heading 3' => 'Titre 3',
 
-    #: config/controller/admin/form.config.php:441
+    #: config/controller/admin/form.config.php:444
     'Answers:' => 'Réponses&nbsp;:',
 
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-    #: config/controller/admin/form.config.php:447
+    #: config/controller/admin/form.config.php:450
     'One answer per line' => 'Une réponse par ligne',
 
-    #: config/controller/admin/form.config.php:451
+    #: config/controller/admin/form.config.php:454
     'Mandatory' => 'Obligatoire',
 
-    #: config/controller/admin/form.config.php:459
+    #: config/controller/admin/form.config.php:462
     'Default value:' => 'Valeur par défaut&nbsp;:',
 
-    #: config/controller/admin/form.config.php:466
+    #: config/controller/admin/form.config.php:469
     'Instructions for the user:' => 'Indications pour l’utilisateur&nbsp;:',
 
-    #: config/controller/admin/form.config.php:473
+    #: config/controller/admin/form.config.php:476
     'Width:' => 'Largeur&nbsp;:',
 
-    #: config/controller/admin/form.config.php:474
+    #: config/controller/admin/form.config.php:477
     'Width: {{count}} characters' => 'Largeur&nbsp;: {{count}} caractères',
 
-    #: config/controller/admin/form.config.php:486
+    #: config/controller/admin/form.config.php:489
     'Height: {{count}} lines' => 'Hauteur&nbsp;: {{count}} lignes',
 
-    #: config/controller/admin/form.config.php:498
+    #: config/controller/admin/form.config.php:501
     'Limited to {{count}} characters' => 'Limité à {{count}} caractères',
 
-    #: config/controller/admin/form.config.php:508
+    #: config/controller/admin/form.config.php:511
     'Origin:' => 'Origine&nbsp;:',
 
-    #: config/controller/admin/form.config.php:521
+    #: config/controller/admin/form.config.php:524
     'Variable name:' => 'Nom de la variable&nbsp;:',
 
-    #: config/controller/admin/form.config.php:528
+    #: config/controller/admin/form.config.php:531
     'Virtual field name:' => 'Nom virtuel du champ&nbsp;:',
 
-    #: config/controller/admin/form.config.php:536
+    #: config/controller/admin/form.config.php:539
     'ID:' => 'ID&nbsp;:',
 
-    #: config/controller/admin/form.config.php:543
+    #: config/controller/admin/form.config.php:546
     'CSS classes:' => 'Classes CSS&nbsp;:',
 
     #: config/controller/admin/enhancer.config.php:42
@@ -446,31 +434,24 @@ M.',
     #: config/controller/admin/appdesk.config.php:18
     'forms' => 'formulaires',
 
+    #: config/controller/admin/appdesk.config.php:19
+    'Showing {{x}} forms out of {{y}}' => '{{x}} formulaires sur {{y}} affichés',
+
     #: config/controller/admin/appdesk.config.php:20
-    #: config/common/form.config.php:76
-    '1 form' => array(
-        0 => '1 formulaire',
-        1 => '{{count}} formulaires',
-    ),
+    'Showing 1 form' => '1 formulaire affiché',
 
-    #: config/controller/admin/appdesk.config.php:24
-    'Showing 1 form out of {{y}}' => array(
-        0 => '1 formulaire sur {{y}} affiché',
-        1 => '{{x}} formulaires sur {{y}} affichés',
-    ),
-
-    #: config/controller/admin/appdesk.config.php:27
+    #: config/controller/admin/appdesk.config.php:21
     'No forms' => 'Pas de formulaire',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/appdesk.config.php:29
+    #: config/controller/admin/appdesk.config.php:23
     'Show all forms' => 'Afficher tous les formulaires',
 
     #: config/model/answer.config.php:13
     'Answer received on {{date}}' => 'Réponse reçue le {{date}}',
 
     #: config/common/form.config.php:28
-    #: config/common/form.config.php:111
+    #: config/common/form.config.php:106
     'Answers' => 'Réponses',
 
     #. Crud
@@ -491,20 +472,24 @@ M.',
     #: config/common/form.config.php:65
     'Deleting the form ‘{{title}}’' => 'Supprimer le formulaire «&nbsp;{{title}}&nbsp;»',
 
-    #: config/common/form.config.php:69
-    'Yes, delete this form' => array(
-        0 => 'Oui, supprimer ce formulaire',
-        1 => 'Oui, supprimer ces {{count}} formulaires',
-    ),
+    #. Delete action's labels
+    #: config/common/form.config.php:68
+    'Yes, delete this form' => 'Oui, supprimer ce formulaire',
 
-    #: config/common/form.config.php:73
+    #: config/common/form.config.php:70
     'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => 'Nous ne pouvons supprimer ce formulaire car le nombre de réponses indiqué est faux. Merci de le corriger.',
 
-    #: config/common/form.config.php:135
-    #: config/common/form.config.php:159
+    #: config/common/form.config.php:72
+    '1 form' => '1 formulaire',
+
+    #: config/common/form.config.php:73
+    '{{count}} forms' => '{{count}} formulaires',
+
+    #: config/common/form.config.php:130
+    #: config/common/form.config.php:154
     'There is no answers yet.' => 'Il n’y a pas de réponse pour le moment.',
 
-    #: config/common/form.config.php:141
+    #: config/common/form.config.php:136
     'Export the answers (spreadsheet)' => 'Exporter les réponses (tableur)',
 
     #: config/common/answer.config.php:23
@@ -525,16 +510,20 @@ M.',
     #: config/common/answer.config.php:48
     'Deleting the answer ‘{{title}}’' => 'Supprimer la réponse «&nbsp;{{title}}&nbsp;»',
 
-    #: config/common/answer.config.php:52
-    'Yes, delete this answer' => array(
-        0 => 'Oui, supprimer cette réponse',
-        1 => 'Oui, supprimer ces {{count}} réponses',
-    ),
+    #. Delete action's labels
+    #: config/common/answer.config.php:51
+    'Yes, delete this answer' => 'Oui, supprimer cette réponse',
 
-    #: config/common/answer.config.php:66
+    #: config/common/answer.config.php:53
+    '1 answer' => '1 réponse',
+
+    #: config/common/answer.config.php:54
+    '{{count}} answers' => '{{count}} réponses',
+
+    #: config/common/answer.config.php:61
     'Visualise' => 'Visualiser',
 
-    #: config/common/answer.config.php:76
+    #: config/common/answer.config.php:71
     'Answer to ’{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
 
 );

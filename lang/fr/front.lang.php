@@ -1,6 +1,6 @@
 <?php
 
-// Generated on 07/11/2013 15:24:52
+// Generated on 02/12/2013 17:53:33
 
 // 13 out of 13 messages are translated (100%).
 // 76 out of 76 words are translated (100%).
@@ -13,25 +13,25 @@ return array(
     'Help us prevent spam: How much is {{number_1}} plus {{number_2}}?' => 'Aidez-nous à lutter contre le spam: Combien font {{number_1}} plus {{number_2}}&nbsp;?',
 
     #: classes/controller/front.ctrl.php:175
-    #: classes/controller/front.ctrl.php:482
+    #: classes/controller/front.ctrl.php:486
     'You have not passed the spam test. Please try again.' => 'Vous n’avez pas passé le test contre le spam. Merci de ré-essayer.',
 
-    #: classes/controller/front.ctrl.php:420
+    #: classes/controller/front.ctrl.php:424
     '{{label}}: Please select a file for this field.' => '{{label}}&nbsp;: Merci de sélectionner un fichier pour ce champ.',
 
-    #: classes/controller/front.ctrl.php:446
+    #: classes/controller/front.ctrl.php:450
     '{{label}}: Please enter a value for this field.' => '{{label}}&nbsp;: Merci de remplir ce champ.',
 
-    #: classes/controller/front.ctrl.php:450
+    #: classes/controller/front.ctrl.php:454
     '{{label}}: ‘{{value}}’ is not a valid email.' => '{{label}}&nbsp;: {{value}} n’est pas un email valide.',
 
-    #: classes/controller/front.ctrl.php:453
+    #: classes/controller/front.ctrl.php:457
     '{{label}}: ‘{{value}}’ is not a valid number.' => '{{label}}&nbsp;: {{value}} n’est pas un nombre.',
 
-    #: classes/controller/front.ctrl.php:461
+    #: classes/controller/front.ctrl.php:465
     '{{label}}: ‘{{value}}’ is not a valid date.' => '{{label}}&nbsp;: {{value}} n’est pas une date valide.',
 
-    #: classes/controller/front.ctrl.php:556
+    #: classes/controller/front.ctrl.php:560
     '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
 
     #: views/foundation.view.php:229
