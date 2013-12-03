@@ -1,13 +1,13 @@
 <?php
 
-// Generated on 02/12/2013 17:53:33
+// Generated on 03/12/2013 16:06:58
 
-// 157 out of 157 messages are translated (100%).
-// 651 out of 651 words are translated (100%).
+// 152 out of 152 messages are translated (100%).
+// 634 out of 634 words are translated (100%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:116
+    #: config/common/form.config.php:121
     'Answers to ‘{{title}}’' => 'Réponses à «&nbsp;{{title}}&nbsp;»',
 
     #: classes/controller/admin/answer/appdesk.ctrl.php:36
@@ -95,10 +95,10 @@ return array(
     'Can visualise answers only' => 'Peut uniquement visualiser les réponses',
 
     #: views/admin/popup_delete.view.php:24
-    'This form has already received <strong>one answer</strong>.' => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
-
-    #: views/admin/popup_delete.view.php:25
-    'This form has already received <strong>{{count}} answers</strong>.' => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
+    'This form has already received <strong>one answer</strong>.' => array(
+        0 => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
+        1 => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
+    ),
 
     #: views/admin/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Oui, je veux supprimer ce formulaire et les {{count}} réponses reçues.',
@@ -156,21 +156,28 @@ return array(
     #: config/controller/admin/answer/appdesk.config.php:40
     'answers' => 'réponses',
 
-    #: config/controller/admin/answer/appdesk.config.php:41
-    'Showing {{x}} answers out of {{y}}' => '{{x}} réponses sur {{y}} affichées',
-
     #: config/controller/admin/answer/appdesk.config.php:42
-    'Showing 1 answer' => '1 réponse affichée',
+    #: config/common/answer.config.php:57
+    '1 answer' => array(
+        0 => '1 réponse',
+        1 => '{{count}} réponses',
+    ),
 
-    #: config/controller/admin/answer/appdesk.config.php:43
+    #: config/controller/admin/answer/appdesk.config.php:46
+    'Showing 1 answer out of {{y}}' => array(
+        0 => '1 réponse sur {{y}} affichée',
+        1 => '{{x}} réponses sur {{y}} affichées',
+    ),
+
+    #: config/controller/admin/answer/appdesk.config.php:49
     'No answers' => 'Pas de réponse',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/answer/appdesk.config.php:45
+    #: config/controller/admin/answer/appdesk.config.php:51
     'Show all answers' => 'Afficher toutes les réponses',
 
     #: config/controller/admin/form.config.php:18
-    #: config/common/form.config.php:77
+    #: config/common/form.config.php:82
     'Add a form' => 'Ajouter un formulaire',
 
     #: config/controller/admin/form.config.php:47
@@ -434,24 +441,31 @@ M.',
     #: config/controller/admin/appdesk.config.php:18
     'forms' => 'formulaires',
 
-    #: config/controller/admin/appdesk.config.php:19
-    'Showing {{x}} forms out of {{y}}' => '{{x}} formulaires sur {{y}} affichés',
-
     #: config/controller/admin/appdesk.config.php:20
-    'Showing 1 form' => '1 formulaire affiché',
+    #: config/common/form.config.php:76
+    '1 form' => array(
+        0 => '1 formulaire',
+        1 => '{{count}} formulaires',
+    ),
 
-    #: config/controller/admin/appdesk.config.php:21
+    #: config/controller/admin/appdesk.config.php:24
+    'Showing 1 form out of {{y}}' => array(
+        0 => '1 formulaire sur {{y}} affiché',
+        1 => '{{x}} formulaires sur {{y}} affichés',
+    ),
+
+    #: config/controller/admin/appdesk.config.php:27
     'No forms' => 'Pas de formulaire',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/appdesk.config.php:23
+    #: config/controller/admin/appdesk.config.php:29
     'Show all forms' => 'Afficher tous les formulaires',
 
     #: config/model/answer.config.php:13
     'Answer received on {{date}}' => 'Réponse reçue le {{date}}',
 
     #: config/common/form.config.php:28
-    #: config/common/form.config.php:106
+    #: config/common/form.config.php:111
     'Answers' => 'Réponses',
 
     #. Crud
@@ -472,24 +486,20 @@ M.',
     #: config/common/form.config.php:65
     'Deleting the form ‘{{title}}’' => 'Supprimer le formulaire «&nbsp;{{title}}&nbsp;»',
 
-    #. Delete action's labels
-    #: config/common/form.config.php:68
-    'Yes, delete this form' => 'Oui, supprimer ce formulaire',
-
-    #: config/common/form.config.php:70
-    'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => 'Nous ne pouvons supprimer ce formulaire car le nombre de réponses indiqué est faux. Merci de le corriger.',
-
-    #: config/common/form.config.php:72
-    '1 form' => '1 formulaire',
+    #: config/common/form.config.php:69
+    'Yes, delete this form' => array(
+        0 => 'Oui, supprimer ce formulaire',
+        1 => '',
+    ),
 
     #: config/common/form.config.php:73
-    '{{count}} forms' => '{{count}} formulaires',
+    'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => 'Nous ne pouvons supprimer ce formulaire car le nombre de réponses indiqué est faux. Merci de le corriger.',
 
-    #: config/common/form.config.php:130
-    #: config/common/form.config.php:154
+    #: config/common/form.config.php:135
+    #: config/common/form.config.php:159
     'There is no answers yet.' => 'Il n’y a pas de réponse pour le moment.',
 
-    #: config/common/form.config.php:136
+    #: config/common/form.config.php:141
     'Export the answers (spreadsheet)' => 'Exporter les réponses (tableur)',
 
     #: config/common/answer.config.php:23
@@ -510,20 +520,16 @@ M.',
     #: config/common/answer.config.php:48
     'Deleting the answer ‘{{title}}’' => 'Supprimer la réponse «&nbsp;{{title}}&nbsp;»',
 
-    #. Delete action's labels
-    #: config/common/answer.config.php:51
-    'Yes, delete this answer' => 'Oui, supprimer cette réponse',
+    #: config/common/answer.config.php:52
+    'Yes, delete this answer' => array(
+        0 => 'Oui, supprimer cette réponse',
+        1 => '',
+    ),
 
-    #: config/common/answer.config.php:53
-    '1 answer' => '1 réponse',
-
-    #: config/common/answer.config.php:54
-    '{{count}} answers' => '{{count}} réponses',
-
-    #: config/common/answer.config.php:61
+    #: config/common/answer.config.php:66
     'Visualise' => 'Visualiser',
 
-    #: config/common/answer.config.php:71
+    #: config/common/answer.config.php:76
     'Answer to ’{{title}}’' => 'Réponse à «&nbsp;{{title}}&nbsp;»',
 
 );

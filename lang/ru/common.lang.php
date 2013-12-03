@@ -1,13 +1,13 @@
 <?php
 
-// Generated on 02/12/2013 17:53:33
+// Generated on 03/12/2013 16:06:58
 
-// 159 out of 159 messages are translated (100%).
-// 666 out of 666 words are translated (100%).
+// 150 out of 152 messages are translated (98%).
+// 622 out of 634 words are translated (98%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:116
+    #: config/common/form.config.php:121
     'Answers to ‘{{title}}’' => 'Ответы на «{{title}}»',
 
     #: classes/controller/admin/answer/appdesk.ctrl.php:36
@@ -31,15 +31,15 @@ return array(
     #: views/enhancer/blank_slate.view.php:16
     'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => 'К сожалению, у вас нет форм для вставки. Но не будем расстраиваться, вот что нужно сделать:',
 
-    #: views/enhancer/blank_slate.view.php:17
+    #: views/enhancer/blank_slate.view.php:19
     '<ul><li><a>Add your first form</a> (a new tab will open).</li>
 <li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>Добавить вашу первую форму</a> (откроется новая вкладка).</li>
 <li>Как только вы закончите (это займет немного времени), возвращайтесь на эту вкладку, чтобы вставить новехонькую форму</li></ul>',
 
-    #: views/enhancer/blank_slate.view.php:22
+    #: views/enhancer/blank_slate.view.php:27
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => 'Формы недоступны в {{context}}. Давайте <a>добавим первую форму на этом языке</a>.',
 
-    #: views/enhancer/blank_slate.view.php:24
+    #: views/enhancer/blank_slate.view.php:29
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => 'Формы недоступны в {{context}}. Давайте <a>добавим первую форму в этот контекст</a>.',
 
     #: views/email.view.php:31
@@ -60,38 +60,32 @@ return array(
     #: views/admin/warning_answers_collected.view.php:49
     'Answers to this form have already been received' => 'Ответы к этой форме уже были получены',
 
-    #: views/admin/layout_fields.view.php:39
-    #: views/admin/layout_fields.view.php:84
-    'Add a field' => 'Добавить поле',
-
-    #: views/admin/layout_fields.view.php:45
-    'Standard fields' => 'Стандартные поля',
-
-    #: views/admin/layout_fields.view.php:46
-    'Special fields' => 'Особые поля',
-
-    #: views/admin/layout_fields.view.php:85
-    'Add a page break' => 'Вставить разрыв страницы',
-
-    #: views/admin/layout_fields.view.php:88
-    'Help us prevent spam: How much is 3 plus 8?' => 'Помогите нам в борьбе со спамом. Сколько будет 3 плюс 8?',
-
-    #: views/admin/layout_fields.view.php:90
-    'For every new answer, an email notification is sent to:' => 'Для каждого нового ответа, будет отправлено уведомление по эл. почте пользователю:',
-
-    #: views/admin/layout_fields.view.php:90
-    'nobody!' => 'никому!',
-
-    #: views/admin/layout_fields.view.php:93
+    #: views/admin/layout_fields.view.php:28
     'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Вы столкнулись с проблемой: Novius OS не настроена для отправки эл. почты. Попросите вашего разработчика настроить ее.',
 
-    #: views/admin/layout_fields.view.php:101
+    #: views/admin/layout_fields.view.php:47
+    #: views/admin/layout_fields.view.php:92
+    'Add a field' => 'Добавить поле',
+
+    #: views/admin/layout_fields.view.php:53
+    'Standard fields' => 'Стандартные поля',
+
+    #: views/admin/layout_fields.view.php:54
+    'Special fields' => 'Особые поля',
+
+    #: views/admin/layout_fields.view.php:93
+    'Add a page break' => 'Вставить разрыв страницы',
+
+    #: views/admin/layout_fields.view.php:96
+    'Help us prevent spam: How much is 3 plus 8?' => 'Помогите нам в борьбе со спамом. Сколько будет 3 плюс 8?',
+
+    #: views/admin/layout_fields.view.php:103
     'Delete' => 'Удалить',
 
-    #: views/admin/layout_fields.view.php:130
+    #: views/admin/layout_fields.view.php:132
     'Form submission' => 'Отправка формы',
 
-    #: views/admin/layout_fields.view.php:171
+    #: views/admin/layout_fields.view.php:172
     'Are you sure?' => 'Вы уверены?',
 
     #: views/admin/permissions.view.php:15
@@ -100,13 +94,15 @@ return array(
     #: views/admin/permissions.view.php:22
     'Can visualise answers only' => 'Можно только просматривать ответы',
 
-    #: views/admin/popup_delete.view.php:22
-    'This form has already received <strong>one answer</strong>.' => 'На эту форму уже был получен <strong>один ответ</strong>.',
+    #: views/admin/popup_delete.view.php:24
+    'This form has already received <strong>one answer</strong>.' => array(
+        0 => 'На эту форму уже был получен <strong>один ответ</strong>.',
+        1 => 'На эту форму уже было получено <strong>{{count}} ответов</strong>.',
+        2 => '',
+        3 => '',
+    ),
 
-    #: views/admin/popup_delete.view.php:23
-    'This form has already received <strong>{{count}} answers</strong>.' => 'На эту форму уже было получено <strong>{{count}} ответов</strong>.',
-
-    #: views/admin/popup_delete.view.php:28
+    #: views/admin/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Да, я хочу удалить эту форму и {{count}} полученных ответов.',
 
     #: views/admin/warning_not_published.view.php:18
@@ -162,21 +158,32 @@ return array(
     #: config/controller/admin/answer/appdesk.config.php:40
     'answers' => 'ответы',
 
-    #: config/controller/admin/answer/appdesk.config.php:41
-    'Showing {{x}} answers out of {{y}}' => 'Показано {{x}} ответов из {{y}}',
-
     #: config/controller/admin/answer/appdesk.config.php:42
-    'Showing 1 answer' => 'Показан 1 ответ',
+    #: config/common/answer.config.php:57
+    '1 answer' => array(
+        0 => '1 ответ',
+        1 => '{{count}} ответов',
+        2 => '',
+        3 => '',
+    ),
 
-    #: config/controller/admin/answer/appdesk.config.php:43
+    #: config/controller/admin/answer/appdesk.config.php:46
+    'Showing 1 answer out of {{y}}' => array(
+        0 => '',
+        1 => '',
+        2 => 'Показано {{x}} ответов из {{y}}',
+        3 => '',
+    ),
+
+    #: config/controller/admin/answer/appdesk.config.php:49
     'No answers' => 'Нет ответов',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/answer/appdesk.config.php:45
+    #: config/controller/admin/answer/appdesk.config.php:51
     'Show all answers' => 'Показать все ответы',
 
     #: config/controller/admin/form.config.php:18
-    #: config/common/form.config.php:77
+    #: config/common/form.config.php:82
     'Add a form' => 'Добавить форму',
 
     #: config/controller/admin/form.config.php:47
@@ -196,211 +203,212 @@ return array(
     'I’m the submit button, click to edit me' => 'Я — кнопка отправки, нажми, чтобы отредактировать меня',
 
     #: config/controller/admin/form.config.php:84
-    'For every new answer, an email notification is sent to: (one email per line)' => 'Для каждого нового ответа, будет отправлено уведомление по эл. почте следующим пользователям (один адрес на строку):',
+    'For every new answer, an email notification is sent to:' => 'Для каждого нового ответа, будет отправлено уведомление по эл. почте пользователю:',
 
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-    #: config/controller/admin/form.config.php:88
+    #: config/controller/admin/form.config.php:86
+    #: config/controller/admin/form.config.php:89
     'One email per line' => 'Один адрес эл. почты на строку',
 
-    #: config/controller/admin/form.config.php:99
-    #: config/controller/admin/form.config.php:243
+    #: config/controller/admin/form.config.php:102
+    #: config/controller/admin/form.config.php:246
     'Firstname:' => 'Имя:',
 
-    #: config/controller/admin/form.config.php:103
+    #: config/controller/admin/form.config.php:106
     'Lastname:' => 'Фамилия:',
 
-    #: config/controller/admin/form.config.php:107
+    #: config/controller/admin/form.config.php:110
     'Email address:' => 'Адрес эл. почты:',
 
-    #: config/controller/admin/form.config.php:115
-    #: config/controller/admin/form.config.php:386
+    #: config/controller/admin/form.config.php:118
+    #: config/controller/admin/form.config.php:389
     'Single line text' => 'Однострочный текст',
 
-    #: config/controller/admin/form.config.php:127
-    #: config/controller/admin/form.config.php:387
+    #: config/controller/admin/form.config.php:130
+    #: config/controller/admin/form.config.php:390
     'Paragraph text' => 'Текст абзаца',
 
-    #: config/controller/admin/form.config.php:139
-    #: config/controller/admin/form.config.php:388
+    #: config/controller/admin/form.config.php:142
+    #: config/controller/admin/form.config.php:391
     'Multiple choice (checkboxes)' => 'Множественный выбор (флажки)',
 
-    #: config/controller/admin/form.config.php:145
-    #: config/controller/admin/form.config.php:158
+    #: config/controller/admin/form.config.php:148
+    #: config/controller/admin/form.config.php:161
     'First option
 Second option' => 'Первый пункт
 Второй пункт',
 
-    #: config/controller/admin/form.config.php:152
-    #: config/controller/admin/form.config.php:389
+    #: config/controller/admin/form.config.php:155
+    #: config/controller/admin/form.config.php:392
     'Unique choice (drop-down list)' => 'Единичный выбор (из выпадающего списка)',
 
-    #: config/controller/admin/form.config.php:165
-    #: config/controller/admin/form.config.php:390
+    #: config/controller/admin/form.config.php:168
+    #: config/controller/admin/form.config.php:393
     'Unique choice (radio buttons)' => 'Единичный выбор (радиокнопки)',
 
-    #: config/controller/admin/form.config.php:171
+    #: config/controller/admin/form.config.php:174
     'First choice
 Second choice' => 'Первый вариант
 Второй вариант',
 
-    #: config/controller/admin/form.config.php:178
-    #: config/controller/admin/form.config.php:391
+    #: config/controller/admin/form.config.php:181
+    #: config/controller/admin/form.config.php:394
     'File' => 'Файл',
 
-    #: config/controller/admin/form.config.php:184
+    #: config/controller/admin/form.config.php:187
     'I’m the label of a file input, click to edit me:' => 'Я — метка для выбора файла, нажмите, чтобы отредактировать меня',
 
-    #: config/controller/admin/form.config.php:193
-    #: config/controller/admin/form.config.php:392
+    #: config/controller/admin/form.config.php:196
+    #: config/controller/admin/form.config.php:395
     'Email address' => 'Адрес эл. почты',
 
-    #: config/controller/admin/form.config.php:199
+    #: config/controller/admin/form.config.php:202
     'Your email address:' => 'Адрес вашей эл. почты:',
 
-    #: config/controller/admin/form.config.php:206
-    #: config/controller/admin/form.config.php:393
+    #: config/controller/admin/form.config.php:209
+    #: config/controller/admin/form.config.php:396
     'Number' => 'Число',
 
-    #: config/controller/admin/form.config.php:212
+    #: config/controller/admin/form.config.php:215
     'Enter a number:' => 'Введите число:',
 
-    #: config/controller/admin/form.config.php:219
-    #: config/controller/admin/form.config.php:394
+    #: config/controller/admin/form.config.php:222
+    #: config/controller/admin/form.config.php:397
     'Date' => 'Дата',
 
-    #: config/controller/admin/form.config.php:225
+    #: config/controller/admin/form.config.php:228
     'Pick a date:' => 'Выберите дату:',
 
-    #: config/controller/admin/form.config.php:232
+    #: config/controller/admin/form.config.php:235
     'Full name' => 'Полное имя',
 
-    #: config/controller/admin/form.config.php:238
+    #: config/controller/admin/form.config.php:241
     'Title:' => 'Заголовок:',
 
-    #: config/controller/admin/form.config.php:239
+    #: config/controller/admin/form.config.php:242
     'Ms
 Mr' => 'Г-жа
 Г-н',
 
-    #: config/controller/admin/form.config.php:247
+    #: config/controller/admin/form.config.php:250
     'Name:' => 'Имя:',
 
-    #: config/controller/admin/form.config.php:254
+    #: config/controller/admin/form.config.php:257
     'Address' => 'Адрес',
 
-    #: config/controller/admin/form.config.php:260
+    #: config/controller/admin/form.config.php:263
     'First address line:' => 'Первая строка адреса:',
 
-    #: config/controller/admin/form.config.php:264
+    #: config/controller/admin/form.config.php:267
     'Second address line:' => 'Вторая строка адреса:',
 
-    #: config/controller/admin/form.config.php:268
+    #: config/controller/admin/form.config.php:271
     'Postal code:' => 'Индекс:',
 
-    #: config/controller/admin/form.config.php:272
+    #: config/controller/admin/form.config.php:275
     'City:' => 'Город:',
 
-    #: config/controller/admin/form.config.php:279
-    #: config/controller/admin/form.config.php:395
+    #: config/controller/admin/form.config.php:282
+    #: config/controller/admin/form.config.php:398
     'Message' => 'Сообщение',
 
-    #: config/controller/admin/form.config.php:285
-    #: config/controller/admin/form.config.php:417
+    #: config/controller/admin/form.config.php:288
+    #: config/controller/admin/form.config.php:420
     'Message:' => 'Сообщение:',
 
-    #: config/controller/admin/form.config.php:292
-    #: config/controller/admin/form.config.php:297
-    #: config/controller/admin/form.config.php:397
+    #: config/controller/admin/form.config.php:295
+    #: config/controller/admin/form.config.php:300
+    #: config/controller/admin/form.config.php:400
     'Separator' => 'Разделитель',
 
-    #: config/controller/admin/form.config.php:305
-    #: config/controller/admin/form.config.php:396
+    #: config/controller/admin/form.config.php:308
+    #: config/controller/admin/form.config.php:399
     'Hidden' => 'Скрытое',
 
-    #: config/controller/admin/form.config.php:312
+    #: config/controller/admin/form.config.php:315
     'I’m the label for internal use only as I won’t be shown to users:' => 'Я — надпись для внутреннего использования, и не хочу, чтобы меня видели пользователи:',
 
-    #: config/controller/admin/form.config.php:319
-    #: config/controller/admin/form.config.php:398
+    #: config/controller/admin/form.config.php:322
+    #: config/controller/admin/form.config.php:401
     'Variable' => 'Переменная',
 
-    #: config/controller/admin/form.config.php:339
+    #: config/controller/admin/form.config.php:342
     'Properties' => 'Свойства',
 
-    #: config/controller/admin/form.config.php:352
+    #: config/controller/admin/form.config.php:355
     'Further options' => 'Дополнительные настройки',
 
-    #: config/controller/admin/form.config.php:363
+    #: config/controller/admin/form.config.php:366
     'Technical options' => 'Технические настройки',
 
-    #: config/controller/admin/form.config.php:382
+    #: config/controller/admin/form.config.php:385
     'Type:' => 'Тип:',
 
-    #: config/controller/admin/form.config.php:407
+    #: config/controller/admin/form.config.php:410
     'Label:' => 'Подпись:',
 
-    #: config/controller/admin/form.config.php:410
+    #: config/controller/admin/form.config.php:413
     'I’m the label, click to edit me:' => 'Я — подпись, нажмите, чтобы отредактировать меня:',
 
-    #: config/controller/admin/form.config.php:421
+    #: config/controller/admin/form.config.php:424
     'I’m a message, click to edit me.' => 'Я — сообщение, нажмите, чтобы отредактировать меня',
 
-    #: config/controller/admin/form.config.php:428
+    #: config/controller/admin/form.config.php:431
     'Style:' => 'Стиль:',
 
-    #: config/controller/admin/form.config.php:432
+    #: config/controller/admin/form.config.php:435
     'Standard' => 'Стандартный',
 
-    #: config/controller/admin/form.config.php:433
+    #: config/controller/admin/form.config.php:436
     'Heading 1' => 'Заголовок 1',
 
-    #: config/controller/admin/form.config.php:434
+    #: config/controller/admin/form.config.php:437
     'Heading 2' => 'Заголовок 2',
 
-    #: config/controller/admin/form.config.php:435
+    #: config/controller/admin/form.config.php:438
     'Heading 3' => 'Заголовок 3',
 
-    #: config/controller/admin/form.config.php:441
+    #: config/controller/admin/form.config.php:444
     'Answers:' => 'Ответы:',
 
     #. Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-    #: config/controller/admin/form.config.php:447
+    #: config/controller/admin/form.config.php:450
     'One answer per line' => 'Один ответ на строку:',
 
-    #: config/controller/admin/form.config.php:451
+    #: config/controller/admin/form.config.php:454
     'Mandatory' => 'Обязательное',
 
-    #: config/controller/admin/form.config.php:459
+    #: config/controller/admin/form.config.php:462
     'Default value:' => 'Значение по умолчанию:',
 
-    #: config/controller/admin/form.config.php:466
+    #: config/controller/admin/form.config.php:469
     'Instructions for the user:' => 'Руководство пользователя:',
 
-    #: config/controller/admin/form.config.php:473
+    #: config/controller/admin/form.config.php:476
     'Width:' => 'Ширина:',
 
-    #: config/controller/admin/form.config.php:474
+    #: config/controller/admin/form.config.php:477
     'Width: {{count}} characters' => 'Ширина: {{count}} символов',
 
-    #: config/controller/admin/form.config.php:486
+    #: config/controller/admin/form.config.php:489
     'Height: {{count}} lines' => 'Высота: {{count}} строк',
 
-    #: config/controller/admin/form.config.php:498
+    #: config/controller/admin/form.config.php:501
     'Limited to {{count}} characters' => 'Ограничить до {{count}} символов',
 
-    #: config/controller/admin/form.config.php:508
+    #: config/controller/admin/form.config.php:511
     'Origin:' => 'Источник:',
 
-    #: config/controller/admin/form.config.php:521
+    #: config/controller/admin/form.config.php:524
     'Variable name:' => 'Имя переменной:',
 
-    #: config/controller/admin/form.config.php:528
+    #: config/controller/admin/form.config.php:531
     'Virtual field name:' => 'Виртуальное имя поля:',
 
-    #: config/controller/admin/form.config.php:536
+    #: config/controller/admin/form.config.php:539
     'ID:' => 'Идентификатор:',
 
-    #: config/controller/admin/form.config.php:543
+    #: config/controller/admin/form.config.php:546
     'CSS classes:' => 'Классы CSS:',
 
     #: config/controller/admin/enhancer.config.php:42
@@ -439,24 +447,35 @@ Mr' => 'Г-жа
     #: config/controller/admin/appdesk.config.php:18
     'forms' => 'формы',
 
-    #: config/controller/admin/appdesk.config.php:19
-    'Showing {{x}} forms out of {{y}}' => 'Показано {{x}} форм из {{y}}',
-
     #: config/controller/admin/appdesk.config.php:20
-    'Showing 1 form' => 'Показана 1 форма',
+    #: config/common/form.config.php:76
+    '1 form' => array(
+        0 => '1 форма',
+        1 => '{{count}} форм',
+        2 => '',
+        3 => '',
+    ),
 
-    #: config/controller/admin/appdesk.config.php:21
+    #: config/controller/admin/appdesk.config.php:24
+    'Showing 1 form out of {{y}}' => array(
+        0 => '',
+        1 => '',
+        2 => 'Показано {{x}} форм из {{y}}',
+        3 => '',
+    ),
+
+    #: config/controller/admin/appdesk.config.php:27
     'No forms' => 'Нет форм',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/appdesk.config.php:23
+    #: config/controller/admin/appdesk.config.php:29
     'Show all forms' => 'Показать все формы',
 
     #: config/model/answer.config.php:13
     'Answer received on {{date}}' => 'Ответ получен {{date}}',
 
     #: config/common/form.config.php:28
-    #: config/common/form.config.php:106
+    #: config/common/form.config.php:111
     'Answers' => 'Ответы',
 
     #. Crud
@@ -477,24 +496,22 @@ Mr' => 'Г-жа
     #: config/common/form.config.php:65
     'Deleting the form ‘{{title}}’' => 'Удаление формы «{{title}}»',
 
-    #. Delete action's labels
-    #: config/common/form.config.php:68
-    'Yes, delete this form' => 'Да, я хочу удалить эту форму',
-
-    #: config/common/form.config.php:70
-    'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => 'Невозможно удалить эту форму, так как вы ввели неверное число ответов. Исправьте, пожалуйста.',
-
-    #: config/common/form.config.php:72
-    '1 form' => '1 форма',
+    #: config/common/form.config.php:69
+    'Yes, delete this form' => array(
+        0 => 'Да, я хочу удалить эту форму',
+        1 => '',
+        2 => '',
+        3 => '',
+    ),
 
     #: config/common/form.config.php:73
-    '{{count}} forms' => '{{count}} форм',
+    'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => 'Невозможно удалить эту форму, так как вы ввели неверное число ответов. Исправьте, пожалуйста.',
 
-    #: config/common/form.config.php:130
-    #: config/common/form.config.php:154
+    #: config/common/form.config.php:135
+    #: config/common/form.config.php:159
     'There is no answers yet.' => 'Ответов пока нет.',
 
-    #: config/common/form.config.php:136
+    #: config/common/form.config.php:141
     'Export the answers (spreadsheet)' => 'Экспортировать ответы (в таблицу)',
 
     #: config/common/answer.config.php:23
@@ -515,20 +532,18 @@ Mr' => 'Г-жа
     #: config/common/answer.config.php:48
     'Deleting the answer ‘{{title}}’' => 'Удаление ответа «{{title}}»',
 
-    #. Delete action's labels
-    #: config/common/answer.config.php:51
-    'Yes, delete this answer' => 'Да, я хочу удалить этот ответ',
+    #: config/common/answer.config.php:52
+    'Yes, delete this answer' => array(
+        0 => 'Да, я хочу удалить этот ответ',
+        1 => '',
+        2 => '',
+        3 => '',
+    ),
 
-    #: config/common/answer.config.php:53
-    '1 answer' => '1 ответ',
-
-    #: config/common/answer.config.php:54
-    '{{count}} answers' => '{{count}} ответов',
-
-    #: config/common/answer.config.php:61
+    #: config/common/answer.config.php:66
     'Visualise' => 'Просмотр',
 
-    #: config/common/answer.config.php:71
+    #: config/common/answer.config.php:76
     'Answer to ’{{title}}’' => 'Ответ на «{{title}}»',
 
 );

@@ -1,13 +1,13 @@
 <?php
 
-// Generated on 02/12/2013 17:53:33
+// Generated on 03/12/2013 16:06:58
 
-// 157 out of 157 messages are translated (100%).
-// 651 out of 651 words are translated (100%).
+// 152 out of 152 messages are translated (100%).
+// 634 out of 634 words are translated (100%).
 
 return array(
     #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:116
+    #: config/common/form.config.php:121
     'Answers to ‘{{title}}’' => '‘{{title}}’に回答する',
 
     #: classes/controller/admin/answer/appdesk.ctrl.php:36
@@ -94,10 +94,9 @@ return array(
     'Can visualise answers only' => '',
 
     #: views/admin/popup_delete.view.php:24
-    'This form has already received <strong>one answer</strong>.' => 'このフォームには<strong>1件のメッセージ</strong>があります。',
-
-    #: views/admin/popup_delete.view.php:25
-    'This form has already received <strong>{{count}} answers</strong>.' => 'このフォームには<strong>{{count}} 件のメッセージ</strong>があります。',
+    'This form has already received <strong>one answer</strong>.' => array(
+        0 => 'このフォームには<strong>1件のメッセージ</strong>があります。',
+    ),
 
     #: views/admin/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'はい、このフォームを削除し、このフォームの{{count}}件のメッセージを削除します。',
@@ -155,21 +154,26 @@ return array(
     #: config/controller/admin/answer/appdesk.config.php:40
     'answers' => 'メッセージ',
 
-    #: config/controller/admin/answer/appdesk.config.php:41
-    'Showing {{x}} answers out of {{y}}' => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
-
     #: config/controller/admin/answer/appdesk.config.php:42
-    'Showing 1 answer' => '1件のメッセージを表示しています',
+    #: config/common/answer.config.php:57
+    '1 answer' => array(
+        0 => '1件のメッセージ',
+    ),
 
-    #: config/controller/admin/answer/appdesk.config.php:43
+    #: config/controller/admin/answer/appdesk.config.php:46
+    'Showing 1 answer out of {{y}}' => array(
+        0 => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
+    ),
+
+    #: config/controller/admin/answer/appdesk.config.php:49
     'No answers' => 'メッセージ無し',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/answer/appdesk.config.php:45
+    #: config/controller/admin/answer/appdesk.config.php:51
     'Show all answers' => 'メッセージを全て表示する',
 
     #: config/controller/admin/form.config.php:18
-    #: config/common/form.config.php:77
+    #: config/common/form.config.php:82
     'Add a form' => 'フォームを追加',
 
     #: config/controller/admin/form.config.php:47
@@ -430,24 +434,29 @@ Mr' => '',
     #: config/controller/admin/appdesk.config.php:18
     'forms' => 'フォーム',
 
-    #: config/controller/admin/appdesk.config.php:19
-    'Showing {{x}} forms out of {{y}}' => '{{y}}つのフォームのうち、{{x}}つを表示しています',
-
     #: config/controller/admin/appdesk.config.php:20
-    'Showing 1 form' => '1つのフォームを表示しています',
+    #: config/common/form.config.php:76
+    '1 form' => array(
+        0 => '1つのフォーム',
+    ),
 
-    #: config/controller/admin/appdesk.config.php:21
+    #: config/controller/admin/appdesk.config.php:24
+    'Showing 1 form out of {{y}}' => array(
+        0 => '{{y}}つのフォームのうち、{{x}}つを表示しています',
+    ),
+
+    #: config/controller/admin/appdesk.config.php:27
     'No forms' => 'フォームがありません',
 
     #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/appdesk.config.php:23
+    #: config/controller/admin/appdesk.config.php:29
     'Show all forms' => 'フォームを全て表示',
 
     #: config/model/answer.config.php:13
     'Answer received on {{date}}' => '{{date}}に受け取ったメッセージ',
 
     #: config/common/form.config.php:28
-    #: config/common/form.config.php:106
+    #: config/common/form.config.php:111
     'Answers' => 'メッセージ',
 
     #. Crud
@@ -468,24 +477,19 @@ Mr' => '',
     #: config/common/form.config.php:65
     'Deleting the form ‘{{title}}’' => 'フォーム‘{{title}}’を削除します',
 
-    #. Delete action's labels
-    #: config/common/form.config.php:68
-    'Yes, delete this form' => 'はい、このフォームを削除します',
-
-    #: config/common/form.config.php:70
-    'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => '入力した数字が間違っているため、このフォームを削除できません。もう一度試してください。',
-
-    #: config/common/form.config.php:72
-    '1 form' => '1つのフォーム',
+    #: config/common/form.config.php:69
+    'Yes, delete this form' => array(
+        0 => 'はい、このフォームを削除します',
+    ),
 
     #: config/common/form.config.php:73
-    '{{count}} forms' => '{{count}}つのフォーム',
+    'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => '入力した数字が間違っているため、このフォームを削除できません。もう一度試してください。',
 
-    #: config/common/form.config.php:130
-    #: config/common/form.config.php:154
+    #: config/common/form.config.php:135
+    #: config/common/form.config.php:159
     'There is no answers yet.' => '',
 
-    #: config/common/form.config.php:136
+    #: config/common/form.config.php:141
     'Export the answers (spreadsheet)' => 'メッセージをエクスポート (スプレッドシート)',
 
     #: config/common/answer.config.php:23
@@ -506,20 +510,15 @@ Mr' => '',
     #: config/common/answer.config.php:48
     'Deleting the answer ‘{{title}}’' => 'メッセージ‘{{title}}’を削除します',
 
-    #. Delete action's labels
-    #: config/common/answer.config.php:51
-    'Yes, delete this answer' => 'はい、このメッセージを削除します',
+    #: config/common/answer.config.php:52
+    'Yes, delete this answer' => array(
+        0 => 'はい、このメッセージを削除します',
+    ),
 
-    #: config/common/answer.config.php:53
-    '1 answer' => '1件のメッセージ',
-
-    #: config/common/answer.config.php:54
-    '{{count}} answers' => '{{count}}件のメッセージ',
-
-    #: config/common/answer.config.php:61
+    #: config/common/answer.config.php:66
     'Visualise' => '閲覧',
 
-    #: config/common/answer.config.php:71
+    #: config/common/answer.config.php:76
     'Answer to ’{{title}}’' => '’{{title}}’へのメッセージ',
 
 );
