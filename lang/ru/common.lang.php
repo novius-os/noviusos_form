@@ -1,6 +1,6 @@
 <?php
 
-// Generated on 03/12/2013 16:06:58
+// Generated on 03/12/2013 16:22:23
 
 // 150 out of 152 messages are translated (98%).
 // 622 out of 634 words are translated (98%).
@@ -99,7 +99,6 @@ return array(
         0 => 'На эту форму уже был получен <strong>один ответ</strong>.',
         1 => 'На эту форму уже было получено <strong>{{count}} ответов</strong>.',
         2 => '',
-        3 => '',
     ),
 
     #: views/admin/popup_delete.view.php:33
@@ -164,7 +163,6 @@ return array(
         0 => '1 ответ',
         1 => '{{count}} ответов',
         2 => '',
-        3 => '',
     ),
 
     #: config/controller/admin/answer/appdesk.config.php:46
@@ -172,7 +170,6 @@ return array(
         0 => '',
         1 => '',
         2 => 'Показано {{x}} ответов из {{y}}',
-        3 => '',
     ),
 
     #: config/controller/admin/answer/appdesk.config.php:49
@@ -453,7 +450,6 @@ Mr' => 'Г-жа
         0 => '1 форма',
         1 => '{{count}} форм',
         2 => '',
-        3 => '',
     ),
 
     #: config/controller/admin/appdesk.config.php:24
@@ -461,7 +457,6 @@ Mr' => 'Г-жа
         0 => '',
         1 => '',
         2 => 'Показано {{x}} форм из {{y}}',
-        3 => '',
     ),
 
     #: config/controller/admin/appdesk.config.php:27
@@ -501,7 +496,6 @@ Mr' => 'Г-жа
         0 => 'Да, я хочу удалить эту форму',
         1 => '',
         2 => '',
-        3 => '',
     ),
 
     #: config/common/form.config.php:73
@@ -537,7 +531,6 @@ Mr' => 'Г-жа
         0 => 'Да, я хочу удалить этот ответ',
         1 => '',
         2 => '',
-        3 => '',
     ),
 
     #: config/common/answer.config.php:66
