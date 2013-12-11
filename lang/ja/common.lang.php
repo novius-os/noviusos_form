@@ -1,6 +1,6 @@
 <?php
 
-// Generated on 03/12/2013 16:22:23
+// Generated on 11/12/2013 10:31:03
 
 // 152 out of 152 messages are translated (100%).
 // 634 out of 634 words are translated (100%).
@@ -29,20 +29,21 @@ return array(
     'Thank you. Your answer has been sent.' => 'ありがとうございます。メッセージが送信されました。',
 
     #: views/enhancer/blank_slate.view.php:16
-    'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => '',
+    'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => '申し訳ありませんが、フォームがありません。しかしご心配にはおよびません。このようにすれば良いのです。',
 
     #: views/enhancer/blank_slate.view.php:19
     '<ul><li><a>Add your first form</a> (a new tab will open).</li>
-<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '',
+<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>最初のフォームを作成する</a> (新しいタブが開く)。</li>
+<li>フォームを作成したら、このタブに戻ってフォームを挿入する。</li></ul>',
 
     #: views/enhancer/blank_slate.view.php:27
-    'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => '',
+    'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => '{{context}}で利用できるフォームがありません。<a>この言語の最初のフォームを作成してください</a>。',
 
     #: views/enhancer/blank_slate.view.php:29
-    'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => '',
+    'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => '{{context}}で利用できるフォームがありません。<a>このコンテキストの最初のフォームを作成してください</a>。',
 
     #: views/email.view.php:31
-    'Message sent by:' => '',
+    'Message sent by:' => 'メッセージ送信者: ',
 
     #: views/admin/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'フォームを変更すると、受け取ったメッセージを変更することがあります。',
@@ -88,10 +89,10 @@ return array(
     'Are you sure?' => 'よろしいですか？',
 
     #: views/admin/permissions.view.php:15
-    'Can add, edit and delete forms and answers' => '',
+    'Can add, edit and delete forms and answers' => 'フォームと回答を追加／編集／削除できます。',
 
     #: views/admin/permissions.view.php:22
-    'Can visualise answers only' => '',
+    'Can visualise answers only' => '回答を閲覧できます。',
 
     #: views/admin/popup_delete.view.php:24
     'This form has already received <strong>one answer</strong>.' => array(
@@ -133,7 +134,7 @@ return array(
     'Add to Media Centre' => 'メディアセンターに追加',
 
     #: config/permissions.config.php:11
-    'Permissions for this application' => '',
+    'Permissions for this application' => 'このアプリケーションの権限',
 
     #: config/controller/admin/answer/inspector/date.config.php:18
     'Answer date' => '送信日時',
@@ -225,7 +226,8 @@ return array(
     #: config/controller/admin/form.config.php:148
     #: config/controller/admin/form.config.php:161
     'First option
-Second option' => '',
+Second option' => '選択肢1
+選択肢2',
 
     #: config/controller/admin/form.config.php:155
     #: config/controller/admin/form.config.php:392
@@ -237,7 +239,8 @@ Second option' => '',
 
     #: config/controller/admin/form.config.php:174
     'First choice
-Second choice' => '',
+Second choice' => '選択肢1
+選択肢2',
 
     #: config/controller/admin/form.config.php:181
     #: config/controller/admin/form.config.php:394
@@ -275,7 +278,8 @@ Second choice' => '',
 
     #: config/controller/admin/form.config.php:242
     'Ms
-Mr' => '',
+Mr' => '様
+御中',
 
     #: config/controller/admin/form.config.php:250
     'Name:' => '名:',
@@ -414,10 +418,10 @@ Mr' => '',
     'Right aligned' => '右揃え',
 
     #: config/controller/admin/enhancer.config.php:55
-    'In the field (placeholder), for text fields only' => '',
+    'In the field (placeholder), for text fields only' => 'このフィールド(プレースホルダ)は、テキストのみです。',
 
     #: config/controller/admin/enhancer.config.php:61
-    'Once the user submitted the form:' => '',
+    'Once the user submitted the form:' => '訪問者がフォームを送信した後:',
 
     #: config/controller/admin/enhancer.config.php:66
     'Display a message' => 'メッセージを表示',
@@ -487,7 +491,7 @@ Mr' => '',
 
     #: config/common/form.config.php:135
     #: config/common/form.config.php:159
-    'There is no answers yet.' => '',
+    'There is no answers yet.' => '回答がありません',
 
     #: config/common/form.config.php:141
     'Export the answers (spreadsheet)' => 'メッセージをエクスポート (スプレッドシート)',

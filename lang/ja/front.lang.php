@@ -1,6 +1,6 @@
 <?php
 
-// Generated on 03/12/2013 16:22:23
+// Generated on 11/12/2013 10:31:03
 
 // 13 out of 13 messages are translated (100%).
 // 76 out of 76 words are translated (100%).
@@ -35,7 +35,7 @@ return array(
     '{{form}}: New answer' => '{{form}}: 新しいメッセージ',
 
     #: views/foundation.view.php:229
-    '{{previous}}{{pagination}}{{next}}' => '',
+    '{{previous}}{{pagination}}{{next}}' => '{{previous}}{{pagination}}{{next}}',
 
     #: views/foundation.view.php:238
     'Previous page' => '前のページ',
