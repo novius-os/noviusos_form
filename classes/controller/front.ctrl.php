@@ -555,10 +555,11 @@ class Controller_Front extends Controller_Front_Application
                 $answer_field->save();
             }
 
-            $emails = trim($form->form_submit_email, " \n");
+            $emails = array_filter(explode("\n", $form->form_submit_email), function ($var) {
+                $var = trim($var);
+                return !empty($var);
+            });
             if (!empty($emails)) {
-                $emails = explode("\n", $emails);
-
                 $mail->bcc($emails);
                 if (!empty($reply_to)) {
                     $mail->reply_to($reply_to);
