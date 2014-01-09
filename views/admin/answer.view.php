@@ -77,6 +77,7 @@ foreach ($view_params['fields'] as $field) {
                     $('#<?= $uniqueId ?>')
                             .find('table')
                             .wijgrid({
+                                scrollMode : "auto",
                                 rowStyleFormatter: function headerColumnRowStyleFormatter(args) {
                                     if (!((args.state & $.wijmo.wijgrid.renderState.rendering) && (args.type & $.wijmo.wijgrid.rowType.data))) return;
                                     // data[2] will be null for rows with <td colspan="2">
