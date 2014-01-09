@@ -536,7 +536,7 @@ class Controller_Front extends Controller_Front_Application
                 }
             }
 
-            $config = \Config::loadConfiguration('noviusos_form', 'noviusos_form');
+            $config = \Config::load('noviusos_form::noviusos_form', true);
             $reply_to_auto = \Arr::get($config, 'add_replyto_to_first_email', true);
             $reply_to = '';
             foreach ($data as $field_name => $value) {
