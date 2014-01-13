@@ -409,7 +409,7 @@ class Controller_Front extends Controller_Front_Application
         });
 
         // Fetching the fields according to their layout position
-        foreach ($layout as $row => $cols) {
+        foreach ($layout as $cols) {
             foreach ($cols as $field_layout) {
                 list($field_id, ) = explode('=', $field_layout);
                 $field = $form->fields[$field_id];
@@ -471,12 +471,18 @@ class Controller_Front extends Controller_Front_Application
 
         // Custom validation
         foreach ((array) \Event::trigger_function('noviusos_form::data_validation', array(&$data, $fields, $form), 'array') as $array) {
+            if ($array === null) {
+                continue;
+            }
             foreach ($array as $name => $error) {
                 $errors[$name] = $error.(isset($errors[$name]) ? "\n".$errors[$name] : '');
             }
         }
         if (!empty($form->form_virtual_name)) {
             foreach ((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $fields, $form), 'array') as $array) {
+                if ($array === null) {
+                    continue;
+                }
                 foreach ($array as $name => $error) {
                     $errors[$name] = (isset($errors[$name]) ? $errors[$name]."\n" : '').$error;
                 }
@@ -549,10 +555,11 @@ class Controller_Front extends Controller_Front_Application
                 $answer_field->save();
             }
 
-            $emails = trim($form->form_submit_email, " \n");
+            $emails = array_filter(explode("\n", $form->form_submit_email), function ($var) {
+                $var = trim($var);
+                return !empty($var);
+            });
             if (!empty($emails)) {
-                $emails = explode("\n", $emails);
-
                 $mail->bcc($emails);
                 if (!empty($reply_to)) {
                     $mail->reply_to($reply_to);

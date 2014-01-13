@@ -80,7 +80,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
         // Loop through rows...
         foreach ($layout as $rows) {
             foreach ($rows as $row) {
-                list($field_id, $width) = explode('=', $row);
+                list($field_id) = explode('=', $row);
 
                 if ($field_id == 'captcha') {
                     $field = null;

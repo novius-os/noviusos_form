@@ -51,7 +51,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             $dataset = array();
             $meta = array();
             foreach ($fields as $field) {
-                list($field_id, $width) = explode('=', $field);
+                list($field_id) = explode('=', $field);
                 $field = $form->fields[$field_id];
                 if (!in_array($field->field_type, array('text', 'select', 'email', 'number', 'date'))) {
                     continue;
