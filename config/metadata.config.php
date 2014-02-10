@@ -10,7 +10,7 @@
 
 return array(
     'name'    => 'Forms',
-    'version' => 'chiba.2.3.',
+    'version' => 'dubrovka',
     'provider' => array(
         'name' => 'Novius OS',
     ),
