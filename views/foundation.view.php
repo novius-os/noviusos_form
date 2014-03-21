@@ -8,107 +8,12 @@
  * @link http://www.novius-os.org
  */
 
+use \Nos\Form\Helper_Foundation;
 
 \Nos\Nos::main_controller()->addCss('static/apps/noviusos_form/css/front.css');
 \Nos\Nos::main_controller()->addJavascript('static/apps/noviusos_form/js/foundation.js');
 
 \Nos\I18n::current_dictionary('noviusos_form::front');
-
-if (!function_exists('noviusos_form_foundation_add_attr_to_thing')) {
-    function noviusos_form_foundation_add_attr_to_thing(&$thing, $attr, $value)
-    {
-        if (isset($thing['callback'])) {
-            $key = false;
-            if ($thing['callback'] == 'html_tag') {
-                $key = 1;
-            }
-            if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
-                if (in_array($thing['callback'][1], array('select', 'checkbox'))) {
-                    $key = 3;
-                } else {
-                    $key = 2;
-                }
-            }
-            if (false !== $key) {
-                if (!isset($thing['args'][$key][$attr])) {
-                    $thing['args'][$key][$attr] = $value;
-                } else {
-                    $thing['args'][$key][$attr] .= ' '.$value;
-                }
-            }
-        }
-    }
-
-    function noviusos_form_foundation_get_html_attrs($thing)
-    {
-        if (isset($thing['callback'])) {
-            $key = false;
-            if ($thing['callback'] == 'html_tag') {
-                $key = 1;
-            }
-            if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
-                if (in_array($thing['callback'][1], array('select', 'checkbox'))) {
-                    $key = 3;
-                } else {
-                    $key = 2;
-                }
-            }
-            if (false !== $key) {
-                return $thing['args'][$key];
-            }
-        }
-        return;
-    }
-
-    function noviusos_form_foundation_add_content_to_thing(&$thing, $content)
-    {
-        if (isset($thing['callback'])) {
-            $key = false;
-            if ($thing['callback'] == 'html_tag') {
-                $key = 2;
-            }
-            if (is_array($thing['callback']) and $thing['callback'][0] == 'Form') {
-                $key = 0;
-            }
-            $thing['args'][$key] .= $content;
-        }
-    }
-}
-
-$render_thing = null;
-$render_thing = function ($thing) use (&$render_thing, &$render_template) {
-    if (is_string($thing)) {
-        return $thing;
-    }
-    if (is_array($thing)) {
-        if (isset($thing['callback']) && is_callable($thing['callback'])) {
-            $args = isset($thing['args']) ? $thing['args'] : array();
-            return call_user_func_array($thing['callback'], $args);
-        } else {
-            $out = array();
-            foreach ($thing as $t) {
-                if (is_array($t) && isset($t['template'])) {
-                    $template = $t['template'];
-                    unset($t['template']);
-                    $vars = $t;
-                    $out[] = call_user_func($render_template, $template, $vars);
-                } else {
-                    $out[] = call_user_func($render_thing, $t);
-                }
-            }
-            return implode($out);
-        }
-    }
-};
-
-$render_template = null;
-$render_template = function ($template, $args) use (&$render_template, &$render_thing) {
-    $replacements = array();
-    foreach ($args as $name => $value) {
-        $replacements['{' . $name . '}'] = $render_thing($value);
-    }
-    return strtr($template, $replacements);
-};
 
 if (in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
     $template = '<div class="{label_class} columns">{label} {field} {instructions}</div>';
@@ -120,15 +25,15 @@ if (in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
 
 foreach ($fields as $name => &$field) {
 
-    noviusos_form_foundation_add_attr_to_thing($field['label'], 'class', $label_class);
-    noviusos_form_foundation_add_attr_to_thing($field['field'], 'class', 'input_text');
+    Helper_Foundation::addAttrToThing($field['label'], 'class', $label_class);
+    Helper_Foundation::addAttrToThing($field['field'], 'class', 'input_text');
 
     if (!empty($field['item']->field_mandatory)) {
         // For fields using a label, add a <span> at the end
-        noviusos_form_foundation_add_content_to_thing($field['label'], ' <span class="required">*</span>');
+        Helper_Foundation::addContentToThing($field['label'], ' <span class="required">*</span>');
         if ($enhancer_args['label_position'] == 'placeholder') {
             // For placeholder, add * at the end of placeholder's text
-            noviusos_form_foundation_add_attr_to_thing($field['field'], 'placeholder', ' *');
+            Helper_Foundation::addAttrToThing($field['field'], 'placeholder', ' *');
         }
     }
 }
@@ -139,7 +44,7 @@ unset($field);
 <?php
 
 foreach ($errors as $name => $error) {
-    $attrs = noviusos_form_foundation_get_html_attrs($fields[$name]['field']);
+    $attrs = Helper_Foundation::getHtmlAttrs($fields[$name]['field']);
     $id = !empty($attrs['id']) ? $attrs['id'] : '';
     echo '<p class="error"><label for="'.$id.'">'.nl2br(htmlspecialchars($error)).'</label></p>';
 }
@@ -207,13 +112,27 @@ foreach ($fields as $name => $field) {
     $available_width = $field['width'] * 3; // 3 = 12 columns grid / 4 column form
     $col_width += $available_width;
 
-    echo $render_template($template, array(
-        'label' => $field['label'],
-        'field' => $field['field'],
-        'instructions' => $field['instructions'],
-        'label_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$label_width],
-        'field_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$available_width - $label_width],
-    ));
+    if ($name === 'form_captcha') {
+        echo \Nos\FrontCache::viewForgeUncached('noviusos_form::captcha', array(
+            'form_id' => $item->form_id,
+            'template' => $template,
+            'config' => array(
+                'label' => $field['label'],
+                'field' => $field['field'],
+                'instructions' => $field['instructions'],
+                'label_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$label_width],
+                'field_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$available_width - $label_width],
+            )
+        ), false);
+    } else {
+        echo Helper_Foundation::renderTemplate($template, array(
+            'label' => $field['label'],
+            'field' => $field['field'],
+            'instructions' => $field['instructions'],
+            'label_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$label_width],
+            'field_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$available_width - $label_width],
+        ));
+    }
 }
 
 if (!$first_row) {

@@ -91,12 +91,6 @@ class Controller_Front extends Controller_Front_Application
 
         if ($item->form_captcha) {
             $layout[] = array('captcha=4');
-            $number_1 = mt_rand(1, 10);
-            $number_2 = mt_rand(1, 50);
-            if (mt_rand(1, 2) == 1) {
-                list($number_2, $number_1) = array($number_1, $number_2);
-            }
-            \Session::set('captcha.'.$item->form_id, $number_1 + $number_2);
         }
         $layout[] = array('_form_id=4');
 
@@ -123,10 +117,7 @@ class Controller_Front extends Controller_Front_Application
                 if ($field_id == 'captcha') {
                     $field = (object) array(
                         'field_name' => 'form_captcha',
-                        'field_label' => strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array(
-                            '{{number_1}}' => $number_1,
-                            '{{number_2}}' => $number_2,
-                        )),
+                        'field_label' => '',
                         'field_type' => 'text',
                         'field_mandatory' => '1',
                         'field_technical_id' => '',
@@ -168,11 +159,6 @@ class Controller_Front extends Controller_Front_Application
 
                 if ($field->field_mandatory) {
                     $html_attrs['required'] = 'required';
-                }
-
-                if ($name == 'form_captcha') {
-                    $html_attrs['data-captcha'] = mt_rand(100, 999).'-'.\Session::get('captcha.'.$item->form_id).'-'.mt_rand(100, 999);
-                    $html_attrs['data-custom-validity'] = __('You have not passed the spam test. Please try again.');
                 }
 
                 $label_attrs = array(
