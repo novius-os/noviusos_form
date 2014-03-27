@@ -74,51 +74,50 @@ foreach ($view_params['fields'] as $field) {
     require(['jquery-nos', 'wijmo.wijgrid'],
             function ($) {
                 $(function () {
-                    $('#<?= $uniqueId ?>')
-                            .find('table')
-                            .wijgrid({
-                                scrollMode : "auto",
-                                rowStyleFormatter: function headerColumnRowStyleFormatter(args) {
-                                    if (!((args.state & $.wijmo.wijgrid.renderState.rendering) && (args.type & $.wijmo.wijgrid.rowType.data))) return;
-                                    // data[2] will be null for rows with <td colspan="2">
-                                    if (<?= ($has_page_break ? 'true' : 'false').' && '; ?> args.data[2] == null) {
-                                        args.$rows.removeClass('ui-state-active wijmo-wijgrid-datarow').addClass('ui-widget ui-state-default wijmo-wijgrid-headerrow').removeClass('wijgridtd');
-                                        args.$rows.find('div.wijmo-wijgrid-innercell').each(function() {
-                                            if ($(this).find('.wijmo-wijgrid-headertext').length == 0) {
-                                                $(this).wrapInner('<span class="wijmo-wijgrid-headertext"></span>');
-                                            }
-                                        });
-                                    }
-                                },
-                                selectionMode: 'none'
-                            })
-                            .end()
-                            .find('a')
-                            .each(function() {
-                                var attachment = $(this).data('attachment');
-                                if (!attachment) {
-                                    return;
-                                }
-                                $('<button type="button"></button>')
-                                        .text(<?= \Format::forge(__('Add to Media Centre'))->to_json() ?>)
-                                        .css('margin-left', '1em')
-                                        .insertAfter(this)
-                                        .click(function(e) {
-                                            $(this).nosDialog({
-                                                contentUrl: 'admin/noviusos_media/attachment/popup',
-                                                ajaxData: {
-                                                    attachment: attachment
-                                                },
-                                                ajax : true,
-                                                title: <?= \Format::forge(__('Add to Media Centre'))->to_json() ?>,
-                                                height: 400,
-                                                width: 700
+                    $('#<?= $uniqueId ?>').find('table').wijgrid({
+                        scrollMode : "auto",
+                        rowStyleFormatter: function headerColumnRowStyleFormatter(args) {
+                            if (args.state & $.wijmo.wijgrid.renderState.rendering) {
+                                args.$rows.find('a')
+                                    .each(function() {
+                                        var attachment = $(this).data('attachment');
+                                        if (!attachment) {
+                                            return;
+                                        }
+                                        $('<button type="button"></button>')
+                                            .text(<?= \Format::forge(__('Add to Media Centre'))->to_json() ?>)
+                                            .css('margin-left', '1em')
+                                            .insertAfter(this)
+                                            .click(function(e) {
+                                                $(this).nosDialog({
+                                                    contentUrl: 'admin/noviusos_media/attachment/popup',
+                                                    ajaxData: {
+                                                        attachment: attachment
+                                                    },
+                                                    ajax : true,
+                                                    title: <?= \Format::forge(__('Add to Media Centre'))->to_json() ?>,
+                                                    height: 400,
+                                                    width: 700
+                                                });
                                             });
-                                        });
+                                    })
+                                    .end()
+                                    .nosFormUI();
+                            }
 
-                            })
-                            .end()
-                            .nosFormUI();
+                            if (!((args.state & $.wijmo.wijgrid.renderState.rendering) && (args.type & $.wijmo.wijgrid.rowType.data))) return;
+                            // data[2] will be null for rows with <td colspan="2">
+                            if (<?= ($has_page_break ? 'true' : 'false').' && '; ?> args.data[2] == null) {
+                                args.$rows.removeClass('ui-state-active wijmo-wijgrid-datarow').addClass('ui-widget ui-state-default wijmo-wijgrid-headerrow').removeClass('wijgridtd');
+                                args.$rows.find('div.wijmo-wijgrid-innercell').each(function() {
+                                    if ($(this).find('.wijmo-wijgrid-headertext').length == 0) {
+                                        $(this).wrapInner('<span class="wijmo-wijgrid-headertext"></span>');
+                                    }
+                                });
+                            }
+                        },
+                        selectionMode: 'none'
+                    });
                 });
             });
 </script>
