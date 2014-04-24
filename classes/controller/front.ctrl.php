@@ -230,7 +230,7 @@ class Controller_Front extends Controller_Front_Application
                             'args' => array($name, $value, $html_attrs),
                         );
                     } else if ($field->field_type == 'select') {
-                        $choices = explode("\n", $field->field_choices);
+                        $choices = array('' => '') + explode("\n", $field->field_choices);
                         $choices = array_combine($choices, $choices);
                         $html = array(
                             'callback' => array('Form', 'select'),
