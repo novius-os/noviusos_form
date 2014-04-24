@@ -162,7 +162,7 @@ require(['jquery-nos', 'jquery-nos-loadspinner'], function($) {
         $(function() {
             init_form(uniqid, <?= \Format::forge()->to_json(array(
                 'textDelete' => __('Are you sure?'),
-            )) ?>,<?= $crud['is_new'] ? 'true' : 'false'; ?>);
+            )) ?>,<?= $crud['is_new'] ? 'true' : 'false'; ?>, <?= \Session::user()->user_expert ? 'true' : 'false' ?>);
             $(uniqid).find('.preview_container').loadspinner('destroy');
         });
     });

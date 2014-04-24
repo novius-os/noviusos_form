@@ -25,11 +25,6 @@ class Controller_Front extends Controller_Front_Application
 
         $this->enhancer_args = $enhancer_args;
 
-        \Nos\Nos::main_controller()->addCacheSuffixHandler(array(
-            'type' => 'GET',
-            'keys' => 'message',
-        ));
-
         $form_id = $enhancer_args['form_id'];
         if (empty($form_id)) {
             return '';
@@ -60,6 +55,28 @@ class Controller_Front extends Controller_Front_Application
                 \Response::redirect(\Nos\Tools_Url::encodePath(\Nos\Nos::main_controller()->getUrl()).'?message='.$form_id);
             }
         }
+
+        // 'message' is used to show the user a message when the form is submitted
+        $request_parameters_to_exclude_from_cache = array('message');
+
+        //
+        foreach ($item->fields as $field) {
+            if (!empty($field->field_origin_var) && in_array($field->field_origin, array('get', 'request'))) {
+                $request_parameters_to_exclude_from_cache[] = $field->field_origin_var;
+
+                // Don't store the page in cache when one field is pre-filled with a parameter
+                // This allows to still use the cache for the "empty" version of the form
+                $value = $this->getFieldDefaultValue($field);
+                if (!empty($value) && $value != $field->field_default_value) {
+                    \Nos\Nos::main_controller()->disableCaching();
+                }
+            }
+        }
+
+        \Nos\Nos::main_controller()->addCacheSuffixHandler(array(
+            'type' => 'GET',
+            'keys' => $request_parameters_to_exclude_from_cache,
+        ));
 
         // Confirmation message
         if (\Input::get('message', 0) == $form_id) {
@@ -165,7 +182,7 @@ class Controller_Front extends Controller_Front_Application
                     'for' => $html_attrs['id'],
                 );
 
-                $value = \Input::post($name, $field->field_default_value);
+                $value = \Input::post($name, $this->getFieldDefaultValue($field));
 
                 if (!empty($errors[$name])) {
                     if ($name == 'form_captcha') {
@@ -296,29 +313,7 @@ class Controller_Front extends Controller_Front_Application
                     $label = '';
                     $html = html_tag('hr');
                 } else if (in_array($field->field_type, array('hidden', 'variable'))) {
-                    switch($field->field_origin) {
-                        case 'get':
-                            $value = \Input::get($field->field_origin_var, '');
-                            break;
-
-                        case 'post':
-                            $value = \Input::post($field->field_origin_var, '');
-                            break;
-
-                        case 'request':
-                            $value = \Input::param($field->field_origin_var, '');
-                            break;
-
-                        case 'global':
-                            $value = \Arr::get($GLOBALS, $field->field_origin_var, '');
-                            break;
-
-                        case 'session':
-                            $value = \Session::get($field->field_origin_var, '');
-                            break;
-
-                        default:
-                    }
+                    $value = $this->getFieldDefaultValue($field);
                     if ($field->field_type == 'hidden') {
                         $label = '';
                         $html = array(
@@ -378,6 +373,45 @@ class Controller_Front extends Controller_Front_Application
         );
 
         return \View::forge($layout['layout'], $layout['args'], false);
+    }
+
+    protected static function getFieldDefaultValue($field) {
+        if (!in_array($field->field_type, array('text', 'email', 'number', 'textarea', 'hidden', 'variable'))) {
+            return $field->field_default_value;
+        }
+
+        $value = $field->field_default_value;
+
+        // When the parameter name is not filled, there is nothing more to retrieve
+        if (empty($field->field_origin_var)) {
+            return $value;
+        }
+
+        switch($field->field_origin) {
+            case 'get':
+                $value = \Input::get($field->field_origin_var, $field->field_default_value);
+                break;
+
+            case 'post':
+                $value = \Input::post($field->field_origin_var, $field->field_default_value);
+                break;
+
+            case 'request':
+                $value = \Input::param($field->field_origin_var, $field->field_default_value);
+                break;
+
+            case 'global':
+                $value = \Arr::get($GLOBALS, $field->field_origin_var, $field->field_default_value);
+                break;
+
+            case 'session':
+                $value = \Session::get($field->field_origin_var, $field->field_default_value);
+                break;
+
+            default:
+        }
+
+        return $value;
     }
 
     public function post_answers($form)
