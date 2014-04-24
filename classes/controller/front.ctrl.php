@@ -375,7 +375,8 @@ class Controller_Front extends Controller_Front_Application
         return \View::forge($layout['layout'], $layout['args'], false);
     }
 
-    protected static function getFieldDefaultValue($field) {
+    protected function getFieldDefaultValue($field)
+    {
         if (!in_array($field->field_type, array('text', 'email', 'number', 'textarea', 'hidden', 'variable'))) {
             return $field->field_default_value;
         }
