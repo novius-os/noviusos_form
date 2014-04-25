@@ -59,7 +59,6 @@ class Controller_Front extends Controller_Front_Application
         // 'message' is used to show the user a message when the form is submitted
         $request_parameters_to_exclude_from_cache = array('message');
 
-        //
         foreach ($item->fields as $field) {
             if (!empty($field->field_origin_var) && in_array($field->field_origin, array('get', 'request'))) {
                 $request_parameters_to_exclude_from_cache[] = $field->field_origin_var;

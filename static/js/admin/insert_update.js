@@ -355,7 +355,6 @@ define(
 
                 var type = find_field($field, 'field_type').val();
                 var $default_value = find_field($field, 'field_default_value');
-                var field_is_mandatory = find_field($field, 'field_mandatory').is(':checked');
                 var choices = find_field($field, 'field_choices').val();
                 var default_value_value = $default_value.val();
                 if (default_value_value.match(/^[0-9,]+$/)) {
@@ -368,9 +367,7 @@ define(
 
                 if (-1 !== $.inArray(type, ['radio', 'select'])) {
                     var html = '<select>';
-                    if (type == 'select' || field_is_mandatory) {
-                        html += '<option value=""></option>';
-                    }
+                    html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, choice) {
                         html += '<option value="' + i + '" ' + (default_value_value[0] == choice ? 'selected' : '') + '>' + choice + '</option>';
                     });
@@ -415,7 +412,6 @@ define(
                 var width = find_field($field, 'field_width').val();
                 var height = find_field($field, 'field_height').val();
                 var details = find_field($field, 'field_details').val();
-                var field_is_mandatory = find_field($field, 'field_mandatory').is(':checked');
                 var $preview = $field.data('preview');
                 var $td = $preview.find('div.preview_content');
                 var html  = '';
@@ -488,7 +484,6 @@ define(
             $fields_container.on('change keyup', '[name*="[field_default_value]"]', generate_preview);
             $fields_container.on('change keyup', 'input[name*="[field_width]"]', generate_preview);
             $fields_container.on('change keyup', 'input[name*="[field_height]"]', generate_preview);
-            $fields_container.on('change keyup', 'input[name*="[field_mandatory]"]', generate_preview);
             $fields_container.on('change keyup', 'textarea[name*="[field_details]"]', generate_preview);
 
             function refreshPreviewHeight($tr) {
