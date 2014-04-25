@@ -14,7 +14,7 @@ define(
     ],
     function($) {
         "use strict";
-        return function(id, options, is_new) {
+        return function(id, options, is_new, is_expert) {
 
             var $container = $(id);
 
@@ -241,6 +241,20 @@ define(
             $fields_container.on('change', 'select[name*="[field_type]"]', function on_type_change(e) {
                 var type = $(this).val();
                 var $field = $(this).closest('.field_enclosure');
+                var $inject_origin_after = null;
+
+                if (is_expert && -1 !== $.inArray(type, ['text', 'email', 'number', 'textarea'])) {
+                    $inject_origin_after = find_field($field, 'field_default_value').closest('p');
+                } else if (-1 !== $.inArray(type, ['hidden', 'variable'])) {
+                    $inject_origin_after = find_field($field, 'field_type').closest('p');
+                }
+
+                if ($inject_origin_after !== null) {
+                    $inject_origin_after.after(find_field($field, 'field_origin_var').closest('p'));
+                    $inject_origin_after.after(find_field($field, 'field_origin').closest('p'));
+                }
+                show_when($field, 'field_origin', $inject_origin_after !== null);
+                show_when($field, 'field_origin_var', $inject_origin_after !== null);
 
                 show_when($field, 'field_choices', -1 !== $.inArray(type, ['radio', 'checkbox', 'select']));
                 show_when($field, 'field_label', -1 === $.inArray(type, ['separator', 'message']));
@@ -253,8 +267,6 @@ define(
                 show_when($field, 'field_width', -1 !== $.inArray(type, ['text']));
                 show_when($field, 'field_height', -1 !== $.inArray(type, ['textarea']));
                 show_when($field, 'field_limited_to', -1 !== $.inArray(type, ['text']));
-                show_when($field, 'field_origin', -1 !== $.inArray(type, ['hidden', 'variable']));
-                show_when($field, 'field_origin_var', -1 !== $.inArray(type, ['hidden', 'variable']));
 
                 // if the mandatory field is not visible, it needs to be unchecked...
                 var $field_mandatory = find_field($field, 'field_mandatory');
@@ -310,6 +322,11 @@ define(
                 $new.trigger('change');
             });
 
+            $fields_container.on('change', 'input[name*="[field_mandatory]"]', function on_change_field_mandatory(e) {
+                var $field = $(this).closest('.field_enclosure');
+                generate_default_value($field);
+            });
+
             function find_field($context, field_name) {
                 return $context.find('[name*="[' + field_name + ']"]');
             }
@@ -350,6 +367,7 @@ define(
 
                 if (-1 !== $.inArray(type, ['radio', 'select'])) {
                     var html = '<select>';
+                    html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, choice) {
                         html += '<option value="' + i + '" ' + (default_value_value[0] == choice ? 'selected' : '') + '>' + choice + '</option>';
                     });
@@ -429,6 +447,7 @@ define(
 
                 if (type == 'select') {
                     html += '<select>';
+                    html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, text) {
                         html += '<option value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'selected' : '') + '>' + text +'</option>';
                     });
