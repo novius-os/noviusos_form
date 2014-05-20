@@ -21,18 +21,12 @@ class Controller_Admin_Enhancer extends \Nos\Controller_Admin_Enhancer
     protected function config_build()
     {
         parent::config_build();
-        $forms = Model_Form::find('all', array(
+        $forms = Model_Form::query(array(
             'where' => array(
                 array('context', $this->placeholders['_parent_context']),
             ),
-        ));
-        if (!empty($forms)) {
-            $this->config['fields']['form_id']['form']['options'] = \Arr::pluck(
-                $forms,
-                'form_name',
-                'form_id'
-            );
-        } else {
+        ))->count();
+        if (!$forms) {
             unset($this->config['fields']);
             $this->config['popup']['view'] = 'noviusos_form::enhancer/blank_slate';
             $this->config['popup']['params'] = $this->placeholders;

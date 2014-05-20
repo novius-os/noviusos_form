@@ -40,8 +40,10 @@ return array(
     'fields' => array(
         'form_id' => array(
             'label' => __('Select a form:'),
-            'form' => array(
-                'type' => 'select',
+            'renderer' => 'Nos\Renderer_Select_Model',
+            'renderer_options' => array(
+                'model' => 'Nos\Form\Model_Form',
+                'empty_option' => false,
             ),
         ),
         'label_position' => array(
