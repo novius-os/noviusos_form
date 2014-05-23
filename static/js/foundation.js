@@ -13,7 +13,7 @@
             s.parentNode.insertBefore(g,s)}(document,'script'));
     };
     var loadPolyfiller = function() {
-        add_script('static/apps/noviusos_form/vendor/webshims-1.12.5/minified/polyfiller.js', function() {
+        add_script('static/apps/noviusos_form/vendor/webshims-1.13/minified/polyfiller.js', function() {
             webshims.polyfill('forms forms-ext');
 
             doPagination(jQuery);
@@ -23,7 +23,7 @@
         if (window.Modernizr) {
             loadPolyfiller();
         } else {
-            add_script('static/apps/noviusos_form/vendor/webshims-1.12.5/minified/extras/modernizr-custom.js', loadPolyfiller);
+            add_script('static/apps/noviusos_form/vendor/webshims-1.13/minified/extras/modernizr-custom.js', loadPolyfiller);
         }
     };
 
