@@ -18,23 +18,6 @@ class Controller_Admin_Enhancer extends \Nos\Controller_Admin_Enhancer
         \Nos\I18n::current_dictionary('noviusos_form::common');
     }
 
-    protected function config_build()
-    {
-        parent::config_build();
-        $forms = Model_Form::query(array(
-            'where' => array(
-                array('context', $this->placeholders['_parent_context']),
-            ),
-        ))->count();
-        if (!$forms) {
-            unset($this->config['fields']);
-            $this->config['popup']['view'] = 'noviusos_form::enhancer/blank_slate';
-            $this->config['popup']['params'] = $this->placeholders;
-            // Other's contexts count (this one is empty).
-            $this->config['popup']['params']['form_count'] = Model_Form::count();
-        }
-    }
-
     public function action_save(array $args = null)
     {
         if (empty($args)) {

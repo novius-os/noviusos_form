@@ -39,11 +39,21 @@ return array(
     ),
     'fields' => array(
         'form_id' => array(
-            'label' => __('Select a form:'),
-            'renderer' => 'Nos\Renderer_Select_Model',
+            'label' => __('Pick a form:'),
+            'renderer' => 'Nos\Renderer_Item_Picker',
             'renderer_options' => array(
                 'model' => 'Nos\Form\Model_Form',
-                'empty_option' => false,
+                'appdesk' => 'admin/noviusos_form/appdesk',
+                'defaultThumbnail' => 'static/apps/noviusos_form/img/icons/form-64.png',
+                'texts' => array(
+                    'empty' => __('No form selected'),
+                    'add' => __('Pick a form'),
+                    'edit' => __('Pick another form'),
+                    'delete' => __('Unselect form'),
+                ),
+            ),
+            'validation' => array(
+                'required',
             ),
         ),
         'label_position' => array(
