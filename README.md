@@ -6,7 +6,7 @@ The ‘Forms’ application for Novius OS allows you to create and publish forms
 
 ## Requirements
 
-* ‘Forms’ runs on Novius OS Dubrovka.
+* ‘Forms’ runs on Novius OS Elche.
 
 ## Installation
 
