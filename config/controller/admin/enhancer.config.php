@@ -49,7 +49,7 @@ return array(
                     'empty' => __('No form selected'),
                     'add' => __('Pick a form'),
                     'edit' => __('Pick another form'),
-                    'delete' => __('Unselect form'),
+                    'delete' => __('Un-select this form'),
                 ),
             ),
             'validation' => array(
