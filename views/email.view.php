@@ -31,9 +31,9 @@ th, td {
 <p><?= __('Message sent by:') ?> <a href="<?= $url ?>"><?= $url ?></a></p>
 <table border="0" cellspacing="0" cellpadding="3">
 <?php
-foreach ($data as $label => $value) {
-    echo '<tr><th>', e($label), '</th><th>:</th>';
-    echo '<td>', \Str::textToHtml(e($value)), '</td></tr>';
+foreach ($data as $rowData) {
+    echo '<tr><th>', e($rowData['label']), '</th><th>:</th>';
+    echo '<td>', \Str::textToHtml(e($rowData['value'])), '</td></tr>';
 }
 ?>
 </table>

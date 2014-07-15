@@ -561,7 +561,10 @@ class Controller_Front extends Controller_Front_Application
             $reply_to = '';
             foreach ($data as $field_name => $value) {
                 $field = $fields[$field_name];
-                $email_data[$field->field_label] = $value;
+                $email_data[] = array(
+                    'label' => $field->field_label,
+                    'value' => $value
+                );
                 if ($reply_to_auto && $field->field_type === 'email' && !empty($value) && empty($reply_to)) {
                     // save first non empty email as potential "reply_to"
                     $reply_to = $value;
