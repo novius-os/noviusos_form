@@ -1,177 +1,56 @@
 <?php
 
-// Generated on 11/12/2013 17:57:29
+// Generated on 30/07/2014 09:57:01
 
-// 152 out of 152 messages are translated (100%).
-// 634 out of 634 words are translated (100%).
+// 154 out of 154 messages are translated (100%).
+// 591 out of 591 words are translated (100%).
 
 return array(
-    #: classes/controller/admin/answer/appdesk.ctrl.php:30
-    #: config/common/form.config.php:121
-    'Answers to ‘{{title}}’' => '‘{{title}}’に回答する',
+    #: config/controller/admin/enhancer.config.php:42
+    'Pick a form:' => 'フォームを選択: ',
 
-    #: classes/controller/admin/answer/appdesk.ctrl.php:36
-    'Export (spreadsheet)' => 'エクスポート (スプレッドシート)',
+    #: config/controller/admin/enhancer.config.php:49
+    'No form selected' => 'フォームが選択されていません',
 
-    #: classes/controller/admin/answer.ctrl.php:33
-    #: views/admin/answer.view.php:25
-    'Answer to ‘{{title}}’' => '‘{{title}}’に回答する',
+    #: config/controller/admin/enhancer.config.php:50
+    'Pick a form' => 'フォームを選択',
 
-    #: classes/controller/admin/answer.ctrl.php:110
-    'No file attached.' => 'ファイルが添付されていません。',
+    #: config/controller/admin/enhancer.config.php:51
+    'Pick another form' => '別のフォームを選択',
 
-    #: classes/controller/admin/form.ctrl.php:187
-    #: classes/controller/admin/form.ctrl.php:202
-    'Page break' => 'ページ区切り',
+    #: config/controller/admin/enhancer.config.php:52
+    'Un-select this form' => 'フォームを外す',
 
-    #: classes/controller/admin/enhancer.ctrl.php:54
-    #: config/controller/admin/enhancer.config.php:76
+    #: config/controller/admin/enhancer.config.php:60
+    'Label position:' => 'ラベルの位置: ',
+
+    #: config/controller/admin/enhancer.config.php:64
+    'Top aligned' => '上揃え',
+
+    #: config/controller/admin/enhancer.config.php:65
+    'Left aligned' => '左揃え',
+
+    #: config/controller/admin/enhancer.config.php:66
+    'Right aligned' => '右揃え',
+
+    #: config/controller/admin/enhancer.config.php:67
+    'In the field (placeholder), for text fields only' => 'このフィールド(プレースホルダ)は、テキストのみです。',
+
+    #: config/controller/admin/enhancer.config.php:73
+    'Once the user submitted the form:' => '訪問者がフォームを送信した後:',
+
+    #: config/controller/admin/enhancer.config.php:78
+    'Display a message' => 'メッセージを表示',
+
+    #: config/controller/admin/enhancer.config.php:79
+    'Redirect to a page' => 'リダイレクトするページ',
+
+    #: config/controller/admin/enhancer.config.php:88
+    #: classes/controller/admin/enhancer.ctrl.php:31
     'Thank you. Your answer has been sent.' => 'ありがとうございます。メッセージが送信されました。',
 
-    #: views/enhancer/blank_slate.view.php:16
-    'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => '申し訳ありませんが、フォームがありません。しかしご心配にはおよびません。このようにすれば良いのです。',
-
-    #: views/enhancer/blank_slate.view.php:19
-    '<ul><li><a>Add your first form</a> (a new tab will open).</li>
-<li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>最初のフォームを作成する</a> (新しいタブが開く)。</li>
-<li>フォームを作成したら、このタブに戻ってフォームを挿入する。</li></ul>',
-
-    #: views/enhancer/blank_slate.view.php:27
-    'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => '{{context}}で利用できるフォームがありません。<a>この言語の最初のフォームを作成してください</a>。',
-
-    #: views/enhancer/blank_slate.view.php:29
-    'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => '{{context}}で利用できるフォームがありません。<a>このコンテキストの最初のフォームを作成してください</a>。',
-
-    #: views/email.view.php:31
-    'Message sent by:' => 'メッセージ送信者: ',
-
-    #: views/admin/warning_answers_collected.view.php:26
-    'Modifying the form may alter the collected data.' => 'フォームを変更すると、受け取ったメッセージを変更することがあります。',
-
-    #: views/admin/warning_answers_collected.view.php:29
-    'You’re right, take me to the answers' => '分かりました。メッセージ一覧へ移動します。',
-
-    #: views/admin/warning_answers_collected.view.php:31
-    'or' => 'あるいは',
-
-    #: views/admin/warning_answers_collected.view.php:31
-    'Don’t worry, I know what I’m doing' => 'ご心配なく。おまかせください。',
-
-    #: views/admin/warning_answers_collected.view.php:49
-    'Answers to this form have already been received' => 'このフォームには、既に受理したメッセージがあります。',
-
-    #: views/admin/layout_fields.view.php:28
-    'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => '問題が発生しました。現在、Novius OS はメールを送信するように設定されていません。開発者に連絡し、設定をお願いしてください。',
-
-    #: views/admin/layout_fields.view.php:47
-    #: views/admin/layout_fields.view.php:92
-    'Add a field' => 'フィールドを追加',
-
-    #: views/admin/layout_fields.view.php:53
-    'Standard fields' => '標準フィールド',
-
-    #: views/admin/layout_fields.view.php:54
-    'Special fields' => '拡張フィールド',
-
-    #: views/admin/layout_fields.view.php:93
-    'Add a page break' => 'ページ区切りを追加',
-
-    #: views/admin/layout_fields.view.php:96
-    'Help us prevent spam: How much is 3 plus 8?' => 'スパム防止用です。3たす8はいくつですか？',
-
-    #: views/admin/layout_fields.view.php:103
-    'Delete' => '削除',
-
-    #: views/admin/layout_fields.view.php:132
-    'Form submission' => 'フォーム送信',
-
-    #: views/admin/layout_fields.view.php:172
-    'Are you sure?' => 'よろしいですか？',
-
-    #: views/admin/permissions.view.php:15
-    'Can add, edit and delete forms and answers' => 'フォームと回答を追加／編集／削除できます。',
-
-    #: views/admin/permissions.view.php:22
-    'Can visualise answers only' => '回答を閲覧できます。',
-
-    #: views/admin/popup_delete.view.php:24
-    'This form has already received <strong>one answer</strong>.' => array(
-        0 => 'このフォームには<strong>1件のメッセージ</strong>があります。',
-    ),
-
-    #: views/admin/popup_delete.view.php:33
-    'Yes, I want to delete this form and the {{count}} answers received.' => 'はい、このフォームを削除し、このフォームの{{count}}件のメッセージを削除します。',
-
-    #: views/admin/warning_not_published.view.php:18
-    'Not published' => '公開されていません',
-
-    #: views/admin/warning_not_published.view.php:19
-    'To publish this form, add it to a page, a blog post or any other text editor.' => 'このフォームを公開するには、ページ、ブログ投稿、あるいはその他のテキストエディタに追加してください。',
-
-    #: views/admin/warning_not_published.view.php:22
-    '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>ほとんどの Novius OS テキストエディタ (WYSIWYG エディタとも呼びます) のツールバーにボタン{{preview}}が用意されています。</p><p>クリックすると、アプリケーションの一覧にアクセスでき、テキストにアプリケーションを挿入できます。</p>',
-
-    #: views/admin/warning_not_published.view.php:23
-    'Applications' => 'アプリケーション',
-
-    #: views/admin/answer.view.php:15
-    'Cancel' => '取り消し',
-
-    #: views/admin/answer.view.php:26
-    'Received on {{date}}' => '{{date}}に受理',
-
-    #: views/admin/answer.view.php:33
-    'Question' => '質問',
-
-    #: views/admin/answer.view.php:34
-    'Answer' => '回答',
-
-    #: views/admin/answer.view.php:55
-    'Page {{number}}' => 'ページ{{number}}',
-
-    #: views/admin/answer.view.php:102
-    #: views/admin/answer.view.php:112
-    'Add to Media Centre' => 'メディアセンターに追加',
-
-    #: config/permissions.config.php:11
-    'Permissions for this application' => 'このアプリケーションの権限',
-
-    #: config/controller/admin/answer/inspector/date.config.php:18
-    'Answer date' => '送信日時',
-
-    #: config/controller/admin/answer/appdesk.config.php:25
-    'Received on:' => '受理日時:',
-
-    #. Note to translator: 'Preview' here is a label, not an action
-    #: config/controller/admin/answer/appdesk.config.php:31
-    'Preview' => 'プレビュー',
-
-    #: config/controller/admin/answer/appdesk.config.php:32
-    'Click on an answer to preview it.' => 'クリックしてメッセージを閲覧する。',
-
-    #: config/controller/admin/answer/appdesk.config.php:39
-    'answer' => 'メッセージ',
-
-    #: config/controller/admin/answer/appdesk.config.php:40
-    'answers' => 'メッセージ',
-
-    #: config/controller/admin/answer/appdesk.config.php:42
-    #: config/common/answer.config.php:57
-    '1 answer' => array(
-        0 => '1件のメッセージ',
-    ),
-
-    #: config/controller/admin/answer/appdesk.config.php:46
-    'Showing 1 answer out of {{y}}' => array(
-        0 => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
-    ),
-
-    #: config/controller/admin/answer/appdesk.config.php:49
-    'No answers' => 'メッセージ無し',
-
-    #. Note to translator: This is the action that clears the 'Search' field
-    #: config/controller/admin/answer/appdesk.config.php:51
-    'Show all answers' => 'メッセージを全て表示する',
+    #: config/controller/admin/enhancer.config.php:112
+    'Form' => 'フォーム',
 
     #: config/controller/admin/form.config.php:18
     #: config/common/form.config.php:82
@@ -402,35 +281,42 @@ Mr' => '様
     #: config/controller/admin/form.config.php:546
     'CSS classes:' => 'CSS クラス:',
 
-    #: config/controller/admin/enhancer.config.php:42
-    'Select a form:' => 'フォームを選択:',
+    #: config/controller/admin/answer/inspector/date.config.php:18
+    'Answer date' => '送信日時',
 
-    #: config/controller/admin/enhancer.config.php:48
-    'Label position:' => 'ラベルの位置: ',
+    #: config/controller/admin/answer/appdesk.config.php:25
+    'Received on:' => '受理日時:',
 
-    #: config/controller/admin/enhancer.config.php:52
-    'Top aligned' => '上揃え',
+    #. Note to translator: 'Preview' here is a label, not an action
+    #: config/controller/admin/answer/appdesk.config.php:31
+    'Preview' => 'プレビュー',
 
-    #: config/controller/admin/enhancer.config.php:53
-    'Left aligned' => '左揃え',
+    #: config/controller/admin/answer/appdesk.config.php:32
+    'Click on an answer to preview it.' => 'クリックしてメッセージを閲覧する。',
 
-    #: config/controller/admin/enhancer.config.php:54
-    'Right aligned' => '右揃え',
+    #: config/controller/admin/answer/appdesk.config.php:39
+    'answer' => 'メッセージ',
 
-    #: config/controller/admin/enhancer.config.php:55
-    'In the field (placeholder), for text fields only' => 'このフィールド(プレースホルダ)は、テキストのみです。',
+    #: config/controller/admin/answer/appdesk.config.php:40
+    'answers' => 'メッセージ',
 
-    #: config/controller/admin/enhancer.config.php:61
-    'Once the user submitted the form:' => '訪問者がフォームを送信した後:',
+    #: config/controller/admin/answer/appdesk.config.php:42
+    #: config/common/answer.config.php:57
+    '1 answer' => array(
+        0 => '1件のメッセージ',
+    ),
 
-    #: config/controller/admin/enhancer.config.php:66
-    'Display a message' => 'メッセージを表示',
+    #: config/controller/admin/answer/appdesk.config.php:46
+    'Showing 1 answer out of {{y}}' => array(
+        0 => '{{y}}件のメッセージのうち{{x}}件を表示しています。',
+    ),
 
-    #: config/controller/admin/enhancer.config.php:67
-    'Redirect to a page' => 'リダイレクトするページ',
+    #: config/controller/admin/answer/appdesk.config.php:49
+    'No answers' => 'メッセージ無し',
 
-    #: config/controller/admin/enhancer.config.php:100
-    'Form' => 'フォーム',
+    #. Note to translator: This is the action that clears the 'Search' field
+    #: config/controller/admin/answer/appdesk.config.php:51
+    'Show all answers' => 'メッセージを全て表示する',
 
     #: config/controller/admin/appdesk.config.php:17
     'form' => 'フォーム',
@@ -455,9 +341,6 @@ Mr' => '様
     #. Note to translator: This is the action that clears the 'Search' field
     #: config/controller/admin/appdesk.config.php:29
     'Show all forms' => 'フォームを全て表示',
-
-    #: config/model/answer.config.php:13
-    'Answer received on {{date}}' => '{{date}}に受け取ったメッセージ',
 
     #: config/common/form.config.php:28
     #: config/common/form.config.php:111
@@ -488,6 +371,10 @@ Mr' => '様
 
     #: config/common/form.config.php:73
     'We cannot delete this form as the number of answers you’ve entered is wrong. Please amend it.' => '入力した数字が間違っているため、このフォームを削除できません。もう一度試してください。',
+
+    #: config/common/form.config.php:121
+    #: classes/controller/admin/answer/appdesk.ctrl.php:30
+    'Answers to ‘{{title}}’' => '‘{{title}}’に回答する',
 
     #: config/common/form.config.php:135
     #: config/common/form.config.php:159
@@ -524,5 +411,122 @@ Mr' => '様
 
     #: config/common/answer.config.php:76
     'Answer to ’{{title}}’' => '’{{title}}’へのメッセージ',
+
+    #: config/permissions.config.php:11
+    'Permissions for this application' => 'このアプリケーションの権限',
+
+    #: config/model/answer.config.php:13
+    'Answer received on {{date}}' => '{{date}}に受け取ったメッセージ',
+
+    #: views/captcha.view.php:22
+    'Help us prevent spam: How much is {{number_1}} plus {{number_2}}?' => 'スパム防止用です。{{number_1}} たす {{number_2}} はいくつ？',
+
+    #: views/captcha.view.php:35
+    'You have not passed the spam test. Please try again.' => 'スパム防止チェックに失敗しました。もう一度試してください。',
+
+    #: views/admin/warning_answers_collected.view.php:26
+    'Modifying the form may alter the collected data.' => 'フォームを変更すると、受け取ったメッセージを変更することがあります。',
+
+    #: views/admin/warning_answers_collected.view.php:29
+    'You’re right, take me to the answers' => '分かりました。メッセージ一覧へ移動します。',
+
+    #: views/admin/warning_answers_collected.view.php:31
+    'or' => 'あるいは',
+
+    #: views/admin/warning_answers_collected.view.php:31
+    'Don’t worry, I know what I’m doing' => 'ご心配なく。おまかせください。',
+
+    #: views/admin/warning_answers_collected.view.php:49
+    'Answers to this form have already been received' => 'このフォームには、既に受理したメッセージがあります。',
+
+    #: views/admin/popup_delete.view.php:24
+    'This form has already received <strong>one answer</strong>.' => array(
+        0 => 'このフォームには<strong>1件のメッセージ</strong>があります。',
+    ),
+
+    #: views/admin/popup_delete.view.php:33
+    'Yes, I want to delete this form and the {{count}} answers received.' => 'はい、このフォームを削除し、このフォームの{{count}}件のメッセージを削除します。',
+
+    #: views/admin/warning_not_published.view.php:18
+    'Not published' => '公開されていません',
+
+    #: views/admin/warning_not_published.view.php:19
+    'To publish this form, add it to a page, a blog post or any other text editor.' => 'このフォームを公開するには、ページ、ブログ投稿、あるいはその他のテキストエディタに追加してください。',
+
+    #: views/admin/warning_not_published.view.php:22
+    '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>ほとんどの Novius OS テキストエディタ (WYSIWYG エディタとも呼びます) のツールバーにボタン{{preview}}が用意されています。</p><p>クリックすると、アプリケーションの一覧にアクセスでき、テキストにアプリケーションを挿入できます。</p>',
+
+    #: views/admin/warning_not_published.view.php:23
+    'Applications' => 'アプリケーション',
+
+    #: views/admin/permissions.view.php:15
+    'Can add, edit and delete forms and answers' => 'フォームと回答を追加／編集／削除できます。',
+
+    #: views/admin/permissions.view.php:22
+    'Can visualise answers only' => '回答を閲覧できます。',
+
+    #: views/admin/layout_fields.view.php:28
+    'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => '問題が発生しました。現在、Novius OS はメールを送信するように設定されていません。開発者に連絡し、設定をお願いしてください。',
+
+    #: views/admin/layout_fields.view.php:47
+    #: views/admin/layout_fields.view.php:92
+    'Add a field' => 'フィールドを追加',
+
+    #: views/admin/layout_fields.view.php:53
+    'Standard fields' => '標準フィールド',
+
+    #: views/admin/layout_fields.view.php:54
+    'Special fields' => '拡張フィールド',
+
+    #: views/admin/layout_fields.view.php:93
+    'Add a page break' => 'ページ区切りを追加',
+
+    #: views/admin/layout_fields.view.php:96
+    'Help us prevent spam: How much is 3 plus 8?' => 'スパム防止用です。3たす8はいくつですか？',
+
+    #: views/admin/layout_fields.view.php:103
+    'Delete' => '削除',
+
+    #: views/admin/layout_fields.view.php:132
+    'Form submission' => 'フォーム送信',
+
+    #: views/admin/layout_fields.view.php:172
+    'Are you sure?' => 'よろしいですか？',
+
+    #: views/admin/answer.view.php:15
+    'Cancel' => '取り消し',
+
+    #: views/admin/answer.view.php:25
+    #: classes/controller/admin/answer.ctrl.php:33
+    'Answer to ‘{{title}}’' => '‘{{title}}’に回答する',
+
+    #: views/admin/answer.view.php:26
+    'Received on {{date}}' => '{{date}}に受理',
+
+    #: views/admin/answer.view.php:33
+    'Question' => '質問',
+
+    #: views/admin/answer.view.php:34
+    'Answer' => '回答',
+
+    #: views/admin/answer.view.php:55
+    'Page {{number}}' => 'ページ{{number}}',
+
+    #: views/admin/answer.view.php:88
+    #: views/admin/answer.view.php:98
+    'Add to Media Centre' => 'メディアセンターに追加',
+
+    #: views/email.view.php:31
+    'Message sent by:' => 'メッセージ送信者: ',
+
+    #: classes/controller/admin/form.ctrl.php:187
+    #: classes/controller/admin/form.ctrl.php:202
+    'Page break' => 'ページ区切り',
+
+    #: classes/controller/admin/answer.ctrl.php:110
+    'No file attached.' => 'ファイルが添付されていません。',
+
+    #: classes/controller/admin/answer/appdesk.ctrl.php:36
+    'Export (spreadsheet)' => 'エクスポート (スプレッドシート)',
 
 );
