@@ -19,7 +19,7 @@ if (mt_rand(1, 2) == 1) {
 }
 \Session::set('captcha.'.$form_id, $number_1 + $number_2);
 
-$config['label'] = strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array(
+$config['label'] = strtr(__('<label class="label">Help us prevent spam: How much is {{number_1}} plus {{number_2}}?</label>'), array(
     '{{number_1}}' => $number_1,
     '{{number_2}}' => $number_2,
 ));
