@@ -23,6 +23,7 @@ $config['label'] = strtr(__('Help us prevent spam: How much is {{number_1}} plus
     '{{number_1}}' => $number_1,
     '{{number_2}}' => $number_2,
 ));
+$config['label'] = '<label class="label">'.$config['label'].'</label>';
 
 Helper_Foundation::addAttrToThing(
     $config['field'],
