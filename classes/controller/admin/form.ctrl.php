@@ -44,6 +44,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             }
         }
 
+        // The field data is serialized in json (cf. Pull Request #15)
         $fields_post = \Input::post('fields', null);
         $fields_data = array();
         if ($fields_post !== null) {
