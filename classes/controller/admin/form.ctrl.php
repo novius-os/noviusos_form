@@ -163,7 +163,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             'layout' => $this->config['fields_layout'],
             'fieldset' => $fieldset,
         );
-        $fields_view_params['view_params'] = & $fields_view_params;
+        $fields_view_params['view_params'] = &$fields_view_params;
 
         // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
         $replaces = array();
@@ -219,7 +219,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             'layout' => $this->config['fields_layout'],
             'fieldset' => $fieldset,
         );
-        $fields_view_params['view_params'] = & $fields_view_params;
+        $fields_view_params['view_params'] = &$fields_view_params;
 
         // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
         $replaces = array();
@@ -268,8 +268,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                     }
                     $field = $this->item->fields[$field_id];
                     if (!in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date',
-                        'checkbox', 'radio', 'hidden', 'variable', 'file'))
-                    ) {
+                        'checkbox', 'radio', 'hidden', 'variable', 'file'))) {
                         continue;
                     }
 
