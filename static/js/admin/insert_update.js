@@ -923,7 +923,7 @@ define(
                     .find('span:first')
                     .html(mail.replace('\n', ', ', 'g'))
                     .end()
-                    .find('span:last')[mail ? 'hide' : 'show']();
+                    .find('span:last')[mail ? 'hide': 'show']();
             }).trigger('change');
 
             $submit_informations.on('click', function() {
