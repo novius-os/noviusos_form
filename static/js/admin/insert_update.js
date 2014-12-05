@@ -76,26 +76,27 @@ define(
                 var idRegex = /[^\[]+\[([0-9]+)\]\[([^\]]+)\]/;
 
 
-                $(this).find('input,textarea').each(function() {
-                    if (!$(this).attr('name')) {
+                $(this).find('input,textarea,select').each(function() {
+                    var $this = $(this);
+                    if (!$this.attr('name')) {
                         return;
                     }
 
                     // If the input name does not match the regex, put the value in the post as usual
                     // _csrf is handled here
-                    if ($(this).attr('name').indexOf(fieldPrefix) != 0) {
-                        ajaxData[$(this).attr('name')] = $(this).val();
+                    if ($this.attr('name').indexOf(fieldPrefix) != 0) {
+                        ajaxData[$this.attr('name')] = $this.val();
                         return;
                     }
 
-                    var fieldInfos = $(this).attr('name').match(idRegex);
+                    var fieldInfos = $this.attr('name').match(idRegex);
                     if (!fieldInfos.length || fieldInfos.length < 3) {
                         return;
                     }
 
                     var id = parseInt(fieldInfos[1]);
                     var fieldName = fieldInfos[2];
-                    var value = $(this).val();
+                    var value = $this.val();
                     if (!id || !fieldName) {
                         return;
                     }

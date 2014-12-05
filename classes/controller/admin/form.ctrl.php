@@ -38,7 +38,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 continue;
             }
             if (filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
-                $item->form_submit_email .= $email . "\n";
+                $item->form_submit_email .= $email."\n";
             } else {
                 throw new \Exception('An email which receive answers is not a valid.');
             }
@@ -155,7 +155,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $auto_id = uniqid('auto_id_');
         foreach ($fieldset->field() as $field) {
             if ($field->get_attribute('id') == '') {
-                $field->set_attribute('id', $auto_id . $auto_id_increment++);
+                $field->set_attribute('id', $auto_id.$auto_id_increment++);
             }
         }
 
@@ -170,7 +170,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         foreach ($this->config['fields_config'] as $name => $field_config) {
             $replaces[$name] = "field[{$item->field_id}][$name]";
         }
-        $return = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render() . $fieldset->build_append();
+        $return = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render().$fieldset->build_append();
 
         return strtr($return, $replaces);
     }
@@ -195,7 +195,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         \Response::json(array(
             'fields' => (string) $this->render_page_break($item),
-            'layout' => $item->field_id . '=4',
+            'layout' => $item->field_id.'=4',
         ));
     }
 
@@ -211,7 +211,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $auto_id = uniqid('auto_id_');
         foreach ($fieldset->field() as $field) {
             if ($field->get_attribute('id') == '') {
-                $field->set_attribute('id', $auto_id . $auto_id_increment++);
+                $field->set_attribute('id', $auto_id.$auto_id_increment++);
             }
         }
 
@@ -302,10 +302,10 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             gc_enable();
 
             // Send HTTP headers for inform the browser that it will receive a CSV file
-            \Response::forge(\Format::forge($csv)->to_csv() . "\n", 200, array(
+            \Response::forge(\Format::forge($csv)->to_csv()."\n", 200, array(
                     'Content-Type' => 'application/csv',
-                    'Content-Disposition' => 'attachment; ' .
-                        'filename=' . \Nos\Orm_Behaviour_Virtualname::friendly_slug($this->item->form_name) . '.csv;',
+                    'Content-Disposition' => 'attachment; '.
+                        'filename='.\Nos\Orm_Behaviour_Virtualname::friendly_slug($this->item->form_name).'.csv;',
                     'Content-Transfer-Encoding' => 'binary',
                 ))->send(true);
 
@@ -349,7 +349,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                     }
                     $csv[] = $csv_row;
                 }
-                \Response::forge(\Format::forge($csv)->to_csv() . "\n")->send();
+                \Response::forge(\Format::forge($csv)->to_csv()."\n")->send();
 
                 if (count($answers) < $limit) {
                     break;
