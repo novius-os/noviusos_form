@@ -163,14 +163,14 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             'layout' => $this->config['fields_layout'],
             'fieldset' => $fieldset,
         );
-        $fields_view_params['view_params'] = &$fields_view_params;
+        $fields_view_params['view_params'] = & $fields_view_params;
 
         // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
         $replaces = array();
         foreach ($this->config['fields_config'] as $name => $field_config) {
             $replaces[$name] = "field[{$item->field_id}][$name]";
         }
-        $return = (string)\View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render() . $fieldset->build_append();
+        $return = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render() . $fieldset->build_append();
 
         return strtr($return, $replaces);
     }
@@ -194,7 +194,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $item->save();
 
         \Response::json(array(
-            'fields' => (string)$this->render_page_break($item),
+            'fields' => (string) $this->render_page_break($item),
             'layout' => $item->field_id . '=4',
         ));
     }
@@ -219,14 +219,14 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             'layout' => $this->config['fields_layout'],
             'fieldset' => $fieldset,
         );
-        $fields_view_params['view_params'] = &$fields_view_params;
+        $fields_view_params['view_params'] = & $fields_view_params;
 
         // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
         $replaces = array();
         foreach ($this->config['fields_config'] as $name => $field_config) {
             $replaces[$name] = "field[{$item->field_id}][$name]";
         }
-        $return = (string)\View::forge('noviusos_form::admin/page_break', $fields_view_params, false);
+        $return = (string) \View::forge('noviusos_form::admin/page_break', $fields_view_params, false);
 
         return strtr($return, $replaces);
     }
@@ -268,7 +268,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                     }
                     $field = $this->item->fields[$field_id];
                     if (!in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date',
-                        'checkbox', 'radio', 'hidden', 'variable', 'file'))) {
+                        'checkbox', 'radio', 'hidden', 'variable', 'file'))
+                    ) {
                         continue;
                     }
 
