@@ -22,6 +22,7 @@ define(
             var $fields_container = $container.find('.fields_container');
             var $layout = $container.closest('form').find('[name=form_layout]');
             var $submit_informations = $container.find('.submit_informations');
+            var $currentTab = $('.nos-ostabs-panel.ui-widget-content:not(".nos-ostabs-hide")');
             $fields_container.show();
             $submit_informations.show();
 
@@ -40,8 +41,16 @@ define(
             var col_size = Math.round($preview_container.outerWidth() / 4);
             $preview_container.width($preview_container.outerWidth() - $preview_container.width());
 
-            // Fill in the hidden field form_layout upon save
-            $container.closest('form').on('submit', function computeLayout(e) {
+            // Overwrite save button standard behavior to only submit the form
+            $(document).ready(function() {
+                $currentTab.find('button.ui-priority-primary[type="submit"]').unbind()
+                    .bind('click', function() {
+                        $container.closest('form').submit();
+                    });
+            });
+
+            $container.closest('form').submit(function(e) {
+                // Rewriting layout to be inserted in database
                 var layout = '';
                 $container.find('tr.preview_row').each(function(i) {
                     var $preview = $(this).find('td.preview');
@@ -59,6 +68,54 @@ define(
                     });
                 });
                 $layout.val(layout);
+
+                var ajaxData = {form_layout: layout};
+                var inputs = {};
+                var fieldPrefix = 'field[';
+                // match field[id][field_name]
+                var idRegex = /[^\[]+\[([0-9]+)\]\[([^\]]+)\]/;
+
+
+                $(this).find('input,textarea').each(function() {
+                    if (!$(this).attr('name')) {
+                        return;
+                    }
+
+                    // If the input name does not match the regex, put the value in the post as usual
+                    // _csrf is handled here
+                    if ($(this).attr('name').indexOf(fieldPrefix) != 0) {
+                        ajaxData[$(this).attr('name')] = $(this).val();
+                        return;
+                    }
+
+                    var fieldInfos = $(this).attr('name').match(idRegex);
+                    if (!fieldInfos.length || fieldInfos.length < 3) {
+                        return;
+                    }
+
+                    var id = parseInt(fieldInfos[1]);
+                    var fieldName = fieldInfos[2];
+                    var value = $(this).val();
+                    if (!id || !fieldName) {
+                        return;
+                    }
+
+                    if (!inputs[id]) {
+                        inputs[id] = {};
+                    }
+                    inputs[id][fieldName] = value;
+                });
+
+                // Sending a standard nosAjax request
+                ajaxData['fields'] = JSON.stringify(inputs);
+                var action = $(this).attr('action');
+                $container.nosAjax({
+                    data: ajaxData,
+                    type: 'post',
+                    url: action,
+                    dataType: 'json'
+                });
+                return false;
             });
 
             // Add a field
@@ -79,7 +136,7 @@ define(
                 e && e.preventDefault();
                 var params = {
                     where: ($blank_slate.data('params') || {}).where || 'bottom',
-                    type:  type || $(this).data('meta')
+                    type: type || $(this).data('meta')
                 };
 
                 var nos_fixed_content = $container.closest('.nos-fixed-content').get(0);
@@ -347,6 +404,7 @@ define(
                     $label.hide();
                 }
             }
+
             // Events that regenerates the preview label
             $fields_container.on('change keyup', 'input[name*="[field_label]"]', generate_label);
             $fields_container.on('change', 'input[name*="[field_mandatory]"]', generate_label);
@@ -414,7 +472,7 @@ define(
                 var details = find_field($field, 'field_details').val();
                 var $preview = $field.data('preview');
                 var $td = $preview.find('div.preview_content');
-                var html  = '';
+                var html = '';
                 var default_value_value = find_field($field, 'field_default_value').val().split(',');
 
                 if (type == 'text' || type == 'email' || type == 'number' || type == 'date' || type == 'file') {
@@ -435,13 +493,13 @@ define(
 
                 if (type == 'radio') {
                     $.each(choices.split("\n"), function(i, text) {
-                        html += '<p><label><input type="radio" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text +'</label></p>';
+                        html += '<p><label><input type="radio" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text + '</label></p>';
                     });
                 }
 
                 if (type == 'checkbox') {
                     $.each(choices.split("\n"), function(i, text) {
-                        html += '<p><label><input type="checkbox" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text +'</label></p>';
+                        html += '<p><label><input type="checkbox" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text + '</label></p>';
                     });
                 }
 
@@ -449,7 +507,7 @@ define(
                     html += '<select>';
                     html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, text) {
-                        html += '<option value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'selected' : '') + '>' + text +'</option>';
+                        html += '<option value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'selected' : '') + '>' + text + '</option>';
                     });
                     html += '</select>';
                 }
@@ -523,7 +581,7 @@ define(
                     total_size += cell_size;
                     $cell.data('colspan', cell_size);
 
-                    if ($widest.length == 0 || cell_size > $widest.data('colspan') ) {
+                    if ($widest.length == 0 || cell_size > $widest.data('colspan')) {
                         $widest = $cell;
                     }
                 });
@@ -549,9 +607,10 @@ define(
                         var $cell = $(this);
                         var size = $cell.data('colspan');
                         var shrink_by = 1;
-                        while((size - shrink_by > 1) && (total_shrink_needed - shrink_by) > 0) {
+                        while ((size - shrink_by > 1) && (total_shrink_needed - shrink_by) > 0) {
                             shrink_by++;
-                        };
+                        }
+                        ;
                         //log('shrinking ', this, ' by ', shrink_by);
                         total_shrink_needed -= shrink_by;
                         $cell.data('colspan', size - shrink_by);
@@ -611,10 +670,12 @@ define(
             }
 
             var $sortable;
+
             function init_sortable() {
                 try {
                     $sortable.destroy();
-                } catch (e) {}
+                } catch (e) {
+                }
 
                 $preview_container.find('td.padding').remove();
                 $preview_container.find('td.sortable_placeholder').remove();
@@ -763,6 +824,7 @@ define(
                 $preview.removeClass('ui-state-active');
                 hide_field($preview.data('field'));
             }
+
             function hide_field($field) {
                 $fields_container.find('.show_hide').hide();
                 if ($field) {
@@ -771,10 +833,12 @@ define(
             }
 
             var $resizable;
+
             function init_resizable() {
                 try {
                     $resizable.destroy();
-                } catch (e) {}
+                } catch (e) {
+                }
 
                 $resizable = $preview_container.find('td.preview').not('.page_break').find('div.resizable');
                 $resizable = $resizable.resizable({
@@ -844,21 +908,21 @@ define(
                 $form_submit_label = $container.find('[name=form_submit_label]'),
                 $form_submit_email = $container.find('[name=form_submit_email]');
 
-            $form_captcha.on('change', function() {
+            $form_captcha.on('change',function() {
                 $submit_informations.find('.form_captcha')[$(this).is(':checked') ? 'show' : 'hide']();
             }).trigger('change');
 
-            $form_submit_label.on('change keyup', function() {
+            $form_submit_label.on('change keyup',function() {
                 $submit_informations.find('input:last').val($(this).val());
             }).trigger('change');
 
-            $form_submit_email.on('change keyup', function() {
+            $form_submit_email.on('change keyup',function() {
                 var mail = $.trim($(this).val());
                 $submit_informations.find('.form_submit_email')
                     .find('span:first')
                     .html(mail.replace('\n', ', ', 'g'))
                     .end()
-                    .find('span:last')[mail ? 'hide': 'show']();
+                    .find('span:last')[mail ? 'hide' : 'show']();
             }).trigger('change');
 
             $submit_informations.on('click', function() {
