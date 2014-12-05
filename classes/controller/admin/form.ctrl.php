@@ -38,18 +38,24 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 continue;
             }
             if (filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
-                $item->form_submit_email .= $email . "\n";
+                $item->form_submit_email .= $email."\n";
             } else {
                 throw new \Exception('An email which receive answers is not a valid.');
             }
         }
 
-        $fields_data = \Input::post('field', array());
+        // The field data is serialized in json (cf. Pull Request #15)
+        $fields_post = \Input::post('fields', null);
+        $fields_data = array();
+        if ($fields_post !== null) {
+            $fields_data = json_decode($fields_post, true);
+        }
 
         foreach ($fields_data as $index => $field) {
+
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
-            if (in_array($field['field_type'], array('checkbox', 'select', 'radio'))) {
+            if (isset($field['field_type']) && in_array($field['field_type'], array('checkbox', 'select', 'radio'))) {
                 $choices = explode("\n", $field['field_choices']);
                 $default_value = explode(',', $field['field_default_value']);
                 $default_value = array_combine($default_value, $default_value);
