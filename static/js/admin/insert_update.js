@@ -97,6 +97,9 @@ define(
                     var id = parseInt(fieldInfos[1]);
                     var fieldName = fieldInfos[2];
                     var value = $this.val();
+                    if ($this.is(':checkbox')) {
+                        value = +$this.is(":checked");
+                    }
                     if (!id || !fieldName) {
                         return;
                     }
