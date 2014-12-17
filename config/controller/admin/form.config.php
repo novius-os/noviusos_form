@@ -19,7 +19,7 @@ return array(
         ),
     ),
     'require_js' => array(
-        'static/apps/noviusos_form/js/admin/insert_update.js',
+        'static/apps/noviusos_form/js/admin/insert_update.js?update=20141215',
     ),
     'views' => array(
         'delete' => 'noviusos_form::admin/popup_delete',
