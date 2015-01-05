@@ -10,4 +10,5 @@
 
 return array(
     'add_replyto_to_first_email' => true,
+    'mail_attachments_max_size' => 8388608
 );
