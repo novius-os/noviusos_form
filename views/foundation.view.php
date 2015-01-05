@@ -11,6 +11,7 @@
 use \Nos\Form\Helper_Foundation;
 
 \Nos\Nos::main_controller()->addCss('static/apps/noviusos_form/css/front.css');
+\Nos\Nos::main_controller()->addCss('static/apps/noviusos_form/css/condition.css');
 \Nos\Nos::main_controller()->addJavascript('static/apps/noviusos_form/js/foundation.js');
 
 \Nos\I18n::current_dictionary('noviusos_form::front');

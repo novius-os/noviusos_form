@@ -343,6 +343,34 @@ class Controller_Front extends Controller_Front_Application
             }
         }
 
+        foreach($fields as $condition_item){
+            if (is_a($condition_item['item'], 'Nos\Form\Model_Field') && filter_var($condition_item['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
+
+                $array = array(
+                    'inputname' => $condition_item['item']->get('field_conditional_form'),
+                    'condition' => $condition_item['item']->get('field_virtual_name'),
+                    'value' => $condition_item['item']->get('field_conditional_value')
+                );
+                $json = \Fuel\Core\Format::forge($array)->to_json();
+                $valname = 'json' . intval($condition_item['item']->get('field_id'));
+
+
+                // get condition source form type. text, radio, etc.
+                $form_key = $condition_item['item']->get('field_conditional_form');
+                $condition_type = $fields[$form_key]['item']->field_type;
+
+
+                if (array_key_exists($condition_type, $this->config['jsformat'])) {
+                    $format = $this->config['jsformat'][$condition_type];
+                } else {
+                    $format = $this->config['jsformat']['default'];
+                }
+                $output = sprintf($format,$valname,$json);
+                \Nos\Nos::main_controller()->addJavascriptInline($output);
+
+            }
+        }
+
         $layout = 'noviusos_form::foundation';
         $args = array(
             'fields' => &$fields,

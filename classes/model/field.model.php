@@ -111,6 +111,21 @@ class Model_Field extends \Nos\Orm\Model
             'data_type' => 'varchar',
             'null' => false,
         ),
+        'field_conditional' => array(
+            'default' => null,
+            'data_type' => 'tinyint',
+            'null' => false,
+        ),
+        'field_conditional_form' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
+        'field_conditional_value' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => false,
+        ),
     );
 
     protected static $_has_one = array();
