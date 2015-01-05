@@ -545,18 +545,41 @@ class Controller_Front extends Controller_Front_Application
             ), true);
             $answer->save();
 
-            $mail = \Email::forge();
             $email_data = array();
+
+
+            $config = \Config::load('noviusos_form::noviusos_form', true);
+            $emails = array_filter(explode("\n", $form->form_submit_email), function ($var) {
+                $var = trim($var);
+                return !empty($var);
+            });
+            $sendMail = !empty($emails);
+            $addAttachment = true;
+            if ($sendMail) {
+                $mail = \Email::forge();
+                $attachmentMaxSize = \Arr::get($config, 'mail_attachments_max_size', 8388608);
+                $size = 0;
+                foreach ($files as $file) {
+                    if (!empty($file['tmp_name'])) {
+                        $size += filesize($file['tmp_name']);
+                    }
+                }
+                if ($size > $attachmentMaxSize) {
+                    $addAttachment = false;
+                }
+            }
+
             foreach ($files as $name => $file) {
                 if (!empty($file['tmp_name'])) {
                     $attachment = $answer->getAttachment($fields[$name]);
                     $attachment->set($file['tmp_name'], $file['name']);
                     $attachment->save();
-                    $mail->attach($attachment->path());
+                    if ($sendMail && $addAttachment) {
+                        $mail->attach($attachment->path());
+                    }
                 }
             }
 
-            $config = \Config::load('noviusos_form::noviusos_form', true);
             $reply_to_auto = \Arr::get($config, 'add_replyto_to_first_email', true);
             $reply_to = '';
             foreach ($data as $field_name => $value) {
@@ -578,11 +601,8 @@ class Controller_Front extends Controller_Front_Application
                 $answer_field->save();
             }
 
-            $emails = array_filter(explode("\n", $form->form_submit_email), function ($var) {
-                $var = trim($var);
-                return !empty($var);
-            });
-            if (!empty($emails)) {
+
+            if ($sendMail) {
                 $mail->bcc($emails);
                 if (!empty($reply_to)) {
                     $mail->reply_to($reply_to);
