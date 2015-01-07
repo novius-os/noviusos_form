@@ -314,7 +314,7 @@ return array(
                             'field_type' => 'hidden',
                             'field_label' => __('I’m the label for internal use only as I won’t be shown to users:'),
                         ),
-                   ),
+                    ),
                 ),
             ),
             'variable' => array(
@@ -368,6 +368,14 @@ return array(
                             'field_virtual_name',
                             'field_technical_id',
                             'field_technical_css',
+                        ),
+                    ),
+                    'condition' => array(
+                        'title' => __('Conditions'),
+                        'fields' => array(
+                            'field_conditional',
+                            'field_conditional_form',
+                            'field_conditional_value',
                         ),
                     ),
                 ),
@@ -470,7 +478,7 @@ return array(
             'form' => array(
                 'type' => 'textarea',
                 'rows' => '3',
-             ),
+            ),
         ),
         'field_width' => array(
             'label' => __('Width:'),
@@ -481,8 +489,8 @@ return array(
                 'size' => '3',
             ),
             'populate' => function ($item) {
-                return empty($item->field_width) ? '' : $item->field_width;
-            },
+                    return empty($item->field_width) ? '' : $item->field_width;
+                },
         ),
         'field_height' => array(
             'label' => '',
@@ -493,8 +501,8 @@ return array(
                 'value' => '3',
             ),
             'populate' => function ($item) {
-                return empty($item->field_height) ? '' : $item->field_height;
-            },
+                    return empty($item->field_height) ? '' : $item->field_height;
+                },
         ),
         'field_limited_to' => array(
             'label' => '',
@@ -504,8 +512,8 @@ return array(
                 'size' => '3',
             ),
             'populate' => function ($item) {
-                return empty($item->field_limited_to) ? '' : $item->field_limited_to;
-            },
+                    return empty($item->field_limited_to) ? '' : $item->field_limited_to;
+                },
         ),
         'field_origin' => array(
             'label' => __('Origin:'),
@@ -548,6 +556,28 @@ return array(
                 'type' => 'text',
             ),
             'expert' => true,
+        ),
+        'field_conditional' => array(
+            'label' => __('Conditional'),
+            'form' => array(
+                'type' => 'checkbox',
+                'value' => '1',
+                'empty' => '0',
+            ),
+        ),
+        'field_conditional_form' => array(
+            'label' => __('Form name to Check:'),
+            'form' => array(
+                // Textarea is needed to preserve \n to store multiple default values (checkboxes)
+                'type' => 'text',
+            ),
+        ),
+        'field_conditional_value' => array(
+            'label' => __('Show when the value is:'),
+            'form' => array(
+                // Textarea is needed to preserve \n to store multiple default values (checkboxes)
+                'type' => 'textarea',
+            ),
         ),
     ),
 );
