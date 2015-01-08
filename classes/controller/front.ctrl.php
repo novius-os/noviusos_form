@@ -359,14 +359,7 @@ class Controller_Front extends Controller_Front_Application
                 $form_key = $condition_item['item']->get('field_conditional_form');
                 $condition_type = $fields[$form_key]['item']->field_type;
 
-
-                if (array_key_exists($condition_type, $this->config['jsformat'])) {
-                    $format = $this->config['jsformat'][$condition_type];
-                } else {
-                    $format = $this->config['jsformat']['default'];
-                }
-                $output = sprintf($format,$valname,$json);
-                \Nos\Nos::main_controller()->addJavascriptInline($output);
+                \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition('$condition_type', $json);");
 
             }
         }
