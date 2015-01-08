@@ -343,7 +343,7 @@ class Controller_Front extends Controller_Front_Application
             }
         }
 
-        foreach($fields as $condition_item) {
+        foreach ($fields as $condition_item) {
             if (is_a($condition_item['item'], 'Nos\Form\Model_Field') && filter_var($condition_item['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
 
                 $array = array(

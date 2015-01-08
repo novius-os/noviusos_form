@@ -490,7 +490,7 @@ return array(
             ),
             'populate' => function ($item) {
                     return empty($item->field_width) ? '' : $item->field_width;
-                },
+            },
         ),
         'field_height' => array(
             'label' => '',
@@ -502,7 +502,7 @@ return array(
             ),
             'populate' => function ($item) {
                     return empty($item->field_height) ? '' : $item->field_height;
-                },
+            },
         ),
         'field_limited_to' => array(
             'label' => '',
@@ -513,7 +513,7 @@ return array(
             ),
             'populate' => function ($item) {
                     return empty($item->field_limited_to) ? '' : $item->field_limited_to;
-                },
+            },
         ),
         'field_origin' => array(
             'label' => __('Origin:'),
