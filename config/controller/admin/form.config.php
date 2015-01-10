@@ -564,6 +564,7 @@ return array(
                 'value' => '1',
                 'empty' => '0',
             ),
+            'expert' => true,
         ),
         'field_conditional_form' => array(
             'label' => __('Form name to Check:'),
@@ -571,6 +572,7 @@ return array(
                 // Textarea is needed to preserve \n to store multiple default values (checkboxes)
                 'type' => 'text',
             ),
+            'expert' => true,
         ),
         'field_conditional_value' => array(
             'label' => __('Show when the value is:'),
@@ -578,6 +580,7 @@ return array(
                 // Textarea is needed to preserve \n to store multiple default values (checkboxes)
                 'type' => 'textarea',
             ),
+            'expert' => true,
         ),
     ),
 );
