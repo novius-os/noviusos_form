@@ -138,6 +138,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
         unset($default_data['field_id']);
         $default_data['field_mandatory'] = 0;
+        $default_data['field_conditional'] = 0;
         $model_field = Model_Field::forge(array_merge($default_data, $data), true);
         $model_field->save();
         return $model_field;
