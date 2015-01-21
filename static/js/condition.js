@@ -1,17 +1,17 @@
-function init_form_condition(type, json) {
+function init_form_condition(json) {
     $(document).ready(function() {
-        check_option(type, json);
+        check_option(json);
     });
     $('[name^="'+json.inputname+'"]').change(function() {
-        check_option(type, json);
+        check_option(json);
     });
 
 };
 
 //handler
-function check_option(type, json) {
+function check_option(json) {
     //test "type" to do deal with fields correctly
-    switch (type) {
+    switch (json.inputtype) {
         case "select":
             if ($('select[name="'+json.inputname+'"]').val() == json.value) {
                 $('[name="'+json.condition+'"]').parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
