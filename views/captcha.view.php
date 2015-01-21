@@ -10,7 +10,7 @@
 
 use \Nos\Form\Helper_Foundation;
 
-\Nos\I18n::current_dictionary('noviusos_form::front');
+\Nos\I18n::current_dictionary('noviusos_form::common');
 
 $number_1 = mt_rand(1, 10);
 $number_2 = mt_rand(1, 50);
