@@ -346,20 +346,21 @@ class Controller_Front extends Controller_Front_Application
         foreach ($fields as $condition_item) {
             if (is_a($condition_item['item'], 'Nos\Form\Model_Field') && filter_var($condition_item['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
 
+
+                // get condition source form type. text, radio, etc.
+                $form_key = $condition_item['item']->get('field_conditional_form');
+                $inputtype = $fields[$form_key]['item']->field_type;
+
                 $array = array(
+                    'inputtype' => $inputtype,
                     'inputname' => $condition_item['item']->get('field_conditional_form'),
                     'condition' => $condition_item['item']->get('field_virtual_name'),
                     'value' => $condition_item['item']->get('field_conditional_value')
                 );
                 $json = \Fuel\Core\Format::forge($array)->to_json();
-                $valname = 'json' . intval($condition_item['item']->get('field_id'));
 
 
-                // get condition source form type. text, radio, etc.
-                $form_key = $condition_item['item']->get('field_conditional_form');
-                $condition_type = $fields[$form_key]['item']->field_type;
-
-                \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition('$condition_type', $json);");
+                \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition($json);");
 
             }
         }
