@@ -85,7 +85,9 @@ define(
                     // If the input name does not match the regex, put the value in the post as usual
                     // _csrf is handled here
                     if ($this.attr('name').indexOf(fieldPrefix) != 0) {
-                        ajaxData[$this.attr('name')] = $this.val();
+                        if ($this.not('[type="checkbox"]').length || $this.is(":checked")) {
+                            ajaxData[$this.attr('name')] = $this.val();
+                        }
                         return;
                     }
 
