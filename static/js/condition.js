@@ -10,35 +10,59 @@ function init_form_condition(json) {
 
 //handler
 function check_option(json) {
+    var $conditionnal_input = $('[name="'+json.condition+'"]');
+    if ($conditionnal_input.data('required') == undefined) {
+        $conditionnal_input.data('required', $conditionnal_input.attr('required'));
+    }
+
+    var todo = 'nothing';
+
     //test "type" to do deal with fields correctly
     switch (json.inputtype) {
         case "select":
             if ($('select[name="'+json.inputname+'"]').val() == json.value) {
-                $('[name="'+json.condition+'"]').parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
+                todo = 'show';
             } else {
-                $('[name="'+json.condition+'"]').parent().addClass('nos_form_disabled').removeClass('nos_form_enabled');
+                todo = 'hide';
             }
             break;
         case "radio":
             if ($('input[name="'+json.inputname+'"][value="'+json.value+'"]').is(":checked")) {
-                $('[name="'+json.condition+'"]').parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
+                todo = 'show';
             } else {
-                $('[name="'+json.condition+'"]').parent().addClass('nos_form_disabled').removeClass('nos_form_enabled');
+                todo = 'hide';
             }
 
             break;
         case "checkbox":
             if ($('input[name^="'+json.inputname+'"][value="'+json.value+'"]').is(":checked")) {
-                $('[name="'+json.condition+'"]').parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
+                todo = 'show';
             } else {
-                $('[name="'+json.condition+'"]').parent().addClass('nos_form_disabled').removeClass('nos_form_enabled');
+                todo = 'hide';
             }
             break;
         default:
             if ($('input[name="'+json.inputname+'"]').val() == json.value) {
-                $('[name="'+json.condition+'"]').parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
+                todo = 'show';
             } else {
-                $('[name="'+json.condition+'"]').parent().addClass('nos_form_disabled').removeClass('nos_form_enabled');
+                todo = 'hide';
             }
+    }
+
+    console.log(todo);
+    console.log($conditionnal_input.data('required'));
+    switch (todo) {
+        case 'show' :
+            $conditionnal_input.parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
+            if ($conditionnal_input.data('required') != '') {
+                $conditionnal_input.attr('required', 'required');
+            }
+            break;
+        case 'hide' :
+            $conditionnal_input.parent().addClass('nos_form_disabled').removeClass('nos_form_enabled');
+            if ($conditionnal_input.data('required') != '') {
+                $conditionnal_input.removeAttr('required');
+            }
+            break;
     }
 };

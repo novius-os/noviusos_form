@@ -166,6 +166,40 @@ class Model_Field extends \Nos\Orm\Model
     protected $_form_id_for_delete = null;
     protected $_field_id_for_delete = null;
 
+    /**
+     * @param array $datas Values send in the form
+     *
+     * Return if a field is mandatory or not.
+     * Take in count the fact that a field may be conditionnal
+     *
+     * @return bool
+     */
+    public function isMandatory(array $datas)
+    {
+        $is_mandatory = in_array($this->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file')) && $this->field_mandatory;
+
+        //This isn't a conditionnal field or conditionnal values are not set, return the simple mandatory value
+        if (!$this->field_conditional || empty($this->field_conditional_form) || empty($this->field_conditional_value) || !$is_mandatory) {
+            return $is_mandatory;
+        }
+
+        //Retrieve the conditionnal field that say if this is displayed or not
+        $conditional_field = self::query()
+            ->where('field_form_id', $this->field_form_id)
+            ->where('field_virtual_name', $this->field_conditional_form)
+            ->get_one();
+
+        if (empty($conditional_field)) {
+            return $is_mandatory;
+        }
+
+        if (\Arr::get($datas, $conditional_field->field_virtual_name) == $this->field_conditional_value) {
+            return $is_mandatory;
+        } else {
+            return false;
+        }
+    }
+
     public function _event_before_delete()
     {
         $this->_form_id_for_delete = $this->field_form_id;
