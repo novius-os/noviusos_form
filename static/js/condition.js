@@ -12,7 +12,11 @@ function init_form_condition(json) {
 function check_option(json) {
     var $conditionnal_input = $('[name="'+json.condition+'"]');
     if ($conditionnal_input.data('required') == undefined) {
-        $conditionnal_input.data('required', $conditionnal_input.attr('required'));
+        if ($conditionnal_input.attr('required') == undefined) {
+            $conditionnal_input.data('required', '');
+        } else {
+            $conditionnal_input.data('required', $conditionnal_input.attr('required'));
+        }
     }
 
     var todo = 'nothing';
@@ -49,8 +53,6 @@ function check_option(json) {
             }
     }
 
-    console.log(todo);
-    console.log($conditionnal_input.data('required'));
     switch (todo) {
         case 'show' :
             $conditionnal_input.parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
