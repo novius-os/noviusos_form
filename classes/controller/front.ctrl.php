@@ -463,7 +463,7 @@ class Controller_Front extends Controller_Front_Application
                 $value = null;
 
                 if ($type === 'file' && !empty($_FILES[$name])) {
-                    if ($field->field_mandatory && empty($_FILES[$name]['tmp_name'])) {
+                    if ($field->isMandatory($data) && empty($_FILES[$name]['tmp_name'])) {
                         $errors[$name] = __('{{label}}: Please select a file for this field.');
                     }
                     $files[$name] = $_FILES[$name];
@@ -489,7 +489,7 @@ class Controller_Front extends Controller_Front_Application
             $type = $field->field_type;
 
             // Mandatory (required)
-            if (in_array($type, array('text', 'textarea', 'select', 'email', 'number', 'date')) && $field->field_mandatory && empty($value)) {
+            if ($field->isMandatory($data) && empty($value)) {
                 $errors[$name] = __('{{label}}: Please enter a value for this field.');
             } else if (!empty($value)) {
                 // Only if there is a value
