@@ -54,7 +54,7 @@ function check_option(json) {
     }
 
     var $parent = $conditionnal_input.parent();
-    if (!$parent.hasClass('row')) {
+    if (!$parent.hasClass('row') && (!$conditionnal_input.prev().is('label') && $parent.prev('.columns').find('label').length != 0)) {
         //In this case, labels are in another column (when label are left or right aligned)
         //Or the conditionnal field don't take full width
         $parent = $parent.add($parent.prev('.columns'));
