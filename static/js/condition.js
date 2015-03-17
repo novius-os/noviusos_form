@@ -55,13 +55,13 @@ function check_option(json) {
 
     switch (todo) {
         case 'show' :
-            $conditionnal_input.parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
+            $conditionnal_input.closest('.row').removeClass('nos_form_disabled').addClass('nos_form_enabled');
             if ($conditionnal_input.data('required') != '') {
                 $conditionnal_input.attr('required', 'required');
             }
             break;
         case 'hide' :
-            $conditionnal_input.parent().addClass('nos_form_disabled').removeClass('nos_form_enabled');
+            $conditionnal_input.closest('.row').addClass('nos_form_disabled').removeClass('nos_form_enabled');
             if ($conditionnal_input.data('required') != '') {
                 $conditionnal_input.removeAttr('required');
             }
