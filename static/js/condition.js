@@ -53,21 +53,16 @@ function check_option(json) {
             }
     }
 
-    var $parent = $conditionnal_input.parent();
-    if (!$parent.hasClass('row') && (!$conditionnal_input.prev().is('label') && $parent.prev('.columns').find('label').length != 0)) {
-        //In this case, labels are in another column (when label are left or right aligned)
-        //Or the conditionnal field don't take full width
-        $parent = $parent.add($parent.prev('.columns'));
-    }
+    var $conditionnal_elements = $conditionnal_input.closest('.nos_form_field');
     switch (todo) {
         case 'show' :
-            $parent.removeClass('nos_form_disabled').addClass('nos_form_enabled');
+            $conditionnal_elements.removeClass('nos_form_disabled').addClass('nos_form_enabled');
             if ($conditionnal_input.data('required') != '') {
                 $conditionnal_input.attr('required', 'required');
             }
             break;
         case 'hide' :
-            $parent.addClass('nos_form_disabled').removeClass('nos_form_enabled');
+            $conditionnal_elements.addClass('nos_form_disabled').removeClass('nos_form_enabled');
             if ($conditionnal_input.data('required') != '') {
                 $conditionnal_input.removeAttr('required');
             }

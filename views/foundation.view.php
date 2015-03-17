@@ -114,6 +114,8 @@ foreach ($fields as $name => $field) {
     $available_width = $field['width'] * 3; // 3 = 12 columns grid / 4 column form
     $col_width += $available_width;
 
+    echo '<div class="nos_form_field">';
+
     if ($name === 'form_captcha') {
         echo \Nos\FrontCache::viewForgeUncached('noviusos_form::captcha', array(
             'form_id' => $item->form_id,
@@ -135,6 +137,8 @@ foreach ($fields as $name => $field) {
             'field_class' => in_array($enhancer_args['label_position'], array('top', 'placeholder')) ? $widths[$available_width] : $widths[$available_width - $label_width],
         ));
     }
+
+    echo '</div>';
 }
 
 if (!$first_row) {
