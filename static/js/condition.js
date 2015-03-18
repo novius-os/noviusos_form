@@ -53,15 +53,16 @@ function check_option(json) {
             }
     }
 
+    var $conditionnal_elements = $conditionnal_input.closest('.nos_form_field');
     switch (todo) {
         case 'show' :
-            $conditionnal_input.parent().removeClass('nos_form_disabled').addClass('nos_form_enabled');
+            $conditionnal_elements.removeClass('nos_form_disabled').addClass('nos_form_enabled');
             if ($conditionnal_input.data('required') != '') {
                 $conditionnal_input.attr('required', 'required');
             }
             break;
         case 'hide' :
-            $conditionnal_input.parent().addClass('nos_form_disabled').removeClass('nos_form_enabled');
+            $conditionnal_elements.addClass('nos_form_disabled').removeClass('nos_form_enabled');
             if ($conditionnal_input.data('required') != '') {
                 $conditionnal_input.removeAttr('required');
             }
