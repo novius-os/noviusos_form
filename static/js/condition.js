@@ -10,7 +10,7 @@ function init_form_condition(json) {
 
 //handler
 function check_option(json) {
-    var $conditionnal_input = $('[name=^"'+json.condition+'"]');
+    var $conditionnal_input = $('[name^="'+json.condition+'"]');
     if ($conditionnal_input.data('required') == undefined) {
         if ($conditionnal_input.attr('required') == undefined) {
             $conditionnal_input.data('required', '');
