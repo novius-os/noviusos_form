@@ -236,60 +236,28 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     public function action_export($id)
     {
         set_time_limit(5 * 60);
+
         try {
-            $this->item = $this->crud_item($id);
-            if ($this->item->is_new()) {
-                throw new \Exception($this->config['messages']['not found']);
-            }
+            $helper = new Helper_Export();
+            $helper->parseForm($id);
+            $headers = $helper->headers;
 
-            $layout = explode("\n", $this->item->form_layout);
-            array_walk($layout, function (&$v) {
-                $v = explode(',', $v);
-            });
-
-            // Cleanup empty values
-            foreach ($layout as $a => $rows) {
-                $layout[$a] = array_filter($rows);
-                if (empty($layout[$a])) {
-                    unset($layout[$a]);
-                    continue;
-                }
-            }
-
-            $fields = array();
             $csv = array(
                 'header' => array(),
             );
 
-            foreach ($layout as $rows) {
-                foreach ($rows as $row) {
-                    list($field_id) = explode('=', $row);
-
-                    if ($field_id == 'captcha') {
-                        continue;
+            foreach ($headers as $header) {
+                $csv['header'][] = $header['label'];
+                if (!empty($header['choices'])) {
+                    if (!isset($csv['choices'])) {
+                        $csv['choices'] = array();
                     }
-                    $field = $this->item->fields[$field_id];
-                    if (!in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date',
-                        'checkbox', 'radio', 'hidden', 'variable', 'file'))) {
-                        continue;
+                    $fill = count($csv['header']) - 1;
+                    $fill > 0 and $csv['choices'] = array_fill(0, $fill, '');
+                    foreach ($header['choices'] as $choice) {
+                        $csv['choices'][] = $choice;
                     }
-
-                    $fields[] = $field;
-                    $csv['header'][] = $field->field_label;
-                    if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
-                        if (empty($csv['choices'])) {
-                            $fill = count($csv['header']) - 1;
-                            $fill > 0 and $csv['choices'] = array_fill(0, $fill, '');
-                        }
-                        $choices = explode("\n", $field->field_choices);
-                        foreach ($choices as $choice) {
-                            $csv['choices'][] = $choice;
-                        }
-
-                        $csv['header'] = array_pad($csv['header'], count($csv['header']) + count($choices) - 1, '');
-                    } elseif (!empty($csv['choices'])) {
-                        $csv['choices'][] = '';
-                    }
+                    $csv['header'] = array_pad($csv['header'], count($csv['header']) + count($header['choices']) - 1, '');
                 }
             }
 
@@ -303,61 +271,29 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             gc_enable();
 
             // Send HTTP headers for inform the browser that it will receive a CSV file
-            \Response::forge(\Format::forge($csv)->to_csv()."\n", 200, array(
-                'Content-Type' => 'application/csv',
-                'Content-Disposition' => 'attachment; '.
-                    'filename='.\Nos\Orm_Behaviour_Virtualname::friendly_slug($this->item->form_name).'.csv;',
+            \Response::forge(\Format::forge($csv)->to_csv() . "\n", 200, array(
+                'Content-Type'              => 'text/plain',
+                'Content-Type'              => 'application/csv',
+                'Content-Disposition'       => 'attachment; ' .
+                    'filename=' . \Nos\Orm_Behaviour_Virtualname::friendly_slug($this->crud_item($id)->form_name) . '.csv;',
                 'Content-Transfer-Encoding' => 'binary',
             ))->send(true);
 
-            $offset = 0;
-            $limit = 500;
-            while ($limit) {
+            while (($values = $helper->getValues())) {
                 $csv = array();
-                $form_id = $this->item->form_id;
-                $answers = Model_Answer::find('all', array(
-                    'related' => array('fields'),
-                    'where' => array(
-                        array('answer_form_id', $form_id),
-                    ),
-                    'order_by' => array('answer_created_at'),
-                    'limit' => $limit,
-                    'offset' => $offset,
-                    'from_cache' => false,
-                ));
-                foreach ($answers as $answer) {
-                    $values = array();
-                    foreach ($answer->fields as $answer_field) {
-                        $values[$answer_field->anfi_field_id] = $answer_field;
-                    }
-
-                    $csv_row = array();
-                    foreach ($fields as $field) {
-                        $value = !empty($values[$field->field_id]) ? $values[$field->field_id]->anfi_value : '';
-
-                        if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
-                            $choices = explode("\n", $field->field_choices);
-                            $selected = explode("\n", $value);
-                            foreach ($choices as $choice) {
-                                $csv_row[] = in_array($choice, $selected) ? 'x' : '';
-                            }
-                        } else if ($field->field_type === 'file') {
-                            $attachment = $answer->getAttachment($field);
-                            $csv_row[] = $attachment->filename();
+                foreach ($values as $value) {
+                    $csvValue = array();
+                    foreach ($value as $key => $valueContent) {
+                        if (!is_array($valueContent)) {
+                            $csvValue[] = $valueContent;
                         } else {
-                            $csv_row[] = $value;
+                            $csvValue += \Arr::merge($csvValue, $valueContent);
                         }
                     }
-                    $csv[] = $csv_row;
+                    $csv[] = $csvValue;
                 }
-                \Response::forge(\Format::forge($csv)->to_csv()."\n")->send();
-
-                if (count($answers) < $limit) {
-                    break;
-                }
-                $offset = $offset + $limit;
+                \Response::forge(\Format::forge($csv)->to_csv() . "\n")->send();
             }
-
             exit();
         } catch (\Exception $e) {
             $this->send_error($e);
