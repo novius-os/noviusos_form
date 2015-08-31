@@ -115,13 +115,14 @@ class Helper_Export
 
         $offset = 0;
         $limit  = 500;
+        $answer_list = array();
         foreach ($answers as $answer) {
             $values = array();
             foreach ($answer->fields as $answer_field) {
                 $values[$answer_field->anfi_field_id] = $answer_field;
             }
 
-            $csv_row = array();
+            $answer_row = array();
             foreach ($this->fields as $field) {
                 $value = !empty($values[$field->field_id]) ? $values[$field->field_id]->anfi_value : '';
 
@@ -136,11 +137,11 @@ class Helper_Export
                     $attachment = $answer->getAttachment($field);
                     $value      = $attachment->filename();
                 }
-                $csv_row[] = $value;
+                $answer_row[] = $value;
             }
-            $csv[] = $csv_row;
+            $answer_list[] = $answer_row;
         }
-        return $csv;
+        return $answer_list;
     }
 
     /**
