@@ -272,7 +272,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
             // Send HTTP headers for inform the browser that it will receive a CSV file
             \Response::forge(\Format::forge($csv)->to_csv() . "\n", 200, array(
-                'Content-Type'              => 'text/plain',
                 'Content-Type'              => 'application/csv',
                 'Content-Disposition'       => 'attachment; ' .
                     'filename=' . \Nos\Orm_Behaviour_Virtualname::friendly_slug($this->crud_item($id)->form_name) . '.csv;',
