@@ -31,7 +31,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             $this->config['appdesk']['tab']['iconSize'] = 16;
             $this->config['appdesk']['tab']['labelDisplay'] = true;
             $this->config['i18n']['gridTitle'] = $this->config['appdesk']['tab']['label'];
-            $this->config['appdesk']['appdesk']['buttons'] = array(
+            $this->config['appdesk']['appdesk']['buttons'] = \Arr::merge($this->config['appdesk']['appdesk']['buttons'], array(
                 'Nos\Form\Model_Form.export' => array(
                     'label' => __('Export (spreadsheet)'),
                     'icon' => 'extlink',
@@ -41,7 +41,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                         'url' => 'admin/noviusos_form/form/export/'.$form->form_id,
                     ),
                 ),
-            );
+            ));
             $this->config['appdesk']['appdesk']['values']['form_id'] = $form_id;
             $this->config['appdesk']['appdesk']['grid']['urlJson'] = $this->config['appdesk']['appdesk']['grid']['urlJson'].'?form_id='.$form->form_id;
             $this->config['hideContexts'] = true;
