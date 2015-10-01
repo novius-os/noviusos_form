@@ -54,8 +54,8 @@ return array(
         function ($value, $query) {
             $query->related('fields', array('where' => array(
                 array('anfi_field_type', 'IN', array('text', 'textarea', 'checkbox', 'select', 'radio', 'email', 'number')),
-                array('anfi_value', 'LIKE', '%'.$value.'%'),
             )));
+            $query->where('fields.anfi_value', 'LIKE', '%'.$value.'%');
             return $query;
         }
     ),
