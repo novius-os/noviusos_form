@@ -497,6 +497,10 @@ class Controller_Front extends Controller_Front_Application
             $field = $fields[$name];
             $type = $field->field_type;
 
+            if ($field->field_technical_id === 'recipient-list') {
+                $form->form_submit_email = $value;
+            }
+
             // Mandatory (required)
             if ($field->isMandatory($data) && empty($value)) {
                 $errors[$name] = __('{{label}}: Please enter a value for this field.');

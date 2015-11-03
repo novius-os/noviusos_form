@@ -199,7 +199,9 @@ return array(
                     'fields_list' => array(
                         'select' => array(
                             'field_type' => 'select',
-                            'field_choices' => __("First option=test@test.com\nSecond option=test@test.com"),
+                            'field_technical_id' => 'recipient-list',
+                            'field_details' => __('Separate name and email addresses with a "=" sign. (eg. Name=mail@domain.com)'),
+                            'field_choices' => __("First option=mail@domain.com\nSecond option=othermail@domain.com"),
                         ),
                     ),
                 ),
