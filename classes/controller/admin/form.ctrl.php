@@ -159,9 +159,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         static $auto_id_increment = 1;
 
-       // dd($item);
-
-
         $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $item, array('save' => false, 'auto_id' => false));
         // Override auto_id generation so it don't use the name (because we replace it below)
         $auto_id = uniqid('auto_id_');

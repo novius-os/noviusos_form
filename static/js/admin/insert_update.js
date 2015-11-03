@@ -436,7 +436,6 @@ define(
                         var content = choice.split("=");
                         var value = content.length > 1 ? content[1] : i + '';
                         var text = content[0];
-                        console.log(default_value_value);
                         html += '<option value="' + value + '" ' + (default_value_value[0] == value ? 'selected' : '') + '>' + text + '</option>';
                     });
                     html += '</select>';
