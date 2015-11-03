@@ -128,6 +128,16 @@ Second choix',
     #: config/controller/admin/form.config.php:187
     'I’m the label of a file input, click to edit me:' => 'Je suis le libellé d’un champ fichier, cliquez pour me modifier',
 
+
+    #: config/controller/admin/form.config.php:203
+    'Separate name and email addresses with a "=" sign. (eg. Name=mail@domain.com)' => 'Séparez les noms des addresses email avec un signe "=". (ex. Nom=mail@domaine.fr)',
+
+    #: config/controller/admin/form.config.php:204
+    "First option=mail@domain.com\nSecond option=othermail@domain.com" => "Première option=mail@domaine.fr\nSeconde option=autremail@domaine.fr",
+
+    #: config/controller/admin/form.config.php:196
+    'Recipient List' => 'Liste de destinataires',
+
     #: config/controller/admin/form.config.php:196
     #: config/controller/admin/form.config.php:395
     'Email address' => 'Email',
