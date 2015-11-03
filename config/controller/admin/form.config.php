@@ -19,7 +19,7 @@ return array(
         ),
     ),
     'require_js' => array(
-        'static/apps/noviusos_form/js/admin/insert_update.js?update=20141215',
+        'static/apps/noviusos_form/js/admin/insert_update.js?update=20151103',
     ),
     'views' => array(
         'delete' => 'noviusos_form::admin/popup_delete',
@@ -191,6 +191,19 @@ return array(
             ),
         ),
         'special' => array(
+            'recipients' => array(
+                'icon' => 'static/apps/noviusos_form/img/fields/dropdown.png',
+                'title' => __('Recipient List'),
+                'definition' => array(
+                    'layout' => 'select=4',
+                    'fields_list' => array(
+                        'select' => array(
+                            'field_type' => 'select',
+                            'field_choices' => __("First option=test@test.com\nSecond option=test@test.com"),
+                        ),
+                    ),
+                ),
+            ),
             'email' => array(
                 'icon' => 'static/apps/noviusos_form/img/fields/email.png',
                 'title' => __('Email address'),

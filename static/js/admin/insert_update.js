@@ -433,7 +433,11 @@ define(
                     var html = '<select>';
                     html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, choice) {
-                        html += '<option value="' + i + '" ' + (default_value_value[0] == choice ? 'selected' : '') + '>' + choice + '</option>';
+                        var content = choice.split("=");
+                        var value = content.length > 1 ? content[1] : i + '';
+                        var text = content[0];
+                        console.log(default_value_value);
+                        html += '<option value="' + value + '" ' + (default_value_value[0] == value ? 'selected' : '') + '>' + text + '</option>';
                     });
                     html += '</select>';
                     $new = $(html).attr({
@@ -513,7 +517,10 @@ define(
                     html += '<select>';
                     html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, text) {
-                        html += '<option value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'selected' : '') + '>' + text + '</option>';
+                        var content = text.split("=");
+                        var value = content.length > 1 ? content[1] : i + '';
+                        var text = content[0];
+                        html += '<option value="' + value + '" ' + (-1 !== $.inArray(value, default_value_value) ? 'selected' : '') + '>' + text + '</option>';
                     });
                     html += '</select>';
                 }

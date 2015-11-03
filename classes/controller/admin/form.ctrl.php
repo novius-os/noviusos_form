@@ -57,6 +57,13 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
             if (isset($field['field_type']) && in_array($field['field_type'], array('checkbox', 'select', 'radio'))) {
                 $choices = explode("\n", $field['field_choices']);
+                // Check possible values in choices
+                $choiceList = array();
+                foreach ($choices as $choice) {
+                    $choiceInfos = explode("=", $choice);
+                    $choiceList[] = \Arr::get($choiceInfos, 1, $choiceInfos[0]);
+                }
+                $choices = array_combine($choiceList, $choiceList);
                 $default_value = explode(',', $field['field_default_value']);
                 $default_value = array_combine($default_value, $default_value);
                 $fields_data[$index]['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
@@ -152,6 +159,9 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         static $auto_id_increment = 1;
 
+       // dd($item);
+
+
         $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $item, array('save' => false, 'auto_id' => false));
         // Override auto_id generation so it don't use the name (because we replace it below)
         $auto_id = uniqid('auto_id_');
@@ -172,8 +182,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         foreach ($this->config['fields_config'] as $name => $field_config) {
             $replaces[$name] = "field[{$item->field_id}][$name]";
         }
-        $return = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render().$fieldset->build_append();
 
+        $return = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render().$fieldset->build_append();
         return strtr($return, $replaces);
     }
 

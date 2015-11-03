@@ -158,7 +158,7 @@ require(['jquery-nos', 'jquery-nos-loadspinner'], function($) {
         diameter : 64,
         scaling : true
     });
-    require(['static/apps/noviusos_form/js/admin/insert_update.js?update=20141215'], function(init_form) {
+    require(['static/apps/noviusos_form/js/admin/insert_update.js?update=20151103'], function(init_form) {
         $(function() {
             init_form(uniqid, <?= \Format::forge()->to_json(array(
                 'textDelete' => __('Are you sure?'),

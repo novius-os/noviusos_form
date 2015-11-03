@@ -10,6 +10,7 @@
 
 namespace Nos\Form;
 
+use Fuel\Core\Form;
 use Nos\Controller_Front_Application;
 
 use View;
@@ -246,8 +247,16 @@ class Controller_Front extends Controller_Front_Application
                             'args' => array($name, $value, $html_attrs),
                         );
                     } else if ($field->field_type == 'select') {
-                        $choices = array('' => '') + explode("\n", $field->field_choices);
-                        $choices = array_combine($choices, $choices);
+                        $choices = explode("\n", $field->field_choices);
+                        $choiceList = array();
+                        foreach ($choices as $choice) {
+                            $choiceInfos = explode("=", $choice);
+                            $label = $choiceInfos[0];
+                            $choiceValue = \Arr::get($choiceInfos, 1, $label);
+                            $choiceList[$choiceValue] = $label;
+                        }
+
+                        $choices = array('' => '') + $choiceList;
                         $html = array(
                             'callback' => array('Form', 'select'),
                             'args' => array($name, $value, $choices, $html_attrs),
