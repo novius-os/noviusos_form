@@ -498,7 +498,9 @@ class Controller_Front extends Controller_Front_Application
             $type = $field->field_type;
 
             if ($field->field_technical_id === 'recipient-list') {
-                $form->form_submit_email = $value;
+                if (preg_match("/".preg_quote($value)."$/m", $field->field_choices)) {
+                    $form->form_submit_email = $value;
+                }
             }
 
             // Mandatory (required)
