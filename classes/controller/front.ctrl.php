@@ -10,6 +10,7 @@
 
 namespace Nos\Form;
 
+use Fuel\Core\Crypt;
 use Fuel\Core\Form;
 use Nos\Controller_Front_Application;
 
@@ -252,9 +253,10 @@ class Controller_Front extends Controller_Front_Application
                         foreach ($choices as $choice) {
                             $choiceInfos = explode("=", $choice);
                             $label = $choiceInfos[0];
-                            $choiceValue = \Arr::get($choiceInfos, 1, $label);
+                            $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $label));
                             $choiceList[$choiceValue] = $label;
                         }
+
 
                         $choices = array('' => '') + $choiceList;
                         $html = array(
@@ -484,6 +486,10 @@ class Controller_Front extends Controller_Front_Application
 
                         default:
                             $value = \Input::post($name, '');
+                            if (in_array($type, array('select'))) {
+                                $value = Crypt::decode($value);
+                            }
+                            break;
                     }
 
                     $data[$name] = $value;
