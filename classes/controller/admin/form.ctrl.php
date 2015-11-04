@@ -60,7 +60,10 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 // Check possible values in choices
                 $choiceList = array();
                 foreach ($choices as $choice) {
-                    $choiceInfos = explode("=", $choice);
+                    $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
+                    foreach ($choiceInfos as $key => $choiceValue) {
+                        $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
+                    }
                     $choiceList[] = \Arr::get($choiceInfos, 1, $choiceInfos[0]);
                 }
                 $choices = array_combine($choiceList, $choiceList);

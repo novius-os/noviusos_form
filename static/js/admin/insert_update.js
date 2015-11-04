@@ -433,7 +433,10 @@ define(
                     var html = '<select>';
                     html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, choice) {
-                        var content = choice.split("=");
+                        var content = choice.match(/([^\\\][^=]|\\=)+/g);
+                        for (i in content) {
+                            content[i] = content[i].replace(/\\=/, '=');
+                        }
                         var value = content.length > 1 ? content[1] : i + '';
                         var text = content[0];
                         html += '<option value="' + value + '" ' + (default_value_value[0] == value ? 'selected' : '') + '>' + text + '</option>';
@@ -516,7 +519,12 @@ define(
                     html += '<select>';
                     html += '<option value=""></option>';
                     $.each(choices.split("\n"), function(i, text) {
-                        var content = text.split("=");
+                        var content = text.match(/([^\\\][^=]|\\=)+/g);
+
+                        for (i in content) {
+                            content[i] = content[i].replace(/\\=/, '=');
+                        }
+
                         var value = content.length > 1 ? content[1] : i + '';
                         var text = content[0];
                         html += '<option value="' + value + '" ' + (-1 !== $.inArray(value, default_value_value) ? 'selected' : '') + '>' + text + '</option>';
