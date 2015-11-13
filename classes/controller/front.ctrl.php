@@ -10,6 +10,8 @@
 
 namespace Nos\Form;
 
+use Fuel\Core\Crypt;
+use Fuel\Core\Form;
 use Nos\Controller_Front_Application;
 
 use View;
@@ -246,8 +248,28 @@ class Controller_Front extends Controller_Front_Application
                             'args' => array($name, $value, $html_attrs),
                         );
                     } else if ($field->field_type == 'select') {
-                        $choices = array('' => '') + explode("\n", $field->field_choices);
-                        $choices = array_combine($choices, $choices);
+                        $choices = explode("\n", $field->field_choices);
+                        $choiceList = array();
+                        $isCrypted = false;
+                        foreach ($choices as $choice) {
+                            if (mb_strrpos($choice, '=')) {
+                                $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
+                                foreach ($choiceInfos as $key => $choiceValue) {
+                                    $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
+                                }
+                                $label       = $choiceInfos[0];
+                                $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $label));
+                                $isCrypted = true;
+                            } else {
+                                $label = $choiceValue = $choice;
+                            }
+                            $choiceList[$choiceValue] = $label;
+                        }
+
+                        if ($isCrypted) {
+                            $value = Crypt::encode($value);
+                        }
+                        $choices = array('' => '') + $choiceList;
                         $html = array(
                             'callback' => array('Form', 'select'),
                             'args' => array($name, $value, $choices, $html_attrs),
@@ -475,6 +497,10 @@ class Controller_Front extends Controller_Front_Application
 
                         default:
                             $value = \Input::post($name, '');
+                            if (in_array($type, array('select')) && mb_strpos($field->field_choices, '=')) {
+                                $value = Crypt::decode($value);
+                            }
+                            break;
                     }
 
                     $data[$name] = $value;
@@ -487,6 +513,12 @@ class Controller_Front extends Controller_Front_Application
         foreach ($data as $name => $value) {
             $field = $fields[$name];
             $type = $field->field_type;
+
+            if ($field->field_technical_id === 'recipient-list') {
+                if (preg_match("/".preg_quote($value)."$/m", $field->field_choices)) {
+                    $form->form_submit_email = $value;
+                }
+            }
 
             // Mandatory (required)
             if ($field->isMandatory($data) && empty($value)) {

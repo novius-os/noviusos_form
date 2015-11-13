@@ -30,6 +30,7 @@ Type list
  * textarea: Paragraph text
  * checkbox: Checkboxes
  * select: Dropdown
+    You can use the "=" symbol to separate the displayed text form the select value. (eg. "Text=value\nText2=value2")
  * radio: Multiple choices
  * file: File
  * email: Email (textual)
