@@ -257,13 +257,13 @@ class Controller_Front extends Controller_Front_Application
                                 foreach ($choiceInfos as $key => $choiceValue) {
                                     $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
                                 }
-                                $label       = $choiceInfos[0];
+                                $choiceLabel       = $choiceInfos[0];
                                 $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $label));
                                 $isCrypted = true;
                             } else {
-                                $label = $choiceValue = $choice;
+                                $choiceLabel = $choiceValue = $choice;
                             }
-                            $choiceList[$choiceValue] = $label;
+                            $choiceList[$choiceValue] = $choiceLabel;
                         }
 
                         if ($isCrypted) {
