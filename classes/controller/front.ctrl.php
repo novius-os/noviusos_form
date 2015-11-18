@@ -258,7 +258,7 @@ class Controller_Front extends Controller_Front_Application
                                     $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
                                 }
                                 $choiceLabel       = $choiceInfos[0];
-                                $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $label));
+                                $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $choiceLabel));
                                 $isCrypted = true;
                             } else {
                                 $choiceLabel = $choiceValue = $choice;
