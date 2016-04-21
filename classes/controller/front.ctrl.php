@@ -219,14 +219,6 @@ class Controller_Front extends Controller_Front_Application
 
                 if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file'))) {
 
-                    if (in_array($field->field_type, array('file', 'select', 'date'))) {
-                        // For the label
-                        $label = array(
-                            'callback' => 'html_tag',
-                            'args' => array('span', $label_attrs, $field->field_label),
-                        );
-                    }
-
                     if (in_array($field->field_type, array('text', 'email', 'number', 'date', 'file'))) {
                         $html_attrs['type'] = $field->field_type;
                         if (!empty($field->field_width)) {
