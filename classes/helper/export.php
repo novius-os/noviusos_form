@@ -10,6 +10,8 @@
 
 namespace Nos\Form;
 
+\Nos\I18n::current_dictionary('noviusos_form::common');
+
 class Helper_Export
 {
     public $headers;
@@ -85,6 +87,7 @@ class Helper_Export
                 $this->headers[] = $header;
             }
         }
+        $this->headers[] = array('label' => __('Answer date'));
     }
 
     /**
@@ -139,6 +142,7 @@ class Helper_Export
                 }
                 $answer_row[] = $value;
             }
+            $answer_row[] = $answer->answer_created_at;
             $answer_list[] = $answer_row;
         }
         return $answer_list;
