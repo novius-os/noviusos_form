@@ -263,7 +263,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                         $csv['choices'] = array();
                     }
                     $fill = count($csv['header']) - 1;
-                    $fill > 0 and $csv['choices'] = array_fill(0, $fill, '');
+                    $fill > 0 and $csv['choices'] = array_pad($csv['choices'], $fill, '');
                     foreach ($header['choices'] as $choice) {
                         $csv['choices'][] = $choice;
                     }
