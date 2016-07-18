@@ -325,7 +325,7 @@ define(
                 show_when($field, 'field_name', -1 !== $.inArray(type, ['hidden']));
                 show_when($field, 'field_details', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
                 show_when($field, 'field_mandatory', -1 === $.inArray(type, ['hidden', 'variable', 'checkbox', 'separator']));
-                show_when($field, 'field_default_value', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
+                show_when($field, 'field_default_value', -1 === $.inArray(type, ['variable', 'separator']));
                 show_when($field, 'field_style', -1 !== $.inArray(type, ['message']));
                 show_when($field, 'field_width', -1 !== $.inArray(type, ['text']));
                 show_when($field, 'field_height', -1 !== $.inArray(type, ['textarea']));
