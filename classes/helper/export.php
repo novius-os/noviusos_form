@@ -77,10 +77,15 @@ class Helper_Export
 
                 $this->fields[] = $field;
                 $header         = array('label' => $field->field_label);
+
                 if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
                     $choices           = explode("\n", $field->field_choices);
                     $header['choices'] = array();
                     foreach ($choices as $choice) {
+                        $choiceInfos = $this->splitChoice($field, $choice);
+                        if (!empty($choiceInfos)) {
+                            $choice = $choiceInfos[0].' ('.$choiceInfos[1].')';
+                        }
                         $header['choices'][] = $choice;
                     }
                 }
@@ -89,6 +94,18 @@ class Helper_Export
         }
         $this->headers[] = array('label' => __('Answer date'));
     }
+
+    protected function splitChoice($field, $choice) {
+        if ($field->field_technical_id === 'recipient-list' && mb_strrpos($choice, '=')) {
+            $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
+            foreach ($choiceInfos as $key => $choiceValue) {
+                $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
+            }
+            return $choiceInfos;
+        }
+        return null;
+    }
+
 
     /**
      * Get the next $limit values. Returns false when there is no value remaining.
@@ -134,6 +151,10 @@ class Helper_Export
                     $selected = explode("\n", $value);
                     $value    = array();
                     foreach ($choices as $choice) {
+                        $choiceInfos = $this->splitChoice($field, $choice);
+                        if (!empty($choiceInfos)) {
+                            $choice = $choiceInfos[1];
+                        }
                         $value[] = in_array($choice, $selected) ? 'x' : '';
                     }
                 } else if ($field->field_type === 'file') {
