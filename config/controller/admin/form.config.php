@@ -29,10 +29,32 @@ return array(
             'view' => 'nos::form/layout_standard',
             'params' => array(
                 'title' => 'form_name',
-                'subtitle' => array('form_submit_email','form_subject_email', 'form_virtual_name'),
+                'subtitle' => array(),
                 'medias' => array(),
                 'large' => true,
                 'content' => array(
+                    'paramsform' => array(
+                        'view' => 'nos::form/expander',
+                        'params' => array(
+                            'title'   => __('Propri&eacute;t&eacute;s du formulaire'),
+                            'nomargin' => true,
+                            'options' => array(
+                                'allowExpand' => true,
+                                'expanded' => false,
+                                'style' => '50%'
+                            ),
+                            'content' => array(
+                                'view' => 'nos::form/fields',
+                                'params' => array(
+                                    'fields' => array(
+                                        'form_subject_email',
+                                        'form_submit_email',
+                                        'form_virtual_name'
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
                     'fields' => array(
                         'view' => 'noviusos_form::admin/layout_fields',
                         'params' => array(),
@@ -57,6 +79,7 @@ return array(
             'label' => __('Virtual name:'),
             'form' => array(
                 'type' => 'text',
+                'size' => 50
             ),
             'expert' => true,
         ),
@@ -87,16 +110,16 @@ return array(
                 'type' => 'textarea',
                 // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One email per line'),
-                'cols' => 30,
+                'cols' => 50,
             ),
-            'template' => '<div><span style="vertical-align:top;">{label}</span><br /> <span style="display: inline-block;">{field}<br />{description}</span></div>',
+            'template' => '<tr><th>{label}</th><td>{field}<br />{description}</td></tr>',
         ),
         'form_subject_email' => array (
             'label' => __("Email subject:"),
             'form' => array(
                 'type' => 'text',
                 'placeholder' => __('Email subject'),
-                'size' => 40
+                'size' => 50
             ),
         ),
     ),
