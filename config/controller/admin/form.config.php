@@ -29,7 +29,7 @@ return array(
             'view' => 'nos::form/layout_standard',
             'params' => array(
                 'title' => 'form_name',
-                'subtitle' => array('form_submit_email', 'form_virtual_name'),
+                'subtitle' => array('form_submit_email','form_subject_email', 'form_virtual_name'),
                 'medias' => array(),
                 'large' => true,
                 'content' => array(
@@ -87,9 +87,17 @@ return array(
                 'type' => 'textarea',
                 // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One email per line'),
-                'cols' => 50,
+                'cols' => 30,
             ),
-            'template' => '<div><span style="vertical-align:top;">{label}</span> <span style="display: inline-block;">{field}<br />{description}</span></div>',
+            'template' => '<div><span style="vertical-align:top;">{label}</span><br /> <span style="display: inline-block;">{field}<br />{description}</span></div>',
+        ),
+        'form_subject_email' => array (
+            'label' => __("Email subject:"),
+            'form' => array(
+                'type' => 'text',
+                'placeholder' => __('Email subject'),
+                'size' => 40
+            ),
         ),
     ),
     'fields_meta' => array(

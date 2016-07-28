@@ -71,6 +71,11 @@ class Model_Form extends \Nos\Orm\Model
             'null' => true,
             'convert_empty_to_null' => true,
         ),
+        'form_subject_email' => array(
+            'default' => null,
+            'data_type' => 'varchar',
+            'null' => true,
+        ),
         'form_created_at' => array(
             'default' => null,
             'data_type' => 'datetime',
