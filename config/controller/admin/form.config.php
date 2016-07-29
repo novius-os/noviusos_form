@@ -36,7 +36,7 @@ return array(
                     'paramsform' => array(
                         'view' => 'nos::form/expander',
                         'params' => array(
-                            'title'   => __('Propri&eacute;t&eacute;s du formulaire'),
+                            'title'   => __('Form properties'),
                             'nomargin' => true,
                             'options' => array(
                                 'allowExpand' => true,
