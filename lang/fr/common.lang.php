@@ -536,6 +536,12 @@ M.',
     #: views/email.view.php:31
     'Message sent by:' => 'Message envoyé par :',
 
+    #: classes/controller/admin/form.ctrl.php:50
+    'Error: Your form seems to have no field.' => 'Erreur: Il semble que votre formulaire ne comporte aucun champ.',
+
+    #: classes/controller/admin/form.ctrl.php:57
+    'Your form must have at least one field.' => 'Votre formulaire doit comporter au moins un champ.',
+
     #: classes/controller/admin/form.ctrl.php:187
     #: classes/controller/admin/form.ctrl.php:202
     'Page break' => 'Saut de page',
