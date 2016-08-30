@@ -46,9 +46,15 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         // The field data is serialized in json (cf. Pull Request #15)
         $fields_post = \Input::post('fields', null);
-        $fields_data = array();
-        if ($fields_post !== null) {
-            $fields_data = json_decode($fields_post, true);
+        if (empty($fields_post)) {
+            throw new \Exception(__('Error: Your form seems to have no field.'));
+        }
+        $fields_data = json_decode($fields_post, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            logger(\Fuel::L_ERROR, 'Error: invalid fields format. JSON Error: '.json_last_error_msg());
+        }
+        if (empty($fields_data)) {
+            throw new \Exception(__('Your form must have at least one field.'));
         }
 
         foreach ($fields_data as $index => $field) {
