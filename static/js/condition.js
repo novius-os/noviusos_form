@@ -2,7 +2,7 @@ function init_form_condition(json) {
     $(document).ready(function() {
         check_option(json);
     });
-    $('[name^="'+json.inputname+'"]').change(function() {
+    $('[name^="'+json.inputname+'"]').on('keyup input change', function() {
         check_option(json);
     });
 
