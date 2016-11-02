@@ -28,6 +28,14 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         parent::init_item();
     }
 
+    /**
+     * Before saving the form
+     *
+     * @param $item
+     * @param $data
+     * @throws \Exception
+     * @throws \FuelException
+     */
     public function before_save($item, $data)
     {
         $emails = explode("\n", $item->form_submit_email);
@@ -40,11 +48,11 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             if (filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
                 $item->form_submit_email .= $email."\n";
             } else {
-                throw new \Exception('An email which receive answers is not a valid.');
+                throw new \Exception('An email which receive answers is not valid.');
             }
         }
 
-        // The field data is serialized in json (cf. Pull Request #15)
+        // Gets the fields data (the field data is json encoded, see Pull Request #15)
         $fields_post = \Input::post('fields', null);
         if (empty($fields_post)) {
             throw new \Exception(__('Error: Your form seems to have no field.'));
@@ -57,11 +65,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             throw new \Exception(__('Your form must have at least one field.'));
         }
 
+        // Formats fields data
         foreach ($fields_data as $index => $field) {
 
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
-            if (isset($field['field_type']) && in_array($field['field_type'], array('checkbox', 'select', 'radio'))) {
+            if (isset($field['field_choices'])) {
                 $choices = explode("\n", $field['field_choices']);
                 // Check possible values in choices
                 $choiceList = array();
@@ -79,13 +88,15 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             }
         }
 
+        // Deletes missing fields
         $this->to_delete = array_diff(
             array_keys($item->fields),
             \Arr::pluck($fields_data, 'field_id')
         );
 
+        // Registers the fields
         foreach ($fields_data as $field_id => $field_data) {
-            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config($this->config['fields_config'], array(
+            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config(\Arr::get($this->config, 'fields_config.meta.fields'), array(
                 'save' => false,
             ));
             $this->fields_data[$field_id] = $field_data;
@@ -93,10 +104,18 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
     }
 
+    /**
+     * Saves the form
+     *
+     * @param $item
+     * @param $data
+     * @return \Nos\Array
+     */
     public function save($item, $data)
     {
         $return = parent::save($item, $data);
-        // Save form fields
+
+        // Save the form registered fields
         foreach ($this->fields_fieldset as $field_id => $fieldset) {
             if (in_array($field_id, $this->to_delete)) {
                 continue;
@@ -106,149 +125,188 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $fieldset->validation()->run($this->fields_data[$field_id]);
             $fieldset->triggerComplete($field, $fieldset->validated());
         }
+
         // Delete fields
         foreach ($this->to_delete as $field_id) {
             $item->fields[$field_id]->delete();
             unset($item->fields[$field_id]);
         }
         $this->to_delete = array();
+
         return $return;
     }
 
-    public function action_form_field_meta($meta)
+    /**
+     * Renders the specified layout
+     *
+     * @param $layoutName
+     * @throws \Exception
+     */
+    public function action_render_layout($layoutName)
     {
-        if ($meta == 'page_break') {
-            return $this->page_break();
+        $fields = $previews = array();
+
+        // Page break
+        if ($layoutName == 'page_break') {
+            $data = array(
+                'field_form_id' => '0',
+                'field_virtual_name' => uniqid(),
+            );
+            foreach (\Arr::get($this->config, 'fields_config.meta.fields') as $name => $field) {
+                if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
+                    continue;
+                }
+                $data[$name] = '';
+            }
+            unset($data['field_id']);
+            $data['field_type'] = 'page_break';
+            $data['field_label'] = __('Page break');
+            $field = Model_Field::forge($data, true);
+            $field->save();
+
+            $fields[] = (string) $this->render_field_meta($field);
+            $previews[] = (string) $this->render_field_preview($field);
+
+            $layout = $field->field_id.'=4';
         }
-        if ($meta == 'default') {
-            $definition = $this->config['fields_meta']['default']['definition'];
-        } else {
-            $lookup = $this->config['fields_meta']['standard'] + $this->config['fields_meta']['special'];
-            $definition = $lookup[$meta]['definition'];
+        // Other fields
+        else {
+
+            // Gets the field definition
+            if ($layoutName == 'default') {
+                $definition = \Arr::get($this->config, 'fields_config.layout.default.definition', array());
+            } else {
+                $definition = \Arr::get($this->config, 'fields_config.layout.available.'.$layoutName.'.definition', array());
+            }
+            if (empty($definition)) {
+                throw new \Exception('Field definition not found.');
+            }
+
+            // Creates the fields
+            $layout = \Arr::get($definition, 'layout');
+            foreach (\Arr::get($definition, 'fields', array()) as $field_identifier => $field_properties) {
+
+                // Gets the driver
+                $driverClass = \Arr::get($field_properties, 'driver');
+                if (empty($driverClass)) {
+                    throw new \Exception('The `driver` key is missing in the driver configuration.');
+                }
+
+                // Builds the field data
+                $field_data = \Arr::get($field_properties, 'default_values');
+                $field_data['field_driver'] = $driverClass;
+
+                // Creates the field in database
+                $field = $this->create_field_db($field_data);
+
+                // Renders the field
+                $fields[] = (string) $this->render_field_meta($field);
+                $previews[] = $this->render_field_preview($field);
+
+                // Replaces the field identifier by the primary key in the layout
+                $layout = str_replace($field_identifier, $field->field_id, $layout);
+            }
         }
-        $fields = array();
-        $layout = $definition['layout'];
-        foreach ($definition['fields_list'] as $type => $field_data) {
-            $field = $this->create_field_db($field_data);
-            $fields[] = $this->action_render_field($field);
-            $layout = str_replace($type, $field->field_id, $layout);
-        }
+
         \Response::json(array(
-            'fields' => implode("\n", $fields),
+            'fields' => $fields,
+            'previews' => $previews,
             'layout' => $layout,
         ));
     }
 
-    public function create_field_db($data = array())
+    /**
+     * @deprecated Please use action_render_layout() instead
+     *
+     * @param $meta
+     * @throws \Exception
+     */
+    public function action_form_field_meta($meta)
     {
-
-        $default_data = array(
-            'field_form_id' => '0',
-            'field_virtual_name' => uniqid(),
-        );
-        foreach ($this->config['fields_config'] as $name => $field) {
-            if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
-                continue;
-            }
-            $default_data[$name] = \Arr::get($field, 'form.value', '');
-        }
-        unset($default_data['field_id']);
-        $default_data['field_mandatory'] = 0;
-        $default_data['field_conditional'] = 0;
-        $model_field = Model_Field::forge(array_merge($default_data, $data), true);
-        $model_field->save();
-        return $model_field;
+        $this->action_render_layout($meta);
     }
 
-    public function action_render_field($item)
+    /**
+     * Renders the field
+     *
+     * @param $field_id
+     * @throws \Exception
+     * @throws \FuelException
+     */
+    public function action_render_field($field_id)
     {
-        if ($item->field_type == 'page_break') {
-            return $this->render_page_break($item);
+        // Gets the field
+        $field = Model_Field::find($field_id);
+        if (empty($field)) {
+            throw new \Exception('Field not found');
         }
 
-        static $auto_id_increment = 1;
-
-        $fieldset = \Fieldset::build_from_config($this->config['fields_config'], $item, array('save' => false, 'auto_id' => false));
-        // Override auto_id generation so it don't use the name (because we replace it below)
-        $auto_id = uniqid('auto_id_');
-        foreach ($fieldset->field() as $field) {
-            if ($field->get_attribute('id') == '') {
-                $field->set_attribute('id', $auto_id.$auto_id_increment++);
-            }
+        // Injects the specified field data
+        $fieldData = $this->getInputFieldData();
+        \Arr::delete($fieldData, 'field_id');
+        if (!empty($fieldData)) {
+            $field->set($fieldData);
         }
 
-        $fields_view_params = array(
-            'layout' => $this->config['fields_layout'],
-            'fieldset' => $fieldset,
-        );
-        $fields_view_params['view_params'] = &$fields_view_params;
-
-        // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
-        $replaces = array();
-        foreach ($this->config['fields_config'] as $name => $field_config) {
-            $replaces[$name] = "field[{$item->field_id}][$name]";
-        }
-
-        $return = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render().$fieldset->build_append();
-        return strtr($return, $replaces);
-    }
-
-    public function page_break()
-    {
-        $data = array(
-            'field_form_id' => '0',
-            'field_virtual_name' => uniqid(),
-        );
-        foreach ($this->config['fields_config'] as $name => $field) {
-            if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
-                continue;
-            }
-            $data[$name] = '';
-        }
-        unset($data['field_id']);
-        $data['field_type'] = 'page_break';
-        $data['field_label'] = __('Page break');
-        $item = Model_Field::forge($data, true);
-        $item->save();
+        // Renders the field
+        $html = (string) $this->render_field_meta($field);
 
         \Response::json(array(
-            'fields' => (string) $this->render_page_break($item),
-            'layout' => $item->field_id.'=4',
+            'meta' => $html,
+            'preview' => $this->render_field_preview($field),
         ));
     }
 
-    public function render_page_break($item)
+    /**
+     * Handles the request to displays a new field in a JSON response
+     *
+     * @param $field_id
+     * @throws \Exception
+     */
+    public function action_render_field_preview($field_id)
     {
-        static $auto_id_increment = 1;
+        $field_id = intval($field_id);
 
-        $fields_config = $this->config['fields_config'];
-        $fields_config['field_type']['form']['options'] = array('page_break' => __('Page break'));
-        $fieldset = \Fieldset::build_from_config($fields_config, $item, array('save' => false, 'auto_id' => false));
-
-        // Override auto_id generation so it don't use the name (because we replace it below)
-        $auto_id = uniqid('auto_id_');
-        foreach ($fieldset->field() as $field) {
-            if ($field->get_attribute('id') == '') {
-                $field->set_attribute('id', $auto_id.$auto_id_increment++);
+        // Gets the field or forge a new one
+        if (!empty($field_id)) {
+            $field = Model_Field::find($field_id);
+            if (empty($field)) {
+                throw new \Exception(__('Field not found.'));
             }
+        } else {
+            $field = Model_Field::forge();
         }
 
-        $fields_view_params = array(
-            'layout' => $this->config['fields_layout'],
-            'fieldset' => $fieldset,
-        );
-        $fields_view_params['view_params'] = &$fields_view_params;
-
-        // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
-        $replaces = array();
-        foreach ($this->config['fields_config'] as $name => $field_config) {
-            $replaces[$name] = "field[{$item->field_id}][$name]";
+        // Gets the field data
+        $fieldData = $this->getInputFieldData();
+        if (!empty($fieldData)) {
+            \Arr::delete($fieldData, 'field_id');
+            // Sets the field data
+            $field->set($fieldData);
         }
-        $return = (string) \View::forge('noviusos_form::admin/page_break', $fields_view_params, false);
 
-        return strtr($return, $replaces);
+        \Response::json(array(
+            'preview' => $this->render_field_preview($field),
+        ));
     }
 
+    /**
+     * Handles the request to render the specified field
+     *
+     * @param $field
+     * @return string
+     */
+    public function action_render_field_meta($field)
+    {
+        return $this->render_field_meta($field);
+    }
+
+    /**
+     * Exports the form answers
+     *
+     * @param $id
+     * @throws
+     */
     public function action_export($id)
     {
         set_time_limit(5 * 60);
@@ -313,5 +371,191 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         } catch (\Exception $e) {
             $this->send_error($e);
         }
+    }
+
+    /**
+     * Renders the field preview
+     *
+     * @param Model_Field $field
+     * @return string
+     * @throws \Exception
+     * @throws \FuelException
+     */
+    protected function render_field_preview(Model_Field $field)
+    {
+        // Field with a driver
+        $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+        if (!empty($fieldDriver)) {
+            $html = $fieldDriver->getPreviewHtml();
+        } else {
+            $html = 'No preview.';
+        }
+
+        if (is_array($html)) {
+            $html = implode("\n", $html);
+        }
+
+        return $html;
+    }
+
+    /**
+     * Renders the field meta
+     *
+     * @param $field
+     * @return string
+     * @throws \FuelException
+     */
+    protected function render_field_meta($field)
+    {
+        static $auto_id_increment = 1;
+
+        // Gets the fields config
+        $fields_config = \Arr::get($this->config, 'fields_config.meta.fields');
+        if ($field->field_type == 'page_break') {
+            $fields_config['field_type']['form']['options'] = array('page_break' => __('Page break'));
+        }
+
+        // Builds the fieldset
+        $fieldset = \Fieldset::build_from_config($fields_config, $field, array('save' => false, 'auto_id' => false));
+
+        // Override auto_id generation so it don't use the name (because we replace it below)
+        $auto_id = uniqid('auto_id_');
+        foreach ($fieldset->field() as $fieldsetField) {
+            if ($fieldsetField->get_attribute('id') == '') {
+                $fieldsetField->set_attribute('id', $auto_id.$auto_id_increment++);
+            }
+        }
+
+        // Builds the layout
+        $layout = \Arr::get($this->config, 'fields_config.meta.layout');
+        $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+        if (!empty($fieldDriver)) {
+
+            // Gets the field meta layout
+            $fieldConfig = $fieldDriver::getConfig();
+            $fieldMetaLayout = \Arr::get($fieldConfig, 'meta.layout', array());
+
+            // Merges the field layout with the default layout
+            if (!empty($fieldMetaLayout)) {
+
+                $layoutAccordions = \Arr::get($layout, 'standard.params.accordions', array());
+
+                foreach ($fieldMetaLayout as $name => $params) {
+                    if (isset($layoutAccordions[$name])) {
+                        // Merges the configs
+                        $layoutAccordions[$name] = \Arr::merge($layoutAccordions[$name], $params);
+
+                        // If fields are specified in the driver config they have to replace the default fields
+                        if (isset($params['fields'])) {
+                            $layoutAccordions[$name]['fields'] = $params['fields'];
+                        }
+
+                        // Deletes the field_driver if present (it will be pushed again later, see below)
+                        if (isset($layoutAccordions[$name]['fields'])) {
+                            $key = array_search('field_driver', $layoutAccordions[$name]['fields']);
+                            if ($key !== false) {
+                                unset($layoutAccordions[$name]['fields'][$key]);
+                            }
+                        }
+                    }
+                }
+
+                // Ensure the default panel is present with the driver as first field
+                $layoutAccordions['main'] = \Arr::merge(array(
+                    'title' => __('Properties'),
+                    'fields' => array(
+                        'field_driver'
+                    ),
+                ), $layoutAccordions['main']);
+
+                \Arr::set($layout, 'standard.params.accordions', $layoutAccordions);
+            }
+        }
+
+        // Builds the view params
+        $fields_view_params = array(
+            'layout' => $layout,
+            'fieldset' => $fieldset,
+        );
+        $fields_view_params['view_params'] = &$fields_view_params;
+
+        // Renders the field content
+        if ($field->field_type == 'page_break') {
+            $content = (string)\View::forge('noviusos_form::admin/page_break', $fields_view_params, false);
+        } else {
+            $content = (string) \View::forge('noviusos_form::admin/layout', $fields_view_params, false)->render();
+            $content .= $fieldset->build_append();
+        }
+
+        // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
+        $replaces = array();
+        foreach ($fields_config as $name => $field_config) {
+            $replaces[$name] = "field[{$field->field_id}][$name]";
+        }
+        $content = strtr($content, $replaces);
+
+        return $content;
+    }
+
+    /**
+     * Creates a field in database
+     *
+     * @param array $data
+     * @return static
+     * @throws \Exception
+     */
+    protected function create_field_db($data = array())
+    {
+        $default_data = array(
+            'field_form_id' => '0',
+            'field_virtual_name' => uniqid(),
+        );
+
+        // Gets the default values
+        foreach (\Arr::get($this->config, 'fields_config.meta.fields') as $name => $field) {
+            if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
+                continue;
+            }
+            $default_data[$name] = \Arr::get($field, 'form.value', '');
+        }
+
+        unset($default_data['field_id']);
+        $default_data['field_mandatory'] = 0;
+        $default_data['field_conditional'] = 0;
+
+        // Creates and saves the field
+        $model_field = Model_Field::forge(array_merge($default_data, $data), true);
+        $model_field->save();
+
+        return $model_field;
+    }
+
+    /**
+     * Gets the input field data (JSON or array)
+     *
+     * @param string $name
+     * @return array
+     */
+    protected function getInputFieldData($name = 'fieldData')
+    {
+        // Gets the field data
+        $fieldData = \Input::post($name);
+        if (empty($fieldData)) {
+            return array();
+        }
+
+        // Json decodes if it's a string
+        if (is_string($fieldData)) {
+            $fieldData = (array) json_decode($fieldData);
+        }
+
+        if (!is_array($fieldData)) {
+            return array();
+        }
+
+        // Flatten the array
+        $fieldData = \Arr::pluck($fieldData, 'value', 'name');
+
+        return $fieldData;
     }
 }

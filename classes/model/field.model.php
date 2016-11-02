@@ -31,98 +31,103 @@ class Model_Field extends \Nos\Orm\Model
             'data_type' => 'varchar',
             'null' => false,
         ),
-        'field_label' => array(
+        'field_driver' => array(
             'default' => null,
+            'data_type' => 'varchar',
+            'null' => true,
+        ),
+        'field_label' => array(
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_message' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'text',
             'null' => false,
         ),
         'field_virtual_name' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_choices' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'text',
             'null' => false,
         ),
         'field_created_at' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'datetime',
             'null' => false,
         ),
         'field_mandatory' => array(
-            'default' => null,
+            'default' => 0,
             'data_type' => 'tinyint',
             'null' => false,
         ),
         'field_default_value' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_details' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'text',
             'null' => false,
         ),
         'field_style' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'enum',
             'null' => false,
         ),
         'field_width' => array(
-            'default' => null,
+            'default' => 0,
             'data_type' => 'tinyint',
             'null' => false,
         ),
         'field_height' => array(
-            'default' => null,
+            'default' => 0,
             'data_type' => 'tinyint',
             'null' => false,
         ),
         'field_limited_to' => array(
-            'default' => null,
+            'default' => 0,
             'data_type' => 'int',
             'null' => false,
         ),
         'field_origin' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_origin_var' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_technical_id' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_technical_css' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_conditional' => array(
-            'default' => null,
+            'default' => 0,
             'data_type' => 'tinyint',
             'null' => false,
         ),
         'field_conditional_form' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
         'field_conditional_value' => array(
-            'default' => null,
+            'default' => '',
             'data_type' => 'varchar',
             'null' => false,
         ),
@@ -165,6 +170,22 @@ class Model_Field extends \Nos\Orm\Model
 
     protected $_form_id_for_delete = null;
     protected $_field_id_for_delete = null;
+
+    /**
+     * Gets the field driver
+     *
+     * @param array $options
+     * @return null|Field_Abstract
+     */
+    public function getDriver($options = array())
+    {
+        // Gets the driver class
+        $driverClass = $this->field_driver;
+        if (empty($driverClass) || !class_exists($driverClass)) {
+            return null;
+        }
+        return $driverClass::forge($this, $options);
+    }
 
     /**
      * @param array $datas Values send in the form

@@ -10,6 +10,14 @@
 
 Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
 
+$config = \Config::load('noviusos_form::noviusos_form', true);
+
+// Gets the available fields layouts
+$available_fields_layouts = \Arr::get($config, 'available_fields_layouts', array());
+
+// Gets the available fields drivers
+$available_fields_drivers = \Arr::get($config, 'available_fields_drivers', array());
+
 ?>
 <link rel="stylesheet" href="<?= Uri::base(false) ?>static/apps/noviusos_form/css/admin.css" />
 
@@ -40,6 +48,20 @@ if (!$item->is_new()) {
         echo \View::forge('noviusos_form::admin/warning_not_published', $view_params, false);
     }
 }
+
+// Generates the fields layout
+$layout = explode("\n", $item->form_layout);
+array_walk($layout, function (&$v) {
+    $v = explode(',', $v);
+});
+$layout = \Arr::flatten($layout);
+// Remove empty values
+$layout = array_filter($layout);
+array_walk($layout, function (&$v) {
+    $v = explode('=', $v);
+    $v = $v[0];
+});
+
 ?>
     <div class="line">
         <div class="col c8" style="position:relative;">
@@ -54,24 +76,18 @@ if (!$item->is_new()) {
                         <th><?= __('Special fields'); ?></th>
                     </tr>
                     <tr>
-<?php
-foreach (array('standard', 'special') as $type) {
-    ?>
                         <td style="width: 50%">
-    <?php
-    foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.'.$type) as $type => $meta) {
-        if (!empty($meta['expert']) && !\Session::user()->user_expert) {
-            continue;
-        }
-        ?>
-        <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
-        <?php
-    }
-    ?>
+                            <?php
+                            foreach ($available_fields_layouts as $name => $meta) {
+                                if (!empty($meta['expert']) && !\Session::user()->user_expert) {
+                                    continue;
+                                }
+                                ?>
+                                <p><label data-meta="<?= $name ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
+                                <?php
+                            }
+                            ?>
                         </td>
-    <?php
-}
-?>
                     </tr>
                 </table>
             </div>
@@ -85,7 +101,25 @@ foreach (array('standard', 'special') as $type) {
                     <col />
                 </colgroup>
                 <tbody class="preview_container">
-
+                    <?php
+                    foreach ($layout as $field_id) {
+                        ?>
+                        <tr class="preview_row">
+                            <td class="preview ui-widget-content" colspan="4">
+                                <div class="resizable">
+                                    <div class="handle ui-widget-header">
+                                        <img src="static/apps/noviusos_form/img/move-handle-dark3.png" />
+                                    </div>
+                                    <label class="preview_label"></label>
+                                    <div class="preview_content">
+                                        <?= \Request::forge('noviusos_form/admin/form/render_field_preview')->execute(array($item->fields[$field_id])); ?>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
                 </tbody>
             </table>
             <p>
@@ -104,22 +138,11 @@ foreach (array('standard', 'special') as $type) {
                 <?php /*<button type="button" data-icon="copy" data-id="copy" class="action"><?= __('Duplicate') ?></button> */ ?>
                 <img class="preview_arrow show_hide" src="static/apps/noviusos_form/img/arrow-edition.png" />
             </p>
-<?php
-$layout = explode("\n", $item->form_layout);
-array_walk($layout, function (&$v) {
-    $v = explode(',', $v);
-});
-$layout = \Arr::flatten($layout);
-// Remove empty values
-$layout = array_filter($layout);
-array_walk($layout, function (&$v) {
-    $v = explode('=', $v);
-    $v = $v[0];
-});
-foreach ($layout as $field_id) {
-    echo \Request::forge('noviusos_form/admin/form/render_field')->execute(array($item->fields[$field_id]));
-}
-?>
+            <?php
+            foreach ($layout as $field_id) {
+                echo \Request::forge('noviusos_form/admin/form/render_field_meta')->execute(array($item->fields[$field_id]));
+            }
+            ?>
             <div class="accordion field_enclosure fieldset">
                 <h3><?= __('Form submission') ?></h3>
                 <div>
@@ -141,7 +164,6 @@ foreach ($layout as $field_id) {
                         </div>
                         <label class="preview_label"></label>
                         <div class="preview_content">
-
                         </div>
                     </div>
                 </td>
@@ -150,6 +172,17 @@ foreach ($layout as $field_id) {
         </table>
     </div>
 </div>
+
+<?php
+// Builds the driver config
+$driversConfig = array();
+foreach ($available_fields_drivers as $driverClass) {
+    $driversConfig[$driverClass] = array(
+        'name' => $driverClass::getName(),
+        'config' => $driverClass::getConfig(),
+    );
+}
+?>
 
 <script type="text/javascript">
 require(['jquery-nos', 'jquery-nos-loadspinner'], function($) {
@@ -162,6 +195,7 @@ require(['jquery-nos', 'jquery-nos-loadspinner'], function($) {
         $(function() {
             init_form(uniqid, <?= \Format::forge()->to_json(array(
                 'textDelete' => __('Are you sure?'),
+                'driversConfig' => $driversConfig,
             )) ?>,<?= $crud['is_new'] ? 'true' : 'false'; ?>, <?= \Session::user()->user_expert ? 'true' : 'false' ?>);
             $(uniqid).find('.preview_container').loadspinner('destroy');
         });

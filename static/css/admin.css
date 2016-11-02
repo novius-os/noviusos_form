@@ -176,12 +176,22 @@ tr.preview_inserter {
     display: none;
 }
 
-.preview_content input[type=text], .preview_content textarea {
+.preview_content input[type=text],
+.preview_content input[type=email],
+.preview_content input[type=number],
+.preview_content input[type=file],
+.preview_content input[type=date],
+.preview_content textarea {
     width: 100%;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-.preview_content input[type=text][size], .preview_content textarea[cols] {
+.preview_content input[type=text][size],
+.preview_content input[type=email][size],
+.preview_content input[type=number][size],
+.preview_content input[type=file][size],
+.preview_content input[type=date][size],
+.preview_content textarea[cols] {
     width: auto;
 }
 .preview_content select {

@@ -10,23 +10,26 @@
 
 namespace Nos\Form;
 
-use Fuel\Core\Crypt;
-use Fuel\Core\Form;
 use Nos\Controller_Front_Application;
-
 use View;
 
 class Controller_Front extends Controller_Front_Application
 {
-
     protected $enhancer_args = array();
 
+    /**
+     * Displays the form and handles it submission
+     *
+     * @param array $enhancer_args
+     * @return \Fuel\Core\View|string
+     */
     public function action_main($enhancer_args = array())
     {
         \Nos\I18n::current_dictionary('noviusos_form::front');
 
         $this->enhancer_args = $enhancer_args;
 
+        // Gets the form
         $form_id = $enhancer_args['form_id'];
         if (empty($form_id)) {
             return '';
@@ -36,11 +39,8 @@ class Controller_Front extends Controller_Front_Application
             return '';
         }
 
-        $errors = array();
-
         // Post handler with redirect
         if (\Input::method() == 'POST' && \Input::post('_form_id') == $form_id) {
-
             $errors = $this->post_answers($item);
             if (empty($errors)) {
                 $after_submit = \Arr::get($this->enhancer_args, 'after_submit', 'message');
@@ -56,42 +56,110 @@ class Controller_Front extends Controller_Front_Application
 
                 \Response::redirect(\Nos\Tools_Url::encodePath(\Nos\Nos::main_controller()->getUrl()).'?message='.$form_id);
             }
+        } else {
+            $errors = array();
         }
 
         // 'message' is used to show the user a message when the form is submitted
         $request_parameters_to_exclude_from_cache = array('message');
 
+        // Handles cache
         foreach ($item->fields as $field) {
             if (!empty($field->field_origin_var) && in_array($field->field_origin, array('get', 'request'))) {
                 $request_parameters_to_exclude_from_cache[] = $field->field_origin_var;
 
                 // Don't store the page in cache when one field is pre-filled with a parameter
                 // This allows to still use the cache for the "empty" version of the form
-                $value = $this->getFieldDefaultValue($field);
-                if (!empty($value) && $value != $field->field_default_value) {
-                    \Nos\Nos::main_controller()->disableCaching();
+                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                if (!empty($fieldDriver)) {
+                    $value = $fieldDriver->getDefaultValue();
+                    if (!empty($value) && $value != $field->field_default_value) {
+                        \Nos\Nos::main_controller()->disableCaching();
+                    }
                 }
             }
         }
-
         \Nos\Nos::main_controller()->addCacheSuffixHandler(array(
             'type' => 'GET',
             'keys' => $request_parameters_to_exclude_from_cache,
         ));
 
-        // Confirmation message
+        // Displays the confirmation message
         if (\Input::get('message', 0) == $form_id) {
             return \View::forge('noviusos_form::message', array(
                 'message' => \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'))
             ), false);
         }
-
-        return $this->render_form($item, $errors);
+        // Displays the form
+        else {
+            return $this->render_form($item, $errors);
+        }
     }
 
-    public function render_form($item, $errors)
+    /**
+     * Renders the form
+     *
+     * @param $form
+     * @param $errors
+     * @return \Fuel\Core\View
+     */
+    public function render_form($form, $errors)
     {
-        $layout = explode("\n", $item->form_layout);
+        // Gets the form fields
+        $fields = $this->getFormFields($form, $errors);
+
+        // Initializes conditional fields
+        foreach ($fields as $field) {
+            if (is_a($field['item'], 'Nos\Form\Model_Field') && filter_var($field['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
+                $json = \Fuel\Core\Format::forge(array(
+                    'inputname' => $field['item']->get('field_conditional_form'),
+                    'condition' => $field['item']->get('field_virtual_name'),
+                    'value' => $field['item']->get('field_conditional_value')
+                ))->to_json();
+                \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition($json);");
+            }
+        }
+
+        // Gets the default layout to use
+        $config = \Config::load('noviusos_form::noviusos_form', true);
+        $layout = \Arr::get($config, 'layout', 'noviusos_form::foundation');
+
+        // Triggers an event to allow fields and layout manipulation
+        $args = array(
+            'layout' => &$layout,
+            'fields' => &$fields,
+            'enhancer_args' => $this->enhancer_args,
+            'item' => $form,
+        );
+        \Event::trigger_function('noviusos_form::rendering', array(&$args));
+        if (!empty($form->form_virtual_name)) {
+            \Event::trigger_function('noviusos_form::rendering.'.$form->form_virtual_name, array(&$args));
+        }
+
+        return \View::forge($layout, array(
+            'item' => $form,
+            'fields' => $fields,
+            'enhancer_args' => $this->enhancer_args,
+            'page_break_count' => $this->getFormPageBreakCount($form),
+            'errors' => $errors,
+            'form_attrs' => array(
+                'method' => 'POST',
+                'enctype' => 'multipart/form-data',
+                'action' => '',
+            ),
+        ), false);
+    }
+
+    /**
+     * Gets the form layout
+     *
+     * @param Model_Form $form
+     * @return array
+     */
+    protected function getFormLayout(Model_Form $form)
+    {
+        // Gets the form layout
+        $layout = explode("\n", $form->form_layout);
         array_walk($layout, function (&$v) {
             $v = explode(',', $v);
         });
@@ -105,23 +173,32 @@ class Controller_Front extends Controller_Front_Application
             }
         }
 
-        $fields = array();
+        return $layout;
+    }
 
-        if ($item->form_captcha) {
+    /**
+     * Gets the form fields
+     *
+     * @param Model_Form $form
+     * @param $errors
+     * @return array
+     */
+    protected function getFormFields(Model_Form $form, $errors)
+    {
+        // Gets the form layout
+        $layout = $this->getFormLayout($form);
+
+        // Adds the captcha to layout if enabled
+        if ($form->form_captcha) {
             $layout[] = array('captcha=4');
         }
+
+        // Adds the hidden form id to layout
         $layout[] = array('_form_id=4');
 
-        $page_break_count = 0;
-        foreach ($item->fields as $field_id => $field) {
-            if ($field->field_type == 'page_break') {
-                $page_break_count++;
-            }
-        }
-
-        $new_page = $page_break_count > 0;
-
-        // Loop through rows...
+        // Builds the fields list from the layout
+        $fields = array();
+        $new_page = $this->getFormPageBreakCount($form) > 0;
         foreach ($layout as $rows) {
             $first_col = true;
             $col_width = 0;
@@ -133,404 +210,244 @@ class Controller_Front extends Controller_Front_Application
                 $col_width += $available_width;
 
                 if ($field_id == 'captcha') {
-                    $field = (object) array(
+                    $field = Model_Field::forge(array(
                         'field_name' => 'form_captcha',
                         'field_label' => '',
                         'field_type' => 'text',
+                        'field_class' => Field_Input_Text::class,
                         'field_mandatory' => '1',
                         'field_technical_id' => '',
                         'field_technical_css' => '',
                         'field_default_value' => '',
                         'field_virtual_name' => 'form_captcha',
-                    );
-                    $name = 'form_captcha';
+                    ));
                 } else if ($field_id == '_form_id') {
-                    $field = (object) array(
+                    $field = Model_Field::forge(array(
                         'field_label' => '',
                         'field_type' => 'hidden',
+                        'field_class' => Field_Hidden::class,
                         'field_mandatory' => '1',
                         'field_technical_id' => '',
                         'field_technical_css' => '',
-                        'field_default_value' => $item->form_id,
+                        'field_default_value' => $form->form_id,
                         'field_origin' => '',
-                    );
-                    $name = '_form_id';
+                    ));
                 } else {
-                    $field = $item->fields[$field_id];
-                    $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
+                    $field = $form->fields[$field_id];
                 }
 
+                // Page break field
                 if ($field->field_type == 'page_break') {
                     $new_page = true;
                     continue;
                 }
 
-                $html_attrs = array(
-                    'id' => $field->field_technical_id ?: $name,
-                    'class' => $field->field_technical_css,
-                    'title' => $field->field_label,
-                );
+                // Field with a driver
+                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                if (!empty($fieldDriver)) {
 
-                if ($this->enhancer_args['label_position'] == 'placeholder') {
-                    $html_attrs['placeholder'] = $field->field_label;
-                }
+                    // Gets the field name
+                    $name = $field->getVirtualName();
 
-                if ($field->field_mandatory) {
-                    $html_attrs['required'] = 'required';
-                }
+                    // Sets the errors
+                    $fieldDriver->setErrors(\Arr::get($errors, $name, array()));
 
-                $label_attrs = array(
-                    'for' => $html_attrs['id'],
-                );
+                    // Initializes the value
+                    $fieldDriver->setValue($fieldDriver->getInputValue($fieldDriver->getDefaultValue()));
 
-                $value = \Input::post($name, $this->getFieldDefaultValue($field));
-
-                if (!empty($errors[$name])) {
-                    if ($name == 'form_captcha') {
-                        $value = '';
-                    }
-                    if ($this->enhancer_args['label_position'] == 'placeholder') {
-                        $html_attrs['class'] .= ' user-error form-ui-invalid';
-                        $html_attrs['title'] = htmlspecialchars($errors[$name]);
-                    }
-                    $label_attrs['class'] = ' user-error form-ui-invalid';
-                    $label_attrs['title'] = htmlspecialchars($errors[$name]);
-                }
-
-                $html = '';
-
-                if ($this->enhancer_args['label_position'] == 'placeholder') {
-                    $label = '';
-                } else {
-                    $label = array(
-                        'callback' => array('Form', 'label'),
-                        'args' => array($field->field_label, $field->field_technical_id, $label_attrs),
-                    );
-                }
-
-                if (!in_array($field->field_type, array('radio', 'checkbox', 'select')) && !empty($field->field_details)) {
-                    $instructions = array(
-                        'callback' => 'html_tag',
-                        'args' => array('p', array('class' => 'instructions'), $field->field_details),
-                    );
-                } else {
-                    $instructions = '';
-                }
-
-                if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file'))) {
-
-                    if (in_array($field->field_type, array('text', 'email', 'number', 'date', 'file'))) {
-                        $html_attrs['type'] = $field->field_type;
-                        if (!empty($field->field_width)) {
-                            $html_attrs['size'] = $field->field_width;
-                        }
-                        if (!empty($field->field_limited_to)) {
-                            $html_attrs['maxlength'] = $field->field_limited_to;
-                        }
-                        $html = array(
-                            'callback' => array('Form', 'input'),
-                            'args' => array($name, $value, $html_attrs),
-                        );
-                    } else if ($field->field_type == 'textarea') {
-                        if (!empty($field->field_height)) {
-                            $html_attrs['rows'] = $field->field_height;
-                        }
-                        $html = array(
-                            'callback' => array('Form', 'textarea'),
-                            'args' => array($name, $value, $html_attrs),
-                        );
-                    } else if ($field->field_type == 'select') {
-                        $choices = explode("\n", $field->field_choices);
-                        $choiceList = array();
-                        $isCrypted = false;
-                        foreach ($choices as $choice) {
-                            if (mb_strrpos($choice, '=')) {
-                                $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
-                                foreach ($choiceInfos as $key => $choiceValue) {
-                                    $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
-                                }
-                                $choiceLabel       = $choiceInfos[0];
-                                $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $choiceLabel));
-                                $isCrypted = true;
-                            } else {
-                                $choiceLabel = $choiceValue = $choice;
-                            }
-                            $choiceList[$choiceValue] = $choiceLabel;
-                        }
-
-                        if ($isCrypted) {
-                            $value = Crypt::encode($value);
-                        }
-                        $choices = array('' => '') + $choiceList;
-                        $html = array(
-                            'callback' => array('Form', 'select'),
-                            'args' => array($name, $value, $choices, $html_attrs),
-                        );
-                    }
-
-                } else if (in_array($field->field_type, array('checkbox', 'radio'))) {
-
-                    $label = array(
-                        'callback' => 'html_tag',
-                        'args' => array('span', $label_attrs, $field->field_label),
+                    // Builds the field
+                    $fields[$name] = array(
+                        'label' => $fieldDriver->getLabel(),
+                        'field' => $fieldDriver->getHtml(),
+                        'instructions' => $fieldDriver->getInstructions(),
+                        'new_row' => $first_col,
+                        'new_page' => $new_page,
+                        'width' => $width,
+                        'item' => $field,
                     );
 
-                    if (in_array($field->field_type, array('checkbox', 'radio'))) {
-                        $html = array();
-                        $default = \Input::post($name, $field->field_type == 'checkbox' ? explode("\n", $field->field_default_value) : $field->field_default_value);
-                        $choices = explode("\n", $field->field_choices);
-                        foreach ($choices as $i => $choice) {
-                            $html_attrs_choice = $html_attrs;
-                            $html_attrs_choice['id'] .= $i;
-                            if ($field->field_type == 'checkbox') {
-                                $item_html = array(
-                                    'callback' => array('Form', 'checkbox'),
-                                    'args' => array($name.'[]', $choice, in_array($choice, $default), $html_attrs_choice),
-                                );
-                            } else if ($field->field_type == 'radio') {
-                                $item_html = array(
-                                    'callback' => array('Form', 'radio'),
-                                    'args' => array($name, $choice, $choice == $default, $html_attrs_choice),
-                                );
-                            }
-                            $item_label = array(
-                                'callback' => array('Form', 'label'),
-                                'args' => array(
-                                    $choice,
-                                    $field->field_technical_id,
-                                    array(
-                                        'for' => $html_attrs_choice['id'],
-                                    ),
-                                ),
-                            );
-                            $html[] = array(
-                                'field' => $item_html,
-                                'label' => $item_label,
-                                'template' => '{field} {label} <br />',
-                            );
-                        }
-                    }
-                } else if ($field->field_type == 'message') {
-                    $label = '';
-                    $type = in_array($field->field_style, array('p', 'h1', 'h2', 'h3')) ? $field->field_style : 'p';
-                    $html_attrs = array(
-                        'id' => $field->field_technical_id,
-                        'class' => 'label_text '.$field->field_technical_css,
-                    );
-                    $html = array(
-                        'callback' => 'html_tag',
-                        'args' => array($type, $html_attrs, nl2br($field->field_message)),
-                    );
-
-                } else if ($field->field_type == 'separator') {
-                    $label = '';
-                    $html = html_tag('hr');
-                } else if (in_array($field->field_type, array('hidden', 'variable'))) {
-                    $value = $this->getFieldDefaultValue($field);
-                    if ($field->field_type == 'hidden') {
-                        $label = '';
-                        $html = array(
-                            'callback' => array('Form', 'hidden'),
-                            'args' => array($name, e($value)),
-                        );
-                    } else if ($field->field_type == 'variable') {
-                        $html = array(
-                            'callback' => 'html_tag',
-                            'args' => array('p', array(), e($value)),
-                        );
-                    }
-                } else {
-                    $label = '';
+                    $first_col = false;
+                    $new_page = false;
                 }
-
-                $fields[$name] = array(
-                    'label' => $label,
-                    'field' => $html,
-                    'instructions' => $instructions,
-                    'new_row' => $first_col,
-                    'new_page' => $new_page,
-                    'width' => $width,
-                    'item' => $field,
-                );
-                $first_col = false;
-                $new_page = false;
             }
         }
 
-        foreach ($fields as $condition_item) {
-            if (is_a($condition_item['item'], 'Nos\Form\Model_Field') && filter_var($condition_item['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
-
-
-                // get condition source form type. text, radio, etc.
-                $form_key = $condition_item['item']->get('field_conditional_form');
-                $inputtype = $fields[$form_key]['item']->field_type;
-
-                $array = array(
-                    'inputtype' => $inputtype,
-                    'inputname' => $condition_item['item']->get('field_conditional_form'),
-                    'condition' => $condition_item['item']->get('field_virtual_name'),
-                    'value' => $condition_item['item']->get('field_conditional_value')
-                );
-                $json = \Fuel\Core\Format::forge($array)->to_json();
-
-
-                \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition($json);");
-
-            }
-        }
-
-        $layout = 'noviusos_form::foundation';
-        $args = array(
-            'fields' => &$fields,
-            'layout' => &$layout,
-            'enhancer_args' => $this->enhancer_args,
-            'item' => $item,
-        );
-        \Event::trigger_function('noviusos_form::rendering', array(&$args));
-        if (!empty($item->form_virtual_name)) {
-            \Event::trigger_function('noviusos_form::rendering.' . $item->form_virtual_name, array(&$args));
-        }
-
-        $layout = array(
-            'layout' => $layout,
-            'args' => array(
-                'item' => $item,
-                'fields' => $fields,
-                'enhancer_args' => $this->enhancer_args,
-                'page_break_count' => $page_break_count,
-                'errors' => $errors,
-                'form_attrs' => array(
-                    'method' => 'POST',
-                    'enctype' => 'multipart/form-data',
-                    'action' => '',
-                ),
-            ),
-        );
-
-        return \View::forge($layout['layout'], $layout['args'], false);
+        return $fields;
     }
 
-    protected function getFieldDefaultValue($field)
+    /**
+     * Gets the form page break count
+     *
+     * @param Model_Form $form
+     * @return int
+     */
+    protected function getFormPageBreakCount(Model_Form $form)
     {
-        if (!in_array($field->field_type, array('text', 'email', 'number', 'textarea', 'hidden', 'variable'))) {
-            return $field->field_default_value;
+        // Counts the page breaks
+        $page_break_count = 0;
+        foreach ($form->fields as $field_id => $field) {
+            if ($field->field_type == 'page_break') {
+                $page_break_count++;
+            }
         }
-
-        $value = $field->field_default_value;
-
-        // When the parameter name is not filled, there is nothing more to retrieve
-        if (empty($field->field_origin_var)) {
-            return $value;
-        }
-
-        switch($field->field_origin) {
-            case 'get':
-                $value = \Input::get($field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'post':
-                $value = \Input::post($field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'request':
-                $value = \Input::param($field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'global':
-                $value = \Arr::get($GLOBALS, $field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'session':
-                $value = \Session::get($field->field_origin_var, $field->field_default_value);
-                break;
-
-            default:
-        }
-
-        return $value;
+        return $page_break_count;
     }
 
+    /**
+     * Handles form answer post
+     *
+     * @param $form
+     * @return array
+     * @throws \Exception
+     */
     public function post_answers($form)
     {
-        $errors = array();
         $data = array();
         $fields = array();
-        $files = array();
 
+        // Gets the form layout
+        $layout = $this->getFormLayout($form);
 
-        $layout = $form->form_layout;
-        $layout = explode("\n", $layout);
-        array_walk($layout, function (&$v) {
-            $v = explode(',', $v);
-        });
-
-        // Fetching the fields according to their layout position
+        // Gets the fields values in order of their layout position
         foreach ($layout as $cols) {
             foreach ($cols as $field_layout) {
                 list($field_id, ) = explode('=', $field_layout);
                 $field = $form->fields[$field_id];
-                $type = $field->field_type;
-                if (in_array($type, array('message', 'variable', 'separator', 'page_break'))) {
-                    continue;
+
+                // Driver field
+                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                if (!empty($fieldDriver)) {
+                    $name = $fieldDriver->getVirtualName();
+                    // Gets the input value
+                    $data[$name] = $fieldDriver->getInputValue();
+                    $fields[$name] = $field;
                 }
-                $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
-                $value = null;
-
-                if ($type === 'file' && !empty($_FILES[$name])) {
-                    if ($field->isMandatory($data) && empty($_FILES[$name]['tmp_name'])) {
-                        $errors[$name] = __('{{label}}: Please select a file for this field.');
-                    }
-                    $files[$name] = $_FILES[$name];
-                } else {
-                    switch($type) {
-                        case 'checkbox':
-                            $value = implode("\n", \Input::post($name, array()));
-                            break;
-
-                        default:
-                            $value = \Input::post($name, '');
-                            if (in_array($type, array('select')) && mb_strpos($field->field_choices, '=')) {
-                                $value = Crypt::decode($value);
-                            }
-                            break;
-                    }
-
-                    $data[$name] = $value;
-                }
-                $fields[$name] = $field;
             }
         }
 
-        // Native validation
-        foreach ($data as $name => $value) {
-            $field = $fields[$name];
-            $type = $field->field_type;
+        // Validates the form fields
+        $errors = $this->validateFormFieldsData($form, $fields, $data);
+        if (!empty($errors)) {
+            foreach ($errors as $name => &$error) {
+                if ($name == 'form_captcha') {
+                    continue;
+                }
+                $error = strtr($error, array(
+                    '{{label}}' => $fields[$name]->field_label,
+                    '{{value}}' => $data[$name],
+                ));
+            }
+            return $errors;
+        }
 
-            if ($field->field_technical_id === 'recipient-list') {
-                if (preg_match("/".preg_quote($value)."$/m", $field->field_choices)) {
-                    $form->form_submit_email = $value;
+        // Submits the form
+        if ($this->beforeSubmission($form, $fields, $data)) {
+
+            // Forges the new answer
+            $answer = Model_Answer::forge(array(
+                'answer_ip' => \Input::real_ip(),
+            ), true);
+
+            $answer->form = $form;
+
+            // Fields pre processing on answer
+            foreach ($fields as $name => $field) {
+                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                if (!empty($fieldDriver)) {
+
+                    $fieldDriver->setValue(\Arr::get($data, $name));
+
+                    // Handles fields pre processing on answer
+                    $fieldDriver->beforeAnswerSave($answer);
                 }
             }
 
-            // Mandatory (required)
-            if ($field->isMandatory($data) && empty($value)) {
-                $errors[$name] = __('{{label}}: Please enter a value for this field.');
-            } else if (!empty($value)) {
-                // Only if there is a value
-                if ($type == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid email.');
-                }
-                if ($type == 'number' && !filter_var($value, FILTER_VALIDATE_INT)) {
-                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid number.');
-                }
-                if ($type == 'date') {
-                    if ($checkdate = preg_match('`^(\d{4})-(\d{2})-(\d{2})$`', $value, $m)) {
-                        list(, $year, $month, $day) = $m;
-                        $checkdate = checkdate((int) $month, (int) $day, (int) $year);
+            // Saves the answer
+            $answer->save();
+
+            // Fields post processing on answer
+            foreach ($fields as $name => $field) {
+                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                if (!empty($fieldDriver)) {
+
+                    $fieldDriver->setValue(\Arr::get($data, $name));
+
+                    // Handles fields post processing on answer
+                    $fieldDriver->afterAnswerSave($answer);
+
+                    // Handles fields attachments on answer
+                    if ($fieldDriver instanceof Interface_Field_Attachment) {
+                        $fieldDriver->saveAttachments($answer);
                     }
-                    if (!$checkdate) {
-                        $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid date.');
+                }
+            }
+
+            // Creates the answer fields
+            foreach ($fields as $name => $field) {
+                 Model_Answer_Field::forge(array(
+                    'anfi_answer_id' => $answer->answer_id,
+                    'anfi_field_id' => $field->field_id,
+                    'anfi_field_type' => $field->field_type,
+                    'anfi_value' => \Arr::get($data, $name),
+                ), true)->save();
+            }
+
+            // Sends the answer mail
+            $this->sendAnswerMail($form, $fields, $data);
+
+            // after_submission
+            \Event::trigger('noviusos_form::after_submission', array(
+                'answer' => $answer,
+                'enhancer_args' => $this->enhancer_args,
+                0 => $answer, //For consistency. Deprecated. To remove when made BC
+                1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
+            ));
+            if (!empty($form->form_virtual_name)) {
+                \Event::trigger('noviusos_form::after_submission.'.$form->form_virtual_name, array(
+                    'answer' => $answer,
+                    'enhancer_args' => $this->enhancer_args,
+                    0 => $answer, //For consistency. Deprecated. To remove when made BC
+                    1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
+                ));
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Validates the form fields data
+     *
+     * @param Model_Form $form
+     * @param array $fields
+     * @param array $data
+     * @return array
+     */
+    protected function validateFormFieldsData(Model_Form $form, array $fields, array &$data)
+    {
+        $errors = array();
+
+        // Fields validation
+        foreach ($data as $name => $value) {
+            $field = \Arr::get($fields, $name);
+
+            // Driver field
+            $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+            if (!empty($fieldDriver)) {
+                // Validates the field
+                try {
+                    // Sets the input value
+                    $fieldDriver->setValue($value);
+                    // Checks mandatory
+                    if (!$fieldDriver->checkMandatory()) {
+                        $errors[$name] = __('{{label}}: Please enter a value for this field.');
                     }
+                    // Checks validation
+                    elseif (!$fieldDriver->checkValidation()) {
+                        $errors[$name] = __('{{label}}: Please enter a valid value for this field.');
+                    }
+                } catch (Exception_Field_Validation $e) {
+                    $errors[$name] = $e->getMessage();
                 }
             }
         }
@@ -545,7 +462,7 @@ class Controller_Front extends Controller_Front_Application
             }
         }
         if (!empty($form->form_virtual_name)) {
-            foreach ((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $fields, $form), 'array') as $array) {
+            foreach ((array) \Event::trigger_function('noviusos_form::data_validation.'.$form->form_virtual_name, array(&$data, $fields, $form), 'array') as $array) {
                 if ($array === null) {
                     continue;
                 }
@@ -555,133 +472,157 @@ class Controller_Front extends Controller_Front_Application
             }
         }
 
+        // Captcha validation
         if ($form->form_captcha && \Session::get('captcha.'.$form->form_id) != \Input::post('form_captcha', 0)) {
             $errors['form_captcha'] = __('You have not passed the spam test. Please try again.');
         }
 
-        // Some validation errors occurred
-        if (!empty($errors)) {
-            foreach ($errors as $name => &$error) {
-                if ($name == 'form_captcha') {
-                    continue;
-                }
-                $error = strtr($error, array(
-                    '{{label}}' => $fields[$name]->field_label,
-                    '{{value}}' => $data[$name],
-                ));
+        return $errors;
+    }
+
+    /**
+     * Triggers some callbacks before submission to know if we should continue
+     *
+     * @param Model_Form $form
+     * @param array $fields
+     * @param array $data
+     * @return bool
+     */
+    protected function beforeSubmission(Model_Form $form, array $fields, array &$data)
+    {
+        // Triggers the fields method
+        foreach ($fields as $name => $field) {
+            $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+            if (!empty($fieldDriver)) {
+                $fieldDriver->setValue(\Arr::get($data, $name));
+                $fieldDriver->beforeSubmission($form);
             }
-            return $errors;
         }
 
-        // data pre-processing
+        // Triggers the global event
         $before_submission = (array) \Event::trigger_function('noviusos_form::before_submission', array(&$data, $form, $this->enhancer_args), 'array');
+
+        // Triggers the form event
         if (!empty($form->form_virtual_name)) {
-            $before_submission = array_merge((array) \Event::trigger_function('noviusos_form::before_submission.' . $form->form_virtual_name, array(&$data, $form, $this->enhancer_args), 'array'));
+            $before_submission = array_merge((array) \Event::trigger_function('noviusos_form::before_submission.'.$form->form_virtual_name, array(&$data, $form, $this->enhancer_args), 'array'));
         }
 
+        // We only save the answer into the database if none before_submission callback returned 'false'
         $before_submission = array_filter($before_submission, function ($val) {
             return $val === false;
         });
+        return count($before_submission) == 0;
+    }
 
-        // We only save the answer into the database if none before_submission callback returned 'false'
-        if (count($before_submission) == 0) {
-            $answer = Model_Answer::forge(array(
-                'answer_form_id' => $form->form_id,
-                'answer_ip' => \Input::real_ip(),
-            ), true);
-            $answer->save();
+    /**
+     * Sends a mail for the specified answer
+     *
+     * @param Model_Answer $answer
+     * @param array $fields
+     * @param array $data
+     * @return bool
+     * @throws \EmailValidationFailedException
+     * @throws \FuelException
+     * @throws \InvalidAttachmentsException
+     */
+    protected function sendAnswerMail(Model_Answer $answer, array $fields, array $data)
+    {
+        $form = $answer->form;
+        if (empty($form)) {
+            return false;
+        }
 
-            $email_data = array();
+        // Gets the recipient list
+        $config = \Config::load('noviusos_form::noviusos_form', true);
+        $recipients = array_filter(explode("\n", $form->form_submit_email), function ($var) {
+            $var = trim($var);
+            return !empty($var);
+        });
 
+        // Sends an email if there is at least one recipient in list
+        if (empty($recipients)) {
+            return false;
+        }
 
-            $config = \Config::load('noviusos_form::noviusos_form', true);
-            $emails = array_filter(explode("\n", $form->form_submit_email), function ($var) {
-                $var = trim($var);
-                return !empty($var);
-            });
-            $sendMail = !empty($emails);
-            $addAttachment = true;
-            if ($sendMail) {
-                $mail = \Email::forge();
-                $attachmentMaxSize = \Arr::get($config, 'mail_attachments_max_size', 8388608);
-                $size = 0;
-                foreach ($files as $file) {
-                    if (!empty($file['tmp_name'])) {
-                        $size += filesize($file['tmp_name']);
-                    }
-                }
-                if ($size > $attachmentMaxSize) {
-                    $addAttachment = false;
-                }
-            }
+        // Creates the mail
+        $mail = \Email::forge();
 
-            foreach ($files as $name => $file) {
-                if (!empty($file['tmp_name'])) {
-                    $attachment = $answer->getAttachment($fields[$name]);
-                    $attachment->set($file['tmp_name'], $file['name']);
-                    $attachment->save();
-                    if ($sendMail && $addAttachment) {
-                        $mail->attach($attachment->path());
-                    }
-                }
-            }
+        $email_data = array();
+        $reply_to_auto = \Arr::get($config, 'add_replyto_to_first_email', true);
+        $reply_to = '';
+        $attachments = array();
+        foreach ($data as $name => $value) {
+            $field = \Arr::get($fields, $name);
 
-            $reply_to_auto = \Arr::get($config, 'add_replyto_to_first_email', true);
-            $reply_to = '';
-            foreach ($data as $field_name => $value) {
-                $field = $fields[$field_name];
-                $email_data[] = array(
-                    'label' => $field->field_label,
-                    'value' => $value
-                );
-                if ($reply_to_auto && $field->field_type === 'email' && !empty($value) && empty($reply_to)) {
+            // Builds the field email data
+            $email_data[] = array(
+                'label' => $field->field_label,
+                'value' => $value
+            );
+
+            $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+            if (!empty($fieldDriver)) {
+
+                $field->setValue($value);
+
+                // Gets the field reply-to
+                if ($reply_to_auto && empty($reply_to)) {
                     // save first non empty email as potential "reply_to"
-                    $reply_to = $value;
+                    $reply_to = $fieldDriver->getEmailReplyTo();
                 }
-                $answer_field = Model_Answer_Field::forge(array(
-                    'anfi_answer_id' => $answer->answer_id,
-                    'anfi_field_id' => $field->field_id,
-                    'anfi_field_type' => $field->field_type,
-                    'anfi_value' => $value,
-                ), true);
-                $answer_field->save();
-            }
 
-
-            if ($sendMail) {
-                $mail->bcc($emails);
-                if (!empty($reply_to)) {
-                    $mail->reply_to($reply_to);
+                // Gets the field attachments
+                if ($fieldDriver instanceof Interface_Field_Attachment) {
+                    $attachments = \Arr::merge($attachments, $fieldDriver->getAttachments($answer));
                 }
-                $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data), false));
-                $mail->subject(strtr(__('{{form}}: New answer'), array(
-                    '&nbsp;' => ' ',
-                    '{{form}}' => $form->form_name,
-                )));
-                try {
-                    $mail->send();
-                } catch (\Exception $e) {
-                    logger(\Fuel::L_ERROR, 'The Forms application cannot send emails - '.$e->getMessage());
-                }
-            }
 
-            // after_submission
-            \Event::trigger('noviusos_form::after_submission', array(
-                'answer' => $answer,
-                'enhancer_args' => $this->enhancer_args,
-                0 => $answer, //For consistency. Deprecated. To remove when made BC
-                1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
-            ));
-            if (!empty($form->form_virtual_name)) {
-                \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array(
-                    'answer' => $answer,
-                    'enhancer_args' => $this->enhancer_args,
-                    0 => $answer, //For consistency. Deprecated. To remove when made BC
-                    1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
-                ));
+                // Builds the field email data
+                $email_data[] = $fieldDriver->getEmailData();
             }
         }
 
-        return $errors;
+        // Adds attachments to the mail
+        if (!empty($attachments)) {
+            // Calculates total size of attachments
+            $totalSize = array_sum(array_map(function($attachment) {
+                return filesize($attachment->path());
+            }, $attachments));
+            // Checks if total size of attachments does not exceed the limit
+            if ($totalSize <= \Arr::get($config, 'mail_attachments_max_size', 8388608)) {
+                // Adds each attachment to the mail
+                foreach ($attachments as $attachment) {
+                    $mail->attach($attachment->path());
+                }
+            }
+        }
+
+        // Sets recipient list as BCC
+        $mail->bcc($recipients);
+
+        if (!empty($reply_to)) {
+            $mail->reply_to($reply_to);
+        }
+
+        // Sets subject
+        $mail->subject(strtr(__('{{form}}: New answer'), array(
+            '&nbsp;' => ' ',
+            '{{form}}' => $form->form_name,
+        )));
+
+        // Sets body
+        $mail->html_body(\View::forge('noviusos_form::email', array(
+            'form' => $form,
+            'data' => $email_data,
+        ), false));
+
+        // Sends the mail
+        try {
+            $mail->send();
+        } catch (\Exception $e) {
+            logger(\Fuel::L_ERROR, 'The Forms application cannot send emails - '.$e->getMessage());
+            return false;
+        }
+
+        return true;
     }
 }

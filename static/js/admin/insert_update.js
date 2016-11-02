@@ -15,7 +15,6 @@ define(
     function($) {
         "use strict";
         return function(id, options, is_new, is_expert) {
-
             var $container = $(id);
 
             var $preview_container = $container.find('.preview_container');
@@ -23,6 +22,10 @@ define(
             var $layout = $container.closest('form').find('[name=form_layout]');
             var $submit_informations = $container.find('.submit_informations');
             var $currentTab = $('.nos-ostabs-panel.ui-widget-content:not(".nos-ostabs-hide")');
+
+            var $resizable;
+            var $sortable;
+
             $fields_container.show();
             $submit_informations.show();
 
@@ -30,14 +33,15 @@ define(
             var $clone_preview = $container.find('[data-id=clone_preview]').clone().removeAttr('data-id');
             $container.find('[data-id=clone_preview]').remove();
 
+            // Initializes blank state
             var $blank_slate = $container.find('.field_blank_slate');
-
             $blank_slate.find('label').hover(function() {
                 $(this).addClass('ui-state-hover');
             }, function() {
                 $(this).removeClass('ui-state-hover');
             });
 
+            // Initializes the preview container
             var col_size = Math.round($preview_container.outerWidth() / 4);
             $preview_container.width($preview_container.outerWidth() - $preview_container.width());
 
@@ -49,6 +53,7 @@ define(
                     });
             });
 
+            // Handles form submit
             $container.closest('form').submit(function(e) {
                 // Rewriting layout to be inserted in database
                 var layout = '';
@@ -75,7 +80,8 @@ define(
                 // match field[id][field_name]
                 var idRegex = /[^\[]+\[([0-9]+)\]\[([^\]]+)\]/;
 
-
+                // Gets fields data
+                // @todo why not jQuery.serialize() ?
                 $(this).find('input,textarea,select').each(function() {
                     var $this = $(this);
                     if (!$this.attr('name')) {
@@ -124,7 +130,7 @@ define(
                 return false;
             });
 
-            // Add a field
+            // Handles click on add button
             $container.on('click', '[data-id=add]', function onAdd(e) {
                 e.preventDefault();
                 var params_button = $(this).data('params');
@@ -138,6 +144,214 @@ define(
                 }
             });
 
+            // Add a new field when clicking the "Add" button, either at top or bottom
+            $blank_slate.on('click', 'label', add_fields_blank_slate);
+
+            // Handles click on a preview
+            $preview_container.on('click', 'td.preview', function onClickPreview(e) {
+                e.preventDefault();
+
+                var $preview = $(this);
+                var $field = $preview.data('field');
+
+                // Make the preview look "active"
+                $preview_container.find('td.preview').removeClass('ui-state-active');
+                $preview.addClass('ui-state-active');
+
+                // Show the appropriate field and position it
+                show_field($field);
+
+                // Auto focus the label field
+                find_field($field, 'field_label').focus();
+            });
+
+            // Handles field duplication
+            $preview_container.on('click', '[data-id=copy]', function onClickCopy(e) {
+                e.preventDefault();
+                // Don't bubble to .preview container
+                e.stopPropagation();
+            });
+
+            // Handles field delete
+            $fields_container.on('click', '[data-id=delete]', function on_delete(e) {
+                e.preventDefault();
+                // Don't bubble to .preview container
+                e.stopPropagation();
+                if (confirm($.nosCleanupTranslation(options.textDelete))) {
+                    delete_preview.call($preview_container.find('.preview.ui-state-active'));
+                }
+            });
+
+            // Handles field driver change
+            $fields_container.on('change', 'select[name*="[field_driver]"]', function on_type_change(e) {
+                var $field = $(this).closest('.field_enclosure');
+                var field_id = find_field($field, 'field_id').val();
+
+                // Gets the field data
+                var fieldData = getFieldData($field);
+
+                // Regenerates the field meta
+                $.ajax({
+                    url: 'admin/noviusos_form/form/render_field/'+field_id,
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        fieldData: JSON.stringify(fieldData)
+                    },
+                    success: function(json) {
+
+                        var $preview = $field.data('preview');
+
+                        // Updates the field meta
+                        if (json.meta) {
+
+                            // Replaces the current field meta with the new field meta
+                            var $newField = $(json.meta);
+                            $field.replaceWith($newField);
+                            $field = $newField;
+                            $field.nosFormUI();
+
+                            // Restores the link between the field and the preview
+                            $field.data('preview', $preview);
+                            $preview.data('field', $field);
+                        }
+
+                        // Updates the field preview
+                        if (typeof json.preview !== 'undefined') {
+                            var html = json.preview;
+
+                            // Appends the details
+                            var details = find_field($field, 'field_details').val();
+                            if (details != '') {
+                                html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
+                            }
+
+                            // Updates the preview content
+                            $preview.find('div.preview_content').html(html);
+
+                            refreshPreviewHeight($preview.closest('tr'));
+                        } else {
+                            generate_preview_content.call($field.get(0), e);
+                        }
+
+                        // The 'type' field is for sure in the first wijmo-wijaccordion-content so we know $field IS an .accordion too
+                        // So the selectedIndex is for sure '0'
+                        $field.find('.wijmo-wijaccordion-content').each(function() {
+                            var $accordion_content = $(this);
+                            // We need to select the appropriate index with wijaccordion() prior to changing the style or it's all messed up
+                            if ($accordion_content.find(':input').filter(function() {
+                                    return $(this).closest('p').css('display') != 'none';
+                                }).length == 0) {
+                                // wijaccordion('activate', 0) does not work properly.
+
+                                // Hide .accordion-header
+                                $accordion_content.prev().hide();
+                            } else {
+                                $accordion_content.prev().show();
+                            }
+                        });
+
+                        // Generate default value before preview, because the preview uses it
+                        generate_default_value($field);
+
+                        $field.find('[name*="[field_label]"]').trigger('change');
+                        $field.find('[name*="[field_style]"]').trigger('change');
+                    }
+                });
+            });
+
+            // Handles textarea choices change
+            $fields_container.on('blur', 'textarea[name*="[field_choices]"]', function regenerate_default_value(e) {
+                var $field = $(this).closest('.field_enclosure');
+                generate_default_value($field);
+            });
+
+            // Handles style change
+            $fields_container.on('change', 'select[name*="[field_style]"]', function on_style_change(e) {
+                var style = $(this).val();
+                var $field = $(this).closest('.field_enclosure');
+                var $message = $field.find('[name*="[field_message]"]');
+                var $new = $(style == 'p' ? '<textarea rows="4"></textarea>' : '<input type="text" />');
+
+                $new.attr({
+                    name: $message.attr('name'),
+                    id: $message.attr('id')
+                });
+                $new.val($message.val());
+
+                $new.insertAfter($message);
+                $message.remove();
+                $new.parent().nosFormUI();
+                // Converting textarea to input will loose line breaks
+                $new.trigger('change');
+            });
+
+            // Handles mandatory change
+            $fields_container.on('change', 'input[name*="[field_mandatory]"]', function on_change_field_mandatory(e) {
+                var $field = $(this).closest('.field_enclosure');
+                generate_default_value($field);
+            });
+
+            // Keeps preview label in sync
+            $fields_container.on('change keyup', 'input[name*="[field_label]"]', generate_preview_label);
+            $fields_container.on('change', 'input[name*="[field_mandatory]"]', generate_preview_label);
+
+            // Events that regenerates the preview content
+            $fields_container.on('change keyup', 'textarea[name*="[field_choices]"]', generate_preview_content);
+            $fields_container.on('change keyup', '[name*="[field_message]"]', generate_preview_content);
+            $fields_container.on('change keyup', '[name*="[field_default_value]"]', generate_preview_content);
+            $fields_container.on('change keyup', 'input[name*="[field_width]"]', generate_preview_content);
+            $fields_container.on('change keyup', 'input[name*="[field_height]"]', generate_preview_content);
+            $fields_container.on('change keyup', 'textarea[name*="[field_details]"]', generate_preview_content);
+
+            $fields_container.children('.field_enclosure').each(function onEachFields() {
+                var $field = $(this);
+                on_field_added($field, {where: 'bottom'});
+                $field.hide();
+            });
+            $fields_container.find('.show_hide').hide();
+
+            apply_layout($layout.val());
+
+            // init all the thing
+            init_all();
+            setTimeout(function() {
+                refreshPreviewHeight();
+            }, 100);
+
+            is_new && add_fields_blank_slate(null, 'default');
+
+            var $form_captcha = $container.find('[name=form_captcha]'),
+                $form_submit_label = $container.find('[name=form_submit_label]'),
+                $form_submit_email = $container.find('[name=form_submit_email]');
+
+            $form_captcha.on('change', function() {
+                $submit_informations.find('.form_captcha')[$(this).is(':checked') ? 'show' : 'hide']();
+            }).trigger('change');
+
+            $form_submit_label.on('change keyup', function() {
+                $submit_informations.find('input:last').val($(this).val());
+            }).trigger('change');
+
+            $form_submit_email.on('change keyup', function() {
+                var mail = $.trim($(this).val());
+                $submit_informations.find('.form_submit_email')
+                    .find('span:first')
+                    .html(mail.replace('\n', ', ', 'g'))
+                    .end()
+                    .find('span:last')[mail ? 'hide': 'show']();
+            }).trigger('change');
+
+            $submit_informations.on('click', function() {
+                $container.find('.preview').removeClass('ui-state-active');
+                var $accordion = $form_submit_label.closest('.accordion');
+                show_field($accordion);
+                hide_field();
+                set_field_padding($submit_informations);
+                $submit_informations.addClass('ui-state-active');
+                $container.find('.preview_arrow').show();
+            });
+
             function add_fields_blank_slate(e, type) {
                 e && e.preventDefault();
                 var params = {
@@ -148,51 +362,66 @@ define(
                 var nos_fixed_content = $container.closest('.nos-fixed-content').get(0);
                 var old_scroll_top = nos_fixed_content.scrollTop;
                 $.ajax({
-                    url: 'admin/noviusos_form/form/form_field_meta/' + params.type,
+                    url: 'admin/noviusos_form/form/render_layout/' + params.type,
                     dataType: 'json',
                     success: function(json) {
                         $blank_slate.hide();
-                        var $fields = $(json.fields).filter(function() {
-                            return this.nodeType != 3; // 3 == Node.TEXT_NODE
-                        });
-                        if (params.where == 'top') {
-                            $fields = $($fields.get().reverse());
+
+                        if (json.fields && json.layout) {
+
+                            // Fields
+                            var $fields = $(json.fields.join(''));
+                            if (params.where == 'top') {
+                                $fields = $($fields.get().reverse());
+                            }
+                            var $previews = $(); // $([]) in jQuery < 1.4
+                            $fields_container.append($fields);
+                            $fields = $fields.not('script');
+                            $fields.nosFormUI();
+                            $fields.each(function(index) {
+                                var $field = $(this);
+                                on_field_added($field, params);
+
+                                // Creates the preview
+                                var $preview = $field.data('preview');
+                                if ($preview) {
+                                    if (json.previews && json.previews[index]) {
+                                        var $td = $preview.find('div.preview_content');
+                                        $td.html(json.previews[index]);
+                                    }
+                                    generate_preview_label.apply($field.get(0));
+                                    $previews = $previews.add($preview);
+                                }
+
+                                $field.hide();
+                            });
+
+                            // Layout
+                            apply_layout(json.layout);
+                            init_all();
+                            nos_fixed_content.scrollTop = old_scroll_top;
+                            $previews.addClass('ui-state-hover');
+                            setTimeout(function() {
+                                $previews.removeClass('ui-state-hover');
+                            }, 500);
                         }
-                        var $previews = $(); // $([]) in jQuery < 1.4
-                        $fields_container.append($fields);
-                        $fields = $fields.not('script');
-                        $fields.nosFormUI();
-                        $fields.each(function() {
-                            var $field = $(this);
-                            on_field_added($field, params);
-                            $field.hide();
-                            $previews = $previews.add($field.data('preview'));
-                        });
-                        apply_layout(json.layout);
-                        init_all();
-                        nos_fixed_content.scrollTop = old_scroll_top;
-                        $previews.addClass('ui-state-hover');
-                        setTimeout(function() {
-                            $previews.removeClass('ui-state-hover');
-                        }, 500);
                     }
                 });
             }
 
-            // Add a new field when clicking the "Add" button, either at top or bottom
-            $blank_slate.on('click', 'label', add_fields_blank_slate);
-
             function on_field_added($field, params) {
-                var $type = find_field($field, 'field_type');
-                if ($type.length == 0) {
+                var $driver = find_field($field, 'field_driver');
+                if ($driver.length == 0) {
                     // Submit informations
                     return;
                 }
 
                 // The clone will be wrapped into a <tr class="preview_row">
                 var $preview = get_preview($field);
+                var field_id = find_field($field, 'field_id').val();
+                $preview.attr('data-field-id', field_id);
                 $preview_container[params.where == 'top' ? 'prepend' : 'append']($preview.parent());
-                $type.trigger('change');
+                //$driver.trigger('change');
             }
 
             function get_preview($field) {
@@ -219,20 +448,6 @@ define(
                 return $preview;
             }
 
-            function on_focus_preview(preview) {
-                var $preview = $(preview);
-                var $field = $preview.data('field');
-
-                // Make the preview look "active"
-                $preview_container.find('td.preview').removeClass('ui-state-active');
-                $preview.addClass('ui-state-active');
-
-                // Show the appropriate field and position it
-                show_field($field);
-
-                find_field($field, 'field_label').focus();
-            }
-
             function show_field($field) {
                 $fields_container.find('.show_hide').show();
                 if ($field.is('.field_enclosure') && !$field.is('.page_break')) {
@@ -248,7 +463,6 @@ define(
             }
 
             function set_field_padding($focus) {
-
                 $focus = $focus || $preview_container.find('.preview.ui-state-active');
                 if ($focus.length == 0) {
                     $focus = $submit_informations.not(':not(.ui-state-active)');
@@ -262,18 +476,6 @@ define(
                 }
             }
 
-            $preview_container.on('click', 'td.preview', function onClickPreview(e) {
-                e.preventDefault();
-                on_focus_preview(this);
-            });
-
-            // Duplicate a field
-            $preview_container.on('click', '[data-id=copy]', function onClickCopy(e) {
-                e.preventDefault();
-                // Don't bubble to .preview container
-                e.stopPropagation();
-            });
-
             // Delete a preview + field
             function delete_preview() {
                 var $preview = $(this);
@@ -286,137 +488,28 @@ define(
                 });
             }
 
-            // Delete listener
-            $fields_container.on('click', '[data-id=delete]', function on_delete(e) {
-                e.preventDefault();
-                // Don't bubble to .preview container
-                e.stopPropagation();
-                if (confirm($.nosCleanupTranslation(options.textDelete))) {
-                    delete_preview.call($preview_container.find('.preview.ui-state-active'));
-                }
-            });
-
             function show_when($field, name, show) {
                 find_field($field, name).closest('p')[show ? 'show' : 'hide']()
             }
 
-            // When the "field_type" changes
-            $fields_container.on('change', 'select[name*="[field_type]"]', function on_type_change(e) {
-                var type = $(this).val();
-                var $field = $(this).closest('.field_enclosure');
-                var $inject_origin_after = null;
+            function getDriverConfig(driverClass) {
+                var config = options.driversConfig[driverClass] || {};
+                return config.config;
+            }
 
-                if (is_expert && -1 !== $.inArray(type, ['text', 'email', 'number', 'textarea'])) {
-                    $inject_origin_after = find_field($field, 'field_default_value').closest('p');
-                } else if (-1 !== $.inArray(type, ['hidden', 'variable'])) {
-                    $inject_origin_after = find_field($field, 'field_type').closest('p');
-                }
-
-                if ($inject_origin_after !== null) {
-                    $inject_origin_after.after(find_field($field, 'field_origin_var').closest('p'));
-                    $inject_origin_after.after(find_field($field, 'field_origin').closest('p'));
-                }
-                show_when($field, 'field_origin', $inject_origin_after !== null);
-                show_when($field, 'field_origin_var', $inject_origin_after !== null);
-
-                show_when($field, 'field_choices', -1 !== $.inArray(type, ['radio', 'checkbox', 'select']));
-                show_when($field, 'field_label', -1 === $.inArray(type, ['separator', 'message']));
-                show_when($field, 'field_message', -1 !== $.inArray(type, ['message']));
-                show_when($field, 'field_name', -1 !== $.inArray(type, ['hidden']));
-                show_when($field, 'field_details', -1 === $.inArray(type, ['hidden', 'variable', 'separator']));
-                show_when($field, 'field_mandatory', -1 === $.inArray(type, ['hidden', 'variable', 'checkbox', 'separator']));
-                show_when($field, 'field_default_value', -1 === $.inArray(type, ['variable', 'separator']));
-                show_when($field, 'field_style', -1 !== $.inArray(type, ['message']));
-                show_when($field, 'field_width', -1 !== $.inArray(type, ['text']));
-                show_when($field, 'field_height', -1 !== $.inArray(type, ['textarea']));
-                show_when($field, 'field_limited_to', -1 !== $.inArray(type, ['text']));
-
-                // if the mandatory field is not visible, it needs to be unchecked...
-                var $field_mandatory = find_field($field, 'field_mandatory');
-                if ($field_mandatory.closest('p').css('display') === 'none') {
-                    $field_mandatory.prop('checked', false);
-                }
-
-                // The 'type' field is for sure in the first wijmo-wijaccordion-content so we know $field IS an .accordion too
-                // So the selectedIndex is for sure '0'
-                $field.find('.wijmo-wijaccordion-content').each(function() {
-                    var $accordion_content = $(this);
-                    // We need to select the appropriate index with wijaccordion() prior to changing the style or it's all messed up
-                    if ($accordion_content.find(':input').filter(function() {
-                        return $(this).closest('p').css('display') != 'none';
-                    }).length == 0) {
-                        // wijaccordion('activate', 0) does not work properly.
-
-                        // Hide .accordion-header
-                        $accordion_content.prev().hide();
-                    } else {
-                        $accordion_content.prev().show();
-                    }
-                });
-
-                // Generate default value before preview, because the preview uses it
-                generate_default_value($field);
-                $field.find('[name*="[field_label]"]').trigger('change');
-                $field.find('[name*="[field_style]"]').trigger('change');
-                generate_preview.call($field.get(0), e);
-            });
-
-            $fields_container.on('blur', 'textarea[name*="[field_choices]"]', function regenerate_default_value(e) {
-                var $field = $(this).closest('.field_enclosure');
-                generate_default_value($field);
-            });
-
-            $fields_container.on('change', 'select[name*="[field_style]"]', function on_style_change(e) {
-                var style = $(this).val();
-                var $field = $(this).closest('.field_enclosure');
-                var $message = $field.find('[name*="[field_message]"]');
-                var $new = $(style == 'p' ? '<textarea rows="4"></textarea>' : '<input type="text" />');
-
-                $new.attr({
-                    name: $message.attr('name'),
-                    id: $message.attr('id')
-                });
-                $new.val($message.val());
-
-                $new.insertAfter($message);
-                $message.remove();
-                $new.parent().nosFormUI();
-                // Converting textarea to input will loose line breaks
-                $new.trigger('change');
-            });
-
-            $fields_container.on('change', 'input[name*="[field_mandatory]"]', function on_change_field_mandatory(e) {
-                var $field = $(this).closest('.field_enclosure');
-                generate_default_value($field);
-            });
+            function getDriverName(driverClass) {
+                var config = options.driversConfig[driverClass] || {};
+                return config.name;
+            }
 
             function find_field($context, field_name) {
                 return $context.find('[name*="[' + field_name + ']"]');
             }
 
-
-            function generate_label(e) {
-                var $field = $(this).closest('.field_enclosure');
-                var $preview = $field.data('preview');
-                if (!$preview) {
-                    return;
-                }
-                var $label = $preview.find('label.preview_label');
-                var is_mandatory = find_field($field, 'field_mandatory').is(':checked');
-                $label.text(find_field($field, 'field_label').val() + (is_mandatory ? ' *' : ''));
-                if ($(this).is(':visible')) {
-                    $label.show();
-                } else {
-                    $label.hide();
-                }
-            }
-
-            // Events that regenerates the preview label
-            $fields_container.on('change keyup', 'input[name*="[field_label]"]', generate_label);
-            $fields_container.on('change', 'input[name*="[field_mandatory]"]', generate_label);
-
+            // @todo refacto
             function generate_default_value($field) {
 
+                var driver = find_field($field, 'field_driver').val();
                 var type = find_field($field, 'field_type').val();
                 var $default_value = find_field($field, 'field_default_value');
                 var choices = find_field($field, 'field_choices').val();
@@ -470,13 +563,56 @@ define(
                     });
                     $new.first().val(value.join(','));
                     // Event doesn't seems to trigger with the hidden field on a delegated handler
-                    generate_preview.call(this, e);
+                    generate_preview_content.call(this, e);
                 });
                 $checkboxes.first().trigger('change');
             }
 
-            function generate_preview(e) {
+            /**
+             * Gets the $field data (properties values)
+             *
+             * @param $field
+             * @returns {*}
+             */
+            function getFieldData($field)
+            {
+                var data = $field.find(':input').serializeArray();
+                for (var i = 0; i < data.length; i++) {
+                    // Removes data name prefix
+                    data[i].name = data[i].name.replace(/field\[[0-9]*\]\[([^\]]+)\]/, "$1")
+                }
+                return data;
+            }
+
+            /**
+             * Generates the preview label
+             *
+             * @param e
+             */
+            function generate_preview_label(e) {
                 var $field = $(this).closest('.field_enclosure');
+                var $preview = $field.data('preview');
+                if (!$preview) {
+                    return;
+                }
+                var $label = $preview.find('label.preview_label');
+                var is_mandatory = find_field($field, 'field_mandatory').is(':checked');
+                $label.text(find_field($field, 'field_label').val() + (is_mandatory ? ' *' : ''));
+                if ($(this).is(':visible')) {
+                    $label.show();
+                } else {
+                    $label.hide();
+                }
+            }
+
+            /**
+             * Generates the preview content
+             *
+             * @param e
+             */
+            function generate_preview_content(e) {
+                var $field = $(this).closest('.field_enclosure');
+                var field_id = find_field($field, 'field_id').val();
                 var type = find_field($field, 'field_type').val();
                 var choices = find_field($field, 'field_choices').val();
                 var width = find_field($field, 'field_width').val();
@@ -487,82 +623,41 @@ define(
                 var html = '';
                 var default_value_value = find_field($field, 'field_default_value').val().split(',');
 
-                if (type == 'text' || type == 'email' || type == 'number' || type == 'date' || type == 'file') {
-                    var size = '';
-                    if (width != '') {
-                        size = ' size="' + width + '"';
-                    }
-                    html = '<input type="text" ' + size + ' value="' + default_value_value.join('') + '" ∕>';
-                }
+                // @todo Ajax request to get the preview
+                // Gets field data
+                var fieldData = getFieldData($field);
 
-                if (type == 'textarea') {
-                    var cols = '';
-                    if (height != '') {
-                        cols = ' rows="' + height + '"';
-                    }
-                    html = '<textarea' + cols + '>' + default_value_value.join('') + '</textarea>';
-                }
+                $.ajax({
+                    url: 'admin/noviusos_form/form/render_field_preview/'+field_id,
+                    type: "POST",
+                    dataType: 'json',
+                    data: {
+                        fieldData: JSON.stringify(fieldData)
+                    },
+                    success: function(json) {
+                        if (typeof json.preview !== 'undefined') {
 
-                if (type == 'radio') {
-                    $.each(choices.split("\n"), function(i, text) {
-                        html += '<p><label><input type="radio" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text + '</label></p>';
-                    });
-                }
+                            var html = json.preview;
 
-                if (type == 'checkbox') {
-                    $.each(choices.split("\n"), function(i, text) {
-                        html += '<p><label><input type="checkbox" value="' + i + '" ' + (-1 !== $.inArray(i + '', default_value_value) ? 'checked' : '') + ' />' + text + '</label></p>';
-                    });
-                }
+                            // Appends the details
+                            if (details != '') {
+                                html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
+                            }
 
-                if (type == 'select') {
-                    html += '<select>';
-                    html += '<option value=""></option>';
-                    $.each(choices.split("\n"), function(i, text) {
-                        var content = text.match(/([^\\\][^=]|\\=)+/g);
+                            // Updates preview HTML
+                            $td.html(html);
 
-                        for (i in content) {
-                            content[i] = content[i].replace(/\\=/, '=');
+                            refreshPreviewHeight($preview.closest('tr'));
                         }
+                    }
+                });
 
-                        var value = content.length > 1 ? content[1] : i + '';
-                        var text = content[0];
-                        html += '<option value="' + value + '" ' + (-1 !== $.inArray(value, default_value_value) ? 'selected' : '') + '>' + text + '</option>';
-                    });
-                    html += '</select>';
-                }
-
-                if (type == 'message') {
-                    var message = find_field($field, 'field_message').val().replace(/\n/g, '<br />');
-                    var style = find_field($field, 'field_style').val();
-                    html += '<' + style + '>' + message + '</' + style + '>';
-                }
-
-                if (type == 'separator') {
-                    html += '<hr />';
-                }
-
+                // @todo migrate to a driver
                 if (type == 'page_break') {
                     $preview.addClass('page_break ui-widget-header');
                     //$preview.find('.resizable').removeClass('.resizable');
                 }
-
-                if (details != '') {
-                    html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
-                }
-
-                $td.html(html);
-
-                refreshPreviewHeight($preview.closest('tr'));
             }
-
-            // Events that regenerates the preview content
-            $fields_container.on('change keyup', 'textarea[name*="[field_choices]"]', generate_preview);
-            $fields_container.on('change keyup', '[name*="[field_message]"]', generate_preview);
-            $fields_container.on('change keyup', '[name*="[field_default_value]"]', generate_preview);
-            $fields_container.on('change keyup', 'input[name*="[field_width]"]', generate_preview);
-            $fields_container.on('change keyup', 'input[name*="[field_height]"]', generate_preview);
-            $fields_container.on('change keyup', 'textarea[name*="[field_details]"]', generate_preview);
 
             function refreshPreviewHeight($tr) {
                 ($tr || $preview_container.find('tr')).css('height', '').each(function sameHeight() {
@@ -688,8 +783,6 @@ define(
                     }
                 });
             }
-
-            var $sortable;
 
             function init_sortable() {
                 try {
@@ -852,8 +945,6 @@ define(
                 }
             }
 
-            var $resizable;
-
             function init_resizable() {
                 try {
                     $resizable.destroy();
@@ -885,13 +976,6 @@ define(
                 refreshPreviewHeight($tr);
             }
 
-            $fields_container.children('.field_enclosure').each(function onEachFields() {
-                var $field = $(this);
-                on_field_added($field, {where: 'bottom'});
-                $field.hide();
-            });
-            $fields_container.find('.show_hide').hide();
-
             function apply_layout(layout) {
                 $.each(layout.split("\n"), function layoutLines() {
                     var $previous = null;
@@ -913,47 +997,6 @@ define(
                     });
                 });
             }
-
-            apply_layout($layout.val());
-
-            // init all the thing
-            init_all();
-            setTimeout(function() {
-                refreshPreviewHeight();
-            }, 100);
-
-            is_new && add_fields_blank_slate(null, 'default');
-
-            var $form_captcha = $container.find('[name=form_captcha]'),
-                $form_submit_label = $container.find('[name=form_submit_label]'),
-                $form_submit_email = $container.find('[name=form_submit_email]');
-
-            $form_captcha.on('change', function() {
-                $submit_informations.find('.form_captcha')[$(this).is(':checked') ? 'show' : 'hide']();
-            }).trigger('change');
-
-            $form_submit_label.on('change keyup', function() {
-                $submit_informations.find('input:last').val($(this).val());
-            }).trigger('change');
-
-            $form_submit_email.on('change keyup', function() {
-                var mail = $.trim($(this).val());
-                $submit_informations.find('.form_submit_email')
-                    .find('span:first')
-                    .html(mail.replace('\n', ', ', 'g'))
-                    .end()
-                    .find('span:last')[mail ? 'hide': 'show']();
-            }).trigger('change');
-
-            $submit_informations.on('click', function() {
-                $container.find('.preview').removeClass('ui-state-active');
-                var $accordion = $form_submit_label.closest('.accordion');
-                show_field($accordion);
-                hide_field();
-                set_field_padding($submit_informations);
-                $submit_informations.addClass('ui-state-active');
-                $container.find('.preview_arrow').show();
-            });
 
 
             // Firefox needs this <colgroup> to size the td[colspan] properly
