@@ -32,6 +32,9 @@ class Field_Select extends Field_Abstract
      */
     public function getPreviewHtml()
     {
+//        print_r($this->getDefaultValue());
+//        print_r($this->getChoicesList());
+//        die('@');
         return Form::select('', $this->getDefaultValue(), $this->getChoicesList());
     }
 
@@ -93,16 +96,17 @@ class Field_Select extends Field_Abstract
     {
         $choices = $this->getChoices();
         $choiceList = array();
-        foreach ($choices as $choice) {
-            if (mb_strrpos($choice, '=')) {
-                $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
+        foreach ($choices as $n => $choice) {
+            $choiceInfos = preg_split('~(?<!\\\)=~', $choice, 2);
+            if (count($choiceInfos) === 2) {
                 foreach ($choiceInfos as $key => $choiceValue) {
-                    $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
+                    $choiceInfos[$key] = str_replace('\=', '=', $choiceValue);
                 }
                 $choiceLabel = $choiceInfos[0];
                 $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $choiceLabel));
             } else {
-                $choiceLabel = $choiceValue = $choice;
+                $choiceLabel = $choice;
+                $choiceValue = $n;
             }
             $choiceList[$choiceValue] = $choiceLabel;
         }
@@ -118,7 +122,7 @@ class Field_Select extends Field_Abstract
      *
      * @return array
      */
-    protected function getHtmlAttributes()
+    public function getHtmlAttributes()
     {
         $attributes = parent::getHtmlAttributes();
 

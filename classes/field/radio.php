@@ -25,6 +25,16 @@ class Field_Radio extends Field_Abstract
             );
         }
 
+        foreach ($this->getChoices() as $i => $choice) {
+            $attributes_choice = $attributes;
+            $attributes_choice['id'] .= $i;
+            $html[] = array(
+                'field' => $this->getChoiceHtml($choice, $attributes_choice),
+                'label' => $this->getChoiceLabel($choice, $attributes_choice),
+                'template' => '{field} {label} <br />',
+            );
+        }
+
         return $html;
     }
 
@@ -35,7 +45,7 @@ class Field_Radio extends Field_Abstract
      */
     public function getPreviewHtml()
     {
-        $default_choice = $this->getDefaultValue();
+        $default_choice = $this->getFieldDefaultValue();
 
         // Builds a radio field for each choice
         $html = array();
@@ -45,8 +55,8 @@ class Field_Radio extends Field_Abstract
                     html_tag('input', array(
                         'type' => 'radio',
                         'value' => $i,
-                        'checked' => ($i === $default_choice),
-                    ))
+                        'checked' => (strval($i) === $default_choice ? 'checked': false),
+                    )).' '.$choice
                 )
             );
         }

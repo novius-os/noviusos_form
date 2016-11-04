@@ -55,7 +55,7 @@ class Field_Input extends Field_Abstract
      *
      * @return array
      */
-    protected function getHtmlAttributes()
+    public function getHtmlAttributes()
     {
         $attributes = parent::getHtmlAttributes();
 

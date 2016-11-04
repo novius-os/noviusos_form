@@ -95,8 +95,9 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         );
 
         // Registers the fields
+        $fields_config = \Arr::get($this->config, 'fields_config.fields');
         foreach ($fields_data as $field_id => $field_data) {
-            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config(\Arr::get($this->config, 'fields_config.meta.fields'), array(
+            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config($fields_config, array(
                 'save' => false,
             ));
             $this->fields_data[$field_id] = $field_data;
@@ -152,7 +153,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 'field_form_id' => '0',
                 'field_virtual_name' => uniqid(),
             );
-            foreach (\Arr::get($this->config, 'fields_config.meta.fields') as $name => $field) {
+            foreach (\Arr::get($this->config, 'fields_config.fields') as $name => $field) {
                 if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
                     continue;
                 }
@@ -172,11 +173,14 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         // Other fields
         else {
 
+            // Gets the app config
+            $appConfig = \Config::load('noviusos_form::noviusos_form', true);
+
             // Gets the field definition
             if ($layoutName == 'default') {
-                $definition = \Arr::get($this->config, 'fields_config.layout.default.definition', array());
+                $definition = \Arr::get($appConfig, 'default_fields_layout.definition', array());
             } else {
-                $definition = \Arr::get($this->config, 'fields_config.layout.available.'.$layoutName.'.definition', array());
+                $definition = \Arr::get($appConfig, 'available_fields_layouts.'.$layoutName.'.definition', array());
             }
             if (empty($definition)) {
                 throw new \Exception('Field definition not found.');
@@ -260,21 +264,24 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     /**
      * Handles the request to displays a new field in a JSON response
      *
-     * @param $field_id
+     * @param Model_Field $field
      * @throws \Exception
      */
-    public function action_render_field_preview($field_id)
+    public function action_render_field_preview($field)
     {
-        $field_id = intval($field_id);
+        if (!is_a($field, Model_Field::class)) {
 
-        // Gets the field or forge a new one
-        if (!empty($field_id)) {
-            $field = Model_Field::find($field_id);
-            if (empty($field)) {
-                throw new \Exception(__('Field not found.'));
+            $field_id = intval($field);
+
+            // Gets the field or forge a new one
+            if (!empty($field_id)) {
+                $field = Model_Field::find($field_id);
+                if (empty($field)) {
+                    throw new \Exception(__('Field not found.'));
+                }
+            } else {
+                $field = Model_Field::forge();
             }
-        } else {
-            $field = Model_Field::forge();
         }
 
         // Gets the field data
@@ -378,8 +385,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
      *
      * @param Model_Field $field
      * @return string
-     * @throws \Exception
-     * @throws \FuelException
      */
     protected function render_field_preview(Model_Field $field)
     {
@@ -410,7 +415,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         static $auto_id_increment = 1;
 
         // Gets the fields config
-        $fields_config = \Arr::get($this->config, 'fields_config.meta.fields');
+        $fields_config = \Arr::get($this->config, 'fields_config.fields');
         if ($field->field_type == 'page_break') {
             $fields_config['field_type']['form']['options'] = array('page_break' => __('Page break'));
         }
@@ -426,16 +431,25 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             }
         }
 
+        $fields_view_params = array();
+
+        // Builds the view params
+        $fields_view_params = array(
+            'layout' => array(),
+            'js_file' => null,
+            'fieldset' => $fieldset,
+        );
+
         // Builds the layout
-        $layout = \Arr::get($this->config, 'fields_config.meta.layout');
+        $layout = \Arr::get($this->config, 'fields_config.layout');
         $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
         if (!empty($fieldDriver)) {
 
-            // Gets the field meta layout
+            // Gets the field config
             $fieldConfig = $fieldDriver::getConfig();
-            $fieldMetaLayout = \Arr::get($fieldConfig, 'meta.layout', array());
 
             // Merges the field layout with the default layout
+            $fieldMetaLayout = \Arr::get($fieldConfig, 'admin.layout', array());
             if (!empty($fieldMetaLayout)) {
 
                 $layoutAccordions = \Arr::get($layout, 'standard.params.accordions', array());
@@ -470,13 +484,13 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
                 \Arr::set($layout, 'standard.params.accordions', $layoutAccordions);
             }
+
+            $fields_view_params['layout'] = $layout;
+
+            // Sets the js_file if specified
+            $fields_view_params['js_file'] = \Arr::get($fieldConfig, 'admin.js_file');
         }
 
-        // Builds the view params
-        $fields_view_params = array(
-            'layout' => $layout,
-            'fieldset' => $fieldset,
-        );
         $fields_view_params['view_params'] = &$fields_view_params;
 
         // Renders the field content
@@ -512,7 +526,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         );
 
         // Gets the default values
-        foreach (\Arr::get($this->config, 'fields_config.meta.fields') as $name => $field) {
+        foreach (\Arr::get($this->config, 'fields_config.fields') as $name => $field) {
             if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
                 continue;
             }

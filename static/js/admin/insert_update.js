@@ -17,14 +17,16 @@ define(
         return function(id, options, is_new, is_expert) {
             var $container = $(id);
 
+            var $resizable;
+            var $sortable;
+
             var $preview_container = $container.find('.preview_container');
             var $fields_container = $container.find('.fields_container');
             var $layout = $container.closest('form').find('[name=form_layout]');
             var $submit_informations = $container.find('.submit_informations');
             var $currentTab = $('.nos-ostabs-panel.ui-widget-content:not(".nos-ostabs-hide")');
 
-            var $resizable;
-            var $sortable;
+            var throttle = new ThrottleRequest(800);
 
             $fields_container.show();
             $submit_informations.show();
@@ -69,7 +71,7 @@ define(
                             return;
                         }
                         j == 0 || (layout += ',');
-                        layout += find_field($field, 'field_id').val() + '=' + get_cell_colspan($preview);
+                        layout += getFieldProperty($field, 'field_id').val() + '=' + getCellColspan($preview);
                     });
                 });
                 $layout.val(layout);
@@ -136,16 +138,19 @@ define(
                 var params_button = $(this).data('params');
                 $blank_slate.data('params', params_button);
                 if (params_button.type == 'page_break') {
-                    add_fields_blank_slate(e, 'page_break');
+                    createLayoutFields('page_break');
                 } else {
                     $(this).closest('p')[params_button.where == 'top' ? 'after' : 'before']($blank_slate);
                     $blank_slate.show();
-                    set_field_padding();
+                    setLayoutPadding();
                 }
             });
 
             // Add a new field when clicking the "Add" button, either at top or bottom
-            $blank_slate.on('click', 'label', add_fields_blank_slate);
+            $blank_slate.on('click', 'label', function(event) {
+                event.preventDefault();
+                createLayoutFields($(this).data('layout-name'));
+            });
 
             // Handles click on a preview
             $preview_container.on('click', 'td.preview', function onClickPreview(e) {
@@ -159,10 +164,10 @@ define(
                 $preview.addClass('ui-state-active');
 
                 // Show the appropriate field and position it
-                show_field($field);
+                showField($field);
 
                 // Auto focus the label field
-                find_field($field, 'field_label').focus();
+                getFieldProperty($field, 'field_label').focus();
             });
 
             // Handles field duplication
@@ -178,14 +183,18 @@ define(
                 // Don't bubble to .preview container
                 e.stopPropagation();
                 if (confirm($.nosCleanupTranslation(options.textDelete))) {
-                    delete_preview.call($preview_container.find('.preview.ui-state-active'));
+                    // Gets
+                    var $field = getSelectedField();
+                    if ($field) {
+                        deleteField($field);
+                    }
                 }
             });
 
             // Handles field driver change
-            $fields_container.on('change', 'select[name*="[field_driver]"]', function on_type_change(e) {
+            $fields_container.on('change', 'select[name$="[field_driver]"]', function on_type_change(e) {
                 var $field = $(this).closest('.field_enclosure');
-                var field_id = find_field($field, 'field_id').val();
+                var field_id = getFieldProperty($field, 'field_id').val();
 
                 // Gets the field data
                 var fieldData = getFieldData($field);
@@ -200,7 +209,7 @@ define(
                     },
                     success: function(json) {
 
-                        var $preview = $field.data('preview');
+                        var $preview = getFieldPreviewElement($field);
 
                         // Updates the field meta
                         if (json.meta) {
@@ -213,15 +222,16 @@ define(
 
                             // Restores the link between the field and the preview
                             $field.data('preview', $preview);
-                            $preview.data('field', $field);
+                            $preview.data('field', $field.not('script'));
                         }
 
                         // Updates the field preview
+                        refreshFieldPreviewLabel($field);
                         if (typeof json.preview !== 'undefined') {
                             var html = json.preview;
 
                             // Appends the details
-                            var details = find_field($field, 'field_details').val();
+                            var details = getFieldProperty($field, 'field_details').val();
                             if (details != '') {
                                 html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
                             }
@@ -231,7 +241,7 @@ define(
 
                             refreshPreviewHeight($preview.closest('tr'));
                         } else {
-                            generate_preview_content.call($field.get(0), e);
+                            refreshFieldPreviewContent($field);
                         }
 
                         // The 'type' field is for sure in the first wijmo-wijaccordion-content so we know $field IS an .accordion too
@@ -252,25 +262,19 @@ define(
                         });
 
                         // Generate default value before preview, because the preview uses it
-                        generate_default_value($field);
+                        //generateFieldDefaultValue($field);
 
-                        $field.find('[name*="[field_label]"]').trigger('change');
-                        $field.find('[name*="[field_style]"]').trigger('change');
+                        $field.find('[name$="[field_label]"]').trigger('change');
+                        $field.find('[name$="[field_style]"]').trigger('change');
                     }
                 });
             });
 
-            // Handles textarea choices change
-            $fields_container.on('blur', 'textarea[name*="[field_choices]"]', function regenerate_default_value(e) {
-                var $field = $(this).closest('.field_enclosure');
-                generate_default_value($field);
-            });
-
             // Handles style change
-            $fields_container.on('change', 'select[name*="[field_style]"]', function on_style_change(e) {
+            $fields_container.on('change', 'select[name$="[field_style]"]', function on_style_change(e) {
                 var style = $(this).val();
                 var $field = $(this).closest('.field_enclosure');
-                var $message = $field.find('[name*="[field_message]"]');
+                var $message = $field.find('[name$="[field_message]"]');
                 var $new = $(style == 'p' ? '<textarea rows="4"></textarea>' : '<input type="text" />');
 
                 $new.attr({
@@ -286,41 +290,65 @@ define(
                 $new.trigger('change');
             });
 
-            // Handles mandatory change
-            $fields_container.on('change', 'input[name*="[field_mandatory]"]', function on_change_field_mandatory(e) {
-                var $field = $(this).closest('.field_enclosure');
-                generate_default_value($field);
-            });
+            //// Handles mandatory change
+            //$fields_container.on('change', 'input[name$="[field_mandatory]"]', function on_change_field_mandatory(e) {
+            //    var $field = $(this).closest('.field_enclosure');
+            //    generateFieldDefaultValue($field);
+            //});
 
             // Keeps preview label in sync
-            $fields_container.on('change keyup', 'input[name*="[field_label]"]', generate_preview_label);
-            $fields_container.on('change', 'input[name*="[field_mandatory]"]', generate_preview_label);
+            $fields_container.on('change keyup', 'input[name$="[field_label]"]', function() {
+                refreshFieldPreviewLabel($(this).closest('.field_enclosure'));
+            });
+            $fields_container.on('change', 'input[name$="[field_mandatory]"]', function() {
+                refreshFieldPreviewLabel($(this).closest('.field_enclosure'));
+            });
 
             // Events that regenerates the preview content
-            $fields_container.on('change keyup', 'textarea[name*="[field_choices]"]', generate_preview_content);
-            $fields_container.on('change keyup', '[name*="[field_message]"]', generate_preview_content);
-            $fields_container.on('change keyup', '[name*="[field_default_value]"]', generate_preview_content);
-            $fields_container.on('change keyup', 'input[name*="[field_width]"]', generate_preview_content);
-            $fields_container.on('change keyup', 'input[name*="[field_height]"]', generate_preview_content);
-            $fields_container.on('change keyup', 'textarea[name*="[field_details]"]', generate_preview_content);
+            $fields_container.on('change keyup',
+                 'textarea[name$="[field_choices]"],'
+                +'[name$="[field_message]"],'
+                +'[name$="[field_default_value]"],'
+                +'input[name$="[field_width]"],'
+                +'input[name$="[field_height]"],'
+                +'textarea[name$="[field_details]"]',
+                function() {
+                    refreshFieldPreviewContent($(this).closest('.field_enclosure'));
+                }
+            );
 
+            //// Handles textarea choices change
+            //$fields_container.on('blur change', 'textarea[name$="[field_choices]"]', function regenerateFieldDefaultValue(e) {
+            //    refreshFieldPreviewContent($(this).closest('.field_enclosure'));
+            //});
+
+            // Can be triggered by custom field scripts
+            $fields_container.on('refreshPreview', '.field_enclosure', function() {
+                var $field = $(this);
+                refreshFieldPreviewContent($field);
+                refreshFieldPreviewLabel($field);
+            });
+
+            // Initializes the fields meta
             $fields_container.children('.field_enclosure').each(function onEachFields() {
                 var $field = $(this);
-                on_field_added($field, {where: 'bottom'});
+                onFieldAdded($field, 'bottom');
                 $field.hide();
             });
-            $fields_container.find('.show_hide').hide();
+            hideFieldActions();
 
-            apply_layout($layout.val());
-
-            // init all the thing
-            init_all();
+            // Initializes the preview layout
+            applyPreviewLayout($layout.val());
             setTimeout(function() {
                 refreshPreviewHeight();
             }, 100);
 
-            is_new && add_fields_blank_slate(null, 'default');
+            // If it's a new form then creates the default fields layout
+            if (is_new) {
+                createLayoutFields('default');
+            }
 
+            // Initializes the form submit configuration
             var $form_captcha = $container.find('[name=form_captcha]'),
                 $form_submit_label = $container.find('[name=form_submit_label]'),
                 $form_submit_email = $container.find('[name=form_submit_email]');
@@ -345,60 +373,65 @@ define(
             $submit_informations.on('click', function() {
                 $container.find('.preview').removeClass('ui-state-active');
                 var $accordion = $form_submit_label.closest('.accordion');
-                show_field($accordion);
-                hide_field();
-                set_field_padding($submit_informations);
+                showField($accordion);
+                hideField();
+                setLayoutPadding($submit_informations);
                 $submit_informations.addClass('ui-state-active');
                 $container.find('.preview_arrow').show();
             });
 
-            function add_fields_blank_slate(e, type) {
-                e && e.preventDefault();
-                var params = {
-                    where: ($blank_slate.data('params') || {}).where || 'bottom',
-                    type: type || $(this).data('meta')
-                };
+            /**
+             * Creates the specified layout's fields
+             *
+             * @param layoutName
+             */
+            function createLayoutFields(layoutName) {
+                var where = ($blank_slate.data('params') || {}).where || 'bottom';
 
                 var nos_fixed_content = $container.closest('.nos-fixed-content').get(0);
                 var old_scroll_top = nos_fixed_content.scrollTop;
                 $.ajax({
-                    url: 'admin/noviusos_form/form/render_layout/' + params.type,
+                    url: 'admin/noviusos_form/form/render_layout/'+layoutName,
                     dataType: 'json',
                     success: function(json) {
                         $blank_slate.hide();
 
                         if (json.fields && json.layout) {
 
-                            // Fields
+                            // Gets the fields
                             var $fields = $(json.fields.join(''));
-                            if (params.where == 'top') {
+                            if (where == 'top') {
                                 $fields = $($fields.get().reverse());
                             }
-                            var $previews = $(); // $([]) in jQuery < 1.4
+
+                            // Injects the fields
                             $fields_container.append($fields);
                             $fields = $fields.not('script');
                             $fields.nosFormUI();
+
+                            // Initializes the fields
+                            var $previews = $();
                             $fields.each(function(index) {
                                 var $field = $(this);
-                                on_field_added($field, params);
+
+                                onFieldAdded($field, where);
 
                                 // Creates the preview
-                                var $preview = $field.data('preview');
+                                var $preview = getFieldPreviewElement($field);
                                 if ($preview) {
                                     if (json.previews && json.previews[index]) {
                                         var $td = $preview.find('div.preview_content');
                                         $td.html(json.previews[index]);
                                     }
-                                    generate_preview_label.apply($field.get(0));
+                                    refreshFieldPreviewLabel($field);
                                     $previews = $previews.add($preview);
                                 }
 
                                 $field.hide();
                             });
 
-                            // Layout
-                            apply_layout(json.layout);
-                            init_all();
+                            // Initializes the preview layout
+                            applyPreviewLayout(json.layout);
                             nos_fixed_content.scrollTop = old_scroll_top;
                             $previews.addClass('ui-state-hover');
                             setTimeout(function() {
@@ -409,24 +442,87 @@ define(
                 });
             }
 
-            function on_field_added($field, params) {
-                var $driver = find_field($field, 'field_driver');
+            /**
+             * Shows the field actions
+             */
+            function showFieldActions() {
+                $fields_container.find('.show_hide').show();
+            }
+
+            /**
+             * Hides the field actions
+             */
+            function hideFieldActions() {
+                $fields_container.find('.show_hide').hide();
+            }
+
+            /**
+             * Called after a field is added
+             *
+             * @param $field
+             * @param where
+             */
+            function onFieldAdded($field, where) {
+                var $driver = getFieldProperty($field, 'field_driver');
                 if ($driver.length == 0) {
                     // Submit informations
                     return;
                 }
 
                 // The clone will be wrapped into a <tr class="preview_row">
-                var $preview = get_preview($field);
-                var field_id = find_field($field, 'field_id').val();
+                var $preview = getOrCreateFieldPreview($field);
+                var field_id = getFieldProperty($field, 'field_id').val();
                 $preview.attr('data-field-id', field_id);
-                $preview_container[params.where == 'top' ? 'prepend' : 'append']($preview.parent());
+                $preview_container[where == 'top' ? 'prepend' : 'append']($preview.parent());
                 //$driver.trigger('change');
             }
 
-            function get_preview($field) {
+            /**
+             * Show the field
+             * 
+             * @param $field
+             */
+            function showField($field) {
+                
+                // Show the field actions
+                showFieldActions();
 
-                var $preview = $field.data('preview');
+                if ($field.is('.field_enclosure') && !$field.is('.page_break')) {
+                    $field.show();
+                    $field.nosOnShow();
+                }
+
+                // Hides others fields
+                $field.siblings('.field_enclosure').hide();
+
+                setLayoutPadding();
+                var $submit_label = getFieldProperty($field, 'field_submit_label');
+                if ($submit_label.length == 0) {
+                    $submit_informations.removeClass('ui-state-active');
+                }
+            }
+
+            /**
+             * Hides the field
+             * 
+             * @param $field
+             */
+            function hideField($field) {
+                hideFieldActions();
+                if ($field) {
+                    $field.hide();
+                }
+            }
+
+            /**
+             * Gets or create the field preview
+             *
+             * @param $field
+             * @returns {*}
+             */
+            function getOrCreateFieldPreview($field) {
+
+                var $preview = getFieldPreviewElement($field);
                 if ($preview) {
                     return $preview;
                 }
@@ -434,7 +530,7 @@ define(
                 // Generate a new preview
                 var $clone = $clone_preview.clone();
                 $preview = $clone.find('td.preview');
-                set_cell_colspan($preview, 4);
+                setCellColspan($preview, 4);
 
                 $field.data('preview', $preview);
                 $preview.data('field', $field);
@@ -448,124 +544,126 @@ define(
                 return $preview;
             }
 
-            function show_field($field) {
-                $fields_container.find('.show_hide').show();
-                if ($field.is('.field_enclosure') && !$field.is('.page_break')) {
-                    $field.show();
-                    $field.nosOnShow();
+            /**
+             * Gets the field preview element
+             *
+             * @param $field
+             * @returns {*|boolean}
+             */
+            function getFieldPreviewElement($field)
+            {
+                if (!$field || !$field.data('preview')) {
+                    return false;
                 }
-                $field.siblings('.field_enclosure').hide();
-                set_field_padding();
-                var $submit_label = find_field($field, 'field_submit_label');
-                if ($submit_label.length == 0) {
-                    $submit_informations.removeClass('ui-state-active');
+                return $field.data('preview');
+            }
+
+            /**
+             * Deletes a field
+             *
+             * @param $field
+             */
+            function deleteField($field) {
+                // Gets the linked preview
+                var $preview = getFieldPreviewElement($field);
+
+                $field.remove();
+
+                hideFieldActions();
+
+                // Removes the preview
+                if ($preview) {
+                    $preview.addClass('ui-state-error').hide(500, function () {
+                        $preview.remove();
+                        initPreviewLayout();
+                    });
                 }
             }
 
-            function set_field_padding($focus) {
-                $focus = $focus || $preview_container.find('.preview.ui-state-active');
-                if ($focus.length == 0) {
-                    $focus = $submit_informations.not(':not(.ui-state-active)');
+            /**
+             * Sets the layout padding
+             * 
+             * @param $target
+             */
+            function setLayoutPadding($target) {
+                $target = $target || $preview_container.find('.preview.ui-state-active');
+                if ($target.length == 0) {
+                    $target = $submit_informations.not(':not(.ui-state-active)');
                 }
-                if ($focus.length > 0) {
-                    var diff = $focus.is('.submit_informations') ? 14 : -40;
-                    var pos = $focus.position();
+                if ($target.length > 0) {
+                    var diff = $target.is('.submit_informations') ? 14 : -40;
+                    var pos = $target.position();
                     $fields_container.css({
                         paddingTop: Math.max(0, pos.top + diff) + 'px' // 29 = arrow height
                     });
                 }
             }
 
-            // Delete a preview + field
-            function delete_preview() {
-                var $preview = $(this);
+            /**
+             * Gets the selected field
+             *
+             * @returns {boolean}
+             */
+            function getSelectedField() {
+                // Gets the active preview
+                var $preview = $preview_container.find('.preview.ui-state-active');
+
+                // Gets the related field
                 var $field = $preview.data('field');
-                $field.remove();
-                hide_field();
-                $preview.addClass('ui-state-error').hide(500, function() {
-                    $preview.remove();
-                    init_all();
-                });
+
+                return $field && $field.length ? $field : false;
             }
 
-            function show_when($field, name, show) {
-                find_field($field, name).closest('p')[show ? 'show' : 'hide']()
-            }
-
-            function getDriverConfig(driverClass) {
+            /**
+             * Gets the driver config
+             *
+             * @param driverClass
+             * @param path
+             * @param defaultValue
+             * @returns {config.config|{}}
+             */
+            function getDriverConfig(driverClass, path, defaultValue) {
                 var config = options.driversConfig[driverClass] || {};
-                return config.config;
+                if (path) {
+                    return _get(config.config, path, defaultValue);
+                } else {
+                    return config.config;
+                }
             }
 
+            /**
+             * Gets the driver name
+             * 
+             * @param driverClass
+             * @returns {*}
+             */
             function getDriverName(driverClass) {
                 var config = options.driversConfig[driverClass] || {};
                 return config.name;
             }
 
-            function find_field($context, field_name) {
-                return $context.find('[name*="[' + field_name + ']"]');
-            }
-
-            // @todo refacto
-            function generate_default_value($field) {
-
-                var driver = find_field($field, 'field_driver').val();
-                var type = find_field($field, 'field_type').val();
-                var $default_value = find_field($field, 'field_default_value');
-                var choices = find_field($field, 'field_choices').val();
-                var default_value_value = $default_value.val();
-                if (default_value_value.match(/^[0-9,]+$/)) {
-                    default_value_value = default_value_value.split(',');
-                } else {
-                    default_value_value = default_value_value.split("\n")
-                }
-                var $new = null;
-                var name = $default_value.attr('name');
-
-                if (-1 !== $.inArray(type, ['radio', 'select'])) {
-                    var html = '<select>';
-                    html += '<option value=""></option>';
-                    $.each(choices.split("\n"), function(i, choice) {
-                        var content = choice.match(/([^\\\][^=]|\\=)+/g);
-                        for (i in content) {
-                            content[i] = content[i].replace(/\\=/, '=');
+            /**
+             * Checks if the specified field name is present in any of the field meta layout
+             *
+             * @param fieldName
+             * @param field_driver
+             * @returns {boolean}
+             */
+            function isFieldInDriverMetaLayout(fieldName, field_driver) {
+                var driverConfig = getDriverConfig(field_driver);
+                if (driverConfig) {
+                    var layout = _get(driverConfig, 'admin.layout');
+                    if (typeof layout === 'object') {
+                        for (var name in layout) {
+                            if (layout.hasOwnProperty(name)) {
+                                if (typeof layout[name].fields === 'object' && $.inArray(fieldName, layout[name].fields) !== -1) {
+                                    return true;
+                                }
+                            }
                         }
-                        var value = content.length > 1 ? content[1] : i + '';
-                        var text = content[0];
-                        html += '<option value="' + value + '" ' + (default_value_value[0] == value ? 'selected' : '') + '>' + text + '</option>';
-                    });
-                    html += '</select>';
-                    $new = $(html).attr({
-                        name: $default_value.attr('name'),
-                        id: $default_value.attr('id')
-                    });
-                } else if (type == 'checkbox') {
-                    var html = '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />';
-                    $.each(choices.split("\n"), function(i, choice) {
-                        html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'checked' : '') + '> ' + choice + '</label><br />';
-                    });
-                    $new = $(html);
-                } else {
-                    var html_type = (-1 !== $.inArray(type, ['email', 'number', 'date']) ? type : 'text');
-                    $new = $(type == 'textarea' ? '<textarea rows="3" />' : '<input type="' + html_type + '" />').attr({
-                        name: $default_value.attr('name'),
-                        id: $default_value.attr('id')
-                    }).val(default_value_value);
+                    }
                 }
-                var $parent = $default_value.closest('span');
-                $parent.empty().append($new).nosFormUI();
-
-                var $checkboxes = $new.find('input.checkbox');
-                $checkboxes.on('change', function(e) {
-                    var value = [];
-                    $checkboxes.filter(':checked').each(function() {
-                        value.push($(this).val());
-                    });
-                    $new.first().val(value.join(','));
-                    // Event doesn't seems to trigger with the hidden field on a delegated handler
-                    generate_preview_content.call(this, e);
-                });
-                $checkboxes.first().trigger('change');
+                return false;
             }
 
             /**
@@ -584,72 +682,100 @@ define(
                 return data;
             }
 
+            function getFieldProperty($context, field_name) {
+                return $context.find('[name$="[' + field_name + ']"]');
+            }
+
             /**
-             * Generates the preview label
+             * Refreshes the preview label
              *
-             * @param e
+             * @param $field
              */
-            function generate_preview_label(e) {
-                var $field = $(this).closest('.field_enclosure');
-                var $preview = $field.data('preview');
+            function refreshFieldPreviewLabel($field) {
+
+                // Gets the preview element
+                var $preview = getFieldPreviewElement($field);
                 if (!$preview) {
                     return;
                 }
+
+                // Gets the preview label element
                 var $label = $preview.find('label.preview_label');
-                var is_mandatory = find_field($field, 'field_mandatory').is(':checked');
-                $label.text(find_field($field, 'field_label').val() + (is_mandatory ? ' *' : ''));
-                if ($(this).is(':visible')) {
-                    $label.show();
-                } else {
+
+                // Hides the label if not in the meta layout
+                var field_driver = getFieldProperty($field, 'field_driver').val();
+                if (!isFieldInDriverMetaLayout('field_label', field_driver)) {
                     $label.hide();
                 }
+                // Otherwise updates it
+                else {
+                    $label.text(getFieldPreviewLabel($field));
+                    $label.show();
+                }
+            }
+
+            /**
+             * Gets the preview label
+             * 
+             * @returns {*}
+             */
+            function getFieldPreviewLabel($field) {
+                // Gets the field label value
+                var label = getFieldProperty($field, 'field_label').val();
+
+                // Appends an asterisk if mandatory
+                if (getFieldProperty($field, 'field_mandatory').is(':checked')) {
+                    label += '*';
+                }
+                
+                return label;
             }
 
             /**
              * Generates the preview content
              *
-             * @param e
+             * @param $field
              */
-            function generate_preview_content(e) {
-                var $field = $(this).closest('.field_enclosure');
-                var field_id = find_field($field, 'field_id').val();
-                var type = find_field($field, 'field_type').val();
-                var choices = find_field($field, 'field_choices').val();
-                var width = find_field($field, 'field_width').val();
-                var height = find_field($field, 'field_height').val();
-                var details = find_field($field, 'field_details').val();
-                var $preview = $field.data('preview');
+            function refreshFieldPreviewContent($field) {
+                var field_id = getFieldProperty($field, 'field_id').val();
+                var type = getFieldProperty($field, 'field_type').val();
+                var details = getFieldProperty($field, 'field_details').val();
+                var $preview = getFieldPreviewElement($field);
                 var $td = $preview.find('div.preview_content');
-                var html = '';
-                var default_value_value = find_field($field, 'field_default_value').val().split(',');
 
                 // @todo Ajax request to get the preview
                 // Gets field data
                 var fieldData = getFieldData($field);
 
-                $.ajax({
-                    url: 'admin/noviusos_form/form/render_field_preview/'+field_id,
-                    type: "POST",
-                    dataType: 'json',
-                    data: {
-                        fieldData: JSON.stringify(fieldData)
-                    },
-                    success: function(json) {
-                        if (typeof json.preview !== 'undefined') {
+                throttle.request(function(done) {
+                    $.ajax({
+                        url: 'admin/noviusos_form/form/render_field_preview/'+field_id,
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            fieldData: JSON.stringify(fieldData)
+                        },
+                    }).done(function(json) {
 
-                            var html = json.preview;
+                            if (typeof json.preview !== 'undefined') {
 
-                            // Appends the details
-                            if (details != '') {
-                                html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
+                                var html = json.preview;
+
+                                // Appends the details
+                                if (details != '') {
+                                    html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
+                                }
+
+                                // Updates preview HTML
+                                $td.html(html);
+
+                                refreshPreviewHeight($preview.closest('tr'));
                             }
-
-                            // Updates preview HTML
-                            $td.html(html);
-
-                            refreshPreviewHeight($preview.closest('tr'));
-                        }
-                    }
+                        })
+                        .always(function() {
+                            done();
+                        })
+                    ;
                 });
 
                 // @todo migrate to a driver
@@ -666,7 +792,7 @@ define(
                 });
             }
 
-            function resize_to_best($tr, priority) {
+            function resizeToBest($tr, priority) {
 
                 // If there's only one padding cell, it's already good!
                 if ($tr.find('td:not(.padding)').length == 0) {
@@ -740,14 +866,14 @@ define(
                 // Resize the <td> according to the new resized valued
                 $tr.find('td.preview').each(function() {
                     //log('col size = ', $(this).data('colspan'));
-                    set_cell_colspan($(this), $(this).data('colspan'));
+                    setCellColspan($(this), $(this).data('colspan'));
                     $(this).removeData('colspan');
                 });
 
                 // Add a padding cell if necessary
                 if (total_size < 4) {
                     var $padding = $('<td class="padding">&nbsp;</td>');
-                    set_cell_colspan($padding, (4 - total_size));
+                    setCellColspan($padding, (4 - total_size));
                     //log('adding a padding cell with size = ', (4 - total_size), $padding, ' to ', $tr);
                     $tr.append($padding);
                 } else {
@@ -756,35 +882,35 @@ define(
             }
 
             // Set colspan and restore children width
-            function set_cell_colspan($td, colspan) {
+            function setCellColspan($td, colspan) {
                 $td.attr('colspan', colspan).children().css('width', 'auto');
             }
 
             // Returns the colspan, according to width
-            function get_cell_colspan($td) {
+            function getCellColspan($td) {
                 return Math.round($td.width() / col_size);
             }
 
             // Save cell width
-            function save_cell_width($tr) {
+            function saveCellWidth($tr) {
                 $tr.find('td.preview:visible').each(function() {
                     var $this = $(this);
-                    $this.data('saved_colspan', get_cell_colspan($this));
+                    $this.data('saved_colspan', getCellColspan($this));
                 })
             }
 
             // Save cell width
-            function restore_cell_width($tr) {
+            function restoreCellWidth($tr) {
                 $tr.find('td.preview:visible').each(function() {
                     var $this = $(this);
                     var saved_colspan = $this.data('saved_colspan');
                     if (saved_colspan) {
-                        set_cell_colspan($this, saved_colspan);
+                        setCellColspan($this, saved_colspan);
                     }
                 });
             }
 
-            function init_sortable() {
+            function initSortable() {
                 try {
                     $sortable.destroy();
                 } catch (e) {
@@ -799,7 +925,7 @@ define(
 
                 $preview_container.find('td.page_break').each(function() {
                     var $td = $(this);
-                    set_cell_colspan($td, 4);
+                    setCellColspan($td, 4);
                     $td.closest('tr').addClass('page_break');
                 });
 
@@ -807,14 +933,12 @@ define(
                 $preview_container.find('tr').before('<tr class="preview_row preview_inserter"><td class="padding" colspan="4">&nbsp;</td></tr>');
                 $preview_container.append('<tr class="preview_row preview_inserter"><td class="padding" colspan="4">&nbsp;</td></tr>');
 
-                //console.log('init size_to_fit_available');
                 $preview_container.find('tr.preview_row').each(function() {
-                    resize_to_best($(this));
+                    resizeToBest($(this));
                 });
 
                 // Connects only list which don't have 4 children
                 $preview_container.find('tr').removeClass('preview_row_sortable').filter(function() {
-                    //console.log($(this).children().length);
                     return $(this).children().not('.padding').length < 4;
                 }).addClass('preview_row_sortable');
 
@@ -853,7 +977,7 @@ define(
                         ui.placeholder.children().css('height', $tr.css('height'));
 
                         // Make the placeholder the same width as the original item.
-                        set_cell_colspan(ui.placeholder, get_cell_colspan(ui.helper));
+                        setCellColspan(ui.placeholder, getCellColspan(ui.helper));
                     },
                     update: function onSortableUpdate(e, ui) {
                         var $tr = ui.item.closest('tr');
@@ -863,11 +987,11 @@ define(
                         // Resize the current line on drop, or the lines above would be all messed up because the total
                         // colspan of a line below can exceed 4
                         $tr.children().css('height', $tr.css('height'));
-                        set_cell_colspan(ui.item, field_colspan);
-                        resize_to_best($tr, ui.item.get(0));
+                        setCellColspan(ui.item, field_colspan);
+                        resizeToBest($tr, ui.item.get(0));
 
                         // Re-initialise everything
-                        init_all();
+                        initPreviewLayout();
                     },
                     over: function onSortableOver(e, ui) {
                         var $tr = ui.placeholder.closest('tr');
@@ -876,25 +1000,25 @@ define(
 
                         // Save old size on over
                         ui.placeholder.hide();
-                        save_cell_width($tr);
+                        saveCellWidth($tr);
                         ui.placeholder.show();
 
                         // Firefox: height=100% on absolute div inside the position=relative cell is messed up
                         ui.placeholder.children().css('height', $tr.css('height'));
 
                         // Let's try to retain original item size
-                        set_cell_colspan(ui.placeholder, get_cell_colspan(ui.helper));
+                        setCellColspan(ui.placeholder, getCellColspan(ui.helper));
 
                         // Handle overflow (> 4 columns)
-                        resize_to_best($tr, ui.placeholder.get(0));
+                        resizeToBest($tr, ui.placeholder.get(0));
 
                         // Save appropriate colspan for the dragged field
-                        field_colspan = get_cell_colspan(ui.placeholder);
+                        field_colspan = getCellColspan(ui.placeholder);
                     },
                     out: function onSortableOut(e, ui) {
                         var $tr = ui.placeholder.closest('tr');
                         //ui.placeholder.remove();
-                        restore_cell_width($tr);
+                        restoreCellWidth($tr);
                     }
                 });
 
@@ -924,7 +1048,7 @@ define(
                         ui.placeholder.children().css('height', $tr.css('height'));
 
                         // Make the placeholder the same width as the original item.
-                        set_cell_colspan(ui.placeholder, 4);
+                        setCellColspan(ui.placeholder, 4);
                     }
                 });
             }
@@ -935,17 +1059,10 @@ define(
                     return;
                 }
                 $preview.removeClass('ui-state-active');
-                hide_field($preview.data('field'));
+                hideField($preview.data('field'));
             }
 
-            function hide_field($field) {
-                $fields_container.find('.show_hide').hide();
-                if ($field) {
-                    $field.hide();
-                }
-            }
-
-            function init_resizable() {
+            function initResizable() {
                 try {
                     $resizable.destroy();
                 } catch (e) {
@@ -964,19 +1081,29 @@ define(
                     stop: function(e, ui) {
                         var $tr = ui.element.closest('tr');
                         // Handle overflow (> 4 columns)
-                        resize_to_best($tr, ui.element.closest('td').get(0));
+                        resizeToBest($tr, ui.element.closest('td').get(0));
                         refreshPreviewHeight($tr);
                     }
                 });
             }
 
-            function init_all($tr) {
-                init_resizable();
-                init_sortable();
+            /**
+             * Initializes the preview layout
+             * 
+             * @param $tr
+             */
+            function initPreviewLayout($tr) {
+                initResizable();
+                initSortable();
                 refreshPreviewHeight($tr);
             }
 
-            function apply_layout(layout) {
+            /**
+             * Applies the preview layout
+             *
+             * @param layout
+             */
+            function applyPreviewLayout(layout) {
                 $.each(layout.split("\n"), function layoutLines() {
                     var $previous = null;
                     if (this == '') {
@@ -986,18 +1113,159 @@ define(
                         var item = this.split('=');
                         var field_id = item[0];
                         var field_width = item[1];
-                        var $preview = find_field($fields_container, 'field_id').filter(function() {
+                        var $field = getFieldProperty($fields_container, 'field_id').filter(function() {
                             return $(this).val() == field_id;
-                        }).closest('.field_enclosure').data('preview');
-                        set_cell_colspan($preview, field_width);
+                        }).closest('.field_enclosure');
+
+                        var $preview = getFieldPreviewElement($field);
+
+                        setCellColspan($preview, field_width);
                         if ($previous) {
                             $previous.after($preview);
                         }
                         $previous = $preview;
                     });
                 });
+                initPreviewLayout();
             }
 
+            function _get(obj, path, defaultValue) {
+                var value = path.split('.').reduce(function(prev, curr) {
+                    return prev ? prev[curr] : undefined
+                }, obj || self);
+                return typeof value !== 'undefined' ? value : defaultValue;
+            }
+            /**
+             * Throttle request helper
+             *
+             * @param updateThreshold
+             * @constructor
+             */
+            function ThrottleRequest(updateThreshold) {
+                var running, queuedRequest, lastTime;
+                if (typeof updateThreshold !== 'number') {
+                    updateThreshold = 1000;
+                }
+                var throttle = function(request) {
+                    running = true;
+                    var doneCallback = function triggerRequestEnd() {
+                        running = false;
+                        lastTime = +new Date;
+                        // Executes the next request with a delay
+                        if (queuedRequest) {
+                            queuedRequest();
+                            queuedRequest = null;
+                        }
+                    };
+                    if (lastTime) {
+                        var diff = (+new Date) - lastTime;
+                        if (diff < updateThreshold) {
+                            setTimeout(function () {
+                                request(doneCallback);
+                            }, updateThreshold - diff);
+                            return;
+                        }
+                    }
+                    request(doneCallback);
+                };
+
+                /**
+                 * Runs a throttled request
+                 *
+                 * @param request
+                 */
+                this.request = function(request) {
+                    if (running) {
+                        queuedRequest = function() { throttle(request); };
+                    } else {
+                        throttle(request);
+                    }
+                };
+            }
+
+            //// @todo refacto
+            //function generateFieldDefaultValue($field) {
+            //
+            //    var field_driver = getFieldProperty($field, 'field_driver').val();
+            //    var type = getFieldProperty($field, 'field_type').val();
+            //    var $default_value = getFieldProperty($field, 'field_default_value');
+            //    var choices = getFieldProperty($field, 'field_choices').val();
+            //
+            //    var $new = null;
+            //    var name = $default_value.attr('name');
+            //
+            //    // Updates the default selected value if the choice field is present
+            //    if (isFieldInDriverMetaLayout('field_choices', field_driver)) {
+            //
+            //        var default_value_value = $default_value.val();
+            //        if (default_value_value.match(/^[0-9,]+$/)) {
+            //            default_value_value = default_value_value.split(',');
+            //        } else {
+            //            default_value_value = default_value_value.split("\n")
+            //        }
+            //
+            //        var defaultValueType = getDriverConfig(field_driver, 'default_value_type');
+            //
+            //        // Select
+            //        if ($default_value.is('select') || $default_value.is('radio')) {
+            //            $default_value.val(default_value_value);
+            //        }
+            //
+            //        else if ($default_value.is('checkbox')) {
+            //
+            //            var html = '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />';
+            //            $.each(choices.split("\n"), function(i, choice) {
+            //                html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'checked' : '') + '> ' + choice + '</label><br />';
+            //            });
+            //            $new = $(html);
+            //        }
+            //    }
+            //
+            //    if (-1 !== $.inArray(type, ['radio', 'select'])) {
+            //        var html = '<select>';
+            //        html += '<option value=""></option>';
+            //        $.each(choices.split("\n"), function(i, choice) {
+            //            var content = choice.match(/([^\\\][^=]|\\=)+/g);
+            //            for (i in content) {
+            //                content[i] = content[i].replace(/\\=/, '=');
+            //            }
+            //            var value = content.length > 1 ? content[1] : i + '';
+            //            var text = content[0];
+            //            html += '<option value="' + value + '" ' + (default_value_value[0] == value ? 'selected' : '') + '>' + text + '</option>';
+            //        });
+            //        html += '</select>';
+            //        $new = $(html).attr({
+            //            name: $default_value.attr('name'),
+            //            id: $default_value.attr('id')
+            //        });
+            //    } else if (type == 'checkbox') {
+            //        var html = '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />';
+            //        $.each(choices.split("\n"), function(i, choice) {
+            //            html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'checked' : '') + '> ' + choice + '</label><br />';
+            //        });
+            //        $new = $(html);
+            //    } else {
+            //        var html_type = (-1 !== $.inArray(type, ['email', 'number', 'date']) ? type : 'text');
+            //        $new = $(type == 'textarea' ? '<textarea rows="3" />' : '<input type="' + html_type + '" />').attr({
+            //            name: $default_value.attr('name'),
+            //            id: $default_value.attr('id')
+            //        }).val(default_value_value);
+            //    }
+            //    var $parent = $default_value.closest('span');
+            //    $parent.empty().append($new).nosFormUI();
+            //
+            //    var $checkboxes = $new.find('input.checkbox');
+            //    $checkboxes.on('change', function(e) {
+            //        var value = [];
+            //        $checkboxes.filter(':checked').each(function() {
+            //            value.push($(this).val());
+            //        });
+            //        $new.first().val(value.join(','));
+            //        // Event doesn't seems to trigger with the hidden field on a delegated handler
+            //        refreshFieldPreviewContent($(this));
+            //    });
+            //    $checkboxes.first().trigger('change');
+            //}
 
             // Firefox needs this <colgroup> to size the td[colspan] properly
             //$preview_container.closest('table').prepend($('<colgroup><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /></colgroup>'));

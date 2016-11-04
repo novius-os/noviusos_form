@@ -102,283 +102,271 @@ return array(
             'form' => array(
                 'description' => __("One email per line"),
                 'type' => 'textarea',
-                // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One email per line'),
                 'cols' => 50,
             ),
             'template' => '<div><span style="vertical-align:top;">{label}</span> <span style="display: inline-block;">{field}<br />{description}</span></div>',
         ),
     ),
-
     'fields_config' => array(
-
         'layout' => array(
-            'default' => $default_fields_layout,
-            'available' => $available_fields_layouts,
-        ),
-
-        'meta' => array(
-            'layout' => array(
-                'standard' => array(
-                    'view' => 'nos::form/accordion',
-                    'params' => array(
-                        //'classes' => 'notransform',
-                        'accordions' => array(
-                            'main' => array(
-                                'title' => __('Properties'),
-                                'fields' => array(
-                                    'field_type',
-                                    'field_driver',
-                                    'field_label',
-//                                    'field_choices',
-//                                    'field_style',
-//                                    'field_message',
-                                ),
+            'standard' => array(
+                'view' => 'nos::form/accordion',
+                'params' => array(
+                    //'classes' => 'notransform',
+                    'accordions' => array(
+                        'main' => array(
+                            'title' => __('Properties'),
+                            'fields' => array(
+                                'field_type',
+                                'field_driver',
+                                'field_label',
+                                //'field_choices',
+                                //'field_style',
+                                //'field_message',
                             ),
-                            'optional' => array(
-                                'title' => __('Further options'),
-                                'fields' => array(
-//                                    'field_mandatory',
-//                                    'field_default_value',
-//                                    'field_origin',
-//                                    'field_origin_var',
-//                                    'field_details',
-//                                    'field_width',
-//                                    'field_height',
-//                                    'field_limited_to',
-                                ),
+                        ),
+                        'optional' => array(
+                            'title' => __('Further options'),
+                            'fields' => array(
+                                //'field_mandatory',
+                                //'field_default_value',
+                                //'field_origin',
+                                //'field_origin_var',
+                                //'field_details',
+                                //'field_width',
+                                //'field_height',
+                                //'field_limited_to',
                             ),
-                            'technical' => array(
-                                'title' => __('Technical options'),
-                                'fields' => array(
-                                    'field_virtual_name',
-                                    'field_technical_id',
-                                    'field_technical_css',
-                                ),
+                        ),
+                        'technical' => array(
+                            'title' => __('Technical options'),
+                            'fields' => array(
+                                'field_virtual_name',
+                                'field_technical_id',
+                                'field_technical_css',
                             ),
-                            'condition' => array(
-                                'title' => __('Conditions'),
-                                'fields' => array(
-                                    'field_conditional',
-                                    'field_conditional_form',
-                                    'field_conditional_value',
-                                ),
+                        ),
+                        'condition' => array(
+                            'title' => __('Conditions'),
+                            'fields' => array(
+                                'field_conditional',
+                                'field_conditional_form',
+                                'field_conditional_value',
                             ),
                         ),
                     ),
                 ),
             ),
-            'fields' => array(
-                'field_id' => array(
-                    'form' => array(
-                        'type' => 'hidden',
-                        'value' => '0',
+        ),
+        'fields' => array(
+            'field_id' => array(
+                'form' => array(
+                    'type' => 'hidden',
+                    'value' => '0',
+                ),
+            ),
+            'field_type' => array(
+                'label' => __('Type:'),
+                'form' => array(
+                    'type' => 'hidden',
+                    'options' => array(
+                        'text' => __('Single line text'),
+                        'textarea' => __('Paragraph text'),
+                        'checkbox' => __('Multiple choice (checkboxes)'),
+                        'select' => __('Unique choice (drop-down list)'),
+                        'radio' => __('Unique choice (radio buttons)'),
+                        'file' => __('File'),
+                        'email' => __('Email address'),
+                        'number' => __('Number'),
+                        'date' => __('Date'),
+                        'message' => __('Message'),
+                        'hidden' => __('Hidden'),
+                        'separator' => __('Separator'),
+                        'variable' => __('Variable'),
+                    ),
+                    'value' => 'text',
+                ),
+                'validation' => array(
+                    'required',
+                ),
+            ),
+            'field_driver' => array(
+                'label' => __('Type:'),
+                'form' => array(
+                    'type' => 'select',
+                    'options' => $drivers_options,
+                    'value' => 'text',
+                ),
+                'validation' => array(
+                    'required',
+                ),
+            ),
+            'field_label' => array(
+                'label' => __('Label:'),
+                'form' => array(
+                    'type' => 'text',
+                    'value' => __('I’m the label, click to edit me:'),
+                ),
+                'validation' => array(
+                    'required',
+                ),
+            ),
+            'field_message' => array(
+                'label' => __('Message:'),
+                'form' => array(
+                    'type' => 'textarea',
+                    'rows' => '3',
+                    'value' => __('I’m a message, click to edit me.'),
+                ),
+                'validation' => array(
+                    'required',
+                ),
+            ),
+            'field_style' => array(
+                'label' => __('Style:'),
+                'form' => array(
+                    'type' => 'select',
+                    'options' => array(
+                        'p' => __('Standard'),
+                        'h1' => __('Heading 1'),
+                        'h2' => __('Heading 2'),
+                        'h3' => __('Heading 3'),
+                    ),
+                    'value' => 'p',
+                ),
+            ),
+            'field_choices' => array(
+                'label' => __('Answers:'),
+                'form' => array(
+                    'type' => 'textarea',
+                    'rows' => '5',
+                    'value' => '',
+                    'placeholder' => __('One answer per line'),
+                ),
+            ),
+            'field_mandatory' => array(
+                'label' => __('Mandatory'),
+                'form' => array(
+                    'type' => 'checkbox',
+                    'value' => '1',
+                    'empty' => '0',
+                ),
+            ),
+            'field_default_value' => array(
+                'label' => __('Default value:'),
+                'form' => array(
+                    'type' => 'textarea',
+                ),
+            ),
+            'field_details' => array(
+                'label' => __('Instructions for the user:'),
+                'form' => array(
+                    'type' => 'textarea',
+                    'rows' => '3',
+                ),
+            ),
+            'field_width' => array(
+                'label' => __('Width:'),
+                'template' => str_replace('{{count}}', '{field} {required}', __('Width: {{count}} characters')),
+                'form' => array(
+                    'type' => 'number',
+                    'value' => '',
+                    'size' => '3',
+                ),
+                'populate' => function ($item) {
+                        return empty($item->field_width) ? '' : $item->field_width;
+                },
+            ),
+            'field_height' => array(
+                'label' => '',
+                'template' => str_replace('{{count}}', '{field} {required}', __('Height: {{count}} lines')),
+                'form' => array(
+                    'type' => 'number',
+                    'size' => '3',
+                    'value' => '3',
+                ),
+                'populate' => function ($item) {
+                        return empty($item->field_height) ? '' : $item->field_height;
+                },
+            ),
+            'field_limited_to' => array(
+                'label' => '',
+                'template' => str_replace('{{count}}', '{field} {required}', __('Limited to {{count}} characters')),
+                'form' => array(
+                    'type' => 'number',
+                    'size' => '3',
+                ),
+                'populate' => function ($item) {
+                        return empty($item->field_limited_to) ? '' : $item->field_limited_to;
+                },
+            ),
+            'field_origin' => array(
+                'label' => __('Origin:'),
+                'form' => array(
+                    'type' => 'select',
+                    'options' => array(
+                        'get' => 'Get',
+                        'post' => 'Post',
+                        'request' => 'Request',
+                        'global' => 'Global',
+                        'session' => 'Session',
                     ),
                 ),
-                'field_type' => array(
-                    'label' => __('Type:'),
-                    'form' => array(
-                        'type' => 'hidden',
-                        'options' => array(
-                            'text' => __('Single line text'),
-                            'textarea' => __('Paragraph text'),
-                            'checkbox' => __('Multiple choice (checkboxes)'),
-                            'select' => __('Unique choice (drop-down list)'),
-                            'radio' => __('Unique choice (radio buttons)'),
-                            'file' => __('File'),
-                            'email' => __('Email address'),
-                            'number' => __('Number'),
-                            'date' => __('Date'),
-                            'message' => __('Message'),
-                            'hidden' => __('Hidden'),
-                            'separator' => __('Separator'),
-                            'variable' => __('Variable'),
-                        ),
-                        'value' => 'text',
-                    ),
-                    'validation' => array(
-                        'required',
-                    ),
+            ),
+            'field_origin_var' => array(
+                'label' => __('Variable name:'),
+                'form' => array(
+                    'type' => 'text',
+                    'value' => '',
                 ),
-                'field_driver' => array(
-                    'label' => __('Type:'),
-                    'form' => array(
-                        'type' => 'select',
-                        'options' => $drivers_options,
-                        'value' => 'text',
-                    ),
-                    'validation' => array(
-                        'required',
-                    ),
+            ),
+            'field_virtual_name' => array(
+                'label' => __('Virtual field name:'),
+                'form' => array(
+                    'type' => 'text',
+                    'value' => '',
                 ),
-                'field_label' => array(
-                    'label' => __('Label:'),
-                    'form' => array(
-                        'type' => 'text',
-                        'value' => __('I’m the label, click to edit me:'),
-                    ),
-                    'validation' => array(
-                        'required',
-                    ),
+                'expert' => true,
+            ),
+            'field_technical_id' => array(
+                'label' => __('ID:'),
+                'form' => array(
+                    'type' => 'text',
                 ),
-                'field_message' => array(
-                    'label' => __('Message:'),
-                    'form' => array(
-                        'type' => 'textarea',
-                        'rows' => '3',
-                        'value' => __('I’m a message, click to edit me.'),
-                    ),
-                    'validation' => array(
-                        'required',
-                    ),
+                'expert' => true,
+            ),
+            'field_technical_css' => array(
+                'label' => __('CSS classes:'),
+                'form' => array(
+                    'type' => 'text',
                 ),
-                'field_style' => array(
-                    'label' => __('Style:'),
-                    'form' => array(
-                        'type' => 'select',
-                        'options' => array(
-                            'p' => __('Standard'),
-                            'h1' => __('Heading 1'),
-                            'h2' => __('Heading 2'),
-                            'h3' => __('Heading 3'),
-                        ),
-                        'value' => 'p',
-                    ),
+                'expert' => true,
+            ),
+            'field_conditional' => array(
+                'label' => __('Conditional'),
+                'form' => array(
+                    'type' => 'checkbox',
+                    'value' => '1',
+                    'empty' => '0',
                 ),
-                'field_choices' => array(
-                    'label' => __('Answers:'),
-                    'form' => array(
-                        'type' => 'textarea',
-                        'rows' => '5',
-                        'value' => '',
-                        // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-                        'placeholder' => __('One answer per line'),
-                    ),
+                'expert' => true,
+            ),
+            'field_conditional_form' => array(
+                'label' => __('Form name to Check:'),
+                'form' => array(
+                    // Textarea is needed to preserve \n to store multiple default values (checkboxes)
+                    'type' => 'text',
                 ),
-                'field_mandatory' => array(
-                    'label' => __('Mandatory'),
-                    'form' => array(
-                        'type' => 'checkbox',
-                        'value' => '1',
-                        'empty' => '0',
-                    ),
+                'expert' => true,
+            ),
+            'field_conditional_value' => array(
+                'label' => __('Show when the value is:'),
+                'form' => array(
+                    // Textarea is needed to preserve \n to store multiple default values (checkboxes)
+                    'type' => 'textarea',
                 ),
-                'field_default_value' => array(
-                    'label' => __('Default value:'),
-                    'form' => array(
-                        // Textarea is needed to preserve \n to store multiple default values (checkboxes)
-                        'type' => 'textarea',
-                    ),
-                ),
-                'field_details' => array(
-                    'label' => __('Instructions for the user:'),
-                    'form' => array(
-                        'type' => 'textarea',
-                        'rows' => '3',
-                    ),
-                ),
-                'field_width' => array(
-                    'label' => __('Width:'),
-                    'template' => str_replace('{{count}}', '{field} {required}', __('Width: {{count}} characters')),
-                    'form' => array(
-                        'type' => 'number',
-                        'value' => '',
-                        'size' => '3',
-                    ),
-                    'populate' => function ($item) {
-                            return empty($item->field_width) ? '' : $item->field_width;
-                    },
-                ),
-                'field_height' => array(
-                    'label' => '',
-                    'template' => str_replace('{{count}}', '{field} {required}', __('Height: {{count}} lines')),
-                    'form' => array(
-                        'type' => 'number',
-                        'size' => '3',
-                        'value' => '3',
-                    ),
-                    'populate' => function ($item) {
-                            return empty($item->field_height) ? '' : $item->field_height;
-                    },
-                ),
-                'field_limited_to' => array(
-                    'label' => '',
-                    'template' => str_replace('{{count}}', '{field} {required}', __('Limited to {{count}} characters')),
-                    'form' => array(
-                        'type' => 'number',
-                        'size' => '3',
-                    ),
-                    'populate' => function ($item) {
-                            return empty($item->field_limited_to) ? '' : $item->field_limited_to;
-                    },
-                ),
-                'field_origin' => array(
-                    'label' => __('Origin:'),
-                    'form' => array(
-                        'type' => 'select',
-                        'options' => array(
-                            'get' => 'Get', // No translation here: it's a feature
-                            'post' => 'Post',
-                            'request' => 'Request',
-                            'global' => 'Global',
-                            'session' => 'Session',
-                        ),
-                    ),
-                ),
-                'field_origin_var' => array(
-                    'label' => __('Variable name:'),
-                    'form' => array(
-                        'type' => 'text',
-                        'value' => '',
-                    ),
-                ),
-                'field_virtual_name' => array(
-                    'label' => __('Virtual field name:'),
-                    'form' => array(
-                        'type' => 'text',
-                        'value' => '',
-                    ),
-                    'expert' => true,
-                ),
-                'field_technical_id' => array(
-                    'label' => __('ID:'),
-                    'form' => array(
-                        'type' => 'text',
-                    ),
-                    'expert' => true,
-                ),
-                'field_technical_css' => array(
-                    'label' => __('CSS classes:'),
-                    'form' => array(
-                        'type' => 'text',
-                    ),
-                    'expert' => true,
-                ),
-                'field_conditional' => array(
-                    'label' => __('Conditional'),
-                    'form' => array(
-                        'type' => 'checkbox',
-                        'value' => '1',
-                        'empty' => '0',
-                    ),
-                    'expert' => true,
-                ),
-                'field_conditional_form' => array(
-                    'label' => __('Form name to Check:'),
-                    'form' => array(
-                        // Textarea is needed to preserve \n to store multiple default values (checkboxes)
-                        'type' => 'text',
-                    ),
-                    'expert' => true,
-                ),
-                'field_conditional_value' => array(
-                    'label' => __('Show when the value is:'),
-                    'form' => array(
-                        // Textarea is needed to preserve \n to store multiple default values (checkboxes)
-                        'type' => 'textarea',
-                    ),
-                    'expert' => true,
-                ),
+                'expert' => true,
             ),
         ),
     ),

@@ -12,7 +12,7 @@ return array(
         'field_label' => __('Separator'),
     ),
 
-    'meta' => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
             'main' => array(

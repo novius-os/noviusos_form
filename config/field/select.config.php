@@ -9,7 +9,7 @@ return array(
         'field_choices' => __("First option\nSecond option"),
     ),
 
-    'meta' => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
             'main' => array(
@@ -29,5 +29,8 @@ return array(
                 ),
             ),
         ),
+
+        // The custom javascript file that will be loaded after the field meta is created
+        'js_file' => 'static/apps/noviusos_form/js/admin/field/select.js',
     ),
 );

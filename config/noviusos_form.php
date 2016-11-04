@@ -38,15 +38,6 @@ return array(
     // The default fields layout
     'default_fields_layout' => array(
         'definition' => array(
-            'layout' => array(
-                array(
-                    'firstname' => 2,
-                    'lastname' => 2,
-                ),
-                array(
-                    'email' => 4,
-                ),
-            ),
             'layout' => "firstname=2,lastname=2\nemail=4",
             'fields' => array(
                 'firstname' => array(

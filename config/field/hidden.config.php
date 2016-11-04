@@ -9,7 +9,7 @@ return array(
         'field_label' => __('I’m the label for internal use only as I won’t be shown to users:'),
     ),
 
-    'meta' => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
             'main' => array(

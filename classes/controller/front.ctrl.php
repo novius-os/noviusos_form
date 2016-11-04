@@ -214,7 +214,7 @@ class Controller_Front extends Controller_Front_Application
                         'field_name' => 'form_captcha',
                         'field_label' => '',
                         'field_type' => 'text',
-                        'field_class' => Field_Input_Text::class,
+                        'field_driver' => Field_Input_Text::class,
                         'field_mandatory' => '1',
                         'field_technical_id' => '',
                         'field_technical_css' => '',
@@ -225,7 +225,7 @@ class Controller_Front extends Controller_Front_Application
                     $field = Model_Field::forge(array(
                         'field_label' => '',
                         'field_type' => 'hidden',
-                        'field_class' => Field_Hidden::class,
+                        'field_driver' => Field_Hidden::class,
                         'field_mandatory' => '1',
                         'field_technical_id' => '',
                         'field_technical_css' => '',

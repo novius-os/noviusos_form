@@ -8,7 +8,9 @@
  * @link http://www.novius-os.org
  */
 
-echo '<div class="field_enclosure">';
+$wrapperId = uniqid('field_enclosure_');
+
+echo '<div class="field_enclosure" id="'.$wrapperId.'">';
 $has_restricted_fields = false;
 foreach ($fieldset->field() as $field) {
     if ($field->isRestricted()) {
@@ -32,3 +34,16 @@ foreach ($layout as $view) {
     }
 }
 echo '</div>';
+
+// Loads the javascript file for custom field meta manipulations
+if (!empty($js_file)) {
+    ?>
+    <script type="text/javascript">
+        require(
+            [<?= \Format::forge($js_file)->to_json() ?>],
+            function (callback) {
+                callback($('#<?= $wrapperId ?>'));
+            });
+    </script>
+    <?php
+}

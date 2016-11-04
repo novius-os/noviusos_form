@@ -46,7 +46,7 @@ class Field_Checkbox extends Field_Abstract
                         'type' => 'checkbox',
                         'value' => $i,
                         'checked' => in_array($i, $default_choices),
-                    ))
+                    )).' '.$choice
                 )
             );
         }
@@ -85,8 +85,15 @@ class Field_Checkbox extends Field_Abstract
     protected function sanitizeValue($value)
     {
         if (!is_array($value)) {
+            $value = str_replace(",", "\n", $value);
             $value = explode("\n", (string) $value);
+            $value = array_combine($value, $value);
         }
+
+        $value = array_filter($value, function($v) {
+            return $v !== '';
+        });
+
         return $value;
     }
 
@@ -103,6 +110,11 @@ class Field_Checkbox extends Field_Abstract
             'callback' => array('Form', 'checkbox'),
             'args' => array($this->getVirtualName().'[]', $choice, in_array($choice, $this->getValue()), $attributes_choice),
         );
+    }
+
+    public function getHtmlVirtualName()
+    {
+        return $this->getVirtualName().'[]';
     }
 
     /**

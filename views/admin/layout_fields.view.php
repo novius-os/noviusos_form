@@ -78,12 +78,16 @@ array_walk($layout, function (&$v) {
                     <tr>
                         <td style="width: 50%">
                             <?php
-                            foreach ($available_fields_layouts as $name => $meta) {
+                            foreach ($available_fields_layouts as $layoutName => $layoutConfig) {
                                 if (!empty($meta['expert']) && !\Session::user()->user_expert) {
                                     continue;
                                 }
                                 ?>
-                                <p><label data-meta="<?= $name ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
+                                <p>
+                                    <label data-layout-name="<?= $layoutName ?>">
+                                        <img src="<?= $layoutConfig['icon'] ?>" /> <?= $layoutConfig['title'] ?>
+                                    </label>
+                                </p>
                                 <?php
                             }
                             ?>
@@ -112,7 +116,7 @@ array_walk($layout, function (&$v) {
                                     </div>
                                     <label class="preview_label"></label>
                                     <div class="preview_content">
-                                        <?= \Request::forge('noviusos_form/admin/form/render_field_preview')->execute(array($item->fields[$field_id])); ?>
+                                        <?= \Request::forge('noviusos_form/admin/form/action_render_field_preview')->execute(array($item->fields[$field_id])); ?>
                                     </div>
                                 </div>
                             </td>

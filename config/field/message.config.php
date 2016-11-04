@@ -8,7 +8,7 @@ return array(
         'field_type' => 'message',
     ),
 
-    'meta' => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
             'main' => array(

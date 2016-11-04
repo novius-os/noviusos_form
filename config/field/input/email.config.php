@@ -9,7 +9,7 @@ return array(
         'field_label' => __('Your email address:'),
     ),
 
-    'meta' => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
             'main' => array(

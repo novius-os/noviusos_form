@@ -9,7 +9,7 @@ return array(
         'field_label' => __('I’m the label of a file input, click to edit me:'),
     ),
 
-    'meta' => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
             'main' => array(

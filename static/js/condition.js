@@ -20,37 +20,30 @@ function check_option(json) {
     }
 
     var todo = 'nothing';
-
-    //test "type" to do deal with fields correctly
-    switch (json.inputtype) {
-        case "select":
-            if ($('select[name="'+json.inputname+'"]').val() == json.value) {
-                todo = 'show';
-            } else {
-                todo = 'hide';
-            }
-            break;
-        case "radio":
-            if ($('input[name="'+json.inputname+'"][value="'+json.value+'"]').is(":checked")) {
-                todo = 'show';
-            } else {
-                todo = 'hide';
-            }
-
-            break;
-        case "checkbox":
-            if ($('input[name^="'+json.inputname+'"][value="'+json.value+'"]').is(":checked")) {
-                todo = 'show';
-            } else {
-                todo = 'hide';
-            }
-            break;
-        default:
-            if ($('input[name="'+json.inputname+'"]').val() == json.value) {
-                todo = 'show';
-            } else {
-                todo = 'hide';
-            }
+    var $input = $('[name="'+json.inputname+'"]');
+    if ($input) {
+        switch ($input.prop('tagName')) {
+            case "radio":
+                if ($input.is('[value="'+json.value+'"]:checked')) {
+                    todo = 'show';
+                } else {
+                    todo = 'hide';
+                }
+                break;
+            case "checkbox":
+                if ($input.is('[value="'+json.value+'"]:checked')) {
+                    todo = 'show';
+                } else {
+                    todo = 'hide';
+                }
+                break;
+            default:
+                if ($input.val() == json.value) {
+                    todo = 'show';
+                } else {
+                    todo = 'hide';
+                }
+        }
     }
 
     var $conditionnal_elements = $conditionnal_input.closest('.nos_form_field');
