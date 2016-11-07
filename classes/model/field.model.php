@@ -53,7 +53,7 @@ class Model_Field extends \Nos\Orm\Model
         ),
         'field_choices' => array(
             'default' => '',
-            'data_type' => 'text',
+            'data_type' => 'serialize',
             'null' => false,
         ),
         'field_created_at' => array(
@@ -79,6 +79,7 @@ class Model_Field extends \Nos\Orm\Model
         'field_style' => array(
             'default' => '',
             'data_type' => 'enum',
+            'options' => array('', 'p','h1','h2','h3'),
             'null' => false,
         ),
         'field_width' => array(
@@ -142,6 +143,7 @@ class Model_Field extends \Nos\Orm\Model
 
     protected static $_observers = array(
         'Orm\\Observer_Self',
+        'Orm\\Observer_Typing',
         'Orm\\Observer_CreatedAt' => array(
             'mysql_timestamp' => true,
             'property' => 'field_created_at',
@@ -171,54 +173,28 @@ class Model_Field extends \Nos\Orm\Model
     protected $_form_id_for_delete = null;
     protected $_field_id_for_delete = null;
 
+    protected $driversInstance = array();
+
     /**
      * Gets the field driver
      *
      * @param array $options
-     * @return null|Field_Abstract
+     * @param bool $reload
+     * @return mixed|null
      */
-    public function getDriver($options = array())
+    public function getDriver($options = array(), $reload = false)
     {
         // Gets the driver class
-        $driverClass = $this->field_driver;
-        if (empty($driverClass) || !class_exists($driverClass)) {
+        if (empty($this->field_driver) || !class_exists($this->field_driver)) {
             return null;
         }
-        return $driverClass::forge($this, $options);
-    }
 
-    /**
-     * @param array $datas Values send in the form
-     *
-     * Return if a field is mandatory or not.
-     * Take in count the fact that a field may be conditionnal
-     *
-     * @return bool
-     */
-    public function isMandatory(array $datas)
-    {
-        $is_mandatory = in_array($this->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file')) && $this->field_mandatory;
-
-        //This isn't a conditionnal field or conditionnal values are not set, return the simple mandatory value
-        if (!$this->field_conditional || empty($this->field_conditional_form) || empty($this->field_conditional_value) || !$is_mandatory) {
-            return $is_mandatory;
+        // Forges if not already forged or if reload
+        if (!isset($this->driversInstance[$this->field_driver]) || $reload) {
+            $this->driversInstance[$this->field_driver] = call_user_func(array($this->field_driver, 'forge'), $this, $options);
         }
 
-        //Retrieve the conditionnal field that say if this is displayed or not
-        $conditional_field = self::query()
-            ->where('field_form_id', $this->field_form_id)
-            ->where('field_virtual_name', $this->field_conditional_form)
-            ->get_one();
-
-        if (empty($conditional_field)) {
-            return $is_mandatory;
-        }
-
-        if (\Arr::get($datas, $conditional_field->field_virtual_name) == $this->field_conditional_value) {
-            return $is_mandatory;
-        } else {
-            return false;
-        }
+        return $this->driversInstance[$this->field_driver];
     }
 
     public function _event_before_delete()

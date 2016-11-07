@@ -14,18 +14,15 @@ define(['jquery-nos'], function($) {
      * This function will be called each time a field meta is loaded
      */
     return function ($field, options, is_new, is_expert) {
-
-        var field_driver = getFieldProperty($field, 'field_driver').val();
-        var type = getFieldProperty($field, 'field_type').val();
-        var $default_value = getFieldProperty($field, 'field_default_value');
-        var choices = getFieldProperty($field, 'field_choices').val();
+        var $choices = getFieldProperty($field, 'field_choices');
 
         // Updates the preview on choices change
-        $field.on('blur', 'textarea[name$="[field_choices]"]', generateFieldDefaultValue());
+        $choices.on('blur change keyup', generateFieldDefaultValue);
 
         generateFieldDefaultValue();
 
         function generateFieldDefaultValue() {
+            var $default_value = getFieldProperty($field, 'field_default_value');
 
             // Gets the default value
             var default_value_value = $default_value.val();
@@ -36,14 +33,30 @@ define(['jquery-nos'], function($) {
             }
 
             // Creates the checkboxes
-            var $new = $(
-                $('<div />').css({ paddingLeft: 6, borderLeft: '1px solid #aaa', margin: '5px 0 5px 2px' }).html(
-                    '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />'
-                    + $.map(choices.split("\n"), function(choice, i) {
-                        return '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'checked' : '') + '> ' + choice + '</label><br />';
-                    }).join('')
-                )
+            var $new = $('<div />').css({ paddingLeft: 6, borderLeft: '1px solid #aaa', margin: '5px 0 5px 2px' });
+
+            // Creates the hidden field that stores the value
+            $new.append(
+                '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />'
             );
+
+            // Creates the options
+            $.each($choices.val().split("\n"), function(index, choice) {
+                // @todo do it better
+                var value = index;
+                var parts = choice.split("=");
+                if (parts.length > 1) {
+                    value = parts.pop();
+                }
+                var text = parts.join('=');
+                $new.append(
+                    $('<label />').append(
+                        $('<input type="checkbox" class="checkbox" size="1" value="' + value + '" ' + (-1 !== $.inArray(value, default_value_value) ? 'checked' : '') + '> '),
+                        text
+                    ),
+                    $('<br />')
+                );
+            });
 
             // Append to DOM
             var $parent = $default_value.closest('span');

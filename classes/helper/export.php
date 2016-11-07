@@ -79,7 +79,7 @@ class Helper_Export
                 $header         = array('label' => $field->field_label);
 
                 if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
-                    $choices           = explode("\n", $field->field_choices);
+                    $choices           = (array) $field->field_choices;
                     $header['choices'] = array();
                     foreach ($choices as $choice) {
                         $choiceInfos = $this->splitChoice($field, $choice);
@@ -147,7 +147,7 @@ class Helper_Export
                 $value = !empty($values[$field->field_id]) ? $values[$field->field_id]->anfi_value : '';
 
                 if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
-                    $choices  = explode("\n", $field->field_choices);
+                    $choices  = (array) $field->field_choices;
                     $selected = explode("\n", $value);
                     $value    = array();
                     foreach ($choices as $choice) {

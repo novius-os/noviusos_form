@@ -36,6 +36,7 @@
 
     function doPagination($) {
         $(function() {
+            console.log('@@');
             $('form.foundation').each(function() {
                 var $form = $(this);
                 var $submit_button = $form.find(':submit');

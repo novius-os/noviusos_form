@@ -147,6 +147,29 @@ class Model_Form extends \Nos\Orm\Model
 
     protected $_form_id_for_delete = null;
 
+    /**
+     * Gets the layout
+     *
+     * @return array
+     */
+    public function getLayout()
+    {
+        $layout = explode("\n", $this->form_layout);
+        array_walk($layout, function (&$v) {
+            $v = explode(',', $v);
+        });
+        $layout = \Arr::flatten($layout);
+
+        // Remove empty values
+        $layout = array_filter($layout);
+        array_walk($layout, function (&$v) {
+            $v = explode('=', $v);
+            $v = $v[0];
+        });
+
+        return $layout;
+    }
+
     public function _event_before_delete()
     {
         $this->_form_id_for_delete = $this->form_id;

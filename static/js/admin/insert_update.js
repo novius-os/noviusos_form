@@ -57,23 +57,10 @@ define(
 
             // Handles form submit
             $container.closest('form').submit(function(e) {
-                // Rewriting layout to be inserted in database
-                var layout = '';
-                $container.find('tr.preview_row').each(function(i) {
-                    var $preview = $(this).find('td.preview');
-                    if ($preview.length > 0 && layout != '') {
-                        layout += "\n";
-                    }
-                    $preview.each(function(j) {
-                        var $preview = $(this);
-                        var $field = $preview.data('field');
-                        if (!$field) {
-                            return;
-                        }
-                        j == 0 || (layout += ',');
-                        layout += getFieldProperty($field, 'field_id').val() + '=' + getCellColspan($preview);
-                    });
-                });
+                var layout = extractLayout();
+                console.log('layout', layout);
+
+                // Sets the layout input value
                 $layout.val(layout);
 
                 var ajaxData = {form_layout: layout};
@@ -83,8 +70,7 @@ define(
                 var idRegex = /[^\[]+\[([0-9]+)\]\[([^\]]+)\]/;
 
                 // Gets fields data
-                // @todo why not jQuery.serialize() ?
-                $(this).find('input,textarea,select').each(function() {
+                $(this).find(':input').each(function() {
                     var $this = $(this);
                     if (!$this.attr('name')) {
                         return;
@@ -120,8 +106,21 @@ define(
                     inputs[id][fieldName] = value;
                 });
 
-                // Sending a standard nosAjax request
+                // var ajaxData = decodeURIComponent($(this).find(':input').serialize());
+                // ajaxData.form_layout = layout;
+                //
+                // // JSON encodes the fields to not exceed the server max post fields
+                // ajaxData['field'] = JSON.stringify(ajaxData['field'] || {});
+                // console.log('ajaxData', ajaxData);
+
+                // Csrf
+                ajaxData['_csrf'] = $(this).find('input[name="_csrf"]:first').val();
+
                 ajaxData['fields'] = JSON.stringify(inputs);
+
+                console.log(ajaxData);
+
+                // Sending a standard nosAjax request
                 var action = $(this).attr('action');
                 $container.nosAjax({
                     data: ajaxData,
@@ -132,18 +131,53 @@ define(
                 return false;
             });
 
-            // Handles click on add button
-            $container.on('click', '[data-id=add]', function onAdd(e) {
-                e.preventDefault();
+            // Handles click on add button (open blank slate)
+            $container.on('click', '[data-id=add]', function onAdd(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
                 var params_button = $(this).data('params');
                 $blank_slate.data('params', params_button);
+
+                var pageBreakCount = getLayoutPageBreakCount();
+
+                // Page break
                 if (params_button.type == 'page_break') {
-                    createLayoutFields('page_break');
-                } else {
-                    $(this).closest('p')[params_button.where == 'top' ? 'after' : 'before']($blank_slate);
+
+                    var field_id = 'page-break-'+(pageBreakCount+1); // @todo current page break count + 1
+
+                    var $field = $('<div />')
+                        .addClass('field_enclosure page_break')
+                        .attr('data-field-id', field_id)
+                        .data('field-id', field_id);
+                    $fields_container.append($field);
+                    $field.nosFormUI();
+
+                    // Creates the preview
+                    var $preview = createFieldPreviewElement(field_id, params_button.where || 'bottom');
+                    $preview.addClass('page_break ui-widget-header');
+
+                    // Initializes the preview layout
+                    applyPreviewLayout("page_break=4");
+
+                }
+
+                // Field
+                else {
+                    $(this).closest('.button-container')[params_button.where === 'top' ? 'append' : 'prepend']($blank_slate);
                     $blank_slate.show();
                     setLayoutPadding();
                 }
+            });
+
+            // Closes blank slate when clicking outside
+            $('html, body').on('click', function() {
+                $blank_slate.hide();
+            });
+
+            // Prevents closing blank slate when clicking inside
+            $blank_slate.on('click', function(event) {
+                event.stopPropagation();
             });
 
             // Add a new field when clicking the "Add" button, either at top or bottom
@@ -157,13 +191,17 @@ define(
                 e.preventDefault();
 
                 var $preview = $(this);
-                var $field = $preview.data('field');
 
-                // Make the preview look "active"
-                $preview_container.find('td.preview').removeClass('ui-state-active');
-                $preview.addClass('ui-state-active');
+                // Gets the related field
+                var $field = getPreviewFieldElement($preview);
+                if (!$field) {
+                    return ;
+                }
+                
+                // Sets as the selected field
+                setSelectedField($field);
 
-                // Show the appropriate field and position it
+                // Shows the related
                 showField($field);
 
                 // Auto focus the label field
@@ -194,7 +232,7 @@ define(
             // Handles field driver change
             $fields_container.on('change', 'select[name$="[field_driver]"]', function on_type_change(e) {
                 var $field = $(this).closest('.field_enclosure');
-                var field_id = getFieldProperty($field, 'field_id').val();
+                var field_id = getFieldId($field);
 
                 // Gets the field data
                 var fieldData = getFieldData($field);
@@ -209,8 +247,6 @@ define(
                     },
                     success: function(json) {
 
-                        var $preview = getFieldPreviewElement($field);
-
                         // Updates the field meta
                         if (json.meta) {
 
@@ -219,27 +255,13 @@ define(
                             $field.replaceWith($newField);
                             $field = $newField;
                             $field.nosFormUI();
-
-                            // Restores the link between the field and the preview
-                            $field.data('preview', $preview);
-                            $preview.data('field', $field.not('script'));
                         }
 
                         // Updates the field preview
                         refreshFieldPreviewLabel($field);
+
                         if (typeof json.preview !== 'undefined') {
-                            var html = json.preview;
-
-                            // Appends the details
-                            var details = getFieldProperty($field, 'field_details').val();
-                            if (details != '') {
-                                html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
-                            }
-
-                            // Updates the preview content
-                            $preview.find('div.preview_content').html(html);
-
-                            refreshPreviewHeight($preview.closest('tr'));
+                            setFieldPreviewContent($field, json.preview);
                         } else {
                             refreshFieldPreviewContent($field);
                         }
@@ -330,11 +352,7 @@ define(
             });
 
             // Initializes the fields meta
-            $fields_container.children('.field_enclosure').each(function onEachFields() {
-                var $field = $(this);
-                onFieldAdded($field, 'bottom');
-                $field.hide();
-            });
+            $fields_container.children('.field_enclosure').hide();
             hideFieldActions();
 
             // Initializes the preview layout
@@ -342,6 +360,9 @@ define(
             setTimeout(function() {
                 refreshPreviewHeight();
             }, 100);
+            $fields_container.children('.field_enclosure').each(function() {
+                refreshFieldPreviewLabel($(this));
+            });
 
             // If it's a new form then creates the default fields layout
             if (is_new) {
@@ -371,8 +392,8 @@ define(
             }).trigger('change');
 
             $submit_informations.on('click', function() {
-                $container.find('.preview').removeClass('ui-state-active');
                 var $accordion = $form_submit_label.closest('.accordion');
+                resetSelectedField();
                 showField($accordion);
                 hideField();
                 setLayoutPadding($submit_informations);
@@ -381,11 +402,49 @@ define(
             });
 
             /**
+             * Extracts the layout
+             *
+             * @returns {string}
+             */
+            function extractLayout()
+            {
+                var layout = '';
+                $container.find('tr.preview_row').each(function (i) {
+                    var $preview = $(this).find('td.preview');
+                    if ($preview.length > 0 && layout != '') {
+                        layout += "\n";
+                    }
+                    $preview.each(function (index) {
+                        var $preview = $(this);
+                        var $field = getPreviewFieldElement($preview);
+                        if ($field) {
+                            if (index > 0) {
+                                layout += ',';
+                            }
+                            var field_id = $preview.is('.page_break') ? 'page_break' : getFieldId($field);
+                            layout += field_id + '=' + getCellColspan($preview);
+                        }
+                    });
+                });
+                return layout;
+            }
+
+            /**
+             * Gets the page break count
+             *
+             * @returns {*}
+             */
+            function getLayoutPageBreakCount() {
+                return $container.find('tr.preview_row.page_break').length;
+            }
+
+            /**
              * Creates the specified layout's fields
              *
              * @param layoutName
              */
-            function createLayoutFields(layoutName) {
+            function createLayoutFields(layoutName)
+            {
                 var where = ($blank_slate.data('params') || {}).where || 'bottom';
 
                 var nos_fixed_content = $container.closest('.nos-fixed-content').get(0);
@@ -414,20 +473,19 @@ define(
                             $fields.each(function(index) {
                                 var $field = $(this);
 
-                                onFieldAdded($field, where);
+                                initField($field, where);
 
-                                // Creates the preview
-                                var $preview = getFieldPreviewElement($field);
-                                if ($preview) {
-                                    if (json.previews && json.previews[index]) {
-                                        var $td = $preview.find('div.preview_content');
-                                        $td.html(json.previews[index]);
-                                    }
-                                    refreshFieldPreviewLabel($field);
-                                    $previews = $previews.add($preview);
+                                // Sets the preview content
+                                if (json.previews && json.previews[index]) {
+                                    setFieldPreviewContent($field, json.previews[index]);
+                                } else {
+                                    refreshFieldPreviewContent($field);
                                 }
 
-                                $field.hide();
+                                // Sets the preview label
+                                refreshFieldPreviewLabel($field);
+
+                                $previews = $previews.add(getFieldPreviewElement($field));
                             });
 
                             // Initializes the preview layout
@@ -443,38 +501,174 @@ define(
             }
 
             /**
+             * Sets the layout padding
+             *
+             * @param $target
+             */
+            function setLayoutPadding($target)
+            {
+                $target = $target || $preview_container.find('.preview.ui-state-active');
+                if ($target.length == 0) {
+                    $target = $submit_informations.not(':not(.ui-state-active)');
+                }
+                if ($target.length > 0) {
+                    var diff = $target.is('.submit_informations') ? 14 : -40;
+                    var pos = $target.position();
+                    $fields_container.css({
+                        paddingTop: Math.max(0, pos.top + diff) + 'px' // 29 = arrow height
+                    });
+                }
+            }
+
+            /**
              * Shows the field actions
              */
-            function showFieldActions() {
-                $fields_container.find('.show_hide').show();
+            function showFieldActions($field)
+            {
+                var $element = $fields_container.find('.show_hide').show();
+                if ($field && $field.is('.page_break')) {
+                    $element.addClass('page_break');
+                } else {
+                    $element.removeClass('page_break');
+                }
             }
 
             /**
              * Hides the field actions
              */
-            function hideFieldActions() {
-                $fields_container.find('.show_hide').hide();
+            function hideFieldActions()
+            {
+                $fields_container.find('.show_hide').hide().removeClass('page_break');
             }
 
             /**
-             * Called after a field is added
+             * Adds a field
              *
              * @param $field
              * @param where
              */
-            function onFieldAdded($field, where) {
+            function initField($field, where)
+            {
                 var $driver = getFieldProperty($field, 'field_driver');
-                if ($driver.length == 0) {
-                    // Submit informations
+                if ($driver.length == 0 || !$driver.val()) {
                     return;
                 }
 
-                // The clone will be wrapped into a <tr class="preview_row">
-                var $preview = getOrCreateFieldPreview($field);
-                var field_id = getFieldProperty($field, 'field_id').val();
+                // Create the preview element
+                var field_id = getFieldId($field);
+                if (field_id) {
+                    createFieldPreviewElement(field_id, where);
+                }
+
+                $field.hide();
+            }
+
+            /**
+             * Gets the field id
+             *
+             * @param $field
+             * @returns {*}
+             */
+            function getFieldId($field)
+            {
+                return $field.data('field-id') || getFieldProperty($field, 'field_id').val();
+            }
+
+            /**
+             * Creates the field preview element
+             *
+             * @param field_id
+             * @param where
+             * @returns {*}
+             */
+            function createFieldPreviewElement(field_id, where)
+            {
+                // Generate a new preview
+                var $clone = $clone_preview.clone();
+                var $preview = $clone.find('td.preview');
+                setCellColspan($preview, 4);
+
+                $preview.data('field-id', field_id);
                 $preview.attr('data-field-id', field_id);
-                $preview_container[where == 'top' ? 'prepend' : 'append']($preview.parent());
-                //$driver.trigger('change');
+
+                $preview.find('button.notransform').removeClass('notransform');
+                $preview.nosFormUI().show().nosOnShow();
+
+                switch (where) {
+                    case 'top':
+                        $preview_container.prepend($preview.parent());
+                        break;
+                    case 'bottom':
+                    default:
+                        $preview_container.append($preview.parent());
+                        break;
+                }
+
+                return $preview;
+            }
+
+            /**
+             * Gets the field preview element
+             *
+             * @param $field
+             * @returns {*|boolean}
+             */
+            function getFieldPreviewElement($field)
+            {
+                var field_id = getFieldId($field);
+                return getFieldPreviewElementById(field_id);
+            }
+
+            /**
+             * Gets the field preview element
+             *
+             * @param field_id
+             * @returns {*|boolean}
+             */
+            function getFieldPreviewElementById(field_id)
+            {
+                var $preview = $preview_container.find('.preview[data-field-id="'+field_id+'"]');
+                return $preview.length ? $preview : false;
+            }
+
+            /**
+             * Gets the preview field element
+             *
+             * @param $preview
+             * @returns {boolean}
+             */
+            function getPreviewFieldElement($preview)
+            {
+                var field_id = $preview.data('field-id');
+                var $field = $fields_container.find('.field_enclosure[data-field-id="'+field_id+'"]');
+                return $field.length ? $field : false;
+            }
+
+            /**
+             * Gets the $field data (properties values)
+             *
+             * @param $field
+             * @returns {*}
+             */
+            function getFieldData($field)
+            {
+                var data = $field.find(':input').serializeArray();
+                for (var i = 0; i < data.length; i++) {
+                    // Removes data name prefix
+                    data[i].name = data[i].name.replace(/field\[[0-9]*\]\[([^\]]+)\]/, "$1")
+                }
+                return data;
+            }
+
+            /**
+             *
+             * @param $context
+             * @param field_name
+             * @returns {*}
+             */
+            function getFieldProperty($context, field_name)
+            {
+                return $context.find('[name$="[' + field_name + ']"]');
             }
 
             /**
@@ -482,12 +676,12 @@ define(
              * 
              * @param $field
              */
-            function showField($field) {
-                
+            function showField($field)
+            {
                 // Show the field actions
-                showFieldActions();
+                showFieldActions($field);
 
-                if ($field.is('.field_enclosure') && !$field.is('.page_break')) {
+                if ($field.is('.field_enclosure')) {
                     $field.show();
                     $field.nosOnShow();
                 }
@@ -507,7 +701,8 @@ define(
              * 
              * @param $field
              */
-            function hideField($field) {
+            function hideField($field)
+            {
                 hideFieldActions();
                 if ($field) {
                     $field.hide();
@@ -515,55 +710,12 @@ define(
             }
 
             /**
-             * Gets or create the field preview
-             *
-             * @param $field
-             * @returns {*}
-             */
-            function getOrCreateFieldPreview($field) {
-
-                var $preview = getFieldPreviewElement($field);
-                if ($preview) {
-                    return $preview;
-                }
-
-                // Generate a new preview
-                var $clone = $clone_preview.clone();
-                $preview = $clone.find('td.preview');
-                setCellColspan($preview, 4);
-
-                $field.data('preview', $preview);
-                $preview.data('field', $field);
-
-                $preview.find('button.notransform').removeClass('notransform');
-                $preview.nosFormUI().show().nosOnShow();
-                $preview.find('input, select').on('click', function(e) {
-                    e.preventDefault();
-                });
-
-                return $preview;
-            }
-
-            /**
-             * Gets the field preview element
-             *
-             * @param $field
-             * @returns {*|boolean}
-             */
-            function getFieldPreviewElement($field)
-            {
-                if (!$field || !$field.data('preview')) {
-                    return false;
-                }
-                return $field.data('preview');
-            }
-
-            /**
              * Deletes a field
              *
              * @param $field
              */
-            function deleteField($field) {
+            function deleteField($field)
+            {
                 // Gets the linked preview
                 var $preview = getFieldPreviewElement($field);
 
@@ -581,22 +733,34 @@ define(
             }
 
             /**
-             * Sets the layout padding
-             * 
-             * @param $target
+             * Sets the field preview content
+             *
+             * @param $field
+             * @param content
              */
-            function setLayoutPadding($target) {
-                $target = $target || $preview_container.find('.preview.ui-state-active');
-                if ($target.length == 0) {
-                    $target = $submit_informations.not(':not(.ui-state-active)');
+            function setFieldPreviewContent($field, content)
+            {
+                var $preview = getFieldPreviewElement($field);
+
+                // Appends the details
+                var details = getFieldProperty($field, 'field_details').val();
+                if (details && details.length > 0) {
+                    content += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
                 }
-                if ($target.length > 0) {
-                    var diff = $target.is('.submit_informations') ? 14 : -40;
-                    var pos = $target.position();
-                    $fields_container.css({
-                        paddingTop: Math.max(0, pos.top + diff) + 'px' // 29 = arrow height
-                    });
-                }
+
+                // Updates the preview content
+                $preview.find('div.preview_content').html(content);
+
+                // Prevents edition on field inputs
+                $preview.find('input, select').attr('readonly', true).on('click', function(event) {
+                    var $selectedField = getSelectedField();
+                    if (!$selectedField || $selectedField.data('field-id') === $field.data('field-id')) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                });
+
+                refreshPreviewHeight($preview.closest('tr'));
             }
 
             /**
@@ -604,86 +768,38 @@ define(
              *
              * @returns {boolean}
              */
-            function getSelectedField() {
+            function getSelectedField()
+            {
                 // Gets the active preview
                 var $preview = $preview_container.find('.preview.ui-state-active');
-
-                // Gets the related field
-                var $field = $preview.data('field');
-
-                return $field && $field.length ? $field : false;
+                return getPreviewFieldElement($preview);
             }
 
             /**
-             * Gets the driver config
-             *
-             * @param driverClass
-             * @param path
-             * @param defaultValue
-             * @returns {config.config|{}}
+             * Resets the current selected field
              */
-            function getDriverConfig(driverClass, path, defaultValue) {
-                var config = options.driversConfig[driverClass] || {};
-                if (path) {
-                    return _get(config.config, path, defaultValue);
-                } else {
-                    return config.config;
+            function resetSelectedField()
+            {
+                var $preview = $preview_container.find('.ui-widget-content.ui-state-active');
+                if ($preview.length > 0) {
+                    $preview.removeClass('ui-state-active');
+                    hideField(getPreviewFieldElement($preview));
                 }
             }
 
             /**
-             * Gets the driver name
-             * 
-             * @param driverClass
-             * @returns {*}
-             */
-            function getDriverName(driverClass) {
-                var config = options.driversConfig[driverClass] || {};
-                return config.name;
-            }
-
-            /**
-             * Checks if the specified field name is present in any of the field meta layout
-             *
-             * @param fieldName
-             * @param field_driver
-             * @returns {boolean}
-             */
-            function isFieldInDriverMetaLayout(fieldName, field_driver) {
-                var driverConfig = getDriverConfig(field_driver);
-                if (driverConfig) {
-                    var layout = _get(driverConfig, 'admin.layout');
-                    if (typeof layout === 'object') {
-                        for (var name in layout) {
-                            if (layout.hasOwnProperty(name)) {
-                                if (typeof layout[name].fields === 'object' && $.inArray(fieldName, layout[name].fields) !== -1) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-                return false;
-            }
-
-            /**
-             * Gets the $field data (properties values)
+             * Sets the specified field as the selected field
              *
              * @param $field
-             * @returns {*}
              */
-            function getFieldData($field)
+            function setSelectedField($field)
             {
-                var data = $field.find(':input').serializeArray();
-                for (var i = 0; i < data.length; i++) {
-                    // Removes data name prefix
-                    data[i].name = data[i].name.replace(/field\[[0-9]*\]\[([^\]]+)\]/, "$1")
+                var $preview = getFieldPreviewElement($field);
+                if ($preview) {
+                    // Make the preview look "active"
+                    $preview_container.find('td.preview.ui-state-active').removeClass('ui-state-active');
+                    $preview.addClass('ui-state-active');
                 }
-                return data;
-            }
-
-            function getFieldProperty($context, field_name) {
-                return $context.find('[name$="[' + field_name + ']"]');
             }
 
             /**
@@ -691,8 +807,8 @@ define(
              *
              * @param $field
              */
-            function refreshFieldPreviewLabel($field) {
-
+            function refreshFieldPreviewLabel($field)
+            {
                 // Gets the preview element
                 var $preview = getFieldPreviewElement($field);
                 if (!$preview) {
@@ -719,7 +835,8 @@ define(
              * 
              * @returns {*}
              */
-            function getFieldPreviewLabel($field) {
+            function getFieldPreviewLabel($field)
+            {
                 // Gets the field label value
                 var label = getFieldProperty($field, 'field_label').val();
 
@@ -736,14 +853,10 @@ define(
              *
              * @param $field
              */
-            function refreshFieldPreviewContent($field) {
-                var field_id = getFieldProperty($field, 'field_id').val();
-                var type = getFieldProperty($field, 'field_type').val();
-                var details = getFieldProperty($field, 'field_details').val();
-                var $preview = getFieldPreviewElement($field);
-                var $td = $preview.find('div.preview_content');
+            function refreshFieldPreviewContent($field)
+            {
+                var field_id = getFieldId($field);
 
-                // @todo Ajax request to get the preview
                 // Gets field data
                 var fieldData = getFieldData($field);
 
@@ -756,20 +869,8 @@ define(
                             fieldData: JSON.stringify(fieldData)
                         },
                     }).done(function(json) {
-
                             if (typeof json.preview !== 'undefined') {
-
-                                var html = json.preview;
-
-                                // Appends the details
-                                if (details != '') {
-                                    html += '<div class="details">' + $('<div/>').text(details).html() + '</div>';
-                                }
-
-                                // Updates preview HTML
-                                $td.html(html);
-
-                                refreshPreviewHeight($preview.closest('tr'));
+                                setFieldPreviewContent($field, json.preview);
                             }
                         })
                         .always(function() {
@@ -777,22 +878,72 @@ define(
                         })
                     ;
                 });
-
-                // @todo migrate to a driver
-                if (type == 'page_break') {
-                    $preview.addClass('page_break ui-widget-header');
-                    //$preview.find('.resizable').removeClass('.resizable');
-                }
             }
 
-            function refreshPreviewHeight($tr) {
+            function refreshPreviewHeight($tr)
+            {
                 ($tr || $preview_container.find('tr')).css('height', '').each(function sameHeight() {
                     var $resizable = $(this).find('div.resizable').css('height', '');
                     $resizable.css('height', $(this).height());
                 });
             }
 
-            function resizeToBest($tr, priority) {
+            /**
+             * Gets the driver config
+             *
+             * @param driverClass
+             * @param path
+             * @param defaultValue
+             * @returns {config.config|{}}
+             */
+            function getDriverConfig(driverClass, path, defaultValue) {
+                var config = options.driversConfig[driverClass] || {};
+                if (path) {
+                    return _get(config.config, path, defaultValue);
+                } else {
+                    return config.config;
+                }
+            }
+
+            /**
+             * Gets the driver name
+             *
+             * @param driverClass
+             * @returns {*}
+             */
+            function getDriverName(driverClass)
+            {
+                var config = options.driversConfig[driverClass] || {};
+                return config.name;
+            }
+
+            /**
+             * Checks if the specified field name is present in any of the field meta layout
+             *
+             * @param fieldName
+             * @param field_driver
+             * @returns {boolean}
+             */
+            function isFieldInDriverMetaLayout(fieldName, field_driver)
+            {
+                var driverConfig = getDriverConfig(field_driver);
+                if (driverConfig) {
+                    var layout = _get(driverConfig, 'admin.layout');
+                    if (typeof layout === 'object') {
+                        for (var name in layout) {
+                            if (layout.hasOwnProperty(name)) {
+                                if (typeof layout[name].fields === 'object' && $.inArray(fieldName, layout[name].fields) !== -1) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            function resizeToBest($tr, priority)
+            {
 
                 // If there's only one padding cell, it's already good!
                 if ($tr.find('td:not(.padding)').length == 0) {
@@ -882,17 +1033,20 @@ define(
             }
 
             // Set colspan and restore children width
-            function setCellColspan($td, colspan) {
+            function setCellColspan($td, colspan)
+            {
                 $td.attr('colspan', colspan).children().css('width', 'auto');
             }
 
             // Returns the colspan, according to width
-            function getCellColspan($td) {
+            function getCellColspan($td)
+            {
                 return Math.round($td.width() / col_size);
             }
 
             // Save cell width
-            function saveCellWidth($tr) {
+            function saveCellWidth($tr)
+            {
                 $tr.find('td.preview:visible').each(function() {
                     var $this = $(this);
                     $this.data('saved_colspan', getCellColspan($this));
@@ -900,7 +1054,8 @@ define(
             }
 
             // Save cell width
-            function restoreCellWidth($tr) {
+            function restoreCellWidth($tr)
+            {
                 $tr.find('td.preview:visible').each(function() {
                     var $this = $(this);
                     var saved_colspan = $this.data('saved_colspan');
@@ -910,7 +1065,8 @@ define(
                 });
             }
 
-            function initSortable() {
+            function initSortable()
+            {
                 try {
                     $sortable.destroy();
                 } catch (e) {
@@ -964,7 +1120,7 @@ define(
                         var $tr = ui.placeholder.closest('tr');
 
                         // Blur the selection
-                        blur();
+                        resetSelectedField();
 
                         // Retain container height while dragging (the sortable will hide the item, possibly making an empty row without height)
                         $tr.css('height', ui.item.height());
@@ -1035,7 +1191,7 @@ define(
                         var $tr = ui.placeholder.closest('tr');
 
                         // Blur the selection
-                        blur();
+                        resetSelectedField();
 
                         // Retain container height (the sortable will hide the item, possibly making an empty row without height)
                         $tr.css('height', ui.item.height());
@@ -1053,16 +1209,8 @@ define(
                 });
             }
 
-            function blur() {
-                var $preview = $preview_container.find('.ui-widget-content.ui-state-active');
-                if ($preview.length == 0) {
-                    return;
-                }
-                $preview.removeClass('ui-state-active');
-                hideField($preview.data('field'));
-            }
-
-            function initResizable() {
+            function initResizable()
+            {
                 try {
                     $resizable.destroy();
                 } catch (e) {
@@ -1076,7 +1224,7 @@ define(
                     helper: 'helper_resize preview ui-state-active',
                     grid: [col_size, '2000'],
                     start: function(e, ui) {
-                        blur();
+                        resetSelectedField();
                     },
                     stop: function(e, ui) {
                         var $tr = ui.element.closest('tr');
@@ -1092,7 +1240,8 @@ define(
              * 
              * @param $tr
              */
-            function initPreviewLayout($tr) {
+            function initPreviewLayout($tr)
+            {
                 initResizable();
                 initSortable();
                 refreshPreviewHeight($tr);
@@ -1103,7 +1252,8 @@ define(
              *
              * @param layout
              */
-            function applyPreviewLayout(layout) {
+            function applyPreviewLayout(layout)
+            {
                 $.each(layout.split("\n"), function layoutLines() {
                     var $previous = null;
                     if (this == '') {
@@ -1113,23 +1263,30 @@ define(
                         var item = this.split('=');
                         var field_id = item[0];
                         var field_width = item[1];
-                        var $field = getFieldProperty($fields_container, 'field_id').filter(function() {
-                            return $(this).val() == field_id;
-                        }).closest('.field_enclosure');
-
-                        var $preview = getFieldPreviewElement($field);
-
-                        setCellColspan($preview, field_width);
-                        if ($previous) {
-                            $previous.after($preview);
+                        var $preview = getFieldPreviewElementById(field_id);
+                        if ($preview) {
+                            setCellColspan($preview, field_width);
+                            if ($previous) {
+                                $previous.after($preview);
+                            }
+                            $previous = $preview;
                         }
-                        $previous = $preview;
                     });
                 });
                 initPreviewLayout();
             }
 
-            function _get(obj, path, defaultValue) {
+            /**
+             * Gets a value by path from an object
+             *
+             * @param obj
+             * @param path
+             * @param defaultValue
+             * @returns {*}
+             * @private
+             */
+            function _get(obj, path, defaultValue)
+            {
                 var value = path.split('.').reduce(function(prev, curr) {
                     return prev ? prev[curr] : undefined
                 }, obj || self);
@@ -1141,7 +1298,8 @@ define(
              * @param updateThreshold
              * @constructor
              */
-            function ThrottleRequest(updateThreshold) {
+            function ThrottleRequest(updateThreshold)
+            {
                 var running, queuedRequest, lastTime;
                 if (typeof updateThreshold !== 'number') {
                     updateThreshold = 1000;
@@ -1181,6 +1339,22 @@ define(
                         throttle(request);
                     }
                 };
+            }
+
+            function serializeObject($target)
+            {
+                var o = {};
+                $.each($target.find(':input').serializeArray(), function() {
+                    if (o[this.name] !== undefined) {
+                        if (!o[this.name].push) {
+                            o[this.name] = [o[this.name]];
+                        }
+                        o[this.name].push(this.value || '');
+                    } else {
+                        o[this.name] = this.value || '';
+                    }
+                });
+                return o;
             }
 
             //// @todo refacto

@@ -52,48 +52,96 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             $meta = array();
             foreach ($fields as $field) {
                 list($field_id) = explode('=', $field);
-                $field = $form->fields[$field_id];
-                if (!in_array($field->field_type, array('text', 'select', 'email', 'number', 'date'))) {
+
+                if ($field_id === 'page_break') {
                     continue;
                 }
 
+                $field = $form->fields[$field_id];
+
                 $id = 'field_'.$field->field_id;
+
+                // Gets the field appdesk config
+                $fieldAppdeskConfig = null;
+                $fieldDriver = $field->getDriver();
+                if (!empty($fieldDriver)) {
+                    $fieldAppdeskConfig = \Arr::get($fieldDriver->getConfig(), 'answer_appdesk_config');
+                }
+
+                // Default field config
+                if ($fieldAppdeskConfig === true) {
+                    $fieldAppdeskConfig = array();
+                }
+
+                // Skip if no config available
+                elseif (!is_array($fieldAppdeskConfig)) {
+                    continue;
+                }
+
+                $value = \Arr::get($fieldAppdeskConfig, 'value');
+
+                // Gets data type
+                $dataType = \Arr::get($fieldAppdeskConfig, 'dataType', 'string');
+                $dataType = is_callable($dataType) ? $dataType($field) : $dataType;
+
+                // Gets header text
+                $headerText = \Arr::get($fieldAppdeskConfig, 'headerText', preg_replace('/\:\s*$/', ' ', $field->field_label));
+                $headerText = is_callable($headerText) ? $dataType($field) : $headerText;
+
+                // Gets title label (inspector)
+                $label = \Arr::get($fieldAppdeskConfig, 'label', $field->field_label);
+                if (is_callable($label)) {
+                    $label = $label($field);
+                }
+
                 $column = array (
-                    'headerText' => preg_replace('/\:\s*$/', ' ', $field->field_label),
+                    'headerText' => $headerText,
+                    'dataType' => $dataType,
                     'dataKey' => $id,
-                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : 'string'),
                 );
                 $meta[$id] = array (
-                    'label' => $field->field_label,
-                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : 'string'),
+                    'label' => $label,
+                    'dataType' => $dataType,
                 );
 
+                // Adds the column if less than 3 are already displayed
                 if (count($columns) < 3) {
                     $columns[$id] = $column;
                 }
+
+                // Creates the dataset
                 $dataset[$id] = array_merge($column, array(
-                    'value' =>
-                    function ($item) use ($field) {
-                        $answer = Model_Answer_Field::find('first', array(
-                                'where' => array(
-                                    array('anfi_answer_id', $item->answer_id),
-                                    array('anfi_field_id', $field->field_id),
-                                )
-                            ));
-                        if (empty($answer) || empty($answer->anfi_value)) {
+                    'value' => function ($item) use ($field, $value) {
+
+                        // Gets the answer field
+                        $answerField = Model_Answer_Field::find('first', array(
+                            'where' => array(
+                                array('anfi_answer_id', $item->answer_id),
+                                array('anfi_field_id', $field->field_id),
+                            )
+                        ));
+                        if (empty($answerField)) {
                             return null;
                         }
-                        if ($field->field_type === 'date') {
-                            try {
-                                return \Date::create_from_string($answer->anfi_value, 'mysql_date')->wijmoFormat();
-                            } catch (\Exception $e) {
-                                return null;
+
+                        // Gets the field driver
+                        $fieldDriver = $field->getDriver();
+                        if (!empty($fieldDriver)) {
+                            if (is_callable($value)) {
+                                // Custom value callback
+                                return $value($fieldDriver, $answerField);
+                            } else {
+                                // Default driver render
+                                return $fieldDriver->renderAnswerHtml($answerField);
                             }
+                        } else {
+                            // Raw field value
+                            return $answerField->value;
                         }
-                        return $answer->anfi_value;
                     }
                 ));
 
+                // Stops after 6 columns
                 if (count($columns) === 6) {
                     break;
                 }

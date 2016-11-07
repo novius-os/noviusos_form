@@ -30,7 +30,7 @@ return array(
                 ),
             ),
             'js' => array(
-                'view' => 'noviusos_form::enhancer/js',
+                'view' => 'noviusos_form::admin/enhancer/js',
                 'params' => array(
                     'id' => $id,
                 ),

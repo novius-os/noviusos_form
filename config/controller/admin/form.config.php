@@ -39,20 +39,50 @@ return array(
         'static/apps/noviusos_form/js/admin/insert_update.js?update=20151103',
     ),
     'views' => array(
-        'delete' => 'noviusos_form::admin/popup_delete',
+        'delete' => 'noviusos_form::admin/form/popup_delete',
     ),
     'layout' => array(
         'standard' => array(
             'view' => 'nos::form/layout_standard',
             'params' => array(
                 'title' => 'form_name',
-                'subtitle' => array('form_submit_email', 'form_virtual_name'),
+                'subtitle' => array('form_publish_warning'),
                 'medias' => array(),
                 'large' => true,
                 'content' => array(
+                    'content' => array(
+                        'view' => 'nos::form/expander',
+                        'params' => array(
+                            'title' => __('Properties'),
+                            'nomargin' => true,
+                            'options' => array(
+                                'allowExpand' => false,
+                            ),
+                            'content' => array(
+                                'view' => 'nos::form/fields',
+                                'params' => array(
+                                    'fields' => array(
+                                        'form_virtual_name',
+                                        'form_submit_email',
+                                        'form_submit_email_warning',
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
                     'fields' => array(
-                        'view' => 'noviusos_form::admin/layout_fields',
-                        'params' => array(),
+                        'view' => 'nos::form/expander',
+                        'params' => array(
+                            'title' => __('Fields'),
+                            'nomargin' => true,
+                            'options' => array(
+                                'allowExpand' => false,
+                            ),
+                            'content' => array(
+                                'view' => 'noviusos_form::admin/form/layout/fields',
+                                'params' => array(),
+                            ),
+                        ),
                     ),
                 ),
                 'menu' => array(),
@@ -74,6 +104,7 @@ return array(
             'label' => __('Virtual name:'),
             'form' => array(
                 'type' => 'text',
+                'size' => 30,
             ),
             'expert' => true,
         ),
@@ -105,8 +136,45 @@ return array(
                 'placeholder' => __('One email per line'),
                 'cols' => 50,
             ),
-            'template' => '<div><span style="vertical-align:top;">{label}</span> <span style="display: inline-block;">{field}<br />{description}</span></div>',
         ),
+        'form_submit_email_warning' => array(
+            'label' => '',
+            'renderer' => \Nos\Renderer_Text::class,
+            'form' => array(
+                'value' => '
+                    <div class="ui-state-error" style="padding:0.5em;">
+                        '.__(
+                            'You have a problem here: Your Novius OS is not set up to send emails. '.
+                            'You’ll have to ask your developer to set it up for you.'
+                        ).'
+                    </div>
+                '
+            ),
+            'show_when' => function() {
+                return !\Email::hasDefaultFrom();
+            }
+        ),
+
+        'form_publish_warning' => array(
+            'label' => '',
+            'renderer' => \Nos\Renderer_Text::class,
+            'form' => array(
+                'value' => \View::forge('noviusos_form::admin/form/layout/warning_not_published', array(), false)->render()
+            ),
+            'show_when' => function($item) {
+                if ($item->is_new()) {
+                    return false;
+                }
+                $count = \Nos\Model_Wysiwyg::count(array(
+                    'where' => array(
+                        array('wysiwyg_text', 'LIKE', '%&quot;form_id&quot;:&quot;'.$item->form_id.'%'),
+                    ),
+                ));
+                return $count == 0;
+            },
+            'template' => '<td colspan="2">{field}</td>',
+        ),
+
     ),
     'fields_config' => array(
         'layout' => array(

@@ -4,19 +4,37 @@
     table colgroup col { display: table-cell; }
 }
 
-.field_blank_slate td {
-    vertical-align: top;
+.form-fields-actions.top {
+    margin: 15px 0 0 0;
+}
+
+.form-fields-actions.bottom {
+    margin: 0 0 15px 0;
+}
+
+.form-fields-actions .button-container {
+    position: relative;
 }
 
 .field_blank_slate {
-    margin: 1em 0.5em 0;
+    margin: 0;
     padding: 1em;
+    position: absolute;
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.form-fields-actions.top .field_blank_slate {
+    top: 25px;
+}
+.form-fields-actions.bottom .field_blank_slate {
+    bottom: 25px;
 }
 .field_blank_slate th {
     text-align: center;
     font-weight: bold;
 }
 .field_blank_slate td {
+    vertical-align: top;
     padding: 1em;
 }
 
@@ -32,6 +50,19 @@
     display: block;
     padding: 2px;
     margin-bottom: 1px;
+    white-space: nowrap;
+    min-width: 120px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.field_blank_slate .ui-state-hover {
+    font-weight: normal;
+}
+
+.form_previews {
+    padding-bottom: 1em;
+    margin: 0 0 0 -1em;
 }
 
 .form_preview {
@@ -40,8 +71,9 @@
     border-spacing: 1em 0;
     border-collapse: separate;
 }
+
 .submit_informations {
-    margin: 1em; /* Same value as above border-spacing */
+    margin: 0 1em 1em 1em; /* Same value as above border-spacing */
 }
 
 .submit_informations p {
@@ -97,10 +129,17 @@ tr.preview_inserter {
     box-sizing: border-box;
 }
 
-.preview {
+.fieldset .form_previews input,
+.fieldset .form_previews textarea {
+    width: auto;
+}
+
+.fieldset .form_previews th.preview,
+.fieldset .form_previews td.preview {
     vertical-align: top;
     overflow: hidden;
     /*padding: 0 1em 0 0;*/
+    padding: 0;
 }
 
 .ui-state-active .preview_content {
@@ -125,6 +164,9 @@ tr.preview_inserter {
 }
 .fields_container button.action {
     width: 49%;
+}
+.fields_container p.actions.page_break button.action {
+    margin-top: 42px;
 }
 
 .preview_arrow {
@@ -174,6 +216,14 @@ tr.preview_inserter {
 }
 .preview.page_break .preview_content {
     display: none;
+}
+
+.field_enclosure {
+    margin-bottom: 15px;
+}
+.field_enclosure.page_break {
+    padding: 7px 10px;
+    font-style: italic;
 }
 
 .preview_content input[type=text],

@@ -46,27 +46,22 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
 
         $this->checkPermission('visualise');
 
-        $view_params = $this->view_params();
-        $view_params['fields'] = $this->form_layout_fields();
-        $view_params['view_params'] = &$view_params;
-
-        return \View::forge('noviusos_form::admin/answer', $view_params, false);
-    }
-
-    public function form_layout_fields()
-    {
         $form = $this->item->form;
-        $values = array();
+
+        $view_params = $this->view_params();
+
+        // Gets the answer fields
+        $answerFields = array();
         foreach ($this->item->fields as $answer_field) {
-            $values[$answer_field->anfi_field_id] = $answer_field;
+            $answerFields[$answer_field->anfi_field_id] = $answer_field;
         }
 
+        // Builds the layout
         $layout = explode("\n", $form->form_layout);
         array_walk($layout, function (&$v) {
             $v = explode(',', $v);
         });
-
-        // Cleanup empty values
+        // Cleanup empty layout values
         foreach ($layout as $a => $rows) {
             $layout[$a] = array_filter($rows);
             if (empty($layout[$a])) {
@@ -75,53 +70,56 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
             }
         }
 
-        $fields = array();
-
-        // Loop through rows...
+        // Builds answer fields
+        $view_params['fields'] = array();
+        $view_params['has_page_break'] = false;
+        $page = 1;
         foreach ($layout as $rows) {
             foreach ($rows as $row) {
                 list($field_id) = explode('=', $row);
 
+                // Captcha
                 if ($field_id == 'captcha') {
-                    $field = null;
-                } else {
-                    $field = $form->fields[$field_id];
+                    continue;
                 }
 
-                $value = !empty($values[$field_id]) ? $values[$field_id]->anfi_value : '';
+                // Page break
+                elseif ($field_id == 'page_break') {
+                    $view_params['has_page_break'] = true;
+                    $page++;
+                }
 
-                $html = '';
+                // Field
+                else {
 
-                $label = !empty($field) ? $field->field_label : '';
+                    // Gets the field
+                    $field = \Arr::get($form->fields, $field_id);
+                    if (empty($field)) {
+                        continue;
+                    }
 
-                if (!empty($field) && in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'checkbox', 'radio', 'hidden', 'variable', 'file'))) {
+                    // Gets the answer
+                    $answerField = \Arr::get($answerFields, $field_id);
 
-                    if (in_array($field->field_type, array('textarea', 'checkbox'))) {
-                        $html = \Str::textToHtml($value);
-                    } else if ($field->field_type === 'file') {
-                        $attachment = $this->item->getAttachment($field);
-                        $url = $attachment->url(false);
-                        if ($url !== false) {
-                            $html = $attachment->htmlAnchor(array(
-                                'data-attachment' => $url,
-                                'target' => '_blank'
-                            ));
+                    // Builds the fields label and value
+                    $fieldDriver = $field->getDriver();
+                    if (!empty($fieldDriver)) {
+                        if (!empty($answerField)) {
+                            $html = $fieldDriver->renderAnswerHtml($answerField);
                         } else {
-                            $html = __('No file attached.');
+                            $html = __('There is no answer for this field');
                         }
-                    } else {
-                        $html = $value;
+                        $view_params['fields'][$page][] = array(
+                            'label' => $field->field_label,
+                            'value' => $html,
+                        );
                     }
                 }
-
-                $fields[] = array(
-                    'type' => $field->type,
-                    'label' => $label,
-                    'value' => $html,
-                );
             }
         }
 
-        return $fields;
+        $view_params['view_params'] = &$view_params;
+
+        return \View::forge('noviusos_form::admin/answer/layout', $view_params, false);
     }
 }

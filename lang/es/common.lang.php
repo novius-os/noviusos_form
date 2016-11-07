@@ -28,64 +28,64 @@ return array(
     #: config/controller/admin/enhancer.config.php:76
     'Thank you. Your answer has been sent.' => 'Gracias. Se ha enviado tu respuesta.',
 
-    #: views/enhancer/blank_slate.view.php:16
+    #: views/admin/enhancer/blank_slate.view.php:16
     'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => 'Vaya...aún no hay ningún formulario. No pasa nada, te explicamos como funciona:',
 
-    #: views/enhancer/blank_slate.view.php:19
+    #: views/admin/enhancer/blank_slate.view.php:19
     '<ul><li><a>Add your first form</a> (a new tab will open).</li>
 <li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>Añade tu primer formulario</a> (se abre una nueva pestaña).</li>
 <li>Cuando acabes (se tarda poco), vuelve a esta pestaña para insertar tu formulario recién salido del horno.</li></ul>',
 
-    #: views/enhancer/blank_slate.view.php:27
+    #: views/admin/enhancer/blank_slate.view.php:27
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => 'No hay ningún formulario en {{context}}. Anímate y <a>añade tu primer formulario en este idioma</a>.',
 
-    #: views/enhancer/blank_slate.view.php:29
+    #: views/admin/enhancer/blank_slate.view.php:29
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => 'No hay ningún formulario en {{context}}. Anímate y <a>añade tu primer formulario en este contexto</a>.',
 
     #: views/email.view.php:31
     'Message sent by:' => 'Mensaje enviado por:',
 
-    #: views/admin/warning_answers_collected.view.php:26
+    #: views/admin/form/layout/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'Si lo modificas, puede que borres los datos recogidos.',
 
-    #: views/admin/warning_answers_collected.view.php:29
+    #: views/admin/form/layout/warning_answers_collected.view.php:29
     'You’re right, take me to the answers' => 'Tienes razón, volvamos a las respuestas',
 
-    #: views/admin/warning_answers_collected.view.php:31
+    #: views/admin/form/layout/warning_answers_collected.view.php:31
     'or' => 'o',
 
-    #: views/admin/warning_answers_collected.view.php:31
+    #: views/admin/form/layout/warning_answers_collected.view.php:31
     'Don’t worry, I know what I’m doing' => 'No te preocupes, sé lo que hago',
 
-    #: views/admin/warning_answers_collected.view.php:49
+    #: views/admin/form/layout/warning_answers_collected.view.php:49
     'Answers to this form have already been received' => 'Ya han llegado respuestas a este formulario',
 
-    #: views/admin/layout_fields.view.php:28
+    #: views/admin/layout/fields.view.php:28
     'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Algo no funciona: no se ha configurado el envío de correos electrónicos en tu Novius OS. Pídele a tu desarrollador que te lo configure.',
 
-    #: views/admin/layout_fields.view.php:47
-    #: views/admin/layout_fields.view.php:92
+    #: views/admin/layout/fields.view.php:47
+    #: views/admin/layout/fields.view.php:92
     'Add a field' => 'Añadir un campo',
 
-    #: views/admin/layout_fields.view.php:53
+    #: views/admin/layout/fields.view.php:53
     'Standard fields' => 'Campos estándar',
 
-    #: views/admin/layout_fields.view.php:54
+    #: views/admin/layout/fields.view.php:54
     'Special fields' => 'Campos especiales',
 
-    #: views/admin/layout_fields.view.php:93
+    #: views/admin/layout/fields.view.php:93
     'Add a page break' => 'Añadir un salto de página',
 
-    #: views/admin/layout_fields.view.php:96
+    #: views/admin/layout/fields.view.php:96
     'Help us prevent spam: How much is 3 plus 8?' => 'Ayúdanos a prevenir el spam: ¿cuántos son 3 más 8?',
 
-    #: views/admin/layout_fields.view.php:103
+    #: views/admin/layout/fields.view.php:103
     'Delete' => 'Eliminar',
 
-    #: views/admin/layout_fields.view.php:132
+    #: views/admin/layout/fields.view.php:132
     'Form submission' => 'Envío de formularios',
 
-    #: views/admin/layout_fields.view.php:172
+    #: views/admin/layout/fields.view.php:172
     'Are you sure?' => '¿Estás seguro/a?',
 
     #: views/admin/permissions.view.php:15
@@ -103,16 +103,16 @@ return array(
     #: views/admin/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Sí que quiero eliminar este formulario y las {{count}} respuestas recibidas.',
 
-    #: views/admin/warning_not_published.view.php:18
+    #: views/admin/form/layout/warning_not_published.view.php:18
     'Not published' => 'Sin publicar',
 
-    #: views/admin/warning_not_published.view.php:19
+    #: views/admin/form/layout/warning_not_published.view.php:19
     'To publish this form, add it to a page, a blog post or any other text editor.' => 'Para publicar este formulario, añádelo a una página, un artículo de blog o cualquier otro editor de texto.',
 
-    #: views/admin/warning_not_published.view.php:22
+    #: views/admin/form/layout/warning_not_published.view.php:22
     '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>La mayoría de los editores de texto de Novius OS (también llamados editores WYSIWYG) incluyen este botón {{preview}} en la barra de herramientas.</p><p>Haz clic en él para acceder a la lista de aplicaciones con las que puedes mejorar el contenido.</p>',
 
-    #: views/admin/warning_not_published.view.php:23
+    #: views/admin/form/layout/warning_not_published.view.php:23
     'Applications' => 'Aplicaciones',
 
     #: views/admin/answer.view.php:15

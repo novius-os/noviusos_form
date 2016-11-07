@@ -31,16 +31,20 @@ class Model_Answer_Field extends \Nos\Orm\Model
             'data_type' => 'int unsigned',
             'null' => false,
         ),
-        'anfi_field_type' => array(
+        'anfi_field_driver' => array(
             'default' => null,
             'data_type' => 'varchar',
             'null' => false,
         ),
         'anfi_value' => array(
             'default' => null,
-            'data_type' => 'text',
+            'data_type' => 'serialize',
             'null' => false,
         ),
+    );
+
+    protected static $_observers = array(
+        'Orm\\Observer_Typing',
     );
 
     protected static $_has_one = array();

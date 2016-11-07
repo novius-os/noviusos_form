@@ -10,7 +10,7 @@
 
 return array(
     // The layout used to display the form
-    'layout' => 'noviusos_form::foundation',
+    'layout' => 'noviusos_form::front/form/foundation',
 
     // Tries to automatically set the reply-to of the
     'add_replyto_to_first_email' => true,
@@ -20,19 +20,19 @@ return array(
 
     // Available fields drivers
     'available_fields_drivers' => array(
-        \Nos\Form\Field_Input_Text::class,
-        \Nos\Form\Field_Textarea::class,
-        \Nos\Form\Field_Checkbox::class,
-        \Nos\Form\Field_Select::class,
-        \Nos\Form\Field_Radio::class,
-        \Nos\Form\Field_Input_File::class,
-        \Nos\Form\Field_Input_Email::class,
-        \Nos\Form\Field_Input_Number::class,
-        \Nos\Form\Field_Input_Date::class,
-        \Nos\Form\Field_Message::class,
-        \Nos\Form\Field_Hidden::class,
-        \Nos\Form\Field_Separator::class,
-        \Nos\Form\Field_Variable::class,
+        \Nos\Form\Driver_Field_Input_Text::class,
+        \Nos\Form\Driver_Field_Textarea::class,
+        \Nos\Form\Driver_Field_Checkbox::class,
+        \Nos\Form\Driver_Field_Select::class,
+        \Nos\Form\Driver_Field_Radio::class,
+        \Nos\Form\Driver_Field_Input_File::class,
+        \Nos\Form\Driver_Field_Input_Email::class,
+        \Nos\Form\Driver_Field_Input_Number::class,
+        \Nos\Form\Driver_Field_Input_Date::class,
+        \Nos\Form\Driver_Field_Message::class,
+        \Nos\Form\Driver_Field_Hidden::class,
+        \Nos\Form\Driver_Field_Separator::class,
+        \Nos\Form\Driver_Field_Variable::class,
     ),
 
     // The default fields layout
@@ -41,23 +41,20 @@ return array(
             'layout' => "firstname=2,lastname=2\nemail=4",
             'fields' => array(
                 'firstname' => array(
-                    'driver' => \Nos\Form\Field_Input_Text::class,
+                    'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                     'default_values' => array(
-                        'field_type' => 'text',
                         'field_label' => __('Firstname:'),
                     ),
                 ),
                 'lastname' => array(
-                    'driver' => \Nos\Form\Field_Input_Text::class,
+                    'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                     'default_values' => array(
-                        'field_type' => 'text',
                         'field_label' => __('Lastname:'),
                     ),
                 ),
                 'email' => array(
-                    'driver' => \Nos\Form\Field_Input_Email::class,
+                    'driver' => \Nos\Form\Driver_Field_Input_Email::class,
                     'default_values' => array(
-                        'field_type' => 'email',
                         'field_label' => __('Email address:'),
                     ),
                 ),
@@ -74,10 +71,7 @@ return array(
                 'layout' => 'text=4',
                 'fields' => array(
                     'text' => array(
-                        'driver' => \Nos\Form\Field_Input_Text::class,
-                        'default_values' => array(
-                            'field_type' => 'text',
-                        ),
+                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                     ),
                 ),
             ),
@@ -89,10 +83,7 @@ return array(
                 'layout' => 'textarea=4',
                 'fields' => array(
                     'textarea' => array(
-                        'driver' => \Nos\Form\Field_Textarea::class,
-                        'default_values' => array(
-                            'field_type' => 'textarea',
-                        ),
+                        'driver' => \Nos\Form\Driver_Field_Textarea::class,
                     ),
                 ),
             ),
@@ -104,9 +95,8 @@ return array(
                 'layout' => 'checkbox=4',
                 'fields' => array(
                     'checkbox' => array(
-                        'driver' => \Nos\Form\Field_Checkbox::class,
+                        'driver' => \Nos\Form\Driver_Field_Checkbox::class,
                         'default_values' => array(
-                            'field_type' => 'checkbox',
                             'field_choices' => __("First option\nSecond option"),
                         ),
                     ),
@@ -120,9 +110,8 @@ return array(
                 'layout' => 'select=4',
                 'fields' => array(
                     'select' => array(
-                        'driver' => \Nos\Form\Field_Select::class,
+                        'driver' => \Nos\Form\Driver_Field_Select::class,
                         'default_values' => array(
-                            'field_type' => 'select',
                             'field_choices' => __("First option\nSecond option"),
                         ),
                     ),
@@ -136,9 +125,8 @@ return array(
                 'layout' => 'radio=4',
                 'fields' => array(
                     'radio' => array(
-                        'driver' => \Nos\Form\Field_Radio::class,
+                        'driver' => \Nos\Form\Driver_Field_Radio::class,
                         'default_values' => array(
-                            'field_type' => 'radio',
                             'field_choices' => __("First choice\nSecond choice"),
                         ),
                     ),
@@ -152,9 +140,8 @@ return array(
                 'layout' => 'file=4',
                 'fields' => array(
                     'file' => array(
-                        'driver' => \Nos\Form\Field_Input_File::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_File::class,
                         'default_values' => array(
-                            'field_type' => 'file',
                             'field_label' => __('I’m the label of a file input, click to edit me:'),
                         ),
                     ),
@@ -168,9 +155,8 @@ return array(
                 'layout' => 'select=4',
                 'fields' => array(
                     'select' => array(
-                        'driver' => \Nos\Form\Field_Select::class,
+                        'driver' => \Nos\Form\Driver_Field_Select::class,
                         'default_values' => array(
-                            'field_type' => 'select',
                             'field_technical_id' => 'recipient-list',
                             'field_details' => __('Separate name and email addresses with a "=" sign. (eg. Name=mail@domain.com)'),
                             'field_choices' => __("First option=mail@domain.com\nSecond option=othermail@domain.com"),
@@ -186,9 +172,8 @@ return array(
                 'layout' => 'email=4',
                 'fields' => array(
                     'email' => array(
-                        'driver' => \Nos\Form\Field_Input_Email::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Email::class,
                         'default_values' => array(
-                            'field_type' => 'email',
                             'field_label' => __('Your email address:'),
                         ),
                     ),
@@ -202,9 +187,8 @@ return array(
                 'layout' => 'number=4',
                 'fields' => array(
                     'number' => array(
-                        'driver' => \Nos\Form\Field_Input_Number::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Number::class,
                         'default_values' => array(
-                            'field_type' => 'number',
                             'field_label' => __('Enter a number:'),
                         ),
                     ),
@@ -218,9 +202,8 @@ return array(
                 'layout' => 'date=4',
                 'fields' => array(
                     'date' => array(
-                        'driver' => \Nos\Form\Field_Input_Date::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Date::class,
                         'default_values' => array(
-                            'field_type' => 'date',
                             'field_label' => __('Pick a date:'),
                         ),
                     ),
@@ -234,24 +217,21 @@ return array(
                 'layout' => 'gender=1,firstname=1,name=2',
                 'fields' => array(
                     'gender' => array(
-                        'driver' => \Nos\Form\Field_Select::class,
+                        'driver' => \Nos\Form\Driver_Field_Select::class,
                         'default_values' => array(
-                            'field_type' => 'select',
                             'field_label' => __('Title:'),
                             'field_choices' => __("Ms\nMr"),
                         ),
                     ),
                     'firstname' => array(
-                        'driver' => \Nos\Form\Field_Input_Text::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                         'default_values' => array(
-                            'field_type' => 'text',
                             'field_label' => __('Firstname:'),
                         ),
                     ),
                     'name' => array(
-                        'driver' => \Nos\Form\Field_Input_Text::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                         'default_values' => array(
-                            'field_type' => 'text',
                             'field_label' => __('Name:'),
                         ),
                     ),
@@ -265,30 +245,26 @@ return array(
                 'layout' => "line_1=4\nline_2=4\npostal=1,city=3",
                 'fields' => array(
                     'line_1' => array(
-                        'driver' => \Nos\Form\Field_Input_Text::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                         'default_values' => array(
-                            'field_type' => 'text',
                             'field_label' => __('First address line:'),
                         ),
                     ),
                     'line_2' => array(
-                        'driver' => \Nos\Form\Field_Input_Text::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                         'default_values' => array(
-                            'field_type' => 'text',
                             'field_label' => __('Second address line:'),
                         ),
                     ),
                     'postal' => array(
-                        'driver' => \Nos\Form\Field_Input_Text::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                         'default_values' => array(
-                            'field_type' => 'text',
                             'field_label' => __('Postal code:'),
                         ),
                     ),
                     'city' => array(
-                        'driver' => \Nos\Form\Field_Input_Text::class,
+                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
                         'default_values' => array(
-                            'field_type' => 'text',
                             'field_label' => __('City:'),
                         ),
                     ),
@@ -302,9 +278,8 @@ return array(
                 'layout' => 'message=4',
                 'fields' => array(
                     'message' => array(
-                        'driver' => \Nos\Form\Field_Message::class,
+                        'driver' => \Nos\Form\Driver_Field_Message::class,
                         'default_values' => array(
-                            'field_type' => 'message',
                             'field_label' => __('Message:'),
                             'field_message' => 'Your message',
                         ),
@@ -319,9 +294,8 @@ return array(
                 'layout' => 'separator=4',
                 'fields' => array(
                     'separator' => array(
-                        'driver' => \Nos\Form\Field_Separator::class,
+                        'driver' => \Nos\Form\Driver_Field_Separator::class,
                         'default_values' => array(
-                            'field_type' => 'separator',
                             'field_label' => __('Separator'),
                         ),
                     ),
@@ -336,9 +310,8 @@ return array(
                 'layout' => 'hidden=4',
                 'fields' => array(
                     'hidden' => array(
-                        'driver' => \Nos\Form\Field_Hidden::class,
+                        'driver' => \Nos\Form\Driver_Field_Hidden::class,
                         'default_values' => array(
-                            'field_type' => 'hidden',
                             'field_label' => __('I’m the label for internal use only as I won’t be shown to users:'),
                         ),
                     ),
@@ -353,10 +326,7 @@ return array(
                 'layout' => 'variable=4',
                 'fields' => array(
                     'variable' => array(
-                        'driver' => \Nos\Form\Field_Variable::class,
-                        'default_values' => array(
-                            'field_type' => 'variable',
-                        ),
+                        'driver' => \Nos\Form\Driver_Field_Variable::class,
                     ),
                 ),
             ),

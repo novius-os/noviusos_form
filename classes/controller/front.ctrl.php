@@ -38,7 +38,8 @@ class Controller_Front extends Controller_Front_Application
         if (empty($item)) {
             return '';
         }
-
+//print_r($_POST);
+//        die('!');
         // Post handler with redirect
         if (\Input::method() == 'POST' && \Input::post('_form_id') == $form_id) {
             $errors = $this->post_answers($item);
@@ -86,7 +87,7 @@ class Controller_Front extends Controller_Front_Application
 
         // Displays the confirmation message
         if (\Input::get('message', 0) == $form_id) {
-            return \View::forge('noviusos_form::message', array(
+            return \View::forge('noviusos_form::front/form/message', array(
                 'message' => \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'))
             ), false);
         }
@@ -122,7 +123,7 @@ class Controller_Front extends Controller_Front_Application
 
         // Gets the default layout to use
         $config = \Config::load('noviusos_form::noviusos_form', true);
-        $layout = \Arr::get($config, 'layout', 'noviusos_form::foundation');
+        $layout = \Arr::get($config, 'layout', 'noviusos_form::front/form/foundation');
 
         // Triggers an event to allow fields and layout manipulation
         $args = array(
@@ -209,45 +210,51 @@ class Controller_Front extends Controller_Front_Application
                 $available_width = $width * 3;
                 $col_width += $available_width;
 
-                if ($field_id == 'captcha') {
+                // Page break
+                if ($field_id == 'page_break') {
+                    $new_page = true;
+                    continue;
+                }
+
+                // Captcha
+                elseif ($field_id == 'captcha') {
                     $field = Model_Field::forge(array(
                         'field_name' => 'form_captcha',
                         'field_label' => '',
-                        'field_type' => 'text',
-                        'field_driver' => Field_Input_Text::class,
+                        'field_driver' => Driver_Field_Input_Text::class,
                         'field_mandatory' => '1',
                         'field_technical_id' => '',
                         'field_technical_css' => '',
                         'field_default_value' => '',
                         'field_virtual_name' => 'form_captcha',
                     ));
-                } else if ($field_id == '_form_id') {
+                }
+
+                // Hidden form id
+                else if ($field_id == '_form_id') {
                     $field = Model_Field::forge(array(
                         'field_label' => '',
-                        'field_type' => 'hidden',
-                        'field_driver' => Field_Hidden::class,
+                        'field_driver' => Driver_Field_Hidden::class,
                         'field_mandatory' => '1',
                         'field_technical_id' => '',
                         'field_technical_css' => '',
                         'field_default_value' => $form->form_id,
                         'field_origin' => '',
+                        'field_virtual_name' => $field_id,
                     ));
-                } else {
+                }
+
+                // Other fields
+                else {
                     $field = $form->fields[$field_id];
                 }
 
-                // Page break field
-                if ($field->field_type == 'page_break') {
-                    $new_page = true;
-                    continue;
-                }
-
-                // Field with a driver
-                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                // Gets the driver
+                $fieldDriver = $field->getDriver($this->enhancer_args);
                 if (!empty($fieldDriver)) {
 
                     // Gets the field name
-                    $name = $field->getVirtualName();
+                    $name = $fieldDriver->getVirtualName();
 
                     // Sets the errors
                     $fieldDriver->setErrors(\Arr::get($errors, $name, array()));
@@ -283,14 +290,21 @@ class Controller_Front extends Controller_Front_Application
      */
     protected function getFormPageBreakCount(Model_Form $form)
     {
-        // Counts the page breaks
-        $page_break_count = 0;
-        foreach ($form->fields as $field_id => $field) {
-            if ($field->field_type == 'page_break') {
-                $page_break_count++;
+        // Gets the form layout
+        $layout = $this->getFormLayout($form);
+
+        // Counts the page breaks in layout
+        $count = 0;
+        foreach ($layout as $rows) {
+            foreach ($rows as $row) {
+                list($field_id, ) = explode('=', $row);
+                if ($field_id == 'page_break') {
+                    $count++;
+                }
             }
         }
-        return $page_break_count;
+
+        return $count;
     }
 
     /**
@@ -332,9 +346,17 @@ class Controller_Front extends Controller_Front_Application
                 if ($name == 'form_captcha') {
                     continue;
                 }
+
+                $value = \Arr::get($data, $name);
+
+                $fieldDriver = $fields[$name]->getDriver();
+                if (!empty($fieldDriver)) {
+                    $value = $fieldDriver->renderValue($value);
+                }
+
                 $error = strtr($error, array(
                     '{{label}}' => $fields[$name]->field_label,
-                    '{{value}}' => $data[$name],
+                    '{{value}}' => $value,
                 ));
             }
             return $errors;
@@ -376,7 +398,7 @@ class Controller_Front extends Controller_Front_Application
                     $fieldDriver->afterAnswerSave($answer);
 
                     // Handles fields attachments on answer
-                    if ($fieldDriver instanceof Interface_Field_Attachment) {
+                    if ($fieldDriver instanceof Interface_Driver_Field_Attachment) {
                         $fieldDriver->saveAttachments($answer);
                     }
                 }
@@ -387,13 +409,13 @@ class Controller_Front extends Controller_Front_Application
                  Model_Answer_Field::forge(array(
                     'anfi_answer_id' => $answer->answer_id,
                     'anfi_field_id' => $field->field_id,
-                    'anfi_field_type' => $field->field_type,
+                    'anfi_field_driver' => $field->field_driver,
                     'anfi_value' => \Arr::get($data, $name),
                 ), true)->save();
             }
 
             // Sends the answer mail
-            $this->sendAnswerMail($form, $fields, $data);
+            $this->sendAnswerMail($answer, $fields, $data);
 
             // after_submission
             \Event::trigger('noviusos_form::after_submission', array(
@@ -431,22 +453,28 @@ class Controller_Front extends Controller_Front_Application
         foreach ($data as $name => $value) {
             $field = \Arr::get($fields, $name);
 
-            // Driver field
+            // Gets the driver
             $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
             if (!empty($fieldDriver)) {
+
                 // Validates the field
                 try {
                     // Sets the input value
                     $fieldDriver->setValue($value);
-                    // Checks mandatory
-                    if (!$fieldDriver->checkMandatory()) {
-                        $errors[$name] = __('{{label}}: Please enter a value for this field.');
+
+                    // Checks if displayable
+                    if ($fieldDriver->checkDisplayable($data)) {
+
+                        // Checks if mandatory
+                        if (!$fieldDriver->checkMandatory($data)) {
+                            $errors[$name] = __('{{label}}: Please enter a value for this field.');
+                        }
+                        // Checks if validated
+                        elseif (!$fieldDriver->checkValidation($data)) {
+                            $errors[$name] = __('{{label}}: Please enter a valid value for this field.');
+                        }
                     }
-                    // Checks validation
-                    elseif (!$fieldDriver->checkValidation()) {
-                        $errors[$name] = __('{{label}}: Please enter a valid value for this field.');
-                    }
-                } catch (Exception_Field_Validation $e) {
+                } catch (Exception_Driver_Field_Validation $e) {
                     $errors[$name] = $e->getMessage();
                 }
             }
@@ -563,7 +591,7 @@ class Controller_Front extends Controller_Front_Application
             $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
             if (!empty($fieldDriver)) {
 
-                $field->setValue($value);
+                $fieldDriver->setValue($value);
 
                 // Gets the field reply-to
                 if ($reply_to_auto && empty($reply_to)) {
@@ -572,7 +600,7 @@ class Controller_Front extends Controller_Front_Application
                 }
 
                 // Gets the field attachments
-                if ($fieldDriver instanceof Interface_Field_Attachment) {
+                if ($fieldDriver instanceof Interface_Driver_Field_Attachment) {
                     $attachments = \Arr::merge($attachments, $fieldDriver->getAttachments($answer));
                 }
 
@@ -610,7 +638,7 @@ class Controller_Front extends Controller_Front_Application
         )));
 
         // Sets body
-        $mail->html_body(\View::forge('noviusos_form::email', array(
+        $mail->html_body(\View::forge('noviusos_form::front/form/email', array(
             'form' => $form,
             'data' => $email_data,
         ), false));

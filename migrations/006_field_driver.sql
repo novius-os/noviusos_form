@@ -7,4 +7,5 @@
  * @link http://www.novius-os.org
  */
 
-ALTER TABLE `nos_form_field` ADD `field_driver` varchar(500) NULL DEFAULT NULL;
+ALTER TABLE `nos_form_field` ADD `field_driver` varchar(500) NULL DEFAULT NULL AFTER `field_type`;
+ALTER TABLE `nos_form_answer_field` ADD `field_driver` varchar(500) NULL DEFAULT NULL AFTER `anfi_field_type`;

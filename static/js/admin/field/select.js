@@ -14,46 +14,41 @@ define(['jquery-nos'], function($) {
      * This function will be called each time a field meta is loaded
      */
     return function ($field, options, is_new, is_expert) {
-
-        var field_driver = getFieldProperty($field, 'field_driver').val();
-        var type = getFieldProperty($field, 'field_type').val();
-        var $default_value = getFieldProperty($field, 'field_default_value');
-        var choices = getFieldProperty($field, 'field_choices').val();
+        var $choices = getFieldProperty($field, 'field_choices');
 
         // Updates the preview on choices change
-        $field.on('blur change', 'textarea[name$="[field_choices]"]', generateFieldDefaultValue);
+        $choices.on('blur change keyup', generateFieldDefaultValue);
 
         generateFieldDefaultValue();
 
         function generateFieldDefaultValue() {
-
             // Gets the default value
+            var $default_value = getFieldProperty($field, 'field_default_value');
             var default_value_value = $default_value.val();
-            if (default_value_value.match(/^[0-9,]+$/)) {
-                default_value_value = default_value_value.split(',');
-            } else {
-                default_value_value = default_value_value.split("\n")
-            }
 
-            // Creates the checkboxes
-            var $new = $(
-                $('<select />').html(
-                    '<option value=""></option>'
-                    + $.map(choices.split("\n"), function(choice, i) {
-                        var pair = choice.split("=", 2);
-                        var value = pair.length == 2 ? pair[1] : i + '';
-                        var text = pair[0];
-                        return '<option value="' + value + '" ' + (default_value_value[0] == value ? 'selected' : '') + '>' + text + '</option>';
-                    }).join('')
-                )
-            ).attr({
+            // Creates the select
+            var $new = $('<select />').attr({
                 name: $default_value.attr('name'),
                 id: $default_value.attr('id')
             });
 
+            // Creates the options
+            $.each($choices.val().split("\n"), function(index, choice) {
+                // @todo do it better
+                var value = index;
+                var parts = choice.split("=");
+                if (parts.length > 1) {
+                    value = parts.pop();
+                }
+                var text = parts.join('=');
+                $new.append(
+                    $('<option value="' + value + '" ' + (default_value_value == value ? 'selected' : '') + '>' + text + '</option>')
+                );
+            });
+
             // Append to DOM
             var $parent = $default_value.closest('span');
-            $parent.empty().append($new).nosFormUI();
+            $parent.html($new).nosFormUI();
         }
     };
 
