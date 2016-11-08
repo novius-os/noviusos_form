@@ -4,6 +4,9 @@ namespace Nos\Form;
 
 class Service_Field
 {
+    /**
+     * @var Model_Field
+     */
     protected $field;
 
     public function __construct($field)
@@ -38,20 +41,46 @@ class Service_Field
 
         return $html;
     }
+
     /**
-     * Checks if a field is mandatory or not.
-     * Take in count the fact that a field may be conditionnal
+     * Gets the validation errors
      *
-     * @param array|null $formData Values sent in the form
-     * @return bool
+     * @param $value
+     * @param null $formData
+     * @return array
      */
-    public function isMandatory($formData = null)
+    public function getValidationErrors($value, $formData = null)
     {
-        $driver = $this->field->getDriver();
-        if (empty($driver)) {
-            return false;
+        $errors = array();
+
+        // Gets the driver
+        $fieldDriver = $this->field->getDriver();
+        if (!empty($fieldDriver)) {
+
+            $fieldName = $fieldDriver->getVirtualName();
+
+            // Validates the field
+            try {
+
+                // Checks if displayable
+                if ($fieldDriver->checkDisplayable($formData)) {
+
+                    // Checks if mandatory
+                    if (!$fieldDriver->checkRequirement($value, $formData)) {
+                        $errors[$fieldName] = str_replace('{{label}}', $this->field->label, __('{{label}}: Please enter a value for this field.'));
+                    }
+                    // Checks if validated
+                    elseif (!$fieldDriver->checkValidation($value, $formData)) {
+                        $errors[$fieldName] = __('{{label}}: Please enter a valid value for this field.');
+                    }
+                }
+            }
+            // Catch validation exceptions
+            catch (Exception_Driver_Field_Validation $e) {
+                $errors[$fieldName] = $e->getMessage();
+            }
         }
 
-        return $driver->checkDisplayable($formData) && $driver->isMandatory($formData);
+        return $errors;
     }
 }

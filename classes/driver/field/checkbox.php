@@ -9,11 +9,16 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
+        // Converts values to hash
+        $values = $this->sanitizeValue($inputValue);
+        $values = array_map(array($this, 'convertChoiceValueToHash'), $values);
+        $values = $this->getValuesChoiceLabel($values);
+
         $attributes = $this->getHtmlAttributes();
 
         // Builds a field for each choice
@@ -26,7 +31,8 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
                     'callback' => array('Form', 'checkbox'),
                     'args' => array(
                         $this->getVirtualName().'[]',
-                        $value, in_array($value, $this->getValue()),
+                        $value,
+                        in_array($value, $values),
                         $attributes_choice,
                     ),
                 ),
@@ -72,35 +78,12 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
     }
 
     /**
-     * Gets the instructions
-     *
-     * @return string
-     */
-    public function getInstructions()
-    {
-        return '';
-    }
-
-    /**
-     * Gets the value
-     *
-     * @return mixed|string
-     */
-    public function getValue()
-    {
-        $value = parent::getValue();
-        $value = $this->convertChoiceValueToHash($value);
-        $value = array_map(array($this, 'convertChoiceValueToHash'), $value);
-        return $value;
-    }
-
-    /**
-     * Renders the specified value
+     * Renders the specified value as html for an error message
      *
      * @param $value
-     * @return mixed
+     * @return string
      */
-    public function renderValue($value)
+    public function renderErrorValueHtml($value)
     {
         $value = $this->sanitizeValue($value);
         $value = implode(', ', $value);
@@ -115,23 +98,47 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
      */
     public function renderAnswerHtml(Model_Answer_Field $answerField)
     {
-        $html = \Str::textToHtml($answerField->value);
+        // Gets the answer values
+        $values = $this->sanitizeValue($answerField->value);
+
+        // Converts to choices
+        $values = $this->getValuesChoiceLabel($values);
+
+        // Linearizes the values
+        $values = implode("\n", $values);
+        $html = \Str::textToHtml($values);
+
         return $html;
     }
 
-//    /**
-//     * Gets the default value
-//     *
-//     * @param null $defaultValue
-//     * @return array|mixed|null
-//     */
-//    public function getDefaultValue($defaultValue = null)
-//    {
-//        $defaultValues = $this->getDefaultValue();
-//        $defaultValues = array_map(array($this, 'convertChoiceValueToHash'), $defaultValues);
-//        $defaultValues = $this->getChoicesList($defaultValues);
-//        return $this->sanitizeValue($defaultValues);
-//    }
+    /**
+     * Gets the choice (label) for the specified value
+     *
+     * @param array $values
+     * @return mixed
+     */
+    public function getValuesChoiceLabel($values)
+    {
+        // Gets the choices
+        $choices = $this->getChoicesList();
+
+        // Converts values to choice
+        $values = array_map(function($value) use ($choices) {
+            return \Arr::get($choices, $value);
+        }, $values);
+
+        return $values;
+    }
+
+    /**
+     * Gets the instructions
+     *
+     * @return string
+     */
+    public function getInstructions()
+    {
+        return '';
+    }
 
     /**
      * Formats the value
@@ -155,21 +162,6 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
     }
 
     /**
-     * Gets the HTML content of the specified choice
-     *
-     * @param $choice
-     * @param $attributes_choice
-     * @return array
-     */
-    protected function getChoiceHtml($choice, $attributes_choice)
-    {
-        return array(
-            'callback' => array('Form', 'checkbox'),
-            'args' => array($this->getVirtualName().'[]', $choice, in_array($choice, $this->getValue()), $attributes_choice),
-        );
-    }
-
-    /**
      * Gets the virtual name
      *
      * @return string
@@ -178,26 +170,5 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
     {
         // Adds brackets for handling multiple selected values
         return $this->getVirtualName().'[]';
-    }
-
-    /**
-     * Gets the label of the specified choice
-     *
-     * @param $choice
-     * @param $attributes_choice
-     * @return array
-     */
-    protected function getChoiceLabel($choice, $attributes_choice)
-    {
-        return array(
-            'callback' => array('Form', 'label'),
-            'args' => array(
-                $choice,
-                $this->field->field_technical_id,
-                array(
-                    'for' => $attributes_choice['id'],
-                ),
-            ),
-        );
     }
 }

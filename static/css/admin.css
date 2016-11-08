@@ -129,8 +129,7 @@ tr.preview_inserter {
     box-sizing: border-box;
 }
 
-.fieldset .form_previews input,
-.fieldset .form_previews textarea {
+.fieldset .form_previews input[type="button"] {
     width: auto;
 }
 

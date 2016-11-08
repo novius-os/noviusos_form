@@ -7,10 +7,10 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
         $name = $this->getVirtualName();
         $attributes = $this->getHtmlAttributes();
@@ -22,12 +22,12 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     }
 
     /**
-     * Renders the specified value
+     * Renders the specified value as html for an error message
      *
      * @param $value
-     * @return mixed
+     * @return string
      */
-    public function renderValue($value)
+    public function renderErrorValueHtml($value)
     {
         return '';
     }
@@ -49,22 +49,37 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Checks the mandatory state
      *
      * @param array|null $formData
-     * @return bool
+     * @return bool Returns true if successfully checked
      */
-    public function checkMandatory($formData = null)
+    public function checkRequirement($inputValue, $formData = null)
     {
         if (!$this->isMandatory()) {
             return true;
         }
 
-        // Checks if file exists
-        // @todo better check
-        $file = isset($this->value) ? $this->value : '';
-        $file = $this->sanitizeValue($file);
+        $file = $this->sanitizeValue($inputValue);
 
-        $filePath = \Arr::get($file, 'tmp_name');
-        if (empty($filePath) || !is_file($filePath)) {
-            return false;
+        return !empty($file['tmp_name']);
+    }
+
+    /**
+     * Checks the mandatory state
+     *
+     * @param $inputValue
+     * @param null $formData
+     * @return bool
+     * @throws Exception_Driver_Field_Validation
+     */
+    public function checkValidation($inputValue, $formData = null)
+    {
+        $file = $this->sanitizeValue($inputValue);
+        if (!empty($file)) {
+            // Checks if file exists
+            $filePath = \Arr::get($file, 'tmp_name');
+            if (empty($filePath) || !is_file($filePath)) {
+                throw new Exception_Driver_Field_Validation(__('{{label}}: Invalid file.'));
+            }
+            // @todo better checks ? (file size, format, etc...)
         }
 
         return true;
@@ -105,12 +120,15 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Saves the attachments on the specified $answer
      *
      * @param Model_Answer $answer
+     * @param mixed|null $inputValue
+     * @param mixed|null $formData
      * @throws Exception_Driver_Field_Attachment
      */
-    public function saveAttachments(Model_Answer $answer)
+    public function saveAttachments(Model_Answer $answer, $inputValue = null, $formData = null)
     {
+        $file = $this->sanitizeValue($inputValue);
+
         // Sets the file as attachment
-        $file = $this->getValue();
         if (!empty($file)) {
 
             // Gets the file path
@@ -137,12 +155,6 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     public function getAttachments(Model_Answer $answer)
     {
         $attachments = array();
-
-        // Sets the file as attachment
-//        $file = $this->getValue();
-//        if (!empty($file)) {
-//          $attachments[] = $answer->getAttachment($this->getVirtualName());
-//        }
 
         $attachment = $answer->getAttachment($this->field);
         if (!empty($attachment) && $attachment->path()) {

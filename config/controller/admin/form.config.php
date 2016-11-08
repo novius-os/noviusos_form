@@ -324,7 +324,7 @@ return array(
             'field_default_value' => array(
                 'label' => __('Default value:'),
                 'form' => array(
-                    'type' => 'textarea',
+                    'type' => 'text',
                 ),
             ),
             'field_details' => array(

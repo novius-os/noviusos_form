@@ -2,18 +2,18 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Textarea extends Driver_Field_Abstract
+class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_Driver_Field_Placeholder
 {
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
         $name = $this->getVirtualName();
-        $value = $this->getValue();
+        $value = $this->sanitizeValue($inputValue);
         $attributes = $this->getHtmlAttributes();
 
         return array(
@@ -55,23 +55,20 @@ class Driver_Field_Textarea extends Driver_Field_Abstract
     {
         $attributes = parent::getHtmlAttributes();
 
-        // Sets the label as placeholder if option is specified
-        if ($this->getOption('label_position') === 'placeholder') {
-            $attributes['placeholder'] = $this->field->field_label;
-        }
-
-        // Sets the error state
-        if ($this->hasErrors()) {
-            if ($this->getOption('label_position') === 'placeholder') {
-                $attributes['class'] .= ' user-error form-ui-invalid';
-                $attributes['title'] = htmlspecialchars($this->getErrors());
-            }
-        }
-
         if (!empty($this->field->field_height)) {
             $html_attrs['rows'] = $this->field->field_height;
         }
 
         return $attributes;
+    }
+
+    /**
+     * Gets the placeholder value
+     *
+     * @return string
+     */
+    public function getPlaceholderValue()
+    {
+        return $this->field->field_label;
     }
 }

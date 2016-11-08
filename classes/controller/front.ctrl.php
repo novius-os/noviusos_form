@@ -38,8 +38,7 @@ class Controller_Front extends Controller_Front_Application
         if (empty($item)) {
             return '';
         }
-//print_r($_POST);
-//        die('!');
+
         // Post handler with redirect
         if (\Input::method() == 'POST' && \Input::post('_form_id') == $form_id) {
             $errors = $this->post_answers($item);
@@ -71,7 +70,7 @@ class Controller_Front extends Controller_Front_Application
 
                 // Don't store the page in cache when one field is pre-filled with a parameter
                 // This allows to still use the cache for the "empty" version of the form
-                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                $fieldDriver = $field->getDriver($this->enhancer_args);
                 if (!empty($fieldDriver)) {
                     $value = $fieldDriver->getDefaultValue();
                     if (!empty($value) && $value != $field->field_default_value) {
@@ -149,6 +148,136 @@ class Controller_Front extends Controller_Front_Application
                 'action' => '',
             ),
         ), false);
+    }
+
+    /**
+     * Handles form answer post
+     *
+     * @param $form
+     * @return array
+     * @throws \Exception
+     */
+    public function post_answers($form)
+    {
+        // Gets the form layout
+        $layout = $this->getFormLayout($form);
+
+        // Gets the fields and their values in order of their layout position
+        $data = $fields = array();
+        foreach ($layout as $cols) {
+            foreach ($cols as $field_layout) {
+                list($field_id, ) = explode('=', $field_layout);
+
+                // Gets the field
+                $field = \Arr::get($form->fields, $field_id);
+                if (!empty($field)) {
+
+                    // Gets the field driver
+                    $fieldDriver = $field->getDriver($this->enhancer_args);
+                    if (!empty($fieldDriver)) {
+
+                        // Gets field name and value
+                        $value = $fieldDriver->getInputValue();
+                        $name = $fieldDriver->getVirtualName();
+
+                        $data[$name] = $value;
+                        $fields[$name] = $field;
+                    }
+                }
+            }
+        }
+
+        // Validates the form fields
+        $errors = $this->validateFormFieldsData($form, $fields, $data);
+        if (!empty($errors)) {
+            foreach ($errors as $name => &$error) {
+                if (empty($fields[$name]) || $name == 'form_captcha') {
+                    continue;
+                }
+
+                $value = \Arr::get($data, $name);
+
+                $fieldDriver = $fields[$name]->getDriver();
+                if (!empty($fieldDriver)) {
+                    $value = $fieldDriver->renderErrorValueHtml($value);
+                }
+
+                $error = strtr($error, array(
+                    '{{label}}' => $fields[$name]->field_label,
+                    '{{value}}' => $value,
+                ));
+            }
+            return $errors;
+        }
+
+        // Submits the form
+        if ($this->beforeSubmission($form, $fields, $data)) {
+
+            // Forges the new answer
+            $answer = Model_Answer::forge(array(
+                'answer_ip' => \Input::real_ip(),
+            ), true);
+
+            $answer->form = $form;
+
+            // Fields pre processing on answer
+            foreach ($fields as $name => $field) {
+                $fieldDriver = $field->getDriver($this->enhancer_args);
+                if (!empty($fieldDriver)) {
+                    // Handles fields pre processing on answer
+                    $fieldDriver->beforeAnswerSave($answer, \Arr::get($data, $name), $data);
+                }
+            }
+
+            // Saves the answer
+            $answer->save();
+
+            // Fields post processing on answer
+            foreach ($fields as $name => $field) {
+                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
+                if (!empty($fieldDriver)) {
+
+                    // Handles fields post processing on answer
+                    $fieldDriver->afterAnswerSave($answer, \Arr::get($data, $name), $data);
+
+                    // Handles fields attachments on answer
+                    if ($fieldDriver instanceof Interface_Driver_Field_Attachment) {
+                        $fieldDriver->saveAttachments($answer);
+                    }
+                }
+            }
+
+            // Creates the answer fields
+            foreach ($fields as $name => $field) {
+                 Model_Answer_Field::forge(array(
+                    'anfi_answer_id' => $answer->answer_id,
+                    'anfi_field_id' => $field->field_id,
+                    'anfi_field_driver' => $field->field_driver,
+                    'anfi_value' => \Arr::get($data, $name),
+                ), true)->save();
+            }
+
+            // Sends the answer mail
+            $this->sendAnswerMail($answer, $fields, $data);
+
+            // after_submission
+            \Event::trigger('noviusos_form::after_submission', array(
+                'answer' => $answer,
+                'enhancer_args' => $this->enhancer_args,
+                0 => $answer, //For consistency. Deprecated. To remove when made BC
+                1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
+            ));
+            if (!empty($form->form_virtual_name)) {
+                \Event::trigger('noviusos_form::after_submission.'.$form->form_virtual_name, array(
+                    'answer' => $answer,
+                    'enhancer_args' => $this->enhancer_args,
+                    0 => $answer, //For consistency. Deprecated. To remove when made BC
+                    1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
+                ));
+            }
+        }
+
+        return $errors;
     }
 
     /**
@@ -259,13 +388,13 @@ class Controller_Front extends Controller_Front_Application
                     // Sets the errors
                     $fieldDriver->setErrors(\Arr::get($errors, $name, array()));
 
-                    // Initializes the value
-                    $fieldDriver->setValue($fieldDriver->getInputValue($fieldDriver->getDefaultValue()));
+                    // Gets the input value or the default value
+                    $value = $fieldDriver->getInputValue($fieldDriver->getDefaultValue());
 
                     // Builds the field
                     $fields[$name] = array(
                         'label' => $fieldDriver->getLabel(),
-                        'field' => $fieldDriver->getHtml(),
+                        'field' => $fieldDriver->getHtml($value),
                         'instructions' => $fieldDriver->getInstructions(),
                         'new_row' => $first_col,
                         'new_page' => $new_page,
@@ -280,161 +409,6 @@ class Controller_Front extends Controller_Front_Application
         }
 
         return $fields;
-    }
-
-    /**
-     * Gets the form page break count
-     *
-     * @param Model_Form $form
-     * @return int
-     */
-    protected function getFormPageBreakCount(Model_Form $form)
-    {
-        // Gets the form layout
-        $layout = $this->getFormLayout($form);
-
-        // Counts the page breaks in layout
-        $count = 0;
-        foreach ($layout as $rows) {
-            foreach ($rows as $row) {
-                list($field_id, ) = explode('=', $row);
-                if ($field_id == 'page_break') {
-                    $count++;
-                }
-            }
-        }
-
-        return $count;
-    }
-
-    /**
-     * Handles form answer post
-     *
-     * @param $form
-     * @return array
-     * @throws \Exception
-     */
-    public function post_answers($form)
-    {
-        $data = array();
-        $fields = array();
-
-        // Gets the form layout
-        $layout = $this->getFormLayout($form);
-
-        // Gets the fields values in order of their layout position
-        foreach ($layout as $cols) {
-            foreach ($cols as $field_layout) {
-                list($field_id, ) = explode('=', $field_layout);
-                $field = $form->fields[$field_id];
-
-                // Driver field
-                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
-                if (!empty($fieldDriver)) {
-                    $name = $fieldDriver->getVirtualName();
-                    // Gets the input value
-                    $data[$name] = $fieldDriver->getInputValue();
-                    $fields[$name] = $field;
-                }
-            }
-        }
-
-        // Validates the form fields
-        $errors = $this->validateFormFieldsData($form, $fields, $data);
-        if (!empty($errors)) {
-            foreach ($errors as $name => &$error) {
-                if ($name == 'form_captcha') {
-                    continue;
-                }
-
-                $value = \Arr::get($data, $name);
-
-                $fieldDriver = $fields[$name]->getDriver();
-                if (!empty($fieldDriver)) {
-                    $value = $fieldDriver->renderValue($value);
-                }
-
-                $error = strtr($error, array(
-                    '{{label}}' => $fields[$name]->field_label,
-                    '{{value}}' => $value,
-                ));
-            }
-            return $errors;
-        }
-
-        // Submits the form
-        if ($this->beforeSubmission($form, $fields, $data)) {
-
-            // Forges the new answer
-            $answer = Model_Answer::forge(array(
-                'answer_ip' => \Input::real_ip(),
-            ), true);
-
-            $answer->form = $form;
-
-            // Fields pre processing on answer
-            foreach ($fields as $name => $field) {
-                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
-                if (!empty($fieldDriver)) {
-
-                    $fieldDriver->setValue(\Arr::get($data, $name));
-
-                    // Handles fields pre processing on answer
-                    $fieldDriver->beforeAnswerSave($answer);
-                }
-            }
-
-            // Saves the answer
-            $answer->save();
-
-            // Fields post processing on answer
-            foreach ($fields as $name => $field) {
-                $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
-                if (!empty($fieldDriver)) {
-
-                    $fieldDriver->setValue(\Arr::get($data, $name));
-
-                    // Handles fields post processing on answer
-                    $fieldDriver->afterAnswerSave($answer);
-
-                    // Handles fields attachments on answer
-                    if ($fieldDriver instanceof Interface_Driver_Field_Attachment) {
-                        $fieldDriver->saveAttachments($answer);
-                    }
-                }
-            }
-
-            // Creates the answer fields
-            foreach ($fields as $name => $field) {
-                 Model_Answer_Field::forge(array(
-                    'anfi_answer_id' => $answer->answer_id,
-                    'anfi_field_id' => $field->field_id,
-                    'anfi_field_driver' => $field->field_driver,
-                    'anfi_value' => \Arr::get($data, $name),
-                ), true)->save();
-            }
-
-            // Sends the answer mail
-            $this->sendAnswerMail($answer, $fields, $data);
-
-            // after_submission
-            \Event::trigger('noviusos_form::after_submission', array(
-                'answer' => $answer,
-                'enhancer_args' => $this->enhancer_args,
-                0 => $answer, //For consistency. Deprecated. To remove when made BC
-                1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
-            ));
-            if (!empty($form->form_virtual_name)) {
-                \Event::trigger('noviusos_form::after_submission.'.$form->form_virtual_name, array(
-                    'answer' => $answer,
-                    'enhancer_args' => $this->enhancer_args,
-                    0 => $answer, //For consistency. Deprecated. To remove when made BC
-                    1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
-                ));
-            }
-        }
-
-        return $errors;
     }
 
     /**
@@ -453,31 +427,8 @@ class Controller_Front extends Controller_Front_Application
         foreach ($data as $name => $value) {
             $field = \Arr::get($fields, $name);
 
-            // Gets the driver
-            $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
-            if (!empty($fieldDriver)) {
-
-                // Validates the field
-                try {
-                    // Sets the input value
-                    $fieldDriver->setValue($value);
-
-                    // Checks if displayable
-                    if ($fieldDriver->checkDisplayable($data)) {
-
-                        // Checks if mandatory
-                        if (!$fieldDriver->checkMandatory($data)) {
-                            $errors[$name] = __('{{label}}: Please enter a value for this field.');
-                        }
-                        // Checks if validated
-                        elseif (!$fieldDriver->checkValidation($data)) {
-                            $errors[$name] = __('{{label}}: Please enter a valid value for this field.');
-                        }
-                    }
-                } catch (Exception_Driver_Field_Validation $e) {
-                    $errors[$name] = $e->getMessage();
-                }
-            }
+            // Gets the validation errors
+            $errors = \Arr::merge($errors, Service_Field::forge($field)->getValidationErrors($value, $data));
         }
 
         // Custom validation
@@ -522,8 +473,7 @@ class Controller_Front extends Controller_Front_Application
         foreach ($fields as $name => $field) {
             $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
             if (!empty($fieldDriver)) {
-                $fieldDriver->setValue(\Arr::get($data, $name));
-                $fieldDriver->beforeSubmission($form);
+                $fieldDriver->beforeFormSubmission($form, \Arr::get($data, $name), $data);
             }
         }
 
@@ -591,12 +541,9 @@ class Controller_Front extends Controller_Front_Application
             $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
             if (!empty($fieldDriver)) {
 
-                $fieldDriver->setValue($value);
-
-                // Gets the field reply-to
-                if ($reply_to_auto && empty($reply_to)) {
-                    // save first non empty email as potential "reply_to"
-                    $reply_to = $fieldDriver->getEmailReplyTo();
+                // Gets the first non empty email as potential "reply_to"
+                if ($reply_to_auto && empty($reply_to) && $fieldDriver instanceof Interface_Driver_Field_Email) {
+                    $reply_to = $fieldDriver->getEmail();
                 }
 
                 // Gets the field attachments
@@ -652,5 +599,30 @@ class Controller_Front extends Controller_Front_Application
         }
 
         return true;
+    }
+
+    /**
+     * Gets the form page break count
+     *
+     * @param Model_Form $form
+     * @return int
+     */
+    protected function getFormPageBreakCount(Model_Form $form)
+    {
+        // Gets the form layout
+        $layout = $this->getFormLayout($form);
+
+        // Counts the page breaks in layout
+        $count = 0;
+        foreach ($layout as $rows) {
+            foreach ($rows as $row) {
+                list($field_id, ) = explode('=', $row);
+                if ($field_id == 'page_break') {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
     }
 }

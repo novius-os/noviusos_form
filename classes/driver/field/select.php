@@ -4,21 +4,24 @@ namespace Nos\Form;
 
 use Fuel\Core\Form;
 
-class Driver_Field_Select extends Driver_Field_Abstract
+class Driver_Field_Select extends Driver_Field_Abstract implements Interface_Driver_Field_Placeholder
 {
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
+        $value = $this->sanitizeValue($inputValue);
+        $value = $this->convertChoiceValueToHash($value);
+
         return array(
             'callback' => array('Form', 'select'),
             'args' => array(
                 $this->getVirtualName(),
-                $this->getValue(),
+                $value,
                 $this->getChoicesList(),
                 $this->getHtmlAttributes()
             ),
@@ -47,30 +50,37 @@ class Driver_Field_Select extends Driver_Field_Abstract
     }
 
     /**
-     * Gets the value
+     * Renders the answer as HTML
      *
+     * @param Model_Answer_Field $answerField
      * @return mixed|string
      */
-    public function getValue()
+    public function renderAnswerHtml(Model_Answer_Field $answerField)
     {
-        $value = parent::getValue();
-        $value = $this->convertChoiceValueToHash($value);
-        return $value;
+        // Gets the answer value
+        $value = $this->sanitizeValue($answerField->value);
+
+        // Converts to choice label
+        $value = $this->getValueChoiceLabel($value);
+
+        return e($value);
     }
 
     /**
      * Triggered before form submission
      *
      * @param Model_Form $form
+     * @param null $inputValue
+     * @param null $formData
      */
-    public function beforeSubmission(Model_Form $form)
+    public function beforeFormSubmission(Model_Form $form, $inputValue = null, $formData = null)
     {
         if ($this->field->field_technical_id === 'recipient-list') {
-            // Adds value(s) to recipient list
-            foreach ((array) $this->getValue() as $v) {
-                if (preg_match("/" . preg_quote($v) . "$/m", $this->getChoices())) {
-                    $form->form_submit_email .= $v."\n";
-                }
+            $value = $this->sanitizeValue($inputValue);
+            $label = $this->getValueChoiceLabel($value);
+            if (!empty($label)) {
+                // Add the value to the recipient list
+                $form->form_submit_email .= $label . "\n";
             }
         }
     }
@@ -84,23 +94,20 @@ class Driver_Field_Select extends Driver_Field_Abstract
     {
         $attributes = parent::getHtmlAttributes();
 
-        // Sets the label as placeholder if option is specified
-        if ($this->getOption('label_position') === 'placeholder') {
-            $attributes['placeholder'] = $this->field->field_label;
-        }
-
-        // Sets the error state
-        if ($this->hasErrors()) {
-            if ($this->getOption('label_position') === 'placeholder') {
-                $attributes['class'] .= ' user-error form-ui-invalid';
-                $attributes['title'] = htmlspecialchars($this->getErrors());
-            }
-        }
-
         if (!empty($this->field->field_height)) {
             $html_attrs['rows'] = $this->field->field_height;
         }
 
         return $attributes;
+    }
+
+    /**
+     * Gets the placeholder value
+     *
+     * @return string
+     */
+    public function getPlaceholderValue()
+    {
+        return $this->field->field_label;
     }
 }

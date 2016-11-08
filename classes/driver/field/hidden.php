@@ -7,10 +7,10 @@ class Driver_Field_Hidden extends Driver_Field_Abstract
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
         return array(
             'callback' => array('Form', 'hidden'),
@@ -35,6 +35,7 @@ class Driver_Field_Hidden extends Driver_Field_Abstract
      */
     public function getLabel()
     {
+        // No label
         return '';
     }
 }

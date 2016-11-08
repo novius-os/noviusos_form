@@ -11,9 +11,9 @@ class Driver_Field_Input_Number extends Driver_Field_Input
      * @return bool
      * @throws Exception_Driver_Field_Validation
      */
-    public function checkValidation($formData = null)
+    public function checkValidation($inputValue, $formData = null)
     {
-        if (!filter_var($this->getValue(), FILTER_VALIDATE_INT)) {
+        if (!empty($inputValue) && !filter_var($inputValue, FILTER_VALIDATE_INT)) {
             throw new Exception_Driver_Field_Validation(__('{{label}}: ‘{{value}}’ is not a valid number.'));
         }
         return true;

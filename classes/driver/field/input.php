@@ -2,18 +2,18 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input extends Driver_Field_Abstract
+class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driver_Field_Placeholder
 {
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
         $name = $this->getVirtualName();
-        $value = $this->getValue();
+        $value = $this->sanitizeValue($inputValue);
         $attributes = $this->getHtmlAttributes();
 
         return array(
@@ -37,21 +37,6 @@ class Driver_Field_Input extends Driver_Field_Abstract
     }
 
     /**
-     * Gets the label
-     *
-     * @return string
-     */
-    public function getLabel()
-    {
-        // No label if set as placeholder
-        if ($this->getOption('label_position') === 'placeholder') {
-            return '';
-        } else {
-            return parent::getLabel();
-        }
-    }
-
-    /**
      * Gets the HTML attributes
      *
      * @return array
@@ -62,19 +47,6 @@ class Driver_Field_Input extends Driver_Field_Abstract
 
         // Sets the input type
         $attributes['type'] = $this->getInputType();
-
-        // Sets the label as placeholder if option is specified
-        if ($this->getOption('label_position') === 'placeholder') {
-            $attributes['placeholder'] = $this->field->field_label;
-        }
-
-        // Sets the error state
-        if ($this->hasErrors()) {
-            if ($this->getOption('label_position') === 'placeholder') {
-                $attributes['class'] .= ' user-error form-ui-invalid';
-                $attributes['title'] = htmlspecialchars($this->getErrors());
-            }
-        }
 
         // Sets the width
         if (!empty($this->field->field_width)) {
@@ -87,6 +59,16 @@ class Driver_Field_Input extends Driver_Field_Abstract
         }
 
         return $attributes;
+    }
+
+    /**
+     * Gets the placeholder value
+     *
+     * @return string
+     */
+    public function getPlaceholderValue()
+    {
+        return $this->field->field_label;
     }
 
     /**

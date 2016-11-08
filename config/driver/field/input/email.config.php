@@ -28,6 +28,14 @@ return array(
                 ),
             ),
         ),
+        'fields' => array(
+            'field_default_value' => array(
+                'label' => __('Default Email Address:'),
+                'form' => array(
+                    'type' => 'email',
+                ),
+            ),
+        ),
     ),
 
     // Sets true or an array with a custom config to make this field displayable as an answer column

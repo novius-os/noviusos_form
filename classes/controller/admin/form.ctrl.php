@@ -95,13 +95,19 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         );
 
         // Registers the fields
-        $fields_config = \Arr::get($this->config, 'fields_config.fields');
+        $fieldsConfig = \Arr::get($this->config, 'fields_config.fields');
         foreach ($fields_data as $field_id => $field_data) {
-            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config($fields_config, array(
+
+            $field = Model_Field::find($field_id);
+
+            // Builds the fields config with the driver's config
+            $fieldConfig = \Arr::merge($fieldsConfig, $this->getFieldDriverConfig($field, 'admin.fields', array()));
+
+            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config($fieldConfig, array(
                 'save' => false,
             ));
             $this->fields_data[$field_id] = $field_data;
-            $item->fields[$field_id] = Model_Field::find($field_id);
+            $item->fields[$field_id] = $field;
         }
     }
 
@@ -409,6 +415,9 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         // Gets the fields config
         $fields_config = \Arr::get($this->config, 'fields_config.fields');
 
+        // Merges the fields config with the driver's config
+        $fields_config = \Arr::merge($fields_config, $this->getFieldDriverConfig($field, 'admin.fields', array()));
+
         // Builds the fieldset
         $fieldset = \Fieldset::build_from_config($fields_config, $field, array('save' => false, 'auto_id' => false));
 
@@ -503,7 +512,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
      * Creates a field in database
      *
      * @param array $data
-     * @return static
+     * @return Model_Field
      * @throws \Exception
      */
     protected function create_field_db($data = array())
@@ -530,6 +539,34 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $model_field->save();
 
         return $model_field;
+    }
+
+    /**
+     * Gets the field driver config
+     *
+     * @param $field
+     * @param $configPath
+     * @param null $defaultValue
+     * @return bool|mixed
+     */
+    protected function getFieldDriverConfig($field, $configPath = null, $defaultValue = null)
+    {
+        // Gets the driver
+        $fieldDriver = $field->getDriver();
+        if (empty($fieldDriver)) {
+            return false;
+        }
+
+        // Gets the driver's config
+        $driverConfig = $fieldDriver::getConfig();
+
+        if (!is_null($configPath)) {
+            // Returns the config value by path
+            return \Arr::get($driverConfig, $configPath, $defaultValue);
+        } else {
+            // Returns the config
+            return $driverConfig;
+        }
     }
 
     /**

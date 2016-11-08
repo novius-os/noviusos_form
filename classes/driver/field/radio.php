@@ -9,25 +9,27 @@ class Driver_Field_Radio extends Driver_Field_Abstract
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
+        $value = $this->sanitizeValue($inputValue);
+        $value = $this->convertChoiceValueToHash($value);
+
         $attributes = $this->getHtmlAttributes();
 
         // Builds the HTML choices
         $html = array();
-        foreach ($this->getChoicesList() as $value => $label) {
+        foreach ($this->getChoicesList() as $choiceValue => $label) {
             $attributes_choice = $attributes;
-            $attributes_choice['id'] .= \Inflector::friendly_title($value);
+            $attributes_choice['id'] .= \Inflector::friendly_title($choiceValue);
             $html[] = array(
                 'field' => array(
                     'callback' => array('Form', 'radio'),
                     'args' => array(
-                        $this->getVirtualName().'[]',
-                        $value,
-                        $value === $this->getValue(),
+                        $choiceValue,
+                        $choiceValue === $value,
                         $attributes_choice
                     ),
                 ),
@@ -72,6 +74,23 @@ class Driver_Field_Radio extends Driver_Field_Abstract
     }
 
     /**
+     * Renders the answer as HTML
+     *
+     * @param Model_Answer_Field $answerField
+     * @return mixed|string
+     */
+    public function renderAnswerHtml(Model_Answer_Field $answerField)
+    {
+        // Gets the answer value
+        $value = $this->sanitizeValue($answerField->value);
+
+        // Converts to choice label
+        $value = $this->getValueChoiceLabel($value);
+
+        return e($value);
+    }
+
+    /**
      * Gets the instructions
      *
      * @return string
@@ -79,17 +98,5 @@ class Driver_Field_Radio extends Driver_Field_Abstract
     public function getInstructions()
     {
         return '';
-    }
-
-    /**
-     * Gets the value
-     *
-     * @return mixed|string
-     */
-    public function getValue()
-    {
-        $value = parent::getValue();
-        $value = $this->convertChoiceValueToHash($value);
-        return $value;
     }
 }

@@ -7,10 +7,10 @@ class Driver_Field_Variable extends Driver_Field_Abstract
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
         return array(
             'callback' => 'html_tag',

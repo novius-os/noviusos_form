@@ -7,7 +7,6 @@ abstract class Driver_Field_Abstract
     protected $field;
     protected $options;
     protected $errors;
-    protected $value;
 
     protected static $config = array();
 
@@ -36,10 +35,10 @@ abstract class Driver_Field_Abstract
     /**
      * Gets the field html
      *
-     * @param array $options
+     * @param mixed|null $inputValue
      * @return mixed
      */
-    abstract public function getHtml($options = array());
+    abstract public function getHtml($inputValue = null);
 
     /**
      * Gets the HTML preview
@@ -76,6 +75,18 @@ abstract class Driver_Field_Abstract
             $attributes['required'] = 'required';
         }
 
+        // Sets the label as placeholder if option is specified and driver compatible
+        if ($this instanceof Interface_Driver_Field_Placeholder && $this->getOption('label_position') === 'placeholder') {
+            // Sets the placeholder value
+            $attributes['placeholder'] = $this->getPlaceholderValue();
+
+            // Sets the errors attributes
+            if ($this->hasErrors()) {
+                $attributes['class'] .= ' user-error form-ui-invalid';
+                $attributes['title'] = htmlspecialchars($this->getErrors());
+            }
+        }
+
         return $attributes;
     }
 
@@ -103,6 +114,11 @@ abstract class Driver_Field_Abstract
      */
     public function getLabel()
     {
+        // No label if set as placeholder and driver is compatible
+        if ($this instanceof Interface_Driver_Field_Placeholder && $this->getOption('label_position') === 'placeholder') {
+            return '';
+        }
+
         $label_attrs = array(
             'for' => $this->getHtmlId(),
         );
@@ -246,41 +262,29 @@ abstract class Driver_Field_Abstract
     }
 
     /**
-     * Sets the value
-     *
-     * @param $value
-     * @return $this
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-        return $this;
-    }
-
-    /**
-     * Gets the value
-     *
-     * @return mixed
-     */
-    public function getValue()
-    {
-        $value = isset($this->value) ? $this->value : $this->getDefaultValue();
-
-        $value = $this->sanitizeValue($value);
-
-        return $value;
-    }
-
-    /**
-     * Renders the specified value
+     * Gets the choice label for the specified value
      *
      * @param $value
      * @return mixed
      */
-    public function renderValue($value)
+    public function getValueChoiceLabel($value)
+    {
+        // Gets the choices
+        $choices = $this->getChoicesList();
+
+        return \Arr::get($choices, $value, $value);
+    }
+
+    /**
+     * Renders the specified value as html for an error message
+     *
+     * @param $value
+     * @return string
+     */
+    public function renderErrorValueHtml($value)
     {
         $value = $this->sanitizeValue($value);
-        return $value;
+        return (string) $value;
     }
 
     /**
@@ -365,13 +369,11 @@ abstract class Driver_Field_Abstract
     }
 
     /**
-     * Checks if field is mandatory for the specified form data
-     * Takes into account that a field may be conditional
+     * Checks if field is mandatory
      *
-     * @param array|null $formData
      * @return bool
      */
-    public function isMandatory($formData = null)
+    public function isMandatory()
     {
         return !empty($this->field->field_mandatory);
     }
@@ -412,24 +414,28 @@ abstract class Driver_Field_Abstract
     }
 
     /**
-     * Checks the mandatory state for the specified form data
-     * Takes into account that a field may be conditional
+     * Checks the requirement state or the specified form data
      *
+     * @param $inputValue
      * @param array|null $formData
-     * @return bool
+     * @return bool Returns true if successfully checked
      */
-    public function checkMandatory($formData = null)
+    public function checkRequirement($inputValue, $formData = null)
     {
-        return !(!$this->isMandatory($formData) && empty($this->getValue()));
+        if (!$this->isMandatory()) {
+            return true;
+        }
+        return is_string($inputValue) && !empty($inputValue);
     }
 
     /**
      * Checks the validation state for the specified form data
      *
+     * @param $inputValue
      * @param array|null $formData
-     * @return bool
+     * @return bool Returns true if successfully checked
      */
-    public function checkValidation($formData = null)
+    public function checkValidation($inputValue, $formData = null)
     {
         return true;
     }
@@ -470,8 +476,10 @@ abstract class Driver_Field_Abstract
      * Triggered before form submission
      *
      * @param Model_Form $form
+     * @param null $inputValue
+     * @param null $formData
      */
-    public function beforeSubmission(Model_Form $form)
+    public function beforeFormSubmission(Model_Form $form, $inputValue = null, $formData = null)
     {
     }
 
@@ -483,16 +491,17 @@ abstract class Driver_Field_Abstract
      */
     public function renderAnswerHtml(Model_Answer_Field $answerField)
     {
-        $html = \Security::strip_tags($answerField->value);
-        return $html;
+        return e($answerField->value);
     }
 
     /**
      * Triggered before answer save
      *
      * @param Model_Answer $answer
+     * @param null mixed $inputValue
+     * @param null mixed|null $fomData
      */
-    public function beforeAnswerSave(Model_Answer $answer)
+    public function beforeAnswerSave(Model_Answer $answer, $inputValue = null, $fomData = null)
     {
     }
 
@@ -516,13 +525,16 @@ abstract class Driver_Field_Abstract
     /**
      * Gets the data for the mail sent at submission
      *
+     * @param $inputValue
      * @return array
      */
-    public function getEmailData()
+    public function getEmailData($inputValue)
     {
+        $value = $this->sanitizeValue($inputValue);
+
         return array(
             'label' => $this->field->field_label,
-            'value' => $this->getValue(),
+            'value' => $value,
         );
     }
 

@@ -7,10 +7,10 @@ class Driver_Field_Separator extends Driver_Field_Abstract
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
         return html_tag('hr');
     }
@@ -32,6 +32,18 @@ class Driver_Field_Separator extends Driver_Field_Abstract
      */
     public function getLabel()
     {
+        // No label
         return '';
+    }
+
+    /**
+     * Checks if field is mandatory
+     *
+     * @return bool
+     */
+    public function isMandatory()
+    {
+        // Never mandatory
+        return false;
     }
 }

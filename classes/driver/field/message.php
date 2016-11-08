@@ -7,10 +7,10 @@ class Driver_Field_Message extends Driver_Field_Abstract
     /**
      * Gets the HTML content
      *
-     * @param array $options
-     * @return array
+     * @param mixed|null $inputValue
+     * @return mixed
      */
-    public function getHtml($options = array())
+    public function getHtml($inputValue = null)
     {
         // Gets the HTML tag to use
         if (in_array($this->field->field_style, array('p', 'h1', 'h2', 'h3'))) {
@@ -48,6 +48,18 @@ class Driver_Field_Message extends Driver_Field_Abstract
      */
     public function getLabel()
     {
+        // No label
         return '';
+    }
+
+    /**
+     * Checks if field is mandatory
+     *
+     * @return bool
+     */
+    public function isMandatory()
+    {
+        // Never mandatory
+        return false;
     }
 }
