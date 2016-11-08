@@ -653,8 +653,9 @@ class Controller_Front extends Controller_Front_Application
                 if (!empty($reply_to)) {
                     $mail->reply_to($reply_to);
                 }
+                $subject = !empty($form->form_subject_email) ? $form->form_subject_email : __('{{form}}: New answer');
                 $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data), false));
-                $mail->subject(strtr(__('{{form}}: New answer'), array(
+                $mail->subject(strtr($subject, array(
                     '&nbsp;' => ' ',
                     '{{form}}' => $form->form_name,
                 )));
