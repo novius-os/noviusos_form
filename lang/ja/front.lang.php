@@ -6,16 +6,16 @@
 // 66 out of 66 words are translated (100%).
 
 return array(
-    #: views/foundation.view.php:149
+    #: views/front/form.view.php:149
     '{{previous}}{{pagination}}{{next}}' => '{{previous}}{{pagination}}{{next}}',
 
-    #: views/foundation.view.php:158
+    #: views/front/form.view.php:158
     'Previous page' => '前のページ',
 
-    #: views/foundation.view.php:162
+    #: views/front/form.view.php:162
     'Next page' => '次のページ',
 
-    #: views/foundation.view.php:169
+    #: views/front/form.view.php:169
     '{{current}} out of {{total}}' => '{{total}}ページのうち{{current}}ページ目',
 
     #: classes/controller/front.ctrl.php:83

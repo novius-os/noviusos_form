@@ -10,7 +10,7 @@
 
 Nos\I18n::current_dictionary('noviusos_form::common');
 
-$config = \Config::load('noviusos_form::noviusos_form', true);
+$config = \Config::load('noviusos_form::config', true);
 
 // Gets the available fields drivers
 $available_fields_drivers = \Arr::get($config, 'available_fields_drivers', array());
@@ -36,7 +36,7 @@ return array(
         ),
     ),
     'require_js' => array(
-        'static/apps/noviusos_form/js/admin/insert_update.js?update=20151103',
+        'static/apps/noviusos_form/dist/js/admin/insert_update.min.js?update=20161102',
     ),
     'views' => array(
         'delete' => 'noviusos_form::admin/form/popup_delete',
@@ -79,7 +79,7 @@ return array(
                                 'allowExpand' => false,
                             ),
                             'content' => array(
-                                'view' => 'noviusos_form::admin/form/layout/fields',
+                                'view' => 'noviusos_form::admin/form/fields',
                                 'params' => array(),
                             ),
                         ),
@@ -159,7 +159,7 @@ return array(
             'label' => '',
             'renderer' => \Nos\Renderer_Text::class,
             'form' => array(
-                'value' => \View::forge('noviusos_form::admin/form/layout/warning_not_published', array(), false)->render()
+                'value' => \View::forge('noviusos_form::admin/form/warning_not_published', array(), false)->render()
             ),
             'show_when' => function($item) {
                 if ($item->is_new()) {
@@ -186,7 +186,6 @@ return array(
                         'main' => array(
                             'title' => __('Properties'),
                             'fields' => array(
-                                'field_type',
                                 'field_driver',
                                 'field_label',
                                 //'field_choices',
@@ -232,31 +231,6 @@ return array(
                 'form' => array(
                     'type' => 'hidden',
                     'value' => '0',
-                ),
-            ),
-            'field_type' => array(
-                'label' => __('Type:'),
-                'form' => array(
-                    'type' => 'hidden',
-                    'options' => array(
-                        'text' => __('Single line text'),
-                        'textarea' => __('Paragraph text'),
-                        'checkbox' => __('Multiple choice (checkboxes)'),
-                        'select' => __('Unique choice (drop-down list)'),
-                        'radio' => __('Unique choice (radio buttons)'),
-                        'file' => __('File'),
-                        'email' => __('Email address'),
-                        'number' => __('Number'),
-                        'date' => __('Date'),
-                        'message' => __('Message'),
-                        'hidden' => __('Hidden'),
-                        'separator' => __('Separator'),
-                        'variable' => __('Variable'),
-                    ),
-                    'value' => 'text',
-                ),
-                'validation' => array(
-                    'required',
                 ),
             ),
             'field_driver' => array(

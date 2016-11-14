@@ -30,7 +30,7 @@ return array(
         ),
 
         // The custom javascript file that will be loaded after the field meta is created
-        'js_file' => 'static/apps/noviusos_form/js/admin/field/select.js',
+        'js_file' => 'static/apps/noviusos_form/dist/js/admin/field/select.min.js',
     ),
 
     // Sets true or an array with a custom config to make this field displayable as an answer column

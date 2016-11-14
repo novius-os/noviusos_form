@@ -21,11 +21,6 @@ class Service_Field
 
     public function getPreviewHtml($options = array())
     {
-        //$this->enhancer_args
-        if (!method_exists($this->field, 'getDriver')) {
-            return '';
-        }
-
         // Gets field driver
         $fieldDriver = $this->field->getDriver($options);
         if (empty($fieldDriver)) {
@@ -67,11 +62,11 @@ class Service_Field
 
                     // Checks if mandatory
                     if (!$fieldDriver->checkRequirement($value, $formData)) {
-                        $errors[$fieldName] = str_replace('{{label}}', $this->field->label, __('{{label}}: Please enter a value for this field.'));
+                        $errors[$fieldName] = __('Please enter a value for this field.');
                     }
                     // Checks if validated
                     elseif (!$fieldDriver->checkValidation($value, $formData)) {
-                        $errors[$fieldName] = __('{{label}}: Please enter a valid value for this field.');
+                        $errors[$fieldName] = __('Please enter a valid value for this field.');
                     }
                 }
             }

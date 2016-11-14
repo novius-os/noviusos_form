@@ -17,35 +17,18 @@ class Helper_Export
     public $headers;
     public $values;
     public $limit = 500;
-    protected $fields;
-    protected $item;
+
     protected $offset;
 
+    /**
+     * @var Model_Field[]
+     */
+    protected $fields;
 
     /**
-     * Get the layout of the form as an array
-     *
-     * @param $item
-     *
-     * @return array
+     * @var Model_Form
      */
-    protected function getLayout($item)
-    {
-        $layout = explode("\n", $item->form_layout);
-        array_walk($layout, function (&$v) {
-            $v = explode(',', $v);
-        });
-
-        // Cleanup empty values
-        foreach ($layout as $a => $rows) {
-            $layout[$a] = array_filter($rows);
-            if (empty($layout[$a])) {
-                unset($layout[$a]);
-                continue;
-            }
-        }
-        return $layout;
-    }
+    protected $item;
 
     /**
      * Get the array of headers and put them in the $header property
@@ -53,44 +36,24 @@ class Helper_Export
      * optionnaly the key 'choices' with the list of selectable choices.
      *
      * @param $item
-     * @param $layout
      */
-    protected function getHeaders($item, $layout)
+    protected function getHeaders($item)
     {
         $this->fields = array();
-        foreach ($layout as $rows) {
-            foreach ($rows as $row) {
-                list($field_id) = explode('=', $row);
+        foreach ($this->item->getService()->getLayoutFieldsName() as $field_name) {
 
-                if ($field_id == 'captcha') {
-                    continue;
-                }
-                $field = $item->fields[$field_id];
-                if (!in_array($field->field_type,
-                    array(
-                        'text', 'textarea', 'select', 'email', 'number',
-                        'date', 'checkbox', 'radio', 'hidden', 'variable', 'file'
-                    ))
-                ) {
-                    continue;
-                }
+            // Gets the field
+            $field = $item->fields[$field_name];
 
-                $this->fields[] = $field;
-                $header         = array('label' => $field->field_label);
-
-                if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
-                    $choices           = (array) $field->field_choices;
-                    $header['choices'] = array();
-                    foreach ($choices as $choice) {
-                        $choiceInfos = $this->splitChoice($field, $choice);
-                        if (!empty($choiceInfos)) {
-                            $choice = $choiceInfos[0].' ('.$choiceInfos[1].')';
-                        }
-                        $header['choices'][] = $choice;
-                    }
-                }
-                $this->headers[] = $header;
+            // Checks if exportable
+            if (\Arr::get($field->getDriver()->getConfig(), 'exportable', true) === false) {
+                continue;
             }
+
+            // Adds to fields list
+            $this->fields[] = $field;
+
+            $this->headers[] = $field->getDriver()->getAnswerExportHeader();
         }
         $this->headers[] = array('label' => __('Answer date'));
     }
@@ -133,37 +96,27 @@ class Helper_Export
 
         $this->offset += $this->limit;
 
-        $offset = 0;
-        $limit  = 500;
         $answer_list = array();
         foreach ($answers as $answer) {
-            $values = array();
-            foreach ($answer->fields as $answer_field) {
-                $values[$answer_field->anfi_field_id] = $answer_field;
+
+            // Gets the answer fields
+            $answerFields = array();
+            foreach ($answer->fields as $answerField) {
+                $answerFields[$answerField->anfi_field_id] = $answerField;
             }
 
+            // Renders the answer fields as exportable values
             $answer_row = array();
             foreach ($this->fields as $field) {
-                $value = !empty($values[$field->field_id]) ? $values[$field->field_id]->anfi_value : '';
-
-                if (in_array($field->field_type, array('select', 'checkbox', 'radio'))) {
-                    $choices  = (array) $field->field_choices;
-                    $selected = explode("\n", $value);
-                    $value    = array();
-                    foreach ($choices as $choice) {
-                        $choiceInfos = $this->splitChoice($field, $choice);
-                        if (!empty($choiceInfos)) {
-                            $choice = $choiceInfos[1];
-                        }
-                        $value[] = in_array($choice, $selected) ? 'x' : '';
-                    }
-                } else if ($field->field_type === 'file') {
-                    $attachment = $answer->getAttachment($field);
-                    $value      = $attachment->filename();
+                $answerField = $answerFields[$field->field_id];
+                if (!empty($answerField)) {
+                    $answer_row[] = $field->getDriver()->renderExportValue($answerField);
                 }
-                $answer_row[] = $value;
             }
+
+            // Appends the creation date
             $answer_row[] = $answer->answer_created_at;
+
             $answer_list[] = $answer_row;
         }
         return $answer_list;
@@ -177,7 +130,6 @@ class Helper_Export
         $this->offset = 0;
     }
 
-
     /**
      * Parse the form $id and put headers in the $header property.
      * Reinitialize the offset for the method getValues
@@ -187,10 +139,9 @@ class Helper_Export
     public function parseForm($id)
     {
         try {
-            $this->item    = Model_Form::find($id);
-            $layout        = $this->getLayout($this->item);
+            $this->item = Model_Form::find($id);
             $this->headers = array();
-            $this->getHeaders($this->item, $layout);
+            $this->getHeaders($this->item);
             $this->reset();
         } catch (\Exception $e) {
             $this->send_error($e);

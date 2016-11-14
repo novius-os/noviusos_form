@@ -427,40 +427,40 @@ Mr' => '',
     #: views/captcha.view.php:35
     'You have not passed the spam test. Please try again.' => '',
 
-    #: views/admin/form/layout/warning_answers_collected.view.php:26
+    #: views/admin/form/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => '',
 
-    #: views/admin/form/layout/warning_answers_collected.view.php:29
+    #: views/admin/form/warning_answers_collected.view.php:29
     'You’re right, take me to the answers' => '',
 
-    #: views/admin/form/layout/warning_answers_collected.view.php:31
+    #: views/admin/form/warning_answers_collected.view.php:31
     'or' => '',
 
-    #: views/admin/form/layout/warning_answers_collected.view.php:31
+    #: views/admin/form/warning_answers_collected.view.php:31
     'Don’t worry, I know what I’m doing' => '',
 
-    #: views/admin/form/layout/warning_answers_collected.view.php:49
+    #: views/admin/form/warning_answers_collected.view.php:49
     'Answers to this form have already been received' => '',
 
-    #: views/admin/popup_delete.view.php:24
+    #: views/admin/form/popup_delete.view.php:24
     'This form has already received <strong>one answer</strong>.' => array(
         0 => '',
         1 => '',
     ),
 
-    #: views/admin/popup_delete.view.php:33
+    #: views/admin/form/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => '',
 
-    #: views/admin/form/layout/warning_not_published.view.php:18
+    #: views/admin/form/warning_not_published.view.php:18
     'Not published' => '',
 
-    #: views/admin/form/layout/warning_not_published.view.php:19
+    #: views/admin/form/warning_not_published.view.php:19
     'To publish this form, add it to a page, a blog post or any other text editor.' => '',
 
-    #: views/admin/form/layout/warning_not_published.view.php:22
+    #: views/admin/form/warning_not_published.view.php:22
     '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '',
 
-    #: views/admin/form/layout/warning_not_published.view.php:23
+    #: views/admin/form/warning_not_published.view.php:23
     'Applications' => '',
 
     #: views/admin/permissions.view.php:15
@@ -469,32 +469,32 @@ Mr' => '',
     #: views/admin/permissions.view.php:22
     'Can visualise answers only' => '',
 
-    #: views/admin/layout/fields.view.php:28
+    #: views/admin/fields.view.php:28
     'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => '',
 
-    #: views/admin/layout/fields.view.php:47
-    #: views/admin/layout/fields.view.php:92
+    #: views/admin/fields.view.php:47
+    #: views/admin/fields.view.php:92
     'Add a field' => '',
 
-    #: views/admin/layout/fields.view.php:53
+    #: views/admin/fields.view.php:53
     'Standard fields' => '',
 
-    #: views/admin/layout/fields.view.php:54
+    #: views/admin/fields.view.php:54
     'Special fields' => '',
 
-    #: views/admin/layout/fields.view.php:93
+    #: views/admin/fields.view.php:93
     'Add a page break' => '',
 
-    #: views/admin/layout/fields.view.php:96
+    #: views/admin/fields.view.php:96
     'Help us prevent spam: How much is 3 plus 8?' => '',
 
-    #: views/admin/layout/fields.view.php:103
+    #: views/admin/fields.view.php:103
     'Delete' => '',
 
-    #: views/admin/layout/fields.view.php:132
+    #: views/admin/fields.view.php:132
     'Form submission' => '',
 
-    #: views/admin/layout/fields.view.php:172
+    #: views/admin/fields.view.php:172
     'Are you sure?' => '',
 
     #: views/admin/answer.view.php:15

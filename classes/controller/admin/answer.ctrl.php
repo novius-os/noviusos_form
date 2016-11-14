@@ -56,66 +56,43 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
             $answerFields[$answer_field->anfi_field_id] = $answer_field;
         }
 
-        // Builds the layout
-        $layout = explode("\n", $form->form_layout);
-        array_walk($layout, function (&$v) {
-            $v = explode(',', $v);
-        });
-        // Cleanup empty layout values
-        foreach ($layout as $a => $rows) {
-            $layout[$a] = array_filter($rows);
-            if (empty($layout[$a])) {
-                unset($layout[$a]);
-                continue;
-            }
-        }
-
         // Builds answer fields
         $view_params['fields'] = array();
         $view_params['has_page_break'] = false;
         $page = 1;
-        foreach ($layout as $rows) {
-            foreach ($rows as $row) {
-                list($field_id) = explode('=', $row);
+        foreach ($form->getService()->getLayoutFieldsName() as $field_name) {
 
-                // Captcha
-                if ($field_id == 'captcha') {
-                    continue;
-                }
-
-                // Page break
-                elseif ($field_id == 'page_break') {
-                    $view_params['has_page_break'] = true;
-                    $page++;
-                }
-
-                // Field
-                else {
-
-                    // Gets the field
-                    $field = \Arr::get($form->fields, $field_id);
-                    if (empty($field)) {
-                        continue;
-                    }
-
-                    // Gets the answer
-                    $answerField = \Arr::get($answerFields, $field_id);
-
-                    // Builds the fields label and value
-                    $fieldDriver = $field->getDriver();
-                    if (!empty($fieldDriver)) {
-                        if (!empty($answerField)) {
-                            $html = $fieldDriver->renderAnswerHtml($answerField);
-                        } else {
-                            $html = __('There is no answer for this field');
-                        }
-                        $view_params['fields'][$page][] = array(
-                            'label' => $field->field_label,
-                            'value' => $html,
-                        );
-                    }
-                }
+            // Increment page count if page break and continue
+            if ($field_name == 'page_break') {
+                $view_params['has_page_break'] = true;
+                $page++;
+                continue;
             }
+
+            // Gets the field
+            $field = \Arr::get($form->fields, $field_name);
+            if (empty($field)) {
+                continue;
+            }
+
+            // Checks if displayable
+            if (\Arr::get($field->getDriver()->getConfig(), 'display_as_answer', true) === false) {
+                continue;
+            }
+
+            // Gets the answer
+            $answerField = \Arr::get($answerFields, $field_name);
+
+            // Builds the fields label and value
+            if (!empty($answerField)) {
+                $html = $field->getDriver()->renderAnswerHtml($answerField);
+            } else {
+                $html = __('There is no answer for this field');
+            }
+            $view_params['fields'][$page][] = array(
+                'label' => $field->field_label,
+                'value' => $html,
+            );
         }
 
         $view_params['view_params'] = &$view_params;

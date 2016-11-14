@@ -10,7 +10,8 @@
 
 return array(
     // The layout used to display the form
-    'layout' => 'noviusos_form::front/form/foundation',
+//    'layout' => 'noviusos_form::front/form/foundation',
+    'layout' => 'noviusos_form::front/form',
 
     // Tries to automatically set the reply-to of the
     'add_replyto_to_first_email' => true,

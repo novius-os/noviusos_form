@@ -2,7 +2,7 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input_Email extends Driver_Field_Input implements Interface_Driver_Field_Email
+class Driver_Field_Input_Email extends Driver_Field_Input implements Interface_Driver_Field_Placeholder, Interface_Driver_Field_Email
 {
     /**
      * Checks the validation state
@@ -15,7 +15,7 @@ class Driver_Field_Input_Email extends Driver_Field_Input implements Interface_D
     public function checkValidation($inputValue, $formData = array())
     {
         if (!empty($inputValue) && !filter_var($inputValue, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception_Driver_Field_Validation(__('{{label}}: ‘{{value}}’ is not a valid email.'));
+            throw new Exception_Driver_Field_Validation(__('Please enter a valid email.'));
         } else {
             return true;
         }

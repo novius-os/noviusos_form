@@ -2,29 +2,42 @@
 
 namespace Nos\Form;
 
+use Fuel\Core\Form;
+
 abstract class Driver_Field_Abstract
 {
+    /**
+     * @var Model_Field
+     */
     protected $field;
-    protected $options;
-    protected $errors;
 
+    protected $errors = array();
+    protected $options = array();
+
+    /**
+     * The driver config
+     *
+     * @var array
+     */
     protected static $config = array();
 
     /**
      * Constructor
      *
      * @param Model_Field $field
-     * @param array|null $options
+     * @param array $options
      */
     public function __construct(Model_Field $field, $options = array())
     {
         $this->field = $field;
-        $this->options = (array) $options;
+        $this->options = $options;
     }
 
     /*
      * Forges a new instance
      *
+     * @param Model_Field $field
+     * @param array $options
      * @return static
      */
     public static function forge(Model_Field $field, $options = array())
@@ -55,39 +68,6 @@ abstract class Driver_Field_Abstract
     public function getHtmlId()
     {
         return $this->field->field_technical_id ?: $this->getVirtualName();
-    }
-
-    /**
-     * Gets the HTML attributes
-     *
-     * @return array
-     */
-    public function getHtmlAttributes()
-    {
-        $attributes = array(
-            'id' => $this->getHtmlId(),
-            'class' => $this->field->field_technical_css,
-            'title' => $this->field->field_label,
-        );
-
-        // Adds the required flag
-        if ($this->isMandatory()) {
-            $attributes['required'] = 'required';
-        }
-
-        // Sets the label as placeholder if option is specified and driver compatible
-        if ($this instanceof Interface_Driver_Field_Placeholder && $this->getOption('label_position') === 'placeholder') {
-            // Sets the placeholder value
-            $attributes['placeholder'] = $this->getPlaceholderValue();
-
-            // Sets the errors attributes
-            if ($this->hasErrors()) {
-                $attributes['class'] .= ' user-error form-ui-invalid';
-                $attributes['title'] = htmlspecialchars($this->getErrors());
-            }
-        }
-
-        return $attributes;
     }
 
     /**
@@ -126,13 +106,19 @@ abstract class Driver_Field_Abstract
         // Errors
         if ($this->hasErrors()) {
             $label_attrs['class'] = ' user-error form-ui-invalid';
-            $label_attrs['title'] = htmlspecialchars($this->getErrors());
+            $label_attrs['title'] = nl2br(htmlspecialchars(implode("\n", $this->getErrors())));
         }
 
-        return array(
-            'callback' => array('Form', 'label'),
-            'args' => array($this->field->field_label, $this->getHtmlId(), $label_attrs),
-        );
+        $content = $this->field->field_label;
+
+        // Adds an asterisk if mandatory
+        if ($this->isMandatory()) {
+            $content .= '<span class="required">*</span>';
+        }
+
+        $html = Form::label($content, $this->getHtmlId(), $label_attrs);
+
+        return $html;
     }
 
     /**
@@ -142,141 +128,11 @@ abstract class Driver_Field_Abstract
      */
     public function getVirtualName()
     {
-        return !empty($this->field->field_virtual_name) ? $this->field->field_virtual_name : 'field_'.$this->field->field_id;
+        return $this->field->getInputName();
     }
 
     /**
-     * Gets the choices
-     *
-     * @return array
-     */
-    public function getChoices()
-    {
-        if (is_array($this->field->field_choices)) {
-            return $this->field->field_choices;
-        } else {
-            return preg_split('`\r\n|\r|\n`', $this->field->field_choices);
-        }
-    }
-
-    /**
-     * Gets the choices list
-     *
-     * @param array $onlyValues
-     * @return array
-     */
-    public function getChoicesList($onlyValues = array())
-    {
-        $choices = $this->getChoices();
-
-        $choiceList = array();
-        foreach ($choices as $index => $choice) {
-            $choiceInfos = preg_split('`(?<!\\\)=`', $choice, 2);
-            if (count($choiceInfos) === 2) {
-                foreach ($choiceInfos as $key => $choiceValue) {
-                    $choiceInfos[$key] = str_replace('\=', '=', $choiceValue);
-                }
-                $choiceLabel = (string) $choiceInfos[0];
-                $choiceValue = $this->hashValue($choiceInfos[1] ?: $choiceLabel);
-            } else {
-                $choiceLabel = $choice;
-                $choiceValue = (string) $index;
-            }
-
-            if (empty($onlyValues) || in_array($choiceValue, $onlyValues)) {
-                $choiceList[$choiceValue] = $choiceLabel;
-            }
-        }
-
-        // Prepends with the default value
-        if (empty($choiceList) && empty($onlyValues)) {
-            $choiceList = array('' => '');
-        }
-
-        return $choiceList;
-    }
-
-    /**
-     * Gets a choice value by hash
-     *
-     * @param $hash
-     * @return int|mixed|string
-     */
-    protected function getChoiceValueByHash($hash)
-    {
-        // Searches the specified choice in the available choices
-        $choices = $this->getChoices();
-        foreach ($choices as $choice) {
-
-            // Split parts
-            $choiceParts = preg_split('`(?<!\\\)=`', $choice, 2);
-            if (count($choiceParts) === 2) {
-
-                // Unescapes escaped equal signs
-                $choiceParts = array_map(function($choice) {
-                    return str_replace('\=', '=', $choice);
-                }, $choiceParts);
-
-                // Checks if hash match value hash
-                $choiceValue = $choiceParts[1];
-                if (!empty($choiceValue) && $hash === $this->hashValue($choiceValue)) {
-                    return $choiceValue;
-                }
-            }
-        }
-
-        return $hash;
-    }
-
-    /**
-     * Hashes the given option value if needed
-     *
-     * @param $value
-     * @return mixed|string
-     */
-    protected function convertChoiceValueToHash($value)
-    {
-        // Searches the specified choice in the available choices
-        $choices = $this->getChoices();
-        foreach ($choices as $index => $choice) {
-
-            // Split parts
-            $choiceParts = preg_split('`(?<!\\\)=`', $choice, 2);
-            if (count($choiceParts) === 2) {
-
-                // Unescapes escaped equal signs
-                $choiceParts = array_map(function($choice) {
-                    return str_replace('\=', '=', $choice);
-                }, $choiceParts);
-
-                // Checks if value match
-                $choiceValue = $choiceParts[1];
-                if (!empty($choiceValue) && $value === $choiceValue) {
-                    $value = $this->hashValue($choiceValue);
-                    break;
-                }
-            }
-        }
-
-        return $value;
-    }
-
-    /**
-     * Gets the choice label for the specified value
-     *
-     * @param $value
-     * @return mixed
-     */
-    public function getValueChoiceLabel($value)
-    {
-        // Gets the choices
-        $choices = $this->getChoicesList();
-
-        return \Arr::get($choices, $value, $value);
-    }
-
-    /**
-     * Renders the specified value as html for an error message
+     * Renders the value as html for a string error message
      *
      * @param $value
      * @return string
@@ -307,17 +163,6 @@ abstract class Driver_Field_Abstract
     {
         // Gets the default value
         return (string) $this->field->field_default_value;
-    }
-
-    /**
-     * Hash the specified value
-     *
-     * @param $value
-     * @return string
-     */
-    protected function hashValue($value)
-    {
-        return hash('sha256', $value);
     }
 
     /**
@@ -401,12 +246,12 @@ abstract class Driver_Field_Abstract
                 return false;
             }
 
-            $conditionalFieldDriver = $conditional_field->getDriver();
-            if (!empty($conditionalFieldDriver)) {
-                // Checks if the conditional field value match the expected value
-                if (\Arr::get($formData, $conditionalFieldDriver->getVirtualName()) != $this->field->field_conditional_value) {
-                    return false;
-                }
+            // Gets the conditional field driver
+            $conditionalFieldValue = \Arr::get($formData, $conditional_field->getDriver($this->getOptions())->getVirtualName());
+
+            // Checks if the conditional field value match the expected value
+            if ($conditionalFieldValue != $this->field->field_conditional_value) {
+                return false;
             }
         }
 
@@ -448,7 +293,7 @@ abstract class Driver_Field_Abstract
      */
     public function setErrors($errors)
     {
-        $this->errors = $errors;
+        $this->errors = (array) $errors;
         return $this;
     }
 
@@ -484,10 +329,10 @@ abstract class Driver_Field_Abstract
     }
 
     /**
-     * Renders the answer as HTML
+     * Renders the answer as a string (eg. for displaying in backoffice)
      *
      * @param Model_Answer_Field $answerField
-     * @return mixed|string
+     * @return string
      */
     public function renderAnswerHtml(Model_Answer_Field $answerField)
     {
@@ -495,10 +340,21 @@ abstract class Driver_Field_Abstract
     }
 
     /**
+     * Renders the answer as a string for export
+     *
+     * @param Model_Answer_Field $answerField
+     * @return string|array
+     */
+    public function renderExportValue(Model_Answer_Field $answerField)
+    {
+        return $answerField->value;
+    }
+
+    /**
      * Triggered before answer save
      *
      * @param Model_Answer $answer
-     * @param null mixed $inputValue
+     * @param null mixed|null $inputValue
      * @param null mixed|null $fomData
      */
     public function beforeAnswerSave(Model_Answer $answer, $inputValue = null, $fomData = null)
@@ -509,8 +365,10 @@ abstract class Driver_Field_Abstract
      * Triggered after answer save
      *
      * @param Model_Answer $answer
+     * @param null mixed|null $inputValue
+     * @param null mixed|null $fomData
      */
-    public function afterAnswerSave(Model_Answer $answer)
+    public function afterAnswerSave(Model_Answer $answer, $inputValue = null, $fomData = null)
     {
     }
 
@@ -548,13 +406,81 @@ abstract class Driver_Field_Abstract
         $class = get_called_class();
         if (!isset(static::$config[$class])) {
             try {
-                list($app, $file) = \Config::configFile(get_called_class());
+                list($app, $file) = \Config::configFile($class);
                 \Arr::set(static::$config, $class, \Config::load($app . '::' . $file, true));
             } catch (\Exception $e) {
                 \Arr::set(static::$config, $class, array());
             }
         }
         return \Arr::get(static::$config, $class, array());
+    }
+
+    /**
+     * Gets the admin fields meta config (merged with the default config)
+     *
+     * @return array
+     */
+    public function getAdminFieldsMetaConfig()
+    {
+        // Gets the default app fields meta config
+        $appConfig = \Config::load('noviusos_form::controller/admin/form', true);
+        $fieldsConfig = \Arr::get($appConfig, 'fields_config.fields', array());
+
+        // Merges with the driver's config
+        $fieldsConfig = \Arr::merge($fieldsConfig, \Arr::get($this->getConfig(), 'admin.fields', array()));
+
+        return $fieldsConfig;
+    }
+
+    /**
+     * Gets the admin layout meta config (merged with the default config)
+     *
+     * @return array
+     */
+    public function getAdminLayoutMetaConfig()
+    {
+        // Gets the default app layout meta config
+        $appConfig = \Config::load('noviusos_form::controller/admin/form', true);
+        $layoutConfig = \Arr::get($appConfig, 'fields_config.layout');
+
+        // Merges with the field meta layout
+        $metaLayout = \Arr::get($this->getConfig(), 'admin.layout', array());
+        if (!empty($metaLayout)) {
+
+            $layoutAccordions = \Arr::get($layoutConfig, 'standard.params.accordions', array());
+
+            foreach ($metaLayout as $name => $params) {
+                if (isset($layoutAccordions[$name])) {
+                    // Merges the configs
+                    $layoutAccordions[$name] = \Arr::merge($layoutAccordions[$name], $params);
+
+                    // If fields are specified in the driver config they have to replace the default fields
+                    if (isset($params['fields'])) {
+                        $layoutAccordions[$name]['fields'] = $params['fields'];
+                    }
+
+                    // Deletes the field_driver if present (it will be pushed again later, see below)
+                    if (isset($layoutAccordions[$name]['fields'])) {
+                        $key = array_search('field_driver', $layoutAccordions[$name]['fields']);
+                        if ($key !== false) {
+                            unset($layoutAccordions[$name]['fields'][$key]);
+                        }
+                    }
+                }
+            }
+
+            // Ensure the default panel is present with the driver as first field
+            $layoutAccordions['main'] = \Arr::merge(array(
+                'title' => __('Properties'),
+                'fields' => array(
+                    'field_driver'
+                ),
+            ), $layoutAccordions['main']);
+
+            \Arr::set($layoutConfig, 'standard.params.accordions', $layoutAccordions);
+        }
+
+        return $layoutConfig;
     }
 
     /**
@@ -568,13 +494,23 @@ abstract class Driver_Field_Abstract
     }
 
     /**
+     * Gets the field model instance
+     *
+     * @return Model_Field
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
      * Gets the specified option
      *
      * @param $path
      * @param null $default
      * @return mixed
      */
-    protected function getOption($path, $default = null)
+    public function getOption($path, $default = null)
     {
         return \Arr::get($this->options, $path, $default);
     }
@@ -584,9 +520,21 @@ abstract class Driver_Field_Abstract
      *
      * @return array
      */
-    protected function getOptions()
+    public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Sets the options
+     *
+     * @param array $options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+        return $this;
     }
 
     /**
@@ -595,7 +543,7 @@ abstract class Driver_Field_Abstract
      * @param $value
      * @return mixed
      */
-    protected function sanitizeValue($value)
+    public function sanitizeValue($value)
     {
         return (string) $value;
     }

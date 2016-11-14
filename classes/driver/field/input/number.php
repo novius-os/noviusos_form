@@ -2,7 +2,7 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input_Number extends Driver_Field_Input
+class Driver_Field_Input_Number extends Driver_Field_Input implements Interface_Driver_Field_Placeholder
 {
     /**
      * Checks the validation state
@@ -14,7 +14,7 @@ class Driver_Field_Input_Number extends Driver_Field_Input
     public function checkValidation($inputValue, $formData = null)
     {
         if (!empty($inputValue) && !filter_var($inputValue, FILTER_VALIDATE_INT)) {
-            throw new Exception_Driver_Field_Validation(__('{{label}}: ‘{{value}}’ is not a valid number.'));
+            throw new Exception_Driver_Field_Validation(__('Please enter a valid number.'));
         }
         return true;
     }
@@ -35,7 +35,7 @@ class Driver_Field_Input_Number extends Driver_Field_Input
      * @param $value
      * @return int
      */
-    protected function sanitizeValue($value)
+    public function sanitizeValue($value)
     {
         return (int) $value;
     }

@@ -29,6 +29,6 @@ return array(
         ),
 
         // The custom javascript file that will be loaded after the field meta is created
-        'js_file' => 'static/apps/noviusos_form/js/admin/field/select.js',
+        'js_file' => 'static/apps/noviusos_form/dist/js/admin/field/select.min.js',
     ),
 );

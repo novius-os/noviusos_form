@@ -6,6 +6,9 @@ use Fuel\Core\Form;
 
 class Driver_Field_Radio extends Driver_Field_Abstract
 {
+    use Trait_Driver_Field_Html_Attributes;
+    use Trait_Driver_Field_Choices_Single;
+
     /**
      * Gets the HTML content
      *
@@ -71,23 +74,6 @@ class Driver_Field_Radio extends Driver_Field_Abstract
         }
 
         return implode("\n", $html);
-    }
-
-    /**
-     * Renders the answer as HTML
-     *
-     * @param Model_Answer_Field $answerField
-     * @return mixed|string
-     */
-    public function renderAnswerHtml(Model_Answer_Field $answerField)
-    {
-        // Gets the answer value
-        $value = $this->sanitizeValue($answerField->value);
-
-        // Converts to choice label
-        $value = $this->getValueChoiceLabel($value);
-
-        return e($value);
     }
 
     /**

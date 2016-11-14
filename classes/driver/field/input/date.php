@@ -2,7 +2,7 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input_Date extends Driver_Field_Input
+class Driver_Field_Input_Date extends Driver_Field_Input implements Interface_Driver_Field_Placeholder
 {
     /**
      * Checks the validation state
@@ -15,20 +15,9 @@ class Driver_Field_Input_Date extends Driver_Field_Input
     public function checkValidation($inputValue, $formData = array())
     {
         if (!empty($inputValue) && !$this->isDateValid($inputValue)) {
-            throw new Exception_Driver_Field_Validation(__('{{label}}: ‘{{value}}’ is not a valid date.'));
+            throw new Exception_Driver_Field_Validation(__('Please enter a valid date.'));
         }
         return true;
-    }
-
-    protected function isDateValid($value)
-    {
-        if (is_string($value) && preg_match('`^(\d{4})-(\d{2})-(\d{2})$`', $value, $m)) {
-            list(, $year, $month, $day) = $m;
-            if (checkdate((int) $month, (int) $day, (int) $year)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -46,6 +35,23 @@ class Driver_Field_Input_Date extends Driver_Field_Input
             } catch (\Exception $e) {}
         }
         return null;
+    }
+
+    /**
+     * Checks if the specified value is a valid date
+     *
+     * @param $value
+     * @return bool
+     */
+    protected function isDateValid($value)
+    {
+        if (is_string($value) && preg_match('`^(\d{4})-(\d{2})-(\d{2})$`', $value, $m)) {
+            list(, $year, $month, $day) = $m;
+            if (checkdate((int) $month, (int) $day, (int) $year)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

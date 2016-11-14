@@ -145,29 +145,30 @@ class Model_Form extends \Nos\Orm\Model
         ),
     );
 
+    /**
+     * @var null
+     */
     protected $_form_id_for_delete = null;
 
     /**
-     * Gets the layout
+     * The form service
      *
-     * @return array
+     * @var Service_Form|null
      */
-    public function getLayout()
+    protected $service = null;
+
+    /**
+     * Gets the form service
+     *
+     * @param bool $reload
+     * @return Service_Form|null
+     */
+    public function getService($reload = false)
     {
-        $layout = explode("\n", $this->form_layout);
-        array_walk($layout, function (&$v) {
-            $v = explode(',', $v);
-        });
-        $layout = \Arr::flatten($layout);
-
-        // Remove empty values
-        $layout = array_filter($layout);
-        array_walk($layout, function (&$v) {
-            $v = explode('=', $v);
-            $v = $v[0];
-        });
-
-        return $layout;
+        if (is_null($this->service) || $reload) {
+            $this->service = Service_Form::forge($this);
+        }
+        return $this->service;
     }
 
     public function _event_before_delete()

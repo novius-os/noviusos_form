@@ -34,16 +34,16 @@ return array(
     #: classes/controller/front.ctrl.php:560
     '{{form}}: New answer' => '{{form}}: Новый ответ',
 
-    #: views/foundation.view.php:229
+    #: views/front/form.view.php:229
     '{{previous}}{{pagination}}{{next}}' => '',
 
-    #: views/foundation.view.php:238
+    #: views/front/form.view.php:238
     'Previous page' => 'Предыдущая страница',
 
-    #: views/foundation.view.php:242
+    #: views/front/form.view.php:242
     'Next page' => 'Следующая страница',
 
-    #: views/foundation.view.php:249
+    #: views/front/form.view.php:249
     '{{current}} out of {{total}}' => '{{current}} из {{total}}',
 
 );

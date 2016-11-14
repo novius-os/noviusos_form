@@ -2,8 +2,13 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driver_Field_Placeholder
+class Driver_Field_Input extends Driver_Field_Abstract
 {
+    use Trait_Driver_Field_Html_Attributes {
+        // Renames the getHtmlAttributes method for overriding
+        getHtmlAttributes as getDefaultHtmlAttributes;
+    }
+
     /**
      * Gets the HTML content
      *
@@ -37,13 +42,23 @@ class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driv
     }
 
     /**
+     * Gets the placeholder value
+     *
+     * @return string
+     */
+    public function getPlaceholderValue()
+    {
+        return $this->field->field_label;
+    }
+
+    /**
      * Gets the HTML attributes
      *
      * @return array
      */
-    public function getHtmlAttributes()
+    protected function getHtmlAttributes()
     {
-        $attributes = parent::getHtmlAttributes();
+        $attributes = $this->getDefaultHtmlAttributes();
 
         // Sets the input type
         $attributes['type'] = $this->getInputType();
@@ -59,16 +74,6 @@ class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driv
         }
 
         return $attributes;
-    }
-
-    /**
-     * Gets the placeholder value
-     *
-     * @return string
-     */
-    public function getPlaceholderValue()
-    {
-        return $this->field->field_label;
     }
 
     /**

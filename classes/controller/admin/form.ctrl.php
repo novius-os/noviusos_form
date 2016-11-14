@@ -101,9 +101,9 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $field = Model_Field::find($field_id);
 
             // Builds the fields config with the driver's config
-            $fieldConfig = \Arr::merge($fieldsConfig, $this->getFieldDriverConfig($field, 'admin.fields', array()));
+            $fieldFieldsConfig = \Arr::merge($fieldsConfig, \Arr::get($field->getDriver()->getConfig(), 'admin.fields', array()));
 
-            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config($fieldConfig, array(
+            $this->fields_fieldset[$field_id] = \Fieldset::build_from_config($fieldFieldsConfig, array(
                 'save' => false,
             ));
             $this->fields_data[$field_id] = $field_data;
@@ -153,36 +153,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     {
         $fields = $previews = array();
 
-//        // Page break
-//        if ($layoutName == 'page_break') {
-//            $data = array(
-//                'field_form_id' => '0',
-//                'field_virtual_name' => uniqid(),
-//            );
-//
-////            foreach (\Arr::get($this->config, 'fields_config.fields') as $name => $field) {
-////                if (!empty($field['dont_save']) || (!empty($field['form']['type']) && $field['form']['type'] == 'submit')) {
-////                    continue;
-////                }
-////                $data[$name] = '';
-////            }
-////            unset($data['field_id']);
-//
-//            $data['field_type'] = 'page_break';
-//            $data['field_label'] = __('Page break');
-//            $field = Model_Field::forge($data, true);
-//            $field->save();
-//
-//            $fields[] = (string) $this->render_field_meta($field);
-//            $previews[] = (string) $this->render_field_preview($field);
-//
-//            $layout = $field->field_id.'=4';
-//        }
-//        // Other fields
-//        else {
-
         // Gets the app config
-        $appConfig = \Config::load('noviusos_form::noviusos_form', true);
+        $appConfig = \Config::load('noviusos_form::config', true);
 
         // Gets the field definition
         if ($layoutName == 'default') {
@@ -218,7 +190,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             // Replaces the field identifier by the primary key in the layout
             $layout = str_replace($field_identifier, $field->field_id, $layout);
         }
-//        }
 
         \Response::json(array(
             'fields' => $fields,
@@ -404,22 +375,27 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     /**
      * Renders the field meta
      *
-     * @param $field
+     * @param Model_Field $field
      * @return string
-     * @throws \FuelException
      */
-    protected function render_field_meta($field)
+    protected function render_field_meta(Model_Field $field)
     {
         static $auto_id_increment = 1;
 
-        // Gets the fields config
-        $fields_config = \Arr::get($this->config, 'fields_config.fields');
+        // Gets the fields meta config
+        $fieldsMetaConfig = $field->getDriver()->getAdminFieldsMetaConfig();
 
-        // Merges the fields config with the driver's config
-        $fields_config = \Arr::merge($fields_config, $this->getFieldDriverConfig($field, 'admin.fields', array()));
+        // If the field driver is not in the driver list, then hides the driver list
+        $driverOptions = \Arr::get($fieldsMetaConfig, 'field_driver.form.options', array());
+        if (!isset($driverOptions[$field->getDriverClass()])) {
+            \Arr::set($fieldsMetaConfig, 'field_driver.form.type', 'hidden');
+        }
+
+        // Gets the layout meta config
+        $layoutMetaConfig = $field->getDriver()->getAdminLayoutMetaConfig();
 
         // Builds the fieldset
-        $fieldset = \Fieldset::build_from_config($fields_config, $field, array('save' => false, 'auto_id' => false));
+        $fieldset = \Fieldset::build_from_config($fieldsMetaConfig, $field, array('save' => false, 'auto_id' => false));
 
         // Override auto_id generation so it don't use the name (because we replace it below)
         $auto_id = uniqid('auto_id_');
@@ -432,75 +408,20 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         // Builds the view params
         $fields_view_params = array(
             'fieldset' => $fieldset,
-            'layout' => array(),
-            'js_file' => null,
+            'layout' => $layoutMetaConfig,
+            'js_file' => \Arr::get($field->getDriver()->getConfig(), 'admin.js_file'),
             'field' => $field,
         );
-
-        // Builds the layout
-        $layout = \Arr::get($this->config, 'fields_config.layout');
-        $fieldDriver = method_exists($field, 'getDriver') ? $field->getDriver($this->enhancer_args) : null;
-        if (!empty($fieldDriver)) {
-
-            // Gets the field config
-            $fieldConfig = $fieldDriver::getConfig();
-
-            // Merges the field layout with the default layout
-            $fieldMetaLayout = \Arr::get($fieldConfig, 'admin.layout', array());
-            if (!empty($fieldMetaLayout)) {
-
-                $layoutAccordions = \Arr::get($layout, 'standard.params.accordions', array());
-
-                foreach ($fieldMetaLayout as $name => $params) {
-                    if (isset($layoutAccordions[$name])) {
-                        // Merges the configs
-                        $layoutAccordions[$name] = \Arr::merge($layoutAccordions[$name], $params);
-
-                        // If fields are specified in the driver config they have to replace the default fields
-                        if (isset($params['fields'])) {
-                            $layoutAccordions[$name]['fields'] = $params['fields'];
-                        }
-
-                        // Deletes the field_driver if present (it will be pushed again later, see below)
-                        if (isset($layoutAccordions[$name]['fields'])) {
-                            $key = array_search('field_driver', $layoutAccordions[$name]['fields']);
-                            if ($key !== false) {
-                                unset($layoutAccordions[$name]['fields'][$key]);
-                            }
-                        }
-                    }
-                }
-
-                // Ensure the default panel is present with the driver as first field
-                $layoutAccordions['main'] = \Arr::merge(array(
-                    'title' => __('Properties'),
-                    'fields' => array(
-                        'field_driver'
-                    ),
-                ), $layoutAccordions['main']);
-
-                \Arr::set($layout, 'standard.params.accordions', $layoutAccordions);
-            }
-
-            $fields_view_params['layout'] = $layout;
-
-            // Sets the js_file if specified
-            $fields_view_params['js_file'] = \Arr::get($fieldConfig, 'admin.js_file');
-        }
 
         $fields_view_params['view_params'] = &$fields_view_params;
 
         // Renders the field content
-//        if ($field->field_type == 'page_break') {
-//            $content = (string)\View::forge('noviusos_form::admin/form/page_break', $fields_view_params, false);
-//        } else {
-            $content = (string) \View::forge('noviusos_form::admin/form/layout', $fields_view_params, false)->render();
-            $content .= $fieldset->build_append();
-//        }
+        $content = (string) \View::forge('noviusos_form::admin/form/field', $fields_view_params, false)->render();
+        $content .= $fieldset->build_append();
 
-        // Replace name="field[field_type][]" "with field[field_type][12345]" <- add field_ID here
+        // Injects the field ID in the field virtual name (eg. name="field[field_xxx][]" => name="field[field_xxx][12345]")
         $replaces = array();
-        foreach ($fields_config as $name => $field_config) {
+        foreach ($fieldsMetaConfig as $name => $fieldMetaConfig) {
             $replaces[$name] = "field[{$field->field_id}][$name]";
         }
         $content = strtr($content, $replaces);
@@ -539,34 +460,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         $model_field->save();
 
         return $model_field;
-    }
-
-    /**
-     * Gets the field driver config
-     *
-     * @param $field
-     * @param $configPath
-     * @param null $defaultValue
-     * @return bool|mixed
-     */
-    protected function getFieldDriverConfig($field, $configPath = null, $defaultValue = null)
-    {
-        // Gets the driver
-        $fieldDriver = $field->getDriver();
-        if (empty($fieldDriver)) {
-            return false;
-        }
-
-        // Gets the driver's config
-        $driverConfig = $fieldDriver::getConfig();
-
-        if (!is_null($configPath)) {
-            // Returns the config value by path
-            return \Arr::get($driverConfig, $configPath, $defaultValue);
-        } else {
-            // Returns the config
-            return $driverConfig;
-        }
     }
 
     /**

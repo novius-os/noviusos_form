@@ -4,6 +4,11 @@ namespace Nos\Form;
 
 class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_Driver_Field_Placeholder
 {
+    use Trait_Driver_Field_Html_Attributes {
+        // Renames the getHtmlAttributes method for overriding
+        getHtmlAttributes as getDefaultHtmlAttributes;
+    }
+
     /**
      * Gets the HTML content
      *
@@ -51,9 +56,9 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
      *
      * @return array
      */
-    public function getHtmlAttributes()
+    protected function getHtmlAttributes()
     {
-        $attributes = parent::getHtmlAttributes();
+        $attributes = $this->getDefaultHtmlAttributes();
 
         if (!empty($this->field->field_height)) {
             $html_attrs['rows'] = $this->field->field_height;

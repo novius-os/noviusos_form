@@ -10,7 +10,7 @@
 ?>
 <script type="text/javascript">
     require(
-        ['static/apps/noviusos_form/js/admin/enhancer.js'],
+        ['static/apps/noviusos_form/dist/js/admin/enhancer.min.js'],
         function($) {
             $(function() {
                 $('#<?= $id ?>').appFormEnhancerPopup();

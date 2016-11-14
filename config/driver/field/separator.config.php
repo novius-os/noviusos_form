@@ -3,9 +3,6 @@
 return array(
     'name' => __('Separator'),
 
-    // Available meta fields
-    'fields' => array(),
-
     // Fields default value
     'default_values' => array(
         'field_label' => __('Separator'),
@@ -28,4 +25,10 @@ return array(
             ),
         ),
     ),
+
+    // Sets false if not displayable as an answer in backoffice (eg. for cosmetic fields, like separators, titles...)
+    'display_as_answer' => false,
+
+    // Sets false if not exportable
+    'exportable' => false,
 );

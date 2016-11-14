@@ -22,17 +22,6 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     }
 
     /**
-     * Renders the specified value as html for an error message
-     *
-     * @param $value
-     * @return string
-     */
-    public function renderErrorValueHtml($value)
-    {
-        return '';
-    }
-
-    /**
      * Gets the input value
      *
      * @param string $defaultValue
@@ -58,8 +47,9 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
         }
 
         $file = $this->sanitizeValue($inputValue);
+        $filePath = \Arr::get($file, 'tmp_name');
 
-        return !empty($file['tmp_name']);
+        return !empty($filePath);
     }
 
     /**
@@ -73,16 +63,27 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     public function checkValidation($inputValue, $formData = null)
     {
         $file = $this->sanitizeValue($inputValue);
-        if (!empty($file)) {
+        $filePath = \Arr::get($file, 'tmp_name');
+        if (!empty($file) && !empty($filePath)) {
             // Checks if file exists
-            $filePath = \Arr::get($file, 'tmp_name');
-            if (empty($filePath) || !is_file($filePath)) {
-                throw new Exception_Driver_Field_Validation(__('{{label}}: Invalid file.'));
+            if (!is_file($filePath)) {
+                throw new Exception_Driver_Field_Validation(__('Invalid file.'));
             }
             // @todo better checks ? (file size, format, etc...)
         }
 
         return true;
+    }
+
+    /**
+     * Renders the value as html for a string error message
+     *
+     * @param $value
+     * @return string
+     */
+    public function renderErrorValueHtml($value)
+    {
+        return '';
     }
 
     /**
@@ -114,6 +115,21 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
         }
 
         return $html;
+    }
+
+    /**
+     * Renders the answer as a string for export
+     *
+     * @param Model_Answer_Field $answerField
+     * @return string|array
+     */
+    public function renderExportValue(Model_Answer_Field $answerField)
+    {
+        $attachment = $answerField->getAttachment($this->field);
+        if (empty($attachment)) {
+            return null;
+        }
+        return $attachment->filename();
     }
 
     /**
@@ -170,7 +186,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * @param $value
      * @return array
      */
-    protected function sanitizeValue($value)
+    public function sanitizeValue($value)
     {
         return is_array($value) ? $value : array();
     }

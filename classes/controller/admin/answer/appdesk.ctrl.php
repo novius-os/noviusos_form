@@ -46,27 +46,26 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             $this->config['appdesk']['appdesk']['grid']['urlJson'] = $this->config['appdesk']['appdesk']['grid']['urlJson'].'?form_id='.$form->form_id;
             $this->config['hideContexts'] = true;
 
-            $fields = preg_split("/[\n,]+/", $form->form_layout);
             $columns = array();
             $dataset = array();
             $meta = array();
-            foreach ($fields as $field) {
-                list($field_id) = explode('=', $field);
+            foreach ($form->getService()->getLayoutFieldsName() as $fieldName) {
 
-                if ($field_id === 'page_break') {
+                // We don't care about the page break
+                if ($fieldName === 'page_break') {
                     continue;
                 }
 
-                $field = $form->fields[$field_id];
+                // Gets the field
+                $field = \Arr::get($form->fields, $fieldName);
+                if (empty($field)) {
+                    continue;
+                }
 
                 $id = 'field_'.$field->field_id;
 
                 // Gets the field appdesk config
-                $fieldAppdeskConfig = null;
-                $fieldDriver = $field->getDriver();
-                if (!empty($fieldDriver)) {
-                    $fieldAppdeskConfig = \Arr::get($fieldDriver->getConfig(), 'answer_appdesk_config');
-                }
+                $fieldAppdeskConfig = \Arr::get($field->getDriver()->getConfig(), 'answer_appdesk_config');
 
                 // Default field config
                 if ($fieldAppdeskConfig === true) {
@@ -125,18 +124,12 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                         }
 
                         // Gets the field driver
-                        $fieldDriver = $field->getDriver();
-                        if (!empty($fieldDriver)) {
-                            if (is_callable($value)) {
-                                // Custom value callback
-                                return $value($fieldDriver, $answerField);
-                            } else {
-                                // Default driver render
-                                return $fieldDriver->renderAnswerHtml($answerField);
-                            }
+                        if (is_callable($value)) {
+                            // Custom value callback
+                            return $value($field->getDriver(), $answerField);
                         } else {
-                            // Raw field value
-                            return $answerField->value;
+                            // Default driver render
+                            return $field->getDriver()->renderAnswerHtml($answerField);
                         }
                     }
                 ));

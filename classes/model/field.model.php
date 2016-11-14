@@ -26,11 +26,11 @@ class Model_Field extends \Nos\Orm\Model
             'data_type' => 'int unsigned',
             'null' => false,
         ),
-        'field_type' => array(
-            'default' => null,
-            'data_type' => 'varchar',
-            'null' => false,
-        ),
+//        'field_type' => array(
+//            'default' => '',
+//            'data_type' => 'varchar',
+//            'null' => false,
+//        ),
         'field_driver' => array(
             'default' => null,
             'data_type' => 'varchar',
@@ -173,38 +173,104 @@ class Model_Field extends \Nos\Orm\Model
     protected $_form_id_for_delete = null;
     protected $_field_id_for_delete = null;
 
+    /**
+     * Drivers instances
+     *
+     * @var array
+     */
     protected $driversInstance = array();
 
     /**
-     * Gets the field driver
+     * The form service
      *
-     * @param array $options
-     * @param bool $reload
-     * @return mixed|null
+     * @var Service_Field|null
      */
-    public function getDriver($options = array(), $reload = false)
+    protected $service = null;
+
+    /**
+     * Gets the input name
+     *
+     * @return \Nos\Orm\Model|null|string
+     */
+    public function getInputName()
     {
+        if (!empty($this->virtual_name)) {
+            return $this->virtual_name;
+        } else if (!empty($this->id)) {
+            return 'field_' . $this->id;
+        } else {
+            return uniqid('field_');
+        }
+    }
+
+    /**
+     * Gets the driver
+     *
+     * @param null|array $options
+     * @param bool $reload
+     * @return Driver_Field_Abstract|null
+     */
+    public function getDriver($options = null, $reload = false)
+    {
+        $driverClass = $this->getDriverClass();
+
         // Gets the driver class
-        if (empty($this->field_driver) || !class_exists($this->field_driver)) {
+        if (empty($driverClass) || !class_exists($driverClass)) {
             return null;
         }
 
         // Forges if not already forged or if reload
-        if (!isset($this->driversInstance[$this->field_driver]) || $reload) {
-            $this->driversInstance[$this->field_driver] = call_user_func(array($this->field_driver, 'forge'), $this, $options);
+        if (!isset($this->driversInstance[$driverClass]) || $reload) {
+            $this->driversInstance[$driverClass] = $driverClass::forge($this, $options);
+        }
+        // Otherwise reset options if specified
+        elseif (!is_null($options)) {
+            $this->driversInstance[$driverClass]->setOptions($options);
         }
 
-        return $this->driversInstance[$this->field_driver];
+        return $this->driversInstance[$driverClass];
     }
 
+    /**
+     * Gets the driver class name
+     *
+     * @return mixed|\Nos\Orm\Model|null
+     */
+    public function getDriverClass()
+    {
+        return $this->driver;
+    }
+
+    /**
+     * Gets the field service
+     *
+     * @param bool $reload
+     * @return Service_Field|null
+     */
+    public function getService($reload = false)
+    {
+        if (is_null($this->service) || $reload) {
+            $this->service = Service_Field::forge($this);
+        }
+        return $this->service;
+    }
+
+    /**
+     * Triggered before delete
+     */
     public function _event_before_delete()
     {
-        $this->_form_id_for_delete = $this->field_form_id;
-        $this->_field_id_for_delete = $this->field_id;
+        // Store field and form IDs
+        $this->_form_id_for_delete = $this->form_id;
+        $this->_field_id_for_delete = $this->id;
     }
 
+    /**
+     * Triggered after delete
+     */
     public function _event_after_delete()
     {
+        // Deletes related files
         if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete)) {
             $files = \File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete, 1, array('^\d+_'.$this->_field_id_for_delete));
             foreach ($files as $dir => $file) {
