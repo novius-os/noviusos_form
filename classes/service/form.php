@@ -81,8 +81,10 @@ class Service_Form
                 }
 
                 // Other fields
-                else {
+                elseif (isset($this->form->fields[$field_name])) {
                     $field = $this->form->fields[$field_name];
+                } else {
+                    continue;
                 }
 
                 // Gets the driver

@@ -168,6 +168,20 @@ class Model_Field extends \Nos\Orm\Model
             'cascade_save'   => false,
             'cascade_delete' => true,
         ),
+        'attributes' => array(
+            'key_from' => 'field_id',
+            'model_to' => Model_Field_Attribute::class,
+            'key_to' => 'fiat_field_id',
+            'cascade_save' => true,
+            'cascade_delete' => true,
+        ),
+    );
+
+    protected static $_eav = array(
+        'attributes' => array(
+            'attribute' => 'fiat_key',
+            'value' => 'fiat_value',
+        )
     );
 
     protected $_form_id_for_delete = null;
@@ -209,14 +223,20 @@ class Model_Field extends \Nos\Orm\Model
      * @param null|array $options
      * @param bool $reload
      * @return Driver_Field_Abstract|null
+     * @throws Exception_Driver
      */
     public function getDriver($options = null, $reload = false)
     {
         $driverClass = $this->getDriverClass();
 
         // Gets the driver class
-        if (empty($driverClass) || !class_exists($driverClass)) {
+        if (empty($driverClass)) {
             return null;
+        }
+
+        // Checks if exists
+        if (!class_exists($driverClass)) {
+            throw new Exception_Driver('Driver `'.$driverClass.'` not found.');
         }
 
         // Forges if not already forged or if reload
