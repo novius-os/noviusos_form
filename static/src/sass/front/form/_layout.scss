@@ -188,7 +188,7 @@
         margin-top: 0.1em;
     }
 
-    div.page_break {
+    div.form-page {
         border: 1px solid #cccccc;
         margin-bottom: 2em;
         padding: 1em 2em;
@@ -208,12 +208,12 @@
         }
     }
 
-    .page_break_previous,
-    .page_break_last {
+    .wizard-control-previous,
+    .wizard-control-submit {
         display: none;
     }
 
-    .page_break_control .columns {
+    .wizard-controls .columns {
         text-align: center;
     }
 }

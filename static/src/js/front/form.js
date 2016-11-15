@@ -31,9 +31,7 @@
                 var $captcha = $form.find('#form_captcha');
                 var good_anwser = $captcha.size() ? $captcha.data('captcha').split('-')[1] : null;
 
-                // Sets the parsley locale
-                window.Parsley.setLocale($form.data('locale') || 'en');
-
+                // Initializes the captcha field
                 $captcha.on('blur', function() {
                     if ($(this).val() != good_anwser) {
                         this.setCustomValidity($captcha.data('customValidity'));
@@ -42,52 +40,11 @@
                     }
                 });
 
-                var $sections = $form.find('.page_break');
-                var $controls = $form.find('.page_break_control');
-
-                function navigateTo(index) {
-                    if (index < 0) {
-                        index = 0;
-                    }
-                    // Mark the current section with the class 'current'
-                    $sections
-                        .removeClass('current')
-                        .eq(index)
-                        .addClass('current');
-                    // Show only the navigation buttons that make sense for the current section:
-                    $controls.find('.page_break_previous').toggle(index > 0);
-                    var atTheEnd = index >= $sections.length - 1;
-                    $controls.find('.page_break_next').toggle(!atTheEnd);
-                    $controls.find('[type=submit]').toggle(atTheEnd);
-                    $controls.find('#progress').val(index + 1) ;
-                    $controls.find('.page_break_current').text(index + 1);
+                // Initializes the wizard
+                if ($form.find('.form-page').length > 1) {
+                    var wizard = new NosFormWizard($form);
+                    wizard.init();
                 }
-
-                function curIndex() {
-                    // Return the current index by looking at which section has the class 'current'
-                    return $sections.index($sections.filter('.current'));
-                }
-
-                // Previous button is easy, just go back
-                $('.page_break_control .page_break_previous').click(function(event) {
-                    event.preventDefault();
-                    navigateTo(curIndex() - 1);
-                });
-
-                // Next button goes forward iff current block validates
-                $('.page_break_control .page_break_next').click(function() {
-                    if ($form.parsley().validate({group: 'block-' + curIndex()}))
-                        navigateTo(curIndex() + 1);
-                });
-
-                // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
-                $sections.each(function(index, section) {
-                    $(section).find(':input').attr('data-parsley-group', 'block-' + index);
-                });
-
-                // Navigates to default page
-                var defaultPage = $sections.filter('.current').index() - 1;
-                navigateTo(defaultPage);
             });
         });
     }

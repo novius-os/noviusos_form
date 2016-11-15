@@ -44,7 +44,7 @@ trait Trait_Driver_Field_Html_Attributes
         }
 
         if ($this->hasErrors()) {
-            $attributes['class'] .= ' parsley-error';
+            $attributes['class'] .= ' has-error parsley-error';
         }
 
         return $attributes;

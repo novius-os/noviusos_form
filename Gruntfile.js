@@ -15,8 +15,9 @@ module.exports = function(grunt) {
                 files: {
                     // Front form
                     'static/dist/js/front/form.min.js': [
-                        'static/src/js/front/form.js',
+                        'static/src/js/front/form/wizard.js',
                         'static/src/js/front/form/condition.js',
+                        'static/src/js/front/form.js',
                     ],
                     // Parsley (front form validation)
                     'static/dist/vendor/parsley.min.js': [
