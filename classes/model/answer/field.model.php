@@ -44,7 +44,7 @@ class Model_Answer_Field extends \Nos\Orm\Model
     );
 
     protected static $_observers = array(
-        'Orm\\Observer_Typing',
+        'Nos\Form\Observer_Typing',
     );
 
     protected static $_has_one = array();

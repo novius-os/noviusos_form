@@ -17,120 +17,114 @@ class Model_Field extends \Nos\Orm\Model
 
     protected static $_properties = array(
         'field_id' => array(
-            'default' => null,
             'data_type' => 'int unsigned',
+            'default' => null,
             'null' => false,
         ),
         'field_form_id' => array(
-            'default' => null,
             'data_type' => 'int unsigned',
+            'default' => null,
             'null' => false,
         ),
-//        'field_type' => array(
-//            'default' => '',
-//            'data_type' => 'varchar',
-//            'null' => false,
-//        ),
         'field_driver' => array(
-            'default' => null,
             'data_type' => 'varchar',
+            'default' => null,
             'null' => true,
         ),
         'field_label' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_message' => array(
-            'default' => '',
             'data_type' => 'text',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_virtual_name' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_choices' => array(
-            'default' => '',
             'data_type' => 'serialize',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_created_at' => array(
-            'default' => '',
             'data_type' => 'datetime',
+            'default' => '',
             'null' => false,
         ),
         'field_mandatory' => array(
-            'default' => 0,
             'data_type' => 'tinyint',
+            'default' => 0,
             'null' => false,
         ),
         'field_default_value' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_details' => array(
-            'default' => '',
             'data_type' => 'text',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_style' => array(
-            'default' => '',
-            'data_type' => 'enum',
-            'options' => array('', 'p','h1','h2','h3'),
-            'null' => false,
+            'data_type' => 'text',
+            'default' => null,
+            'null' => true,
         ),
         'field_width' => array(
-            'default' => 0,
             'data_type' => 'tinyint',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_height' => array(
-            'default' => 0,
             'data_type' => 'tinyint',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_limited_to' => array(
-            'default' => 0,
             'data_type' => 'int',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_origin' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_origin_var' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_technical_id' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_technical_css' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_conditional' => array(
-            'default' => 0,
             'data_type' => 'tinyint',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_conditional_form' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_conditional_value' => array(
-            'default' => '',
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
     );
 
@@ -142,9 +136,9 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_twinnable_many_many = array();
 
     protected static $_observers = array(
-        'Orm\\Observer_Self',
-        'Orm\\Observer_Typing',
-        'Orm\\Observer_CreatedAt' => array(
+        'Orm\Observer_Self',
+        'Nos\Form\Observer_Typing',
+        'Orm\Observer_CreatedAt' => array(
             'mysql_timestamp' => true,
             'property' => 'field_created_at',
         ),
@@ -163,7 +157,7 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_has_many = array(
         'answer_fields' => array(
             'key_from'       => 'field_id',
-            'model_to'       => 'Nos\Form\\Model_Answer_Field',
+            'model_to'       => 'Nos\Form\Model_Answer_Field',
             'key_to'         => 'anfi_field_id',
             'cascade_save'   => false,
             'cascade_delete' => true,
