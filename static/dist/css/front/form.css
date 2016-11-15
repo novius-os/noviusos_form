@@ -230,6 +230,7 @@
   color: #B94A48;
   background-color: #F2DEDE;
   border: 1px solid #EED3D7; }
+
 .noviusos_form .parsley-errors-list {
   margin: 2px 0 3px;
   padding: 0;
@@ -244,6 +245,7 @@
     opacity: 1; }
   .noviusos_form .parsley-errors-list .parsley-type {
     font-size: 1em; }
+
 .noviusos_form .parsley-type,
 .noviusos_form .parsley-custom-error-message,
 .noviusos_form .parsley-required {
@@ -253,5 +255,3 @@
 
 .nos_form_disabled {
   display: none; }
-
-/*# sourceMappingURL=form.css.map */

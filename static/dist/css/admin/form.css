@@ -4,6 +4,7 @@
     display: table-row; }
     table colgroup col {
       display: table-cell; } }
+
 .nos-form-layout-fields {
   /* Interline droppable height*/ }
   .nos-form-layout-fields .form-fields-actions.top {
@@ -108,9 +109,9 @@
       box-sizing: border-box;
       /* Keep parent border for .ui-state-active */
       /*
-      border-top: 0;
-      border-left: 0;
-      border-bottom: 0;*/ }
+            border-top: 0;
+            border-left: 0;
+            border-bottom: 0;*/ }
       .nos-form-layout-fields .preview .handle img {
         position: absolute;
         left: 50%;
@@ -215,5 +216,3 @@
   padding: 2em 2em 1em; }
   .nos-form-answer h1 {
     margin-bottom: 1em; }
-
-/*# sourceMappingURL=form.css.map */

@@ -3,12 +3,11 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
             options: {
-                mangle: false,
-                compress: false,
+                compress: true,
                 sourceMap: true,
-                // mangle: {
-                //     except: ['jQuery']
-                // }
+                mangle: {
+                    except: ['jQuery', 'Parsleyjs']
+                }
             },
             front: {
                 files: {
@@ -19,18 +18,11 @@ module.exports = function(grunt) {
                     ],
                     // Parsley (front form validation)
                     'static/dist/vendor/parsley.min.js': [
-                        'static/src/vendor/parsley/parsley.js',
-                        'static/src/vendor/parsley/i18n/fr.js',
-                        'static/src/vendor/parsley/i18n/fr.js',
-                        'static/src/vendor/parsley/i18n/ja.js',
-                        'static/src/vendor/parsley/i18n/fr.js',
-                        'static/src/vendor/parsley/i18n/pt.js',
-                        'static/src/vendor/parsley/i18n/pt-br.js',
-                        'static/src/vendor/parsley/i18n/fr.js'
+                        require.resolve('parsleyjs'),
                     ],
                     // jQuery
                     'static/dist/vendor/jquery.min.js': [
-                        'static/src/vendor/jquery/jquery.js',
+                        require.resolve('jquery')
                     ],
                 }
             },
@@ -112,7 +104,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
