@@ -97,7 +97,7 @@ class Controller_Front extends \Nos\Controller_Front_Application
      */
     public function render_confirmation(Model_Form $form)
     {
-        return \View::forge('noviusos_form::front/form/message', array(
+        return \View::forge('noviusos_form::front/form/confirmation', array(
             'form' => $form,
             'message' => \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'))
         ), false);

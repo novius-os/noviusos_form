@@ -39,86 +39,26 @@ $pageBreakCount = $form->getService()->getPageBreakCount();
 ?>
 <div class="noviusos_form noviusos_enhancer" id="<?= $id = uniqid('form_') ?>">
 
-    <?php
-    $current_page = 0;
-    if (!empty($errors)) {
-        ?>
+    <?php if (!empty($errors)) { ?>
         <div class="form-errors">
             <?= __('Oops, it seems there are some errors.') ?>
         </div>
-        <?php
-        // Gets the first error field page
-        foreach ($errors as $name => $error) {
-            foreach ($fieldsLayout as $page => $rows) {
-                foreach ($rows as $cols) {
-                    foreach ($cols as $field) {
-                        if ($field['name'] === $name) {
-                            $current_page = $page;
-                            break 4;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    ?>
+    <?php } ?>
 
     <form <?= array_to_attr($form_attrs) ?>>
         <input type="hidden" name="_form_id" value="<?= $form->form_id ?>" />
 
-        <?php foreach ($fieldsLayout as $page => $rows) { ?>
-            <div class="page_break<?= $current_page === $page ? ' current' : '' ?>">
-                <?php foreach ($rows as $cols) { ?>
-                    <div class="row">
-                        <?php foreach ($cols as $field) { ?>
-                            <div class="columns <?= \Nos\Form\Helper_Front_Form::getWidthClassName($field['width'] * 3) ?>">
-                                <div class="nos_form_field label-position-<?= $enhancer_args['label_position'] ?>">
-                                    <?= \View::forge('noviusos_form::front/form/field', array(
-                                        'form' => $form,
-                                        'field' => $field,
-                                        'errors' => $errors,
-                                        'labelWidth' => $labelWidthPerPage,
-                                        'page' => $page,
-                                        'enhancer_args' => $enhancer_args,
-                                    ), false) ?>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
-                <?php } ?>
-            </div>
-        <?php } ?>
+        <?= \View::forge(!empty($view_fields) ? $view_fields : 'noviusos_form::front/form/fields', array(
+            'form' => $form,
+            'errors' => $errors,
+            'fieldsLayout' => $fieldsLayout,
+            'labelWidthPerPage' => $labelWidthPerPage,
+            'enhancer_args' => $enhancer_args,
+        ), false); ?>
 
-        <?php if ($pageBreakCount > 0) { ?>
-            <div class="page_break_control row">
-                <?= strtr(__('{{previous}}{{pagination}}{{next}}'), array(
-                    '{{previous}}' => '
-                        <div class="columns four">
-                            <a class="page_break_previous" href="#">'.__('Previous page').'</a>
-                        </div>
-                    ',
-                    '{{next}}' => '
-                        <div class="columns four">
-                            <button type="button" class="page_break_next">'.__('Next page').'</button>'.
-                            \Form::submit('submit', $form->form_submit_label, array(
-                                'class' => 'page_break_last',
-                            )).'
-                        </div>
-                    ',
-                    '{{pagination}}' => '
-                        <div class="columns four"> <progress id="progress" value="1" max="'.($pageBreakCount + 1).'"></progress> '.
-                            strtr(__('{{current}} out of {{total}}'), array(
-                                '{{current}}' => '<span class="page_break_current">1</span>',
-                                '{{total}}' => '<span class="page_break_total">'.($pageBreakCount + 1).'</span>',
-                            )).'
-                        </div>
-                    ',
-                )); ?>
-            </div>
-            <?php
-        } else {
-            echo \Form::submit('submit', $form->form_submit_label);
-        }
-        ?>
+        <?= \View::forge(!empty($view_controls) ? $view_controls : 'noviusos_form::front/form/controls', array(
+            'form' => $form,
+            'pageBreakCount' => $pageBreakCount,
+        ), false); ?>
     </form>
 </div>

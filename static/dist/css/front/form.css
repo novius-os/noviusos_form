@@ -1,33 +1,34 @@
 .noviusos_form {
   /* Global Reset & Standards */
   /* The Grid */
+  /* Nicolas Gallagher's micro clearfix */
   /* The form layout */ }
-  .noviusos_form * {
+  .noviusos_form *,
+  .noviusos_form *:before,
+  .noviusos_form *:after {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box; }
-    .noviusos_form *:before, .noviusos_form *:after {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box; }
   .noviusos_form .row {
     margin: 0 auto; }
-    .noviusos_form .row .row {
-      margin: 0 -0px; }
-    .noviusos_form .row.collapse .column, .noviusos_form .row.collapse .columns {
+    .noviusos_form .row.collapse .column,
+    .noviusos_form .row.collapse .columns {
       padding: 0; }
     .noviusos_form .row .row {
+      margin: 0 -0px;
       margin: 0 0px; }
       .noviusos_form .row .row.collapse {
         margin: 0; }
-  .noviusos_form .column, .noviusos_form .columns {
+  .noviusos_form .column,
+  .noviusos_form .columns {
     float: left;
     min-height: 1px;
     padding: 0 0;
     position: relative; }
-  .noviusos_form .column.centered, .noviusos_form .columns.centered {
-    float: none;
-    margin: 0 auto; }
+    .noviusos_form .column.centered,
+    .noviusos_form .columns.centered {
+      float: none;
+      margin: 0 auto; }
   .noviusos_form [class*="column"] + [class*="column"]:last-child {
     float: right; }
   .noviusos_form [class*="column"] + [class*="column"].end {
@@ -72,17 +73,6 @@
     color: darkred;
     margin: 10px 0;
     text-align: left; }
-  .noviusos_form .input_text,
-  .noviusos_form .select,
-  .noviusos_form .textarea {
-    display: block;
-    font-size: 14px;
-    margin: 0;
-    padding: 6px; }
-  .noviusos_form .input_text {
-    width: 100%; }
-    .noviusos_form .input_text[cols], .noviusos_form .input_text[size] {
-      width: auto; }
   .noviusos_form .column, .noviusos_form .columns {
     padding-right: 10px; }
   .noviusos_form .label {
@@ -94,69 +84,6 @@
       text-align: left; }
   .noviusos_form label[for] {
     cursor: pointer; }
-  .noviusos_form input[type="text"], .noviusos_form input[type="password"], .noviusos_form input[type="date"], .noviusos_form input[type="datetime"], .noviusos_form input[type="email"], .noviusos_form input[type="number"], .noviusos_form input[type="search"], .noviusos_form input[type="tel"], .noviusos_form input[type="time"], .noviusos_form input[type="url"] {
-    background-color: white;
-    font-family: inherit;
-    border: 1px solid #cccccc;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    -ms-border-radius: 2px;
-    -o-border-radius: 2px;
-    border-radius: 2px;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    color: rgba(0, 0, 0, 0.75);
-    -webkit-transition: all 0.15s linear;
-    -moz-transition: all 0.15s linear;
-    -o-transition: all 0.15s linear;
-    transition: all 0.15s linear; }
-    .noviusos_form input[type="text"]:focus, .noviusos_form input[type="password"]:focus, .noviusos_form input[type="date"]:focus, .noviusos_form input[type="datetime"]:focus, .noviusos_form input[type="email"]:focus, .noviusos_form input[type="number"]:focus, .noviusos_form input[type="search"]:focus, .noviusos_form input[type="tel"]:focus, .noviusos_form input[type="time"]:focus, .noviusos_form input[type="url"]:focus {
-      background: #fafafa;
-      outline: none !important;
-      border-color: #b3b3b3; }
-    .noviusos_form input[type="text"][disabled], .noviusos_form input[type="password"][disabled], .noviusos_form input[type="date"][disabled], .noviusos_form input[type="datetime"][disabled], .noviusos_form input[type="email"][disabled], .noviusos_form input[type="number"][disabled], .noviusos_form input[type="search"][disabled], .noviusos_form input[type="tel"][disabled], .noviusos_form input[type="time"][disabled], .noviusos_form input[type="url"][disabled] {
-      background-color: #ddd; }
-  .noviusos_form textarea {
-    height: auto;
-    background-color: white;
-    font-family: inherit;
-    border: 1px solid #cccccc;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    -ms-border-radius: 2px;
-    -o-border-radius: 2px;
-    border-radius: 2px;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    color: rgba(0, 0, 0, 0.75);
-    -webkit-transition: all 0.15s linear;
-    -moz-transition: all 0.15s linear;
-    -o-transition: all 0.15s linear;
-    transition: all 0.15s linear; }
-    .noviusos_form textarea:focus {
-      background: #fafafa;
-      outline: none !important;
-      border-color: #b3b3b3; }
-    .noviusos_form textarea[disabled] {
-      background-color: #ddd; }
-  .noviusos_form input,
-  .noviusos_form select,
-  .noviusos_form textarea {
-    margin-bottom: 0; }
-    .noviusos_form input.form-ui-invalid, .noviusos_form input:focus.form-ui-invalid,
-    .noviusos_form select.form-ui-invalid,
-    .noviusos_form select:focus.form-ui-invalid,
-    .noviusos_form textarea.form-ui-invalid,
-    .noviusos_form textarea:focus.form-ui-invalid {
-      border-color: #cc0000; }
-    .noviusos_form input.form-ui-invalid, .noviusos_form input:focus.form-ui-invalid,
-    .noviusos_form select.form-ui-invalid,
-    .noviusos_form select:focus.form-ui-invalid,
-    .noviusos_form textarea.form-ui-invalid,
-    .noviusos_form textarea:focus.form-ui-invalid {
-      border-color: #cc0000; }
   .noviusos_form .label-position-top input[type="text"],
   .noviusos_form .label-position-top input[type="password"],
   .noviusos_form .label-position-top input[type="date"],
@@ -197,7 +124,7 @@
     vertical-align: top; }
   .noviusos_form .inline-field {
     display: inline-block; }
-  .noviusos_form p.instructions {
+  .noviusos_form .instructions {
     font-style: italic;
     font-size: 90%;
     margin-top: 0.1em; }
@@ -217,13 +144,12 @@
     color: rgba(0, 0, 0, 0.75); }
     .noviusos_form div.page_break.current {
       display: block; }
-  .noviusos_form .page_break_previous, .noviusos_form .page_break_last {
+  .noviusos_form .page_break_previous,
+  .noviusos_form .page_break_last {
     display: none; }
   .noviusos_form .page_break_control .columns {
     text-align: center; }
 
-/* Nicolas Gallagher's micro clearfix */
-/* Don't move the :focus pseudo selector, or it won't work in Chrome */
 .noviusos_form input.parsley-error,
 .noviusos_form select.parsley-error,
 .noviusos_form textarea.parsley-error {

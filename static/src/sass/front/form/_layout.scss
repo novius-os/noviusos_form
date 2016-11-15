@@ -1,42 +1,43 @@
 .noviusos_form {
 
     /* Global Reset & Standards */
-    * {
+    *,
+    *:before,
+    *:after {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
-        &:before, &:after {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
     }
+
     .row {
         margin: 0 auto;
+
+        &.collapse .column,
+        &.collapse .columns {
+            padding: 0;
+        }
+
         .row {
             margin: 0 -0px;
-        }
-        &.collapse {
-            .column, .columns {
-                padding: 0;
-            }
-        }
-        .row {
             margin: 0 0px;
+
             &.collapse {
                 margin: 0;
             }
         }
     }
-    .column, .columns {
+
+    .column,
+    .columns {
         float: left;
         min-height: 1px;
         padding: 0 0;
         position: relative;
-    }
-    .column.centered, .columns.centered {
-        float: none;
-        margin: 0 auto;
+
+        &.centered {
+            float: none;
+            margin: 0 auto;
+        }
     }
 
     /* The Grid */
@@ -48,6 +49,7 @@
             float: left;
         }
     }
+
     .one, .row .one {
         width: 8.33333%;
     }
@@ -85,6 +87,7 @@
         width: 100%;
     }
 
+    /* Nicolas Gallagher's micro clearfix */
     .row {
         *zoom: 1;
 
@@ -112,22 +115,6 @@
         text-align: left;
     }
 
-    .input_text,
-    .select,
-    .textarea {
-        display: block;
-        font-size: 14px;
-        margin: 0;
-        padding: 6px;
-    }
-
-    .input_text {
-        width: 100%;
-        &[cols], &[size] {
-            width: auto;
-        }
-    }
-
     .column, .columns {
         padding-right: 10px;
     }
@@ -147,91 +134,6 @@
 
     label[for] {
         cursor: pointer;
-    }
-
-    input {
-
-        &[type="text"],
-        &[type="password"],
-        &[type="date"],
-        &[type="datetime"],
-        &[type="email"],
-        &[type="number"],
-        &[type="search"],
-        &[type="tel"],
-        &[type="time"],
-        &[type="url"] {
-            background-color: white;
-            font-family: inherit;
-            border: 1px solid #cccccc;
-            -webkit-border-radius: 2px;
-            -moz-border-radius: 2px;
-            -ms-border-radius: 2px;
-            -o-border-radius: 2px;
-            border-radius: 2px;
-            -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-            -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-            color: rgba(0, 0, 0, 0.75);
-            -webkit-transition: all 0.15s linear;
-            -moz-transition: all 0.15s linear;
-            -o-transition: all 0.15s linear;
-            transition: all 0.15s linear;
-
-            &:focus {
-                background: #fafafa;
-                outline: none !important;
-                border-color: #b3b3b3;
-            }
-
-            &[disabled] {
-                background-color: #ddd;
-            }
-        }
-    }
-
-    textarea {
-        height: auto;
-        background-color: white;
-        font-family: inherit;
-        border: 1px solid #cccccc;
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-        -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        color: rgba(0, 0, 0, 0.75);
-        -webkit-transition: all 0.15s linear;
-        -moz-transition: all 0.15s linear;
-        -o-transition: all 0.15s linear;
-        transition: all 0.15s linear;
-
-        &:focus {
-            background: #fafafa;
-            outline: none !important;
-            border-color: #b3b3b3;
-        }
-
-        &[disabled] {
-            background-color: #ddd;
-        }
-    }
-
-    input,
-    select,
-    textarea {
-        margin-bottom: 0;
-
-        &.form-ui-invalid, &:focus.form-ui-invalid {
-            border-color: #cc0000;
-        }
-
-        &.form-ui-invalid, &:focus.form-ui-invalid {
-            border-color: #cc0000;
-        }
     }
 
     .label-position-top,
@@ -280,7 +182,7 @@
         display: inline-block;
     }
 
-    p.instructions {
+    .instructions {
         font-style: italic;
         font-size: 90%;
         margin-top: 0.1em;
@@ -306,7 +208,8 @@
         }
     }
 
-    .page_break_previous, .page_break_last {
+    .page_break_previous,
+    .page_break_last {
         display: none;
     }
 
@@ -314,7 +217,3 @@
         text-align: center;
     }
 }
-
-/* Nicolas Gallagher's micro clearfix */
-
-/* Don't move the :focus pseudo selector, or it won't work in Chrome */

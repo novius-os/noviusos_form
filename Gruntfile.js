@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -18,11 +20,12 @@ module.exports = function(grunt) {
                     ],
                     // Parsley (front form validation)
                     'static/dist/vendor/parsley.min.js': [
-                        require.resolve('parsleyjs'),
+                        'static/dist/vendor/parsley/**.js',
+                        'static/dist/vendor/parsley/i18n/*.js',
                     ],
                     // jQuery
                     'static/dist/vendor/jquery.min.js': [
-                        require.resolve('jquery')
+                        'static/dist/vendor/jquery.js',
                     ],
                 }
             },
@@ -47,10 +50,29 @@ module.exports = function(grunt) {
                 }
             },
         },
+        copy: {
+            front: {
+                files: [
+                    // Copies jquery from the node module
+                    {
+                        src: [require.resolve('jquery/dist/jquery.js')],
+                        dest: 'static/dist/vendor/jquery.js',
+                    },
+                    // Copies parsley (whole directory with i18n files) from the node module
+                    {
+                        expand: true,
+                        cwd: path.dirname(require.resolve('parsleyjs')),
+                        src: '**',
+                        dest: 'static/dist/vendor/parsley/',
+                    },
+                ],
+            },
+        },
         cssmin: {
             options: {
                 shorthandCompacting: false,
-                roundingPrecision: -1
+                roundingPrecision: -1,
+                sourceMap: true,
             },
             front: {
                 files: {
@@ -108,9 +130,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('default',['watch']);
-    grunt.registerTask('build',['sass', 'cssmin', 'uglify']);
-    grunt.registerTask('build-front',['sass:front', 'cssmin:front', 'uglify:front']);
+    grunt.registerTask('build',['copy', 'sass', 'cssmin', 'uglify']);
+    grunt.registerTask('build-front',['copy::front', 'sass:front', 'cssmin:front', 'uglify:front']);
     grunt.registerTask('build-admin',['sass:admin', 'cssmin:admin', 'uglify:admin']);
 };

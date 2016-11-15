@@ -10,8 +10,37 @@
 
 namespace Nos\Form;
 
+use Fuel\Core\Html;
+
 class Helper_Front_Form
 {
+    /**
+     * Gets the first page with an error
+     *
+     * @param array $fieldsLayout
+     * @param array $errors
+     * @return int
+     */
+    public static function getFirstErrorPage($fieldsLayout, $errors)
+    {
+        if (!empty($errors)) {
+            // Gets the first error field page
+            foreach ($errors as $name => $error) {
+                foreach ($fieldsLayout as $page => $rows) {
+                    foreach ($rows as $cols) {
+                        foreach ($cols as $field) {
+                            if ($field['name'] === $name) {
+                                return intval($page);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+
     /**
      * Gets the class name for the specified width
      *
@@ -81,6 +110,93 @@ class Helper_Front_Form
         return 'en';
     }
 
+    /**
+     * @param $form
+     * @param $field
+     * @param $template
+     * @param array $options
+     * @return string|void
+     */
+    public static function renderField($form, $field, $template, $options = array())
+    {
+        // Custom field view
+        if (!empty($field['view'])) {
+            \Nos\FrontCache::viewForgeUncached($field['view'], \Arr::merge($options, array(
+                'form'          => $form,
+                'field'         => $field,
+                'template'      => $template,
+                'labelClass'    => \Arr::get($options, 'labelClass'),
+                'fieldClass'    => \Arr::get($options, 'fieldClass'),
+                'fieldError'    => \Arr::get($options, 'fieldError'),
+                'errors'        => \Arr::get($options, 'errors', array()),
+                'page'          => \Arr::get($options, 'page', 0),
+                'enhancer_args' => \Arr::get($options, 'enhancer_args', array()),
+            )), false);
+            return;
+        }
+
+        // Default
+        else {
+
+            // Builds the placeholders
+            $placeholders = array(
+                'label'         => $field['label'],
+                'field'         => $field['field'],
+                'instructions'  => $field['instructions'],
+                'labelClass'    => \Arr::get($options, 'labelClass'),
+                'fieldClass'    => \Arr::get($options, 'fieldClass'),
+                'fieldError'    => \Arr::get($options, 'fieldError'),
+                'page'          => \Arr::get($options, 'page', 0),
+            );
+
+            // Merges with the custom placeholders
+            $placeholders = \Arr::merge($placeholders, \Arr::get($options, 'placeholders', array()));
+
+            return static::renderTemplate($template, $placeholders);
+        }
+    }
+
+    /**
+     * Renders the field error
+     *
+     * @param $error
+     * @return null|string
+     */
+    public static function renderFieldError($error)
+    {
+        // Builds the error
+        if (empty($error)) {
+            return null;
+        }
+
+        return html_tag('div', array(
+            'class' => 'parsley-custom-error-message',
+        ), $error);
+    }
+
+    /**
+     * Renders the template by replacing the placeholders with the specified vars
+     *
+     * @param $template
+     * @param $vars
+     * @return string
+     */
+    public static function renderTemplate($template, $vars)
+    {
+        $replacements = array();
+        foreach ($vars as $name => $value) {
+            $replacements['{' . $name . '}'] = static::renderThing($value);
+        }
+        return strtr($template, $replacements);
+    }
+
+    /**
+     * Adds attributes to thing
+     *
+     * @param $thing
+     * @param $attr
+     * @param $value
+     */
     public static function addAttrToThing(&$thing, $attr, $value)
     {
         if (isset($thing['callback'])) {
@@ -105,6 +221,12 @@ class Helper_Front_Form
         }
     }
 
+    /**
+     * Gets html attributes of thing
+     *
+     * @param $thing
+     * @return null
+     */
     public static function getHtmlAttrs($thing)
     {
         if (!isset($thing['callback'])) {
@@ -127,6 +249,12 @@ class Helper_Front_Form
         return $thing['args'][$key];
     }
 
+    /**
+     * Adds content to thing
+     *
+     * @param $thing
+     * @param $content
+     */
     public static function addContentToThing(&$thing, $content)
     {
         if (isset($thing['callback'])) {
@@ -142,6 +270,12 @@ class Helper_Front_Form
     }
 
 
+    /**
+     * Renders a thing
+     *
+     * @param $thing
+     * @return mixed|string
+     */
     public static function renderThing ($thing)
     {
         if (is_string($thing)) {
@@ -166,15 +300,5 @@ class Helper_Front_Form
                 return implode($out);
             }
         }
-    }
-
-
-    public static function renderTemplate ($template, $args)
-    {
-        $replacements = array();
-        foreach ($args as $name => $value) {
-            $replacements['{' . $name . '}'] = static::renderThing($value);
-        }
-        return strtr($template, $replacements);
     }
 }

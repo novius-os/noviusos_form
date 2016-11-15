@@ -47,3 +47,23 @@ DELETE FROM `nos_form_answer_field` WHERE `anfi_field_type` = 'page_break';
 /* Drops the field_type column */
 ALTER TABLE `nos_form_field` DROP COLUMN `field_type`;
 ALTER TABLE `nos_form_answer_field` DROP COLUMN `anfi_field_type`;
+
+/* Sets null fields */
+ALTER TABLE `nos_form_field`
+  CHANGE `field_label` `field_label` VARCHAR(255) NULL DEFAULT NULL,
+  CHANGE `field_message` `field_message` TEXT NULL DEFAULT NULL,
+  CHANGE `field_virtual_name` `field_virtual_name` VARCHAR(30) NULL DEFAULT NULL,
+  CHANGE `field_choices` `field_choices` TEXT NULL DEFAULT NULL,
+  CHANGE `field_default_value` `field_default_value` VARCHAR(255) NULL DEFAULT NULL,
+  CHANGE `field_details` `field_details` TEXT NULL DEFAULT NULL,
+  CHANGE `field_style` `field_style` VARCHAR(50) NULL DEFAULT NULL,
+  CHANGE `field_width` `field_width` TINYINT(4) NULL DEFAULT NULL,
+  CHANGE `field_height` `field_height` TINYINT(4) NULL DEFAULT NULL,
+  CHANGE `field_limited_to` `field_limited_to` INT(11) NULL DEFAULT NULL,
+  CHANGE `field_origin` `field_origin` VARCHAR(30) NULL DEFAULT NULL,
+  CHANGE `field_origin_var` `field_origin_var` VARCHAR(30) NULL DEFAULT NULL,
+  CHANGE `field_technical_id` `field_technical_id` VARCHAR(30) NULL DEFAULT NULL,
+  CHANGE `field_technical_css` `field_technical_css` VARCHAR(100) NULL DEFAULT NULL,
+  CHANGE `field_conditional` `field_conditional` TINYINT(1) NULL DEFAULT NULL,
+  CHANGE `field_conditional_value` `field_conditional_value` VARCHAR(255) NULL DEFAULT NULL,
+  CHANGE `field_conditional_form` `field_conditional_form` VARCHAR(255) NULL DEFAULT NULL;

@@ -100,15 +100,17 @@
      */
     function addScript(src, callback) {
         // HTML5 Boilerplate Google Analytics loader
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=src;
+        (function(d,t){
+            var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            g.src = src;
             g.onload = callback;
             g.onreadystatechange = function() { // IE 6-7-8
                 if (this.readyState == 'complete' || this.readyState == 'loaded') {
                     callback();
                 }
             };
-            s.parentNode.insertBefore(g,s)}(document,'script'));
+            s.parentNode.insertBefore(g,s)
+        }(document,'script'));
     }
 
     /**

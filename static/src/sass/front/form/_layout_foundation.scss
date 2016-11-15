@@ -1,0 +1,155 @@
+.noviusos_form {
+
+    /* The form layout */
+    .form-errors {
+        color: darkred;
+        margin: 10px 0;
+        text-align: left;
+    }
+
+    .column, .columns {
+        padding-right: 10px;
+    }
+
+    label[for] {
+        cursor: pointer;
+    }
+    //
+    //input {
+    //
+    //    &[type="text"],
+    //    &[type="password"],
+    //    &[type="date"],
+    //    &[type="datetime"],
+    //    &[type="email"],
+    //    &[type="number"],
+    //    &[type="search"],
+    //    &[type="tel"],
+    //    &[type="time"],
+    //    &[type="url"] {
+    //        background-color: white;
+    //        font-family: inherit;
+    //        border: 1px solid #cccccc;
+    //        -webkit-border-radius: 2px;
+    //        -moz-border-radius: 2px;
+    //        -ms-border-radius: 2px;
+    //        -o-border-radius: 2px;
+    //        border-radius: 2px;
+    //        -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    //        -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    //        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    //        color: rgba(0, 0, 0, 0.75);
+    //        -webkit-transition: all 0.15s linear;
+    //        -moz-transition: all 0.15s linear;
+    //        -o-transition: all 0.15s linear;
+    //        transition: all 0.15s linear;
+    //
+    //        &:focus {
+    //            background: #fafafa;
+    //            outline: none !important;
+    //            border-color: #b3b3b3;
+    //        }
+    //
+    //        &[disabled] {
+    //            background-color: #ddd;
+    //        }
+    //    }
+    //}
+
+    input,
+    select,
+    textarea {
+
+        /* Don't move the :focus pseudo selector, or it won't work in Chrome */
+        &.form-ui-invalid,
+        &:focus.form-ui-invalid {
+            border-color: #cc0000;
+        }
+    }
+
+    .label-position-top,
+    .label-position-placeholder {
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="datetime"],
+        input[type="email"],
+        input[type="number"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="time"],
+        input[type="url"],
+        select,
+        textarea {
+            width: 100%;
+        }
+    }
+
+    .label-position-left {
+        text-align: left;
+
+        label {
+            vertical-align: top;
+        }
+
+        input,
+        select,
+        textarea {
+            width: auto;
+        }
+    }
+
+    .label-position-right {
+        text-align: right;
+    }
+
+    .inline-label {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .inline-field {
+        display: inline-block;
+    }
+
+    .instructions {
+        font-style: italic;
+        font-size: 90%;
+        margin-top: 0.1em;
+    }
+
+    div.page_break {
+        border: 1px solid #cccccc;
+        margin-bottom: 2em;
+        padding: 1em 2em;
+        display: none;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+        border-radius: 2px;
+        -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        color: rgba(0, 0, 0, 0.75);
+
+        &.current {
+            display: block;
+        }
+    }
+
+    .page_break_previous,
+    .page_break_last {
+        display: none;
+    }
+
+    .page_break_control {
+
+        .columns {
+            text-align: center;
+            // @hack forces empty columns to be displayed
+            min-height: 1px;
+        }
+    }
+}

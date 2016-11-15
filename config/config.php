@@ -9,7 +9,7 @@
  */
 
 return array(
-    // The front layout (default, bootstrap, ...)
+    // The front layout (default, foundation, ...)
     'front_layout' => 'default', // Take a look at the available layouts in config/controller/front.config.php
 
     // Tries to automatically set the reply-to of the answer email notification using the first field that handles email
