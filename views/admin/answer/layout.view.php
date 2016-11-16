@@ -21,7 +21,7 @@ echo View::forge('nos::crud/tab', $view_params, false);
 echo View::forge('nos::crud/toolbar', $view_params, false);
 
 ?>
-<link rel="stylesheet" href="static/apps/noviusos_form/dist/css/admin/form.css" />
+<link rel="stylesheet" href="static/apps/noviusos_form/dist/css/admin/form.min.css" />
 
 <div id="<?= $uniqueId ?>" class="nos-form-answer">
     <h1 class="title"><?= strtr(__('Answer to ‘{{title}}’'), array('{{title}}' =>  $view_params['item']->form->form_name)) ?></h1>

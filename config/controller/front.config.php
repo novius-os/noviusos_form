@@ -15,9 +15,9 @@ return array(
                 // The form stylesheet
                 'stylesheet_url' => 'static/apps/noviusos_form/dist/css/front/form.min.css',
                 // The view used to display the fields layout
-                'view_fields' => 'noviusos_form::front/form/fields-foundation',
+                'view_fields' => 'noviusos_form::front/form/fields',
                 // The view used to display the controls
-                'view_controls' => 'noviusos_form::front/form/controls-foundation',
+                'view_controls' => 'noviusos_form::front/form/controls',
             ),
         ),
 

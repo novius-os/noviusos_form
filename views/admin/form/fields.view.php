@@ -173,7 +173,7 @@ if (!$item->is_new() && count($item->answers) > 0) {
 require([
     'jquery-nos',
     'jquery-nos-loadspinner',
-    'link!static/apps/noviusos_form/dist/css/admin/form.css'
+    'link!static/apps/noviusos_form/dist/css/admin/form.min.css'
 ], function($) {
     var uniqid = '#<?= $uniqid ?>';
     $(uniqid).find('.preview_container').loadspinner({

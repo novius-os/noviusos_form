@@ -106,19 +106,10 @@ define(
                     inputs[id][fieldName] = value;
                 });
 
-                // var ajaxData = decodeURIComponent($(this).find(':input').serialize());
-                // ajaxData.form_layout = layout;
-                //
-                // // JSON encodes the fields to not exceed the server max post fields
-                // ajaxData['field'] = JSON.stringify(ajaxData['field'] || {});
-                // console.log('ajaxData', ajaxData);
-
                 // Csrf
                 ajaxData['_csrf'] = $(this).find('input[name="_csrf"]:first').val();
 
                 ajaxData['fields'] = JSON.stringify(inputs);
-
-                console.log(ajaxData);
 
                 // Sending a standard nosAjax request
                 var action = $(this).attr('action');
@@ -1366,106 +1357,6 @@ define(
                     }
                 };
             }
-
-            function serializeObject($target)
-            {
-                var o = {};
-                $.each($target.find(':input').serializeArray(), function() {
-                    if (o[this.name] !== undefined) {
-                        if (!o[this.name].push) {
-                            o[this.name] = [o[this.name]];
-                        }
-                        o[this.name].push(this.value || '');
-                    } else {
-                        o[this.name] = this.value || '';
-                    }
-                });
-                return o;
-            }
-
-            //// @todo refacto
-            //function generateFieldDefaultValue($field) {
-            //
-            //    var field_driver = getFieldProperty($field, 'field_driver').val();
-            //    var type = getFieldProperty($field, 'field_type').val();
-            //    var $default_value = getFieldProperty($field, 'field_default_value');
-            //    var choices = getFieldProperty($field, 'field_choices').val();
-            //
-            //    var $new = null;
-            //    var name = $default_value.attr('name');
-            //
-            //    // Updates the default selected value if the choice field is present
-            //    if (isFieldInDriverMetaLayout('field_choices', field_driver)) {
-            //
-            //        var default_value_value = $default_value.val();
-            //        if (default_value_value.match(/^[0-9,]+$/)) {
-            //            default_value_value = default_value_value.split(',');
-            //        } else {
-            //            default_value_value = default_value_value.split("\n")
-            //        }
-            //
-            //        var defaultValueType = getDriverConfig(field_driver, 'default_value_type');
-            //
-            //        // Select
-            //        if ($default_value.is('select') || $default_value.is('radio')) {
-            //            $default_value.val(default_value_value);
-            //        }
-            //
-            //        else if ($default_value.is('checkbox')) {
-            //
-            //            var html = '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />';
-            //            $.each(choices.split("\n"), function(i, choice) {
-            //                html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'checked' : '') + '> ' + choice + '</label><br />';
-            //            });
-            //            $new = $(html);
-            //        }
-            //    }
-            //
-            //    if (-1 !== $.inArray(type, ['radio', 'select'])) {
-            //        var html = '<select>';
-            //        html += '<option value=""></option>';
-            //        $.each(choices.split("\n"), function(i, choice) {
-            //            var content = choice.match(/([^\\\][^=]|\\=)+/g);
-            //            for (i in content) {
-            //                content[i] = content[i].replace(/\\=/, '=');
-            //            }
-            //            var value = content.length > 1 ? content[1] : i + '';
-            //            var text = content[0];
-            //            html += '<option value="' + value + '" ' + (default_value_value[0] == value ? 'selected' : '') + '>' + text + '</option>';
-            //        });
-            //        html += '</select>';
-            //        $new = $(html).attr({
-            //            name: $default_value.attr('name'),
-            //            id: $default_value.attr('id')
-            //        });
-            //    } else if (type == 'checkbox') {
-            //        var html = '<input type="hidden" size="1" name="' + $default_value.attr('name') + '" value=""  />';
-            //        $.each(choices.split("\n"), function(i, choice) {
-            //            html += '<label><input type="checkbox" class="checkbox" size="1" value="' + i + '" ' + (-1 !== $.inArray(choice, default_value_value) ? 'checked' : '') + '> ' + choice + '</label><br />';
-            //        });
-            //        $new = $(html);
-            //    } else {
-            //        var html_type = (-1 !== $.inArray(type, ['email', 'number', 'date']) ? type : 'text');
-            //        $new = $(type == 'textarea' ? '<textarea rows="3" />' : '<input type="' + html_type + '" />').attr({
-            //            name: $default_value.attr('name'),
-            //            id: $default_value.attr('id')
-            //        }).val(default_value_value);
-            //    }
-            //    var $parent = $default_value.closest('span');
-            //    $parent.empty().append($new).nosFormUI();
-            //
-            //    var $checkboxes = $new.find('input.checkbox');
-            //    $checkboxes.on('change', function(e) {
-            //        var value = [];
-            //        $checkboxes.filter(':checked').each(function() {
-            //            value.push($(this).val());
-            //        });
-            //        $new.first().val(value.join(','));
-            //        // Event doesn't seems to trigger with the hidden field on a delegated handler
-            //        refreshFieldPreviewContent($(this));
-            //    });
-            //    $checkboxes.first().trigger('change');
-            //}
 
             // Firefox needs this <colgroup> to size the td[colspan] properly
             //$preview_container.closest('table').prepend($('<colgroup><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /><col width="' + col_size + '" /></colgroup>'));

@@ -40,7 +40,7 @@
         window.Parsley.setLocale(this.$form.data('locale') || 'en');
 
         // Initializes the sections
-        this.getSections().each(function (index, section) {
+        this.getSections().each(function(index, section) {
             // Sets the block index on the section
             $(section).find(':input').attr('data-parsley-group', 'block-'+index);
         });
