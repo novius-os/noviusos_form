@@ -1,10 +1,4 @@
 {
-  "name": "noviusos_form",
-  "version": "0.0.0",
-  "description": "Novius OS is an Open Source PHP Content Management System designed as an applications platform, hence the ‘OS’ suffix. Check out [Novius OS’ readme](http://github.com/novius-os/novius-os#readme) for more info.",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
@@ -15,12 +9,5 @@
     "jquery": "^1.12.4",
     "parsleyjs": "^2.6.0",
     "resolve": "^1.1.1"
-  },
-  "main": "Gruntfile.js",
-  "repository": {
-    "type": "git",
-    "url": "../dev/"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }
