@@ -101,6 +101,7 @@ class Service_Form
 
                 // Builds the field
                 $fieldsLayout[$pageIndex][$rowIndex][$colIndex] = array(
+                    'uniqid' => uniqid('nos_form_field_'),
                     'item' => $field,
                     'name' => $name,
                     'label' => $fieldDriver->getLabel(),

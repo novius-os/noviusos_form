@@ -30,12 +30,6 @@
     NosFormWizard.prototype.init = function() {
         var self = this;
 
-        // Checks if Parsley is loaded
-        if (typeof window.NosFormWizard === 'undefined') {
-            if (console) console.warn("Can't initialize the form wizard: Module NosFormWizard not found.");
-            return false;
-        }
-
         // Sets the parsley locale
         window.Parsley.setLocale(this.$form.data('locale') || 'en');
 

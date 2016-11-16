@@ -120,14 +120,33 @@ class Controller_Front extends \Nos\Controller_Front_Application
         foreach ($fieldsLayout as $rows) {
             foreach ($rows as $cols) {
                 foreach ($cols as $field) {
-                    if (is_a($field['item'], 'Nos\Form\Model_Field') && filter_var($field['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
-                        $fieldDriver = $field['item']->getDriver($this->enhancer_args);
-                        $json = \Fuel\Core\Format::forge(array(
-                            'inputname' => $field['item']->get('field_conditional_form'),
-                            'condition' => $fieldDriver->getVirtualName(),
-                            'value' => $field['item']->get('field_conditional_value')
-                        ))->to_json();
-                        \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition($json);");
+
+                    if (is_a($field['item'], 'Nos\Form\Model_Field')) {
+
+                        // Injects the condition initialize script
+                        if (filter_var($field['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
+                            $fieldDriver = $field['item']->getDriver($this->enhancer_args);
+                            $json = \Fuel\Core\Format::forge(array(
+                                'inputname' => $field['item']->get('field_conditional_form'),
+                                'condition' => $fieldDriver->getVirtualName(),
+                                'value' => $field['item']->get('field_conditional_value')
+                            ))->to_json();
+                            \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition($json);");
+                        }
+
+                        // Injects the field custom front script
+                        $js_file = \Arr::get($field['item']->getDriver()->getConfig(), 'front.js_file');
+                        if (!empty($js_file)) {
+                            // ... by file
+                            \Nos\Nos::main_controller()->addJavascript($js_file);
+                        }
+                        $js_inline = \Arr::get($field['item']->getDriver()->getConfig(), 'front.js_inline');
+                        if (!empty($js_inline)) {
+                            // ... inline
+                            \Nos\Nos::main_controller()->addJavascriptInline(
+                                str_replace('{{field_id}}', \Format::forge($field['uniqid'])->to_json(), $js_inline)
+                            );
+                        }
                     }
                     $fields[] = $field;
                 }

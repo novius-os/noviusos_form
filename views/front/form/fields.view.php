@@ -38,18 +38,18 @@ foreach ($fieldsLayout as $page => $rows) {
                         if (in_array($enhancer_args['label_position'], array('left', 'right'))) {
                             $template = '
                                 <div class="twelve columns">
-                                    <span class="inline-label">{label}</span>
-                                    <span class="inline-field" >{field} {instructions}</span>
-                                    <span class="inline-field-error" >{field_error}</span>
+                                    <span class="form-field-label inline">{label}</span>
+                                    <span class="form-field-input inline" >{field} {instructions}</span>
+                                    <span class="form-field-error inline" >{field_error}</span>
                                 </div>
                             ';
                         } else {
                             $template = '';
                             if (!in_array($enhancer_args['label_position'], array('top', 'placeholder')) || !empty($field['label'])) {
                                 // Displays the label only if not empty
-                                $template .= '<div class="{label_class} columns form-label">{label}</div>';
+                                $template .= '<div class="{label_class} columns form-field-label">{label}</div>';
                             }
-                            $template .= '<div class="{field_class} columns form-field">{field} {instructions}</div>';
+                            $template .= '<div class="{field_class} columns form-field-input">{field} {instructions}</div>';
                             if (!empty($fieldError)) {
                                 $template .= '<div class="twelve columns form-field-error">{field_error}</div>';
                             }
@@ -57,7 +57,7 @@ foreach ($fieldsLayout as $page => $rows) {
                     }
                     ?>
                     <div class="columns <?= \Nos\Form\Helper_Front_Form::getWidthClassName($field['width'] * 3) ?>">
-                        <div class="nos_form_field label-position-<?= $enhancer_args['label_position'] ?>">
+                        <div class="nos_form_field label-position-<?= $enhancer_args['label_position'] ?>" id="<?= $field['uniqid'] ?>">
                             <?= \Nos\Form\Helper_Front_Form::renderField($form, $field, $template, array(
                                 'labelClass'    => $labelClass,
                                 'fieldClass'    => $fieldClass,

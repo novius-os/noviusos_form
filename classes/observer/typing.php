@@ -28,10 +28,9 @@ class Observer_Typing extends \Orm\Observer_Typing
 	/**
 	 * Safely unserializes the input
 	 *
-	 * @param   string  value
-	 *
-	 * @return  mixed
-	 */
+     * @param $var
+     * @return array|mixed
+     */
 	public static function type_unserialize($var)
 	{
 	    if (empty($var)) {
@@ -41,6 +40,12 @@ class Observer_Typing extends \Orm\Observer_Typing
         // Tries to unserialize
         $result = @unserialize($var);
 
-        return $result !== $var ? $result : $var;
+        // If unserialize returned false and if not a serialized boolean then
+        // consider it's not a serialized value and return the original var
+        if ($result === false && $var !== 'b:0;') {
+            return $var;
+        }
+
+        return $result;
 	}
 }

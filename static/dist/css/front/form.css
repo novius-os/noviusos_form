@@ -75,15 +75,6 @@
     text-align: left; }
   .noviusos_form .column, .noviusos_form .columns {
     padding-right: 10px; }
-  .noviusos_form .label {
-    display: block;
-    padding: 6px 10px; }
-    .noviusos_form .label.right {
-      text-align: right; }
-    .noviusos_form .label.left {
-      text-align: left; }
-  .noviusos_form label[for] {
-    cursor: pointer; }
   .noviusos_form .label-position-top input[type="text"],
   .noviusos_form .label-position-top input[type="password"],
   .noviusos_form .label-position-top input[type="date"],
@@ -119,11 +110,22 @@
       width: auto; }
   .noviusos_form .label-position-right {
     text-align: right; }
-  .noviusos_form .inline-label {
-    display: inline-block;
-    vertical-align: top; }
-  .noviusos_form .inline-field {
+  .noviusos_form .form-field-label.inline,
+  .noviusos_form .form-field-input.inline,
+  .noviusos_form .form-field-error.inline {
     display: inline-block; }
+  .noviusos_form .form-field-label.inline {
+    vertical-align: top; }
+  .noviusos_form .form-field-label label {
+    display: block; }
+    .noviusos_form .form-field-label label.right,
+    .form-field-label.right .noviusos_form .form-field-label label {
+      text-align: right; }
+    .noviusos_form .form-field-label label.left,
+    .form-field-label.left .noviusos_form .form-field-label label {
+      text-align: left; }
+    .noviusos_form .form-field-label label[for] {
+      cursor: pointer; }
   .noviusos_form .instructions {
     font-style: italic;
     font-size: 90%;

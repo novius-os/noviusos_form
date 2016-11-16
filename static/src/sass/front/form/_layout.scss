@@ -119,23 +119,6 @@
         padding-right: 10px;
     }
 
-    .label {
-        display: block;
-        padding: 6px 10px;
-
-        &.right {
-            text-align: right;
-        }
-
-        &.left {
-            text-align: left;
-        }
-    }
-
-    label[for] {
-        cursor: pointer;
-    }
-
     .label-position-top,
     .label-position-placeholder {
 
@@ -173,13 +156,38 @@
         text-align: right;
     }
 
-    .inline-label {
-        display: inline-block;
-        vertical-align: top;
+    .form-field-label,
+    .form-field-input,
+    .form-field-error {
+
+        &.inline {
+            display: inline-block;
+        }
     }
 
-    .inline-field {
-        display: inline-block;
+    .form-field-label {
+
+        &.inline {
+            vertical-align: top;
+        }
+
+        label {
+            display: block;
+
+            &.right,
+            .form-field-label.right & {
+                text-align: right;
+            }
+
+            &.left,
+            .form-field-label.left & {
+                text-align: left;
+            }
+
+            &[for] {
+                cursor: pointer;
+            }
+        }
     }
 
     .instructions {

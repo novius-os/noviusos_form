@@ -13,7 +13,7 @@
             check: function () {
                 return typeof $.fn.parsley !== 'undefined';
             }
-        },
+        }
     ], function() {
         init(jQuery);
     });
@@ -42,8 +42,14 @@
 
                 // Initializes the wizard
                 if ($form.find('.form-page').length > 1) {
-                    var wizard = new NosFormWizard($form);
-                    wizard.init();
+
+                    // Checks if the Wizard module is loaded
+                    if (typeof window.NosFormWizard !== 'undefined') {
+                        var wizard = new NosFormWizard($form);
+                        wizard.init();
+                    } else if (console) {
+                        console.warn("Can't initialize the form wizard: Module NosFormWizard not found.");
+                    }
                 }
             });
         });
