@@ -31,8 +31,9 @@ class Driver_Field_Radio extends Driver_Field_Abstract
                 'field' => array(
                     'callback' => array('Form', 'radio'),
                     'args' => array(
+                        $this->getVirtualName(),
                         $choiceValue,
-                        $choiceValue === $value,
+                        $choiceValue == $value,
                         $attributes_choice
                     ),
                 ),
@@ -46,7 +47,7 @@ class Driver_Field_Radio extends Driver_Field_Abstract
                         ),
                     ),
                 ),
-                'template' => '{field} {label} <br />',
+                'template' => '<div class="form_radio">{field} {label}</div>',
             );
         }
 

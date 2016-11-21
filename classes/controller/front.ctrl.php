@@ -115,6 +115,8 @@ class Controller_Front extends \Nos\Controller_Front_Application
         // Gets the form fields layout
         $fieldsLayout = $form->getService()->getFieldsLayout($errors, $this->enhancer_args);
 
+        $conditions = array();
+
         // Initializes conditional fields
         $fields = array();
         foreach ($fieldsLayout as $rows) {
@@ -123,15 +125,13 @@ class Controller_Front extends \Nos\Controller_Front_Application
 
                     if (is_a($field['item'], 'Nos\Form\Model_Field')) {
 
-                        // Injects the condition initialize script
+                        // Injects as condition
                         if (filter_var($field['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
-                            $fieldDriver = $field['item']->getDriver($this->enhancer_args);
-                            $json = \Fuel\Core\Format::forge(array(
-                                'inputname' => $field['item']->get('field_conditional_form'),
-                                'condition' => $fieldDriver->getVirtualName(),
-                                'value' => $field['item']->get('field_conditional_value')
-                            ))->to_json();
-                            \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition($json);");
+                            $fieldName = $field['item']->getDriver($this->enhancer_args)->getVirtualName();
+                            $conditions[$fieldName] = array(
+                                'observedFieldName' => $field['item']->get('field_conditional_form'),
+                                'observedFieldValue' => $field['item']->get('field_conditional_value')
+                            );
                         }
 
                         // Injects the field custom front script
@@ -148,6 +148,7 @@ class Controller_Front extends \Nos\Controller_Front_Application
                             );
                         }
                     }
+
                     $fields[] = $field;
                 }
             }
@@ -190,13 +191,12 @@ class Controller_Front extends \Nos\Controller_Front_Application
             'labelWidthPerPage' => $labelWidthPerPage,
             'errors' => $errors,
             'enhancer_args' => $this->enhancer_args,
-            'stylesheetUrl' => \Arr::get($this->config, 'stylesheet_url'),
-            'scriptUrl' => \Arr::get($this->config, 'script_url'),
             'form_attrs' => array(
                 'method' => 'POST',
                 'enctype' => 'multipart/form-data',
                 'action' => '',
                 'data-locale' => \Nos\Form\Helper_Front_Form::getParsleyLocale(\Nos\Nos::main_controller()->getContext()),
+                'data-conditions' => \Format::forge($conditions)->to_json(),
             ),
         )), false);
     }

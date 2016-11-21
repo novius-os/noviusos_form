@@ -69,7 +69,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         foreach ($fields_data as $field_id => $field_data) {
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
-            if (isset($field_data['field_choices'])) {
+            if (!empty($field_data['field_choices'])) {
                 $choices = preg_split('`\r\n|\r|\n`', $field_data['field_choices']);
                 // Check possible values in choices
                 $choiceList = array();

@@ -12,6 +12,7 @@ class Driver_Field_Hidden extends Driver_Field_Abstract
      */
     public function getHtml($inputValue = null, $formData = array())
     {
+        //dd( $this->field );
         return array(
             'callback' => array('Form', 'hidden'),
             'args' => array($this->getVirtualName(), e($this->getDefaultValue())),

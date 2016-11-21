@@ -49,7 +49,7 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
                         ),
                     ),
                 ),
-                'template' => '{field} {label} <br />',
+                'template' => '<div class="form_checkbox">{field} {label}</div>',
             );
         }
 

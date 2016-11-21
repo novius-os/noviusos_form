@@ -1,20 +1,20 @@
-(function(window, document, undefined) {
+(function (window, document, undefined) {
 
     // Loads the requirements if not already loaded before executing the form script
     loadRequirements([
         {
-            url: 'static/apps/noviusos_form/dist/vendor/jquery.min.js',
+            url  : 'static/apps/noviusos_form/dist/vendor/jquery.min.js',
             check: function () {
                 return typeof window.jQuery !== 'undefined';
             }
         },
         {
-            url: 'static/apps/noviusos_form/dist/vendor/parsley.min.js',
+            url  : 'static/apps/noviusos_form/dist/vendor/parsley.min.js',
             check: function () {
                 return typeof $.fn.parsley !== 'undefined';
             }
         }
-    ], function() {
+    ], function () {
         init(jQuery);
     });
 
@@ -24,9 +24,9 @@
      * @param $
      */
     function init($) {
-        $(function() {
+        $(function () {
 
-            $('.noviusos_form form.nos-form-layout').each(function() {
+            $('.noviusos_form form.nos-form-layout').each(function () {
                 var $form = $(this);
 
                 // @todo make it work again... or not
@@ -43,7 +43,6 @@
 
                 // Initializes the wizard if more than one group of fields
                 if ($form.find('.form-fields-group').length > 1) {
-
                     // Checks if the Wizard module is loaded
                     if (typeof window.NosFormWizard !== 'undefined') {
                         var wizard = new NosFormWizard($form);
@@ -51,6 +50,20 @@
                     } else if (console) {
                         console.warn("Can't initialize the form wizard: Module NosFormWizard not found.");
                     }
+                }
+
+                // Initializes the conditional fields
+                if (typeof window.NosFormCondition !== 'undefined') {
+                    var params = {};
+                    if ($form.attr('data-conditions') !== '') {
+                        params = {
+                            fields: JSON.parse($form.attr('data-conditions'))
+                        };
+                    }
+                    var conditions = new NosFormCondition($form, params);
+                    conditions.init();
+                } else if (console) {
+                    console.warn("Can't initialize the form conditions: Module NosFormCondition not found.");
                 }
             });
         });
@@ -64,17 +77,17 @@
      */
     function addScript(src, callback) {
         // HTML5 Boilerplate Google Analytics loader
-        (function(d,t){
+        (function (d, t) {
             var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
             g.src = src;
             g.onload = callback;
-            g.onreadystatechange = function() { // IE 6-7-8
+            g.onreadystatechange = function () { // IE 6-7-8
                 if (this.readyState == 'complete' || this.readyState == 'loaded') {
                     callback();
                 }
             };
-            s.parentNode.insertBefore(g,s)
-        }(document,'script'));
+            s.parentNode.insertBefore(g, s)
+        }(document, 'script'));
     }
 
     /**
