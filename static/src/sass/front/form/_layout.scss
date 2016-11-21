@@ -1,112 +1,8 @@
 .noviusos_form {
 
-    /* Global Reset & Standards */
-    *,
-    *:before,
-    *:after {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
-
-    .row {
-        margin: 0 auto;
-
-        &.collapse .column,
-        &.collapse .columns {
-            padding: 0;
-        }
-
-        .row {
-            margin: 0 -0px;
-            margin: 0 0px;
-
-            &.collapse {
-                margin: 0;
-            }
-        }
-    }
-
-    .column,
-    .columns {
-        float: left;
-        min-height: 1px;
-        padding: 0 0;
-        position: relative;
-
-        &.centered {
-            float: none;
-            margin: 0 auto;
-        }
-    }
-
-    /* The Grid */
-    [class*="column"] + [class*="column"] {
-        &:last-child {
-            float: right;
-        }
-        &.end {
-            float: left;
-        }
-    }
-
-    .one, .row .one {
-        width: 8.33333%;
-    }
-    .two, .row .two {
-        width: 16.66667%;
-    }
-    .three, .row .three {
-        width: 25%;
-    }
-    .four, .row .four {
-        width: 33.33333%;
-    }
-    .five, .row .five {
-        width: 41.66667%;
-    }
-    .six, .row .six {
-        width: 50%;
-    }
-    .seven, .row .seven {
-        width: 58.33333%;
-    }
-    .eight, .row .eight {
-        width: 66.66667%;
-    }
-    .nine, .row .nine {
-        width: 75%;
-    }
-    .ten, .row .ten {
-        width: 83.33333%;
-    }
-    .eleven, .row .eleven {
-        width: 91.66667%;
-    }
-    .twelve {
-        width: 100%;
-    }
-
-    /* Nicolas Gallagher's micro clearfix */
-    .row {
-        *zoom: 1;
-
-        .twelve {
-            width: 100%;
-        }
-
-        &:before {
-            content: " ";
-            display: table;
-        }
-
-        &:after {
-            content: " ";
-            display: table;
-            clear: both;
-        }
-        margin: 15px 0 25px;
-    }
+    @import 'layout/resets';
+    @import 'layout/grid';
+    @import 'layout/wizard';
 
     /* The form layout */
     .form-errors {
@@ -115,8 +11,24 @@
         text-align: left;
     }
 
-    .column, .columns {
-        padding-right: 10px;
+    .form-fields-group {
+        border: 1px solid #cccccc;
+        margin-bottom: 2em;
+        padding: 1em 2em;
+        display: none;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+        border-radius: 2px;
+        -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        color: rgba(0, 0, 0, 0.75);
+
+        &.current {
+            display: block;
+        }
     }
 
     .label-position-top,
@@ -194,34 +106,5 @@
         font-style: italic;
         font-size: 90%;
         margin-top: 0.1em;
-    }
-
-    div.form-page {
-        border: 1px solid #cccccc;
-        margin-bottom: 2em;
-        padding: 1em 2em;
-        display: none;
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-        -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        color: rgba(0, 0, 0, 0.75);
-
-        &.current {
-            display: block;
-        }
-    }
-
-    .wizard-control-previous,
-    .wizard-control-submit {
-        display: none;
-    }
-
-    .wizard-controls .columns {
-        text-align: center;
     }
 }

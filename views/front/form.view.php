@@ -60,5 +60,7 @@ $pageBreakCount = $form->getService()->getPageBreakCount();
             'form' => $form,
             'pageBreakCount' => $pageBreakCount,
         ), false); ?>
+
+        <div class="clearfix"></div>
     </form>
 </div>

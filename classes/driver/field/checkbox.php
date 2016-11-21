@@ -15,7 +15,7 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
         // Converts values to hash
         $values = $this->sanitizeValue($inputValue);
@@ -33,7 +33,7 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
                 'field' => array(
                     'callback' => array('Form', 'checkbox'),
                     'args' => array(
-                        $this->getHtmlVirtualName(),
+                        $this->getInputVirtualName(),
                         $value,
                         in_array($value, $values),
                         $attributes_choice,
@@ -91,11 +91,29 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
     }
 
     /**
+     * Gets the field default value (no var origin)
+     *
+     * @return array|mixed|\Nos\Orm\Model|null
+     */
+    public function getFieldDefaultValue()
+    {
+        $defaultValue = $this->field->field_default_value;
+
+        // Converts to an array if not an array (this case happens when switching between a driver
+        // that handles only a single default value to a driver that handles multiple default values)
+        if (!is_array($defaultValue)) {
+            $defaultValue = $this->convertValueToArray($defaultValue);
+        }
+
+        return $defaultValue;
+    }
+
+    /**
      * Gets the virtual name
      *
      * @return string
      */
-    protected function getHtmlVirtualName()
+    protected function getInputVirtualName()
     {
         // Adds brackets for handling multiple selected values
         return $this->getVirtualName().'[]';

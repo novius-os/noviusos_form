@@ -52,7 +52,7 @@ return array(
     ),
     'search_text' => array(
         function ($value, $query) {
-            // @todo refacto
+//            // @todo refacto
 //            $query->related('fields', array('where' => array(
 //                array('anfi_field_driver', 'IN', array('text', 'textarea', 'checkbox', 'select', 'radio', 'email', 'number')),
 //            )));

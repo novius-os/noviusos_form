@@ -1,23 +1,22 @@
 .noviusos_form {
   /* The form layout */ }
+  .noviusos_form .wizard-control-previous,
+  .noviusos_form .wizard-control-submit {
+    display: none; }
+  .noviusos_form .wizard-controls .columns {
+    text-align: center;
+    min-height: 1px; }
+  .noviusos_form .column,
+  .noviusos_form .columns {
+    padding-right: 10px; }
   .noviusos_form .form-errors {
     color: darkred;
     margin: 10px 0;
     text-align: left; }
-  .noviusos_form .column, .noviusos_form .columns {
-    padding-right: 10px; }
+  .noviusos_form .form-fields-group.current {
+    display: block; }
   .noviusos_form label[for] {
     cursor: pointer; }
-  .noviusos_form input,
-  .noviusos_form select,
-  .noviusos_form textarea {
-    /* Don't move the :focus pseudo selector, or it won't work in Chrome */ }
-    .noviusos_form input.form-ui-invalid, .noviusos_form input:focus.form-ui-invalid,
-    .noviusos_form select.form-ui-invalid,
-    .noviusos_form select:focus.form-ui-invalid,
-    .noviusos_form textarea.form-ui-invalid,
-    .noviusos_form textarea:focus.form-ui-invalid {
-      border-color: #cc0000; }
   .noviusos_form .label-position-top input[type="text"],
   .noviusos_form .label-position-top input[type="password"],
   .noviusos_form .label-position-top input[type="date"],
@@ -53,37 +52,16 @@
       width: auto; }
   .noviusos_form .label-position-right {
     text-align: right; }
-  .noviusos_form .inline-label {
-    display: inline-block;
-    vertical-align: top; }
-  .noviusos_form .inline-field {
+  .noviusos_form .form-field-label.inline,
+  .noviusos_form .form-field-input.inline,
+  .noviusos_form .form-field-error.inline {
     display: inline-block; }
+  .noviusos_form .form-field-label.inline {
+    vertical-align: top; }
   .noviusos_form .instructions {
     font-style: italic;
     font-size: 90%;
     margin-top: 0.1em; }
-  .noviusos_form div.form-page {
-    border: 1px solid #cccccc;
-    margin-bottom: 2em;
-    padding: 1em 2em;
-    display: none;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    -ms-border-radius: 2px;
-    -o-border-radius: 2px;
-    border-radius: 2px;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-    color: rgba(0, 0, 0, 0.75); }
-    .noviusos_form div.form-page.current {
-      display: block; }
-  .noviusos_form .wizard-control-previous,
-  .noviusos_form .wizard-control-submit {
-    display: none; }
-  .noviusos_form .wizard-controls .columns {
-    text-align: center;
-    min-height: 1px; }
 
 .noviusos_form input.parsley-error,
 .noviusos_form select.parsley-error,

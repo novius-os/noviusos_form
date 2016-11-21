@@ -50,16 +50,25 @@ class Service_Form
             );
         }
 
+        // Gets the form fields data
+        $formData = array();
+        foreach ($this->getLayoutFieldsName() as $fieldName) {
+            $field = \Arr::get($this->form->fields, $fieldName);
+            if (!empty($field) && $field->hasDriver()) {
+                $formData[$fieldName] = $field->getDriver()->getInputValue($field->getDriver()->getDefaultValue());
+            }
+        }
+
         // Builds the fields layout
         $fieldsLayout = array();
         $pageIndex = $rowIndex = $colIndex = 0;
         foreach ($layout as $rows) {
             foreach ($rows as $row) {
-                $field_name = \Arr::get($row, 'field_name');
-                $field_width = \Arr::get($row, 'field_width');
+                $fieldName = \Arr::get($row, 'field_name');
+                $fieldWidth = \Arr::get($row, 'field_width');
 
                 // Page break
-                if ($field_name == 'page_break') {
+                if ($fieldName == 'page_break') {
                     // Starts a new page
                     $pageIndex++;
                     $rowIndex = $colIndex = 0;
@@ -67,7 +76,7 @@ class Service_Form
                 }
 
                 // Captcha
-                elseif ($field_name == 'captcha') {
+                elseif ($fieldName == 'captcha') {
                     $field = Model_Field::forge(array(
                         'field_name' => 'form_captcha',
                         'field_label' => '',
@@ -81,8 +90,8 @@ class Service_Form
                 }
 
                 // Other fields
-                elseif (isset($this->form->fields[$field_name])) {
-                    $field = $this->form->fields[$field_name];
+                elseif (isset($this->form->fields[$fieldName])) {
+                    $field = $this->form->fields[$fieldName];
                 } else {
                     continue;
                 }
@@ -97,18 +106,18 @@ class Service_Form
                 $fieldDriver->setErrors(\Arr::get($errors, $name, array()));
 
                 // Gets the input value or the default value
-                $value = $fieldDriver->getInputValue($fieldDriver->getDefaultValue());
+                $value = \Arr::get($formData, $fieldName);// $fieldDriver->getInputValue($fieldDriver->getDefaultValue());
 
                 // Builds the field
                 $fieldsLayout[$pageIndex][$rowIndex][$colIndex] = array(
-                    'uniqid' => uniqid('nos_form_field_'),
-                    'item' => $field,
-                    'name' => $name,
-                    'label' => $fieldDriver->getLabel(),
-                    'field' => $fieldDriver->getHtml($value),
-                    'instructions' => $fieldDriver->getInstructions(),
-                    'width' => $field_width,
-                    'view' => \Arr::get($fieldDriver->getConfig(), 'front.view'),
+                    'uniqid'        => uniqid('nos_form_field_'),
+                    'item'          => $field,
+                    'name'          => $name,
+                    'label'         => $fieldDriver->getLabel(),
+                    'field'         => $fieldDriver->getHtml($value, $formData),
+                    'instructions'  => $fieldDriver->getInstructions(),
+                    'width'         => $fieldWidth,
+                    'view'          => \Arr::get($fieldDriver->getConfig(), 'front.view'),
                 );
                 $colIndex++;
             }

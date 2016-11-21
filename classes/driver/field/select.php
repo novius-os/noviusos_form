@@ -18,7 +18,7 @@ class Driver_Field_Select extends Driver_Field_Abstract
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
         $value = $this->sanitizeValue($inputValue);
         $value = $this->convertChoiceValueToHash($value);

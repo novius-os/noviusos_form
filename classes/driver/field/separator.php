@@ -10,7 +10,7 @@ class Driver_Field_Separator extends Driver_Field_Abstract
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
         return html_tag('hr');
     }

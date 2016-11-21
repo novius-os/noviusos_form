@@ -281,11 +281,12 @@ return array(
             'field_choices' => array(
                 'label' => __('Answers:'),
                 'form' => array(
-                    'type' => 'textarea',
-                    'rows' => '5',
+                    'type' => 'hidden',
                     'value' => '',
-                    'placeholder' => __('One answer per line'),
                 ),
+                'populate' => function ($item) {
+                    return is_array($item->choices) ? implode(PHP_EOL, $item->choices) : $item->choices;
+                },
             ),
             'field_mandatory' => array(
                 'label' => __('Mandatory'),
@@ -300,6 +301,13 @@ return array(
                 'form' => array(
                     'type' => 'text',
                 ),
+                'populate' => function ($item) {
+                    $defaultValue = $item->hasDriver() ? $item->getDriver()->getDefaultValue() : $item->field_default_value;
+                    if (is_array($defaultValue)) {
+                        $defaultValue = implode(',', $defaultValue);
+                    }
+                    return $defaultValue;
+                },
             ),
             'field_details' => array(
                 'label' => __('Instructions for the user:'),
@@ -317,7 +325,7 @@ return array(
                     'size' => '3',
                 ),
                 'populate' => function ($item) {
-                        return empty($item->field_width) ? '' : $item->field_width;
+                    return empty($item->field_width) ? '' : $item->field_width;
                 },
             ),
             'field_height' => array(

@@ -58,7 +58,6 @@ define(
             // Handles form submit
             $container.closest('form').submit(function(e) {
                 var layout = extractLayout();
-                console.log('layout', layout);
 
                 // Sets the layout input value
                 $layout.val(layout);
@@ -135,7 +134,7 @@ define(
                 // Page break
                 if (params_button.type == 'page_break') {
 
-                    var field_id = 'page-break-'+(pageBreakCount+1); // @todo current page break count + 1
+                    var field_id = 'page-break-'+(pageBreakCount+1);
 
                     var $field = $('<div />')
                         .addClass('field_enclosure page_break')
@@ -277,14 +276,10 @@ define(
                         }
                     });
 
-                    // Generate default value before preview, because the preview uses it
-                    //generateFieldDefaultValue($field);
-
                     $field.find('[name$="[field_label]"]').trigger('change');
                     $field.find('[name$="[field_style]"]').trigger('change');
                 })
                 .always(function() {
-                    console.log('unfreeze');
                     unfreezeField($field);
                 });
             });
@@ -309,12 +304,6 @@ define(
                 $new.trigger('change');
             });
 
-            //// Handles mandatory change
-            //$fields_container.on('change', 'input[name$="[field_mandatory]"]', function on_change_field_mandatory(e) {
-            //    var $field = $(this).closest('.field_enclosure');
-            //    generateFieldDefaultValue($field);
-            //});
-
             // Keeps preview label in sync
             $fields_container.on('change keyup', 'input[name$="[field_label]"]', function() {
                 refreshFieldPreviewLabel($(this).closest('.field_enclosure'));
@@ -335,11 +324,6 @@ define(
                     refreshFieldPreviewContent($(this).closest('.field_enclosure'));
                 }
             );
-
-            //// Handles textarea choices change
-            //$fields_container.on('blur change', 'textarea[name$="[field_choices]"]', function regenerateFieldDefaultValue(e) {
-            //    refreshFieldPreviewContent($(this).closest('.field_enclosure'));
-            //});
 
             // Can be triggered by custom field scripts
             $fields_container.on('refreshPreview', '.field_enclosure', function() {

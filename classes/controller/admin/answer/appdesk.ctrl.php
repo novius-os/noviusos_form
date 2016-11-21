@@ -126,11 +126,18 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                         // Gets the field driver
                         if (is_callable($value)) {
                             // Custom value callback
-                            return $value($field->getDriver(), $answerField);
+                            $value = $value($field->getDriver(), $answerField);
                         } else {
                             // Default driver render
-                            return $field->getDriver()->renderAnswerHtml($answerField);
+                            $value = $field->getDriver()->renderAnswerHtml($answerField);
                         }
+
+                        // Truncates
+                        if (mb_strlen($value) > 50) {
+                            $value = \Str::truncate($value, 50, '...', \Str::is_html($value));
+                        }
+
+                        return $value;
                     }
                 ));
 

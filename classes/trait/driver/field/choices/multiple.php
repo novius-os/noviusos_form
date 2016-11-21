@@ -69,6 +69,40 @@ trait Trait_Driver_Field_Choices_Multiple
     }
 
     /**
+     * Sanitizes the value
+     *
+     * @param $value
+     * @return array
+     */
+    public function sanitizeValue($value)
+    {
+        $value = $this->convertValueToArray($value);
+
+        $value = array_filter($value, function($v) {
+            return $v !== '';
+        });
+
+        return $value;
+    }
+
+    /**
+     * Converts the value (possibly containing comma separated values) to an array
+     *
+     * @param $value
+     * @return array|mixed
+     */
+    protected function convertValueToArray($value)
+    {
+        if (!is_array($value)) {
+            // Replaces comma by newlines
+            $value = str_replace(",", PHP_EOL, $value);
+            $value = preg_split('`\r\n|\r|\n`', $value);
+            $value = array_combine($value, $value);
+        }
+        return $value;
+    }
+
+    /**
      * Gets the choice (label) for the specified value
      *
      * @param array $values
@@ -85,26 +119,5 @@ trait Trait_Driver_Field_Choices_Multiple
         }, $values);
 
         return $values;
-    }
-
-    /**
-     * Formats the value
-     *
-     * @param $value
-     * @return array
-     */
-    public function sanitizeValue($value)
-    {
-        if (!is_array($value)) {
-            $value = str_replace(",", "\n", (string) $value);
-            $value = preg_split('`\r\n|\r|\n`', $value);
-            $value = array_combine($value, $value);
-        }
-
-        $value = array_filter($value, function($v) {
-            return $v !== '';
-        });
-
-        return $value;
     }
 }

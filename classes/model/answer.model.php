@@ -14,6 +14,7 @@ class Model_Answer extends \Nos\Orm\Model
 {
     protected static $_table_name = 'nos_form_answer';
     protected static $_primary_key = array('answer_id');
+    protected static $_prefix = 'answer_';
 
     protected static $_properties = array(
         'answer_id' => array(

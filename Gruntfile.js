@@ -83,6 +83,9 @@ module.exports = function(grunt) {
                     'static/dist/css/front/form-foundation.min.css' : [
                         'static/dist/css/front/form-foundation.css',
                     ],
+                    'static/dist/css/front/form-bootstrap.min.css' : [
+                        'static/dist/css/front/form-bootstrap.css',
+                    ],
                 }
             },
             admin: {
@@ -101,6 +104,9 @@ module.exports = function(grunt) {
                     ],
                     'static/dist/css/front/form-foundation.css' : [
                         'static/src/sass/front/form-foundation.scss',
+                    ],
+                    'static/dist/css/front/form-bootstrap.css' : [
+                        'static/src/sass/front/form-bootstrap.scss',
                     ],
                 }
             },

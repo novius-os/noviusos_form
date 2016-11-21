@@ -28,20 +28,21 @@
 
             $('.noviusos_form form.nos-form-layout').each(function() {
                 var $form = $(this);
-                var $captcha = $form.find('#form_captcha');
-                var good_anwser = $captcha.size() ? $captcha.data('captcha').split('-')[1] : null;
 
-                // Initializes the captcha field
-                $captcha.on('blur', function() {
-                    if ($(this).val() != good_anwser) {
-                        this.setCustomValidity($captcha.data('customValidity'));
-                    } else {
-                        this.setCustomValidity('');
-                    }
-                });
+                // @todo make it work again... or not
+                // // Initializes the captcha field
+                // var $captcha = $form.find('#form_captcha');
+                // var good_anwser = $captcha.size() ? $captcha.data('captcha').split('-')[1] : null;
+                // $captcha.on('blur', function() {
+                //     if ($(this).val() != good_anwser) {
+                //         this.setCustomValidity($captcha.data('customValidity'));
+                //     } else {
+                //         this.setCustomValidity('');
+                //     }
+                // });
 
-                // Initializes the wizard
-                if ($form.find('.form-page').length > 1) {
+                // Initializes the wizard if more than one group of fields
+                if ($form.find('.form-fields-group').length > 1) {
 
                     // Checks if the Wizard module is loaded
                     if (typeof window.NosFormWizard !== 'undefined') {

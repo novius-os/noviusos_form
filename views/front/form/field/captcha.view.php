@@ -17,7 +17,7 @@ $number_2 = mt_rand(1, 50);
 if (mt_rand(1, 2) == 1) {
     list($number_2, $number_1) = array($number_1, $number_2);
 }
-\Session::set('captcha.'.$form->id, $number_1 + $number_2);
+\Session::set('captcha.'.$form->form_id, $number_1 + $number_2);
 
 $field['label'] = strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array(
     '{{number_1}}' => $number_1,
@@ -28,7 +28,7 @@ $field['label'] = '<label>'.$field['label'].'</label>';
 Helper_Front_Form::addAttrToThing(
     $field['field'],
     'data-captcha',
-    mt_rand(100, 999).'-'.\Session::get('captcha.'.$form->id).'-'.mt_rand(100, 999)
+    mt_rand(100, 999).'-'.\Session::get('captcha.'.$form->form_id).'-'.mt_rand(100, 999)
 );
 Helper_Front_Form::addAttrToThing(
     $field['field'],

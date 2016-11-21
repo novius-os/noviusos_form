@@ -15,9 +15,9 @@ class Driver_Field_Input extends Driver_Field_Abstract
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
-        $name = $this->getVirtualName();
+        $name = $this->getInputVirtualName();
         $value = $this->sanitizeValue($inputValue);
         $attributes = $this->getHtmlAttributes();
 
@@ -84,5 +84,15 @@ class Driver_Field_Input extends Driver_Field_Abstract
     protected function getInputType()
     {
         return 'text';
+    }
+
+    /**
+     * Gets the virtual name for the HTML input
+     *
+     * @return string
+     */
+    protected function getInputVirtualName()
+    {
+        return $this->getVirtualName();
     }
 }

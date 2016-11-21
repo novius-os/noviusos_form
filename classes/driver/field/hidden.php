@@ -10,7 +10,7 @@ class Driver_Field_Hidden extends Driver_Field_Abstract
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
         return array(
             'callback' => array('Form', 'hidden'),

@@ -10,7 +10,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
         $name = $this->getVirtualName();
         $attributes = $this->getHtmlAttributes();

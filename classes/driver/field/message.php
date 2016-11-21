@@ -10,7 +10,7 @@ class Driver_Field_Message extends Driver_Field_Abstract
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
         // Gets the HTML tag to use
         if (in_array($this->field->field_style, array('p', 'h1', 'h2', 'h3'))) {

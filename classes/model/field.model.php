@@ -14,6 +14,7 @@ class Model_Field extends \Nos\Orm\Model
 {
     protected static $_table_name = 'nos_form_field';
     protected static $_primary_key = array('field_id');
+    protected static $_prefix = 'field_';
 
     protected static $_properties = array(
         'field_id' => array(
@@ -182,18 +183,18 @@ class Model_Field extends \Nos\Orm\Model
     protected $_field_id_for_delete = null;
 
     /**
-     * Drivers instances
+     * The field drivers instances (per driver class)
      *
      * @var array
      */
     protected $driversInstance = array();
 
     /**
-     * The form service
+     * The form service instance
      *
      * @var Service_Field|null
      */
-    protected $service = null;
+    protected $serviceInstance = null;
 
     /**
      * Gets the input name
@@ -221,16 +222,15 @@ class Model_Field extends \Nos\Orm\Model
      */
     public function getDriver($options = null, $reload = false)
     {
-        $driverClass = $this->getDriverClass();
-
         // Gets the driver class
+        $driverClass = $this->getDriverClass();
         if (empty($driverClass)) {
             return null;
         }
 
-        // Checks if exists
+        // Checks if the class exists
         if (!class_exists($driverClass)) {
-            throw new Exception_Driver('Driver `'.$driverClass.'` not found.');
+            throw new Exception_Driver(str_replace('{{class}}', $driverClass, __('Driver `{{class}}` not found.')));
         }
 
         // Forges if not already forged or if reload
@@ -246,13 +246,24 @@ class Model_Field extends \Nos\Orm\Model
     }
 
     /**
+     * Checks if field has a driver
+     *
+     * @return bool
+     */
+    public function hasDriver()
+    {
+        // Gets the driver class
+        return !empty($this->getDriverClass()) && class_exists($this->getDriverClass());
+    }
+
+    /**
      * Gets the driver class name
      *
      * @return mixed|\Nos\Orm\Model|null
      */
     public function getDriverClass()
     {
-        return $this->driver;
+        return $this->field_driver;
     }
 
     /**
@@ -263,10 +274,10 @@ class Model_Field extends \Nos\Orm\Model
      */
     public function getService($reload = false)
     {
-        if (is_null($this->service) || $reload) {
-            $this->service = Service_Field::forge($this);
+        if (is_null($this->serviceInstance) || $reload) {
+            $this->serviceInstance = Service_Field::forge($this);
         }
-        return $this->service;
+        return $this->serviceInstance;
     }
 
     /**

@@ -13,7 +13,7 @@
         this.options = $.extend(true, {
             currentPageClassName: 'current',
             selectors: {
-                sections: '.form-page',
+                sections: '.form-fields-group',
                 controls: '.wizard-controls',
                 controlPrevious: '.wizard-control-previous',
                 controlNext: '.wizard-control-next',

@@ -15,7 +15,7 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
      * @param mixed|null $inputValue
      * @return mixed
      */
-    public function getHtml($inputValue = null)
+    public function getHtml($inputValue = null, $formData = array())
     {
         $name = $this->getVirtualName();
         $value = $this->sanitizeValue($inputValue);

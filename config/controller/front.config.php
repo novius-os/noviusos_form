@@ -32,15 +32,15 @@ return array(
             ),
         ),
 
-//        // Bootstrap layout
-//        'bootstrap' => array(
-//            'view' => 'noviusos_form::front/form',
-//            'view_params' => array(
-//                'script_url' => 'static/apps/noviusos_form/dist/js/front/form.min.js',
-//                'stylesheet_url' => 'static/apps/noviusos_form/dist/css/front/form-bootstrap.min.css',
-//                'view_controls' => 'noviusos_form::front/form/controls-bootstrap',
-//                'view_fields' => 'noviusos_form::front/form/fields-bootstrap',
-//            ),
-//        ),
+        // Bootstrap layout
+        'bootstrap' => array(
+            'view' => 'noviusos_form::front/form',
+            'view_params' => array(
+                'script_url' => 'static/apps/noviusos_form/dist/js/front/form.min.js',
+                'stylesheet_url' => 'static/apps/noviusos_form/dist/css/front/form-bootstrap.min.css',
+                'view_controls' => 'noviusos_form::front/form/controls-bootstrap',
+                'view_fields' => 'noviusos_form::front/form/fields-bootstrap',
+            ),
+        ),
     ),
 );

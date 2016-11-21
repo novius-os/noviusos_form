@@ -49,9 +49,10 @@ abstract class Driver_Field_Abstract
      * Gets the field html
      *
      * @param mixed|null $inputValue
+     * @param array $formData
      * @return mixed
      */
-    abstract public function getHtml($inputValue = null);
+    abstract public function getHtml($inputValue = null, $formData = array());
 
     /**
      * Gets the HTML preview
@@ -140,6 +141,9 @@ abstract class Driver_Field_Abstract
     public function renderErrorValueHtml($value)
     {
         $value = $this->sanitizeValue($value);
+        if (is_array($value)) {
+            $value = implode(', ', $value);
+        }
         return (string) $value;
     }
 
@@ -158,11 +162,21 @@ abstract class Driver_Field_Abstract
 
     /**
      * Gets the field default value (no var origin)
+     *
+     * @return array|mixed|\Nos\Orm\Model|null
      */
     public function getFieldDefaultValue()
     {
         // Gets the default value
-        return (string) $this->field->field_default_value;
+        $defaultValue = $this->field->field_default_value;
+
+        // Gets the first value if it's an array (this case happens when switching between a driver
+        // that handles multiple default values to a driver that handles only a single default value)
+        if (is_array($defaultValue)) {
+            $defaultValue = reset($defaultValue);
+        }
+
+        return $defaultValue;
     }
 
     /**
@@ -173,11 +187,6 @@ abstract class Driver_Field_Abstract
      */
     public function getDefaultValue($defaultValue = null)
     {
-        // @todo why only for these fields ?
-//        if (!in_array($this->field->field_type, array('text', 'email', 'number', 'textarea', 'hidden', 'variable'))) {
-//            return $this->field->field_default_value;
-//        }
-
         // Gets the default value
         $defaultValue = is_null($defaultValue) ? $this->getFieldDefaultValue() : $defaultValue;
 
@@ -238,7 +247,7 @@ abstract class Driver_Field_Abstract
             && !empty($this->field->field_conditional_value)) {
 
             // Retrieve the conditionnal field
-            $conditional_field = self::query()
+            $conditional_field = $this->field->query()
                 ->where('field_form_id', $this->field->field_form_id)
                 ->where('field_virtual_name', $this->field->field_conditional_form)
                 ->get_one();
@@ -336,7 +345,11 @@ abstract class Driver_Field_Abstract
      */
     public function renderAnswerHtml(Model_Answer_Field $answerField)
     {
-        return e($answerField->value);
+        $value = $this->sanitizeValue($answerField->value);
+        if (is_array($value)) {
+            $value = implode(', ', $value);
+        }
+        return e($value);
     }
 
     /**
@@ -347,6 +360,10 @@ abstract class Driver_Field_Abstract
      */
     public function renderExportValue(Model_Answer_Field $answerField)
     {
+        $value = $answerField->value;
+        if (is_array($value)) {
+            $value = implode(', ', $value);
+        }
         return $answerField->value;
     }
 
@@ -538,7 +555,7 @@ abstract class Driver_Field_Abstract
     }
 
     /**
-     * Sanitizes the value
+     * Sanitizes the input value
      *
      * @param $value
      * @return mixed

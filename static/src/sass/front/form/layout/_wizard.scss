@@ -1,0 +1,10 @@
+.wizard-control-previous,
+.wizard-control-submit {
+    display: none;
+}
+
+.wizard-controls .columns {
+    text-align: center;
+    // @hack forces empty columns to be displayed
+    min-height: 1px;
+}

@@ -14,6 +14,7 @@ class Model_Form extends \Nos\Orm\Model
 {
     protected static $_table_name = 'nos_form';
     protected static $_primary_key = array('form_id');
+    protected static $_prefix = 'form_';
 
     protected static $_title_property = 'form_name';
     protected static $_properties = array(

@@ -100,10 +100,10 @@ trait Trait_Driver_Field_Choices_Single
     /**
      * Gets the choices list
      *
-     * @param array $onlyValues
+     * @param array|null $onlyValues
      * @return array
      */
-    protected function getChoicesList($onlyValues = array())
+    protected function getChoicesList($onlyValues = null)
     {
         $choices = $this->getChoices();
 
@@ -121,15 +121,16 @@ trait Trait_Driver_Field_Choices_Single
                 $choiceValue = (string) $index;
             }
 
-            if (empty($onlyValues) || in_array($choiceValue, $onlyValues)) {
+            if (is_null($onlyValues) || (is_array($onlyValues) && in_array($choiceValue, $onlyValues))) {
                 $choiceList[$choiceValue] = $choiceLabel;
             }
         }
 
         // Prepends with the default value
-        if (empty($choiceList) && empty($onlyValues)) {
+        if (empty($choiceList) && is_null($onlyValues)) {
             $choiceList = array('' => '');
         }
+
 
         return $choiceList;
     }

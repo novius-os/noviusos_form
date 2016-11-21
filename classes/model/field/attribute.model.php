@@ -10,12 +10,11 @@
 
 namespace Nos\Form;
 
-use Nos\Orm\Model;
-
-class Model_Field_Attribute extends Model
+class Model_Field_Attribute extends \Nos\Orm\Model
 {
     protected static $_table_name = 'nos_form_field_attributes';
     protected static $_primary_key = array('fiat_id');
+    protected static $_prefix = 'fiat_';
 
     protected static $_title_property = 'fiat_key';
     protected static $_properties = array(
