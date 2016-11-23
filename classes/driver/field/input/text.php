@@ -2,7 +2,7 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input_Text extends Driver_Field_Input implements Interface_Driver_Field_Placeholder
+class Driver_Field_Input_Text extends Driver_Field_Input
 {
     /**
      * Gets the input type

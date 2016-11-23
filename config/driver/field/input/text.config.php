@@ -3,12 +3,13 @@
 return array(
     'name' => __('Single line text'),
 
-    'admin' => array(
+    'admin'                 => array(
         // Meta layout
         'layout' => array(
-            'main' => array(
+            'main'     => array(
                 'fields' => array(
                     'field_label',
+                    'field_placeholder',
                 ),
             ),
             'optional' => array(
@@ -20,6 +21,14 @@ return array(
                     'field_details',
                     'field_width',
                     'field_limited_to',
+                ),
+            ),
+        ),
+        'fields' => array(
+            'field_placeholder' => array(
+                'label' => __('Placeholder :'),
+                'form'  => array(
+                    'type' => 'text',
                 ),
             ),
         ),

@@ -8,10 +8,10 @@ return array(
         'view' => 'noviusos_form::front/form/field/captcha',
     ),
 
-    'admin' => array(
+    'admin'             => array(
         // Meta layout
         'layout' => array(
-            'main' => array(
+            'main'     => array(
                 'fields' => array(
                     'field_label',
                     'field_details',
@@ -27,5 +27,5 @@ return array(
     'display_as_answer' => false,
 
     // Sets false if not exportable
-    'exportable' => false,
+    'exportable'        => false,
 );

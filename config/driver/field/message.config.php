@@ -3,10 +3,10 @@
 return array(
     'name' => __('Message'),
 
-    'admin' => array(
+    'admin'             => array(
         // Meta layout
         'layout' => array(
-            'main' => array(
+            'main'     => array(
                 'fields' => array(
                     'field_label',
                     'field_message',
@@ -23,5 +23,5 @@ return array(
     'display_as_answer' => false,
 
     // Sets false if not exportable
-    'exportable' => false,
+    'exportable'        => false,
 );

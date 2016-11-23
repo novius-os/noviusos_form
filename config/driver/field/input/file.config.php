@@ -1,17 +1,17 @@
 <?php
 
 return array(
-    'name' => __('File upload'),
+    'name'           => __('File upload'),
 
     // Fields default value
     'default_values' => array(
         'field_label' => __('I’m the label of a file input, click to edit me:'),
     ),
 
-    'admin' => array(
+    'admin'                 => array(
         // Meta layout
         'layout' => array(
-            'main' => array(
+            'main'     => array(
                 'fields' => array(
                     'field_label',
                 ),

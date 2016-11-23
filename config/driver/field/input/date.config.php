@@ -1,19 +1,20 @@
 <?php
 
 return array(
-    'name' => __('Date'),
+    'name'           => __('Date'),
 
     // Fields default value
     'default_values' => array(
         'field_label' => __('Pick a date:'),
     ),
 
-    'admin' => array(
+    'admin'                 => array(
         // Meta layout
         'layout' => array(
-            'main' => array(
+            'main'     => array(
                 'fields' => array(
                     'field_label',
+                    'field_placeholder',
                 ),
             ),
             'optional' => array(
@@ -24,6 +25,14 @@ return array(
                     'field_origin_var',
                     'field_details',
                     'field_width',
+                ),
+            ),
+        ),
+        'fields' => array(
+            'field_placeholder' => array(
+                'label' => __('Placeholder :'),
+                'form'  => array(
+                    'type' => 'text',
                 ),
             ),
         ),

@@ -20,7 +20,6 @@ return array(
                 'params' => array(
                     'fields' => array(
                         'form_id',
-                        'label_position',
                         'after_submit',
                         'confirmation_message',
                         'confirmation_page_id',
@@ -54,19 +53,6 @@ return array(
             ),
             'validation' => array(
                 'required',
-            ),
-        ),
-        'label_position' => array(
-            'label' => __('Label position:'),
-            'form' => array(
-                'type' => 'select',
-                'options' => array(
-                    'top' => __('Top aligned'),
-                    'left' => __('Left aligned'),
-                    'right' => __('Right aligned'),
-                    'placeholder' => __('In the field (placeholder), for text fields only'),
-                ),
-                'value' => 'top',
             ),
         ),
         'after_submit' => array(

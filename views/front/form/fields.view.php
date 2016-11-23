@@ -1,10 +1,10 @@
 <?php
 /**
  * @var \Nos\Form\Model_Form $form
- * @var array $fieldsLayout
- * @var array $labelWidthPerPage
- * @var array $errors
- * @var array $enhancer_args
+ * @var array                $fieldsLayout
+ * @var array                $labelWidthPerPage
+ * @var array                $errors
+ * @var array                $enhancer_args
  */
 
 // Gets the current wizard page (the first page with an error)
@@ -23,41 +23,26 @@ foreach ($fieldsLayout as $page => $rows) {
 
                     // Builds the label and field class name
                     $labelClass = $fieldClass = 'twelve';
-                    if (!in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
-                        $labelClass = \Nos\Form\Helper_Front_Form::getWidthClassName($labelWidthPerPage[$page] * 3);
-                        if ($labelWidthPerPage[$page] < 4) {
-                            $fieldClass = $labelClass = \Nos\Form\Helper_Front_Form::getWidthClassName(12 - ($labelWidthPerPage[$page] * 3));
-                        }
-                    }
 
                     // Builds the template
                     $template = \Arr::get($field, 'template');
                     if (isset($field['template'])) {
                         $template = $field['template'];
                     } else {
-                        if (in_array($enhancer_args['label_position'], array('left', 'right'))) {
-                            $template = '
-                                <div class="twelve columns">
-                                    <span class="form-field-label inline">{label}</span>
-                                    <span class="form-field-input inline" >{field} {instructions}</span>
-                                    <span class="form-field-error inline" >{field_error}</span>
-                                </div>
-                            ';
-                        } else {
-                            $template = '';
-                            if (!in_array($enhancer_args['label_position'], array('top', 'placeholder')) || !empty($field['label'])) {
-                                // Displays the label only if not empty
-                                $template .= '<div class="{label_class} columns form-field-label">{label}</div>';
-                            }
-                            $template .= '<div class="{field_class} columns form-field-input">{field} {instructions}</div>';
-                            if (!empty($fieldError)) {
-                                $template .= '<div class="twelve columns form-field-error">{field_error}</div>';
-                            }
+                        $template = '';
+                        if (!empty($field['label'])) {
+                            // Displays the label only if not empty
+                            $template .= '<div class="{label_class} columns form-field-label">{label}</div>';
+                        }
+                        $template .= '<div class="{field_class} columns form-field-input">{field} {instructions}</div>';
+                        if (!empty($fieldError)) {
+                            $template .= '<div class="twelve columns form-field-error">{field_error}</div>';
                         }
                     }
                     ?>
                     <div class="columns <?= \Nos\Form\Helper_Front_Form::getWidthClassName($field['width'] * 3) ?>">
-                        <div class="nos_form_field label-position-<?= $enhancer_args['label_position'] ?>" id="<?= $field['uniqid'] ?>">
+                        <div class="nos_form_field label-position-top"
+                             id="<?= $field['uniqid'] ?>">
                             <?= \Nos\Form\Helper_Front_Form::renderField($form, $field, $template, array(
                                 'labelClass'    => $labelClass,
                                 'fieldClass'    => $fieldClass,

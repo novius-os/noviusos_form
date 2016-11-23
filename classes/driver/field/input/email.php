@@ -2,7 +2,7 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input_Email extends Driver_Field_Input implements Interface_Driver_Field_Placeholder, Interface_Driver_Field_Email
+class Driver_Field_Input_Email extends Driver_Field_Input implements Interface_Driver_Field_Email
 {
     /**
      * Checks the validation state

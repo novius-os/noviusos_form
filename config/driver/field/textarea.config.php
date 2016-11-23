@@ -14,6 +14,7 @@ return array(
             'main' => array(
                 'fields' => array(
                     'field_label',
+                    'field_placeholder',
                 ),
             ),
             'optional' => array(
@@ -24,6 +25,14 @@ return array(
                     'field_origin_var',
                     'field_details',
                     'field_height',
+                ),
+            ),
+        ),
+        'fields' => array(
+            'field_placeholder' => array(
+                'label' => __('Placeholder :'),
+                'form'  => array(
+                    'type' => 'text',
                 ),
             ),
         ),

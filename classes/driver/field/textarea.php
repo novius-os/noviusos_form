@@ -13,17 +13,18 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
      * Gets the HTML content
      *
      * @param mixed|null $inputValue
+     *
      * @return mixed
      */
     public function getHtml($inputValue = null, $formData = array())
     {
-        $name = $this->getVirtualName();
-        $value = $this->sanitizeValue($inputValue);
+        $name       = $this->getVirtualName();
+        $value      = $this->sanitizeValue($inputValue);
         $attributes = $this->getHtmlAttributes();
 
         return array(
             'callback' => array('Form', 'textarea'),
-            'args' => array($name, $value, $attributes),
+            'args'     => array($name, $value, $attributes),
         );
     }
 
@@ -36,6 +37,7 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
     {
         return html_tag('textarea', array(
             'rows' => $this->field->field_height !== '' ? $this->field->field_height : null,
+            'placeholder'  => ($this instanceof Interface_Driver_Field_Placeholder ) ? $this->getPlaceholderValue() : '',
         ), $this->getFieldDefaultValue());
     }
 
@@ -43,6 +45,7 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
      * Renders the answer as HTML
      *
      * @param Model_Answer_Field $answerField
+     *
      * @return mixed|string
      */
     public function renderAnswerHtml(Model_Answer_Field $answerField)
@@ -64,16 +67,17 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
             $html_attrs['rows'] = $this->field->field_height;
         }
 
+        // Sets the placeholder
+        if (!empty($this->field->field_placeholder)) {
+            $attributes['placeholder'] = $this->field->field_placeholder;
+        }
+
         return $attributes;
     }
 
-    /**
-     * Gets the placeholder value
-     *
-     * @return string
-     */
     public function getPlaceholderValue()
     {
-        return $this->field->field_label;
+        return !empty($this->field->field_placeholder) ? $this->field->field_placeholder : '';
     }
+
 }

@@ -1,10 +1,10 @@
 <?php
 /**
  * @var \Nos\Form\Model_Form $form
- * @var array $fieldsLayout
- * @var array $labelWidthPerPage
- * @var array $errors
- * @var array $enhancer_args
+ * @var array                $fieldsLayout
+ * @var array                $labelWidthPerPage
+ * @var array                $errors
+ * @var array                $enhancer_args
  */
 
 // Gets the current wizard page (the first page with an error)
@@ -24,12 +24,6 @@ foreach ($fieldsLayout as $page => $rows) {
                     // Builds the label and field class name
                     $labelClass = '';
                     $fieldClass = 'form-group col-xs-12 col-sm-12';
-                    if (!in_array($enhancer_args['label_position'], array('top', 'placeholder'))) {
-                        $labelClass = 'large-'.($labelWidthPerPage[$page] * 3);
-                        if ($labelWidthPerPage[$page] < 4) {
-                            $fieldClass = $labelClass = 'form-group col-xs-12 col-sm-'.(12 - ($labelWidthPerPage[$page] * 3));
-                        }
-                    }
 
                     // Builds the template
                     $template = \Arr::get($field, 'template');
@@ -37,7 +31,7 @@ foreach ($fieldsLayout as $page => $rows) {
                         $template = $field['template'];
                     } else {
                         $template = '';
-                        if (!in_array($enhancer_args['label_position'], array('top', 'placeholder')) || !empty($field['label'])) {
+                        if (!empty($field['label'])) {
                             // Displays the label only if not empty
                             $template .= '{label}';
                         }

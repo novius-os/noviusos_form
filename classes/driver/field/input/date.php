@@ -2,7 +2,7 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input_Date extends Driver_Field_Input implements Interface_Driver_Field_Placeholder
+class Driver_Field_Input_Date extends Driver_Field_Input
 {
     /**
      * Checks the validation state

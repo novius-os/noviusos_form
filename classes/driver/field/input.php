@@ -2,7 +2,7 @@
 
 namespace Nos\Form;
 
-class Driver_Field_Input extends Driver_Field_Abstract
+class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driver_Field_Placeholder
 {
     use Trait_Driver_Field_Html_Attributes {
         // Renames the getHtmlAttributes method for overriding
@@ -13,17 +13,18 @@ class Driver_Field_Input extends Driver_Field_Abstract
      * Gets the HTML content
      *
      * @param mixed|null $inputValue
+     *
      * @return mixed
      */
     public function getHtml($inputValue = null, $formData = array())
     {
-        $name = $this->getInputVirtualName();
-        $value = $this->sanitizeValue($inputValue);
+        $name       = $this->getInputVirtualName();
+        $value      = $this->sanitizeValue($inputValue);
         $attributes = $this->getHtmlAttributes();
 
         return array(
             'callback' => array('Form', 'input'),
-            'args' => array($name, $value, $attributes),
+            'args'     => array($name, $value, $attributes),
         );
     }
 
@@ -35,20 +36,11 @@ class Driver_Field_Input extends Driver_Field_Abstract
     public function getPreviewHtml()
     {
         return html_tag('input', array(
-            'type' => $this->getInputType(),
+            'type'  => $this->getInputType(),
             'value' => $this->getFieldDefaultValue(),
-            'size' => !empty($this->field->field_width) ? $this->field->field_width : null,
+            'size'  => !empty($this->field->field_width) ? $this->field->field_width : null,
+            'placeholder'  => ($this instanceof Interface_Driver_Field_Placeholder ) ? $this->getPlaceholderValue() : '',
         ));
-    }
-
-    /**
-     * Gets the placeholder value
-     *
-     * @return string
-     */
-    public function getPlaceholderValue()
-    {
-        return $this->field->field_label;
     }
 
     /**
@@ -73,6 +65,11 @@ class Driver_Field_Input extends Driver_Field_Abstract
             $attributes['maxlength'] = $this->field->field_limited_to;
         }
 
+        // Sets the placeholder
+        if (!empty($this->field->field_placeholder)) {
+            $attributes['placeholder'] = $this->field->field_placeholder;
+        }
+
         return $attributes;
     }
 
@@ -95,4 +92,11 @@ class Driver_Field_Input extends Driver_Field_Abstract
     {
         return $this->getVirtualName();
     }
+
+
+    public function getPlaceholderValue()
+    {
+        return !empty($this->field->field_placeholder) ? $this->field->field_placeholder : '';
+    }
+
 }

@@ -95,11 +95,6 @@ abstract class Driver_Field_Abstract
      */
     public function getLabel()
     {
-        // No label if set as placeholder and driver is compatible
-        if ($this instanceof Interface_Driver_Field_Placeholder && $this->getOption('label_position') === 'placeholder') {
-            return '';
-        }
-
         $label_attrs = array(
             'for' => $this->getHtmlId(),
         );
