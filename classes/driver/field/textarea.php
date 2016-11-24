@@ -8,6 +8,7 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
         // Renames the getHtmlAttributes method for overriding
         getHtmlAttributes as getDefaultHtmlAttributes;
     }
+    use Trait_Driver_Field_Placeholder;
 
     /**
      * Gets the HTML content
@@ -73,11 +74,6 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
         }
 
         return $attributes;
-    }
-
-    public function getPlaceholderValue()
-    {
-        return !empty($this->field->field_placeholder) ? $this->field->field_placeholder : '';
     }
 
 }

@@ -8,6 +8,7 @@ class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driv
         // Renames the getHtmlAttributes method for overriding
         getHtmlAttributes as getDefaultHtmlAttributes;
     }
+    use Trait_Driver_Field_Placeholder;
 
     /**
      * Gets the HTML content
@@ -36,10 +37,10 @@ class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driv
     public function getPreviewHtml()
     {
         return html_tag('input', array(
-            'type'  => $this->getInputType(),
-            'value' => $this->getFieldDefaultValue(),
-            'size'  => !empty($this->field->field_width) ? $this->field->field_width : null,
-            'placeholder'  => ($this instanceof Interface_Driver_Field_Placeholder ) ? $this->getPlaceholderValue() : '',
+            'type'        => $this->getInputType(),
+            'value'       => $this->getFieldDefaultValue(),
+            'size'        => !empty($this->field->field_width) ? $this->field->field_width : null,
+            'placeholder' => ($this instanceof Interface_Driver_Field_Placeholder) ? $this->getPlaceholderValue() : '',
         ));
     }
 
@@ -91,12 +92,6 @@ class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driv
     protected function getInputVirtualName()
     {
         return $this->getVirtualName();
-    }
-
-
-    public function getPlaceholderValue()
-    {
-        return !empty($this->field->field_placeholder) ? $this->field->field_placeholder : '';
     }
 
 }
