@@ -552,4 +552,17 @@ M.',
     #: classes/controller/admin/answer/appdesk.ctrl.php:36
     'Export (spreadsheet)' => 'Exporter (tableur)',
 
+
+    'Fields' => 'Champs',
+    'Conditions' => 'Conditions',
+    'Conditional' => 'Conditionnel',
+    'Form name to Check:' => 'Nom du champ à checker',
+    'Show when the value is:' => 'Montrer quand la valeur est :',
+    'Captcha' => 'Captcha',
+    'Default Email Address:' => 'Adresse e-mail par défault :',
+    'Placeholder :' => 'Placeholder :',
+    'File upload' => 'Téléchargement de fichier',
+    'Email Recipient List' => 'Liste des destinataires',
+    'A notification of the form answer will be sent to the selected email.' => 'Une notification de la réponse au formulaire sera envoyée à l\'adresse mail sélectionnée.',
+    'Label (displayed only in backoffice) :' => 'Label (affiché uniquement sur le back office)',
 );
