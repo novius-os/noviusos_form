@@ -64,6 +64,15 @@
             } else {
                 $field.data('required', $field.attr('required'));
             }
+        } else {
+            // Multiple elements
+            $field.parent().find('input, select, textarea').each(function () {
+                if (typeof $(this).attr('required') === 'undefined') {
+                    $(this).data('required', '');
+                } else {
+                    $(this).data('required', $(this).attr('required'));
+                }
+            });
         }
 
         // Updates the target field state when the observable field changes
@@ -84,14 +93,23 @@
         if (this.checkFieldMatchValue($observedField, fieldSettings.observedFieldValue)) {
             // Displays the target field
             $field.closest('.nos_form_field').removeClass('nos_form_disabled').addClass('nos_form_enabled');
-            if ($field.data('required') != '') {
+            if ($field.is('input, select, textarea') && $field.data('required') != '') {
                 $field.attr('required', 'required');
+            } else {
+                // Multiple elements
+                $field.parent().find('input, select, textarea').each(function () {
+                    if ($(this).data('required') != '') {
+                        $(this).attr('required', 'required');
+                    }
+                });
             }
         } else {
             // Hides the target field
             $field.closest('.nos_form_field').addClass('nos_form_disabled').removeClass('nos_form_enabled');
-            if ($field.data('required') != '') {
+            if ($field.is('input, select, textarea') && $field.data('required') != '') {
                 $field.removeAttr('required');
+            } else {
+                $field.parent().find('input, select, textarea').removeAttr('required');
             }
         }
     };
