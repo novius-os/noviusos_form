@@ -40,10 +40,9 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the choices list
         $choices = $this->getChoicesList();
 
-        // Builds the export array
-        $export    = array();
-        foreach ($choices as $value => $label) {
-            $export[] = $value === $selectedValue ? 'x' : '';
+        $export    = '';
+        if( array_key_exists($selectedValue, $choices) ){
+            $export = e($choices[$selectedValue]);
         }
 
         return $export;
