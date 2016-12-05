@@ -274,7 +274,7 @@ abstract class Driver_Field_Abstract
         if (!$this->isMandatory()) {
             return true;
         }
-        return is_string($inputValue) && !empty($inputValue);
+        return is_string($inputValue) && $inputValue !== '';
     }
 
     /**
@@ -355,11 +355,11 @@ abstract class Driver_Field_Abstract
      */
     public function renderExportValue(Model_Answer_Field $answerField)
     {
-        $value = $answerField->value;
+        $value = $this->sanitizeValue($answerField->value);
         if (is_array($value)) {
             $value = implode(', ', $value);
         }
-        return $answerField->value;
+        return $value;
     }
 
     /**
@@ -559,4 +559,12 @@ abstract class Driver_Field_Abstract
     {
         return (string) $value;
     }
+
+    public function getAnswerExportHeader()
+    {
+        return array(
+            'label' => $this->field->field_label
+        );
+    }
+
 }

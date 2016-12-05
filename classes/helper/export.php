@@ -108,9 +108,12 @@ class Helper_Export
             // Renders the answer fields as exportable values
             $answer_row = array();
             foreach ($this->fields as $field) {
-                $answerField = $answerFields[$field->field_id];
+                // Gets the answer
+                $answerField = \Arr::get($answerFields, $field->field_id);
                 if (!empty($answerField)) {
                     $answer_row[] = $field->getDriver()->renderExportValue($answerField);
+                }else{
+                    $answer_row[] = '';
                 }
             }
 
@@ -119,6 +122,9 @@ class Helper_Export
 
             $answer_list[] = $answer_row;
         }
+
+
+
         return $answer_list;
     }
 

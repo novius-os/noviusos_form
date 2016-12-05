@@ -196,7 +196,6 @@ class Service_Form
         // Fields validation
         foreach ($data as $name => $value) {
             $field = \Arr::get($fields, $name);
-
             // Gets the validation errors
             $errors = \Arr::merge($errors, Service_Field::forge($field)->getValidationErrors($value, $data));
         }
