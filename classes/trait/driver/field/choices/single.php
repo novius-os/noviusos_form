@@ -69,6 +69,31 @@ trait Trait_Driver_Field_Choices_Single
     }
 
     /**
+     * Gets the data for the mail sent at submission
+     *
+     * @param $inputValue
+     * @return array
+     */
+    public function getEmailData($inputValue, Model_Answer $answer)
+    {
+        // Gets the answer value
+        $selectedValue = $this->sanitizeValue($inputValue);
+
+        // Gets the choices list
+        $choices = $this->getChoicesList();
+
+        $html    = '';
+        if( array_key_exists($selectedValue, $choices) ){
+            $html = e($choices[$selectedValue]);
+        }
+
+        return array(
+            'label' => $this->getField()->field_label,
+            'value' => $html,
+        );
+    }
+
+    /**
      * Gets the choice label for the specified value
      *
      * @param $value

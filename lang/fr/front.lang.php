@@ -42,4 +42,6 @@ return array(
     #: classes/controller/front.ctrl.php:587
     '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
 
+    'Message sent by:' => 'Message envoyé par :',
+
 );

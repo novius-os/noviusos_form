@@ -118,6 +118,24 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     }
 
     /**
+     * Gets the data for the mail sent at submission
+     *
+     * @param $inputValue
+     * @return array
+     */
+    public function getEmailData($inputValue, Model_Answer $answer)
+    {
+        $value = __('No file attached.');
+        if( !empty($this->getAttachments($answer)) ){
+            $value = __('File attached.');
+        }
+        return array(
+            'label' => $this->getField()->field_label,
+            'value' => $value,
+        );
+    }
+
+    /**
      * Renders the answer as a string for export
      *
      * @param Model_Answer_Field $answerField

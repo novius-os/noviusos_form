@@ -565,4 +565,5 @@ M.',
     'Email Recipient List' => 'Liste des destinataires',
     'A notification of the form answer will be sent to the selected email.' => 'Une notification de la réponse au formulaire sera envoyée à l\'adresse mail sélectionnée.',
     'Label (displayed only in backoffice) :' => 'Label (affiché uniquement sur le back office)',
+    '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
 );

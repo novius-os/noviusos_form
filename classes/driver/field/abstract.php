@@ -398,7 +398,7 @@ abstract class Driver_Field_Abstract
      * @param $inputValue
      * @return array
      */
-    public function getEmailData($inputValue)
+    public function getEmailData($inputValue, Model_Answer $answer)
     {
         $value = $this->sanitizeValue($inputValue);
 

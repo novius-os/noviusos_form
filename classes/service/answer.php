@@ -112,7 +112,7 @@ class Service_Answer
         $config = \Config::load('noviusos_form::config', true);
         $recipients = array_filter(explode("\n", $form->form_submit_email), function ($var) {
             $var = trim($var);
-            return !empty($var);
+            return !empty($var) && filter_var($var, FILTER_VALIDATE_EMAIL);
         });
 
         // Sends an email if there is at least one recipient in list
@@ -143,7 +143,7 @@ class Service_Answer
             }
 
             // Builds the field email data
-            $email_data[] = $fieldDriver->getEmailData();
+            $email_data[] = $fieldDriver->getEmailData($value, $this->answer);
         }
 
         // Adds attachments to the mail

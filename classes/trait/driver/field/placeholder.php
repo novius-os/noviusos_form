@@ -7,7 +7,7 @@ trait Trait_Driver_Field_Placeholder
 
     public function getPlaceholderValue()
     {
-        return !empty($this->field->field_placeholder) ? $this->field->field_placeholder : '';
+        return !empty($this->getField()->field_placeholder) ? $this->getField()->field_placeholder : '';
     }
 
 }
