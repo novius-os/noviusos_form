@@ -15,6 +15,7 @@ trait Trait_Driver_Field_Choices_Multiple
      * Renders the value as html for a string error message
      *
      * @param $value
+     *
      * @return string
      */
     public function renderErrorValueHtml($value)
@@ -28,6 +29,7 @@ trait Trait_Driver_Field_Choices_Multiple
      * Renders the answer as a string for export
      *
      * @param Model_Answer_Field $answerField
+     *
      * @return string
      */
     public function renderExportValue(Model_Answer_Field $answerField)
@@ -39,18 +41,21 @@ trait Trait_Driver_Field_Choices_Multiple
         // Gets the choices list
         $choices = $this->getChoicesList();
 
-        $value    = array();
+        $values = array();
         foreach ($choices as $value => $label) {
-            $value[] = in_array($value, $selectedValues) ? 'x' : '';
+            if (in_array($value, $selectedValues)) {
+                $values[] = e($label);
+            }
         }
 
-        return $value;
+        return implode(' / ', $values);
     }
 
     /**
      * Renders the answer as HTML
      *
      * @param Model_Answer_Field $answerField
+     *
      * @return mixed|string
      */
     public function renderAnswerHtml(Model_Answer_Field $answerField)
@@ -63,7 +68,7 @@ trait Trait_Driver_Field_Choices_Multiple
 
         // Linearizes the values
         $values = implode("\n", $values);
-        $html = \Str::textToHtml($values);
+        $html   = \Str::textToHtml($values);
 
         return $html;
     }
@@ -72,13 +77,14 @@ trait Trait_Driver_Field_Choices_Multiple
      * Sanitizes the value
      *
      * @param $value
+     *
      * @return array
      */
     public function sanitizeValue($value)
     {
         $value = $this->convertValueToArray($value);
 
-        $value = array_filter($value, function($v) {
+        $value = array_filter($value, function ($v) {
             return $v !== '';
         });
 
@@ -89,6 +95,7 @@ trait Trait_Driver_Field_Choices_Multiple
      * Converts the value (possibly containing comma separated values) to an array
      *
      * @param $value
+     *
      * @return array|mixed
      */
     protected function convertValueToArray($value)
@@ -106,6 +113,7 @@ trait Trait_Driver_Field_Choices_Multiple
      * Gets the choice (label) for the specified value
      *
      * @param array $values
+     *
      * @return mixed
      */
     protected function getValuesChoiceLabel($values)
@@ -114,7 +122,7 @@ trait Trait_Driver_Field_Choices_Multiple
         $choices = $this->getChoicesList();
 
         // Converts values to choice
-        $values = array_map(function($value) use ($choices) {
+        $values = array_map(function ($value) use ($choices) {
             return \Arr::get($choices, $this->convertChoiceValueToHash($value));
         }, $values);
 
