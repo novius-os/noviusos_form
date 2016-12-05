@@ -8,16 +8,17 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Gets the HTML content
      *
      * @param mixed|null $inputValue
+     *
      * @return mixed
      */
     public function getHtml($inputValue = null, $formData = array())
     {
-        $name = $this->getVirtualName();
+        $name       = $this->getVirtualName();
         $attributes = $this->getHtmlAttributes();
 
         return array(
             'callback' => array('Form', 'input'),
-            'args' => array($name, null, $attributes),
+            'args'     => array($name, null, $attributes),
         );
     }
 
@@ -25,6 +26,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Gets the input value
      *
      * @param string $defaultValue
+     *
      * @return mixed
      */
     public function getInputValue($defaultValue = '')
@@ -38,6 +40,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Checks the mandatory state
      *
      * @param array|null $formData
+     *
      * @return bool Returns true if successfully checked
      */
     public function checkRequirement($inputValue, $formData = null)
@@ -46,7 +49,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
             return true;
         }
 
-        $file = $this->sanitizeValue($inputValue);
+        $file     = $this->sanitizeValue($inputValue);
         $filePath = \Arr::get($file, 'tmp_name');
 
         return !empty($filePath);
@@ -55,14 +58,15 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     /**
      * Checks the mandatory state
      *
-     * @param $inputValue
+     * @param      $inputValue
      * @param null $formData
+     *
      * @return bool
      * @throws Exception_Driver_Field_Validation
      */
     public function checkValidation($inputValue, $formData = null)
     {
-        $file = $this->sanitizeValue($inputValue);
+        $file     = $this->sanitizeValue($inputValue);
         $filePath = \Arr::get($file, 'tmp_name');
         if (!empty($file) && !empty($filePath)) {
             // Checks if file exists
@@ -79,6 +83,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Renders the value as html for a string error message
      *
      * @param $value
+     *
      * @return string
      */
     public function renderErrorValueHtml($value)
@@ -90,6 +95,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Renders the answer attachments
      *
      * @param Model_Answer_Field $answerField
+     *
      * @return array|string
      */
     public function renderAnswerHtml(Model_Answer_Field $answerField)
@@ -105,7 +111,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
             if ($url !== false) {
                 $html = $attachment->htmlAnchor(array(
                     'data-attachment' => $url,
-                    'target' => '_blank'
+                    'target'          => '_blank'
                 ));
             }
         }
@@ -121,12 +127,13 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Gets the data for the mail sent at submission
      *
      * @param $inputValue
+     *
      * @return array
      */
     public function getEmailData($inputValue, Model_Answer $answer)
     {
         $value = __('No file attached.');
-        if( !empty($this->getAttachments($answer)) ){
+        if (!empty($this->getAttachments($answer))) {
             $value = __('File attached.');
         }
         return array(
@@ -139,6 +146,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Renders the answer as a string for export
      *
      * @param Model_Answer_Field $answerField
+     *
      * @return string|array
      */
     public function renderExportValue(Model_Answer_Field $answerField)
@@ -154,8 +162,9 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Saves the attachments on the specified $answer
      *
      * @param Model_Answer $answer
-     * @param mixed|null $inputValue
-     * @param mixed|null $formData
+     * @param mixed|null   $inputValue
+     * @param mixed|null   $formData
+     *
      * @throws Exception_Driver_Field_Attachment
      */
     public function saveAttachments(Model_Answer $answer, $inputValue = null, $formData = null)
@@ -184,6 +193,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Gets the attachment from the specified $answer
      *
      * @param Model_Answer $answer
+     *
      * @return array
      */
     public function getAttachments(Model_Answer $answer)
@@ -202,6 +212,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      * Sanitizes the value
      *
      * @param $value
+     *
      * @return array
      */
     public function sanitizeValue($value)

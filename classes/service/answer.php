@@ -74,7 +74,7 @@ class Service_Answer
 
             // Handles fields attachments on answer
             if ($fieldDriver instanceof Interface_Driver_Field_Attachment) {
-                $fieldDriver->saveAttachments($this->answer);
+                $fieldDriver->saveAttachments($this->answer, \Arr::get($data, $name), $data);
             }
         }
 
