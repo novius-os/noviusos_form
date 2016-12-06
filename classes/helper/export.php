@@ -35,15 +35,18 @@ class Helper_Export
      * Elements of the array have the key 'label' with the label of the header and
      * optionnaly the key 'choices' with the list of selectable choices.
      *
-     * @param $item
+     * @param $form
      */
-    protected function getHeaders($item)
+    protected function getHeaders($form)
     {
         $this->fields = array();
         foreach ($this->item->getService()->getLayoutFieldsName() as $field_name) {
 
             // Gets the field
-            $field = $item->fields[$field_name];
+            $field = \Arr::get($form->fields, $field_name);
+            if (empty($field)) {
+                continue;
+            }
 
             // Checks if exportable
             if (\Arr::get($field->getDriver()->getConfig(), 'exportable', true) === false) {
