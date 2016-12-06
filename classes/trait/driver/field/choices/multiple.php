@@ -33,18 +33,10 @@ trait Trait_Driver_Field_Choices_Multiple
     public function renderExportValue(Model_Answer_Field $answerField)
     {
         // Gets the answer values
-        $selectedValues = $this->sanitizeValue($answerField->value);
-        $selectedValues = array_map(array($this, 'convertChoiceValueToHash'), $selectedValues);
+        $values = $this->sanitizeValue($answerField->value);
 
-        // Gets the choices list
-        $choices = $this->getChoicesList();
-
-        $values    = array();
-        foreach ($choices as $value => $label) {
-            if( in_array($value, $selectedValues) ) {
-                $values[] =  e($label);
-            }
-        }
+        // Converts to choices
+        $values = $this->getValuesChoiceLabel($values);
 
         return implode(' / ', $values);
     }
@@ -140,7 +132,25 @@ trait Trait_Driver_Field_Choices_Multiple
 
         // Converts values to choice
         $values = array_map(function($value) use ($choices) {
-            return \Arr::get($choices, $this->convertChoiceValueToHash($value));
+            $hashValue = $this->convertChoiceValueToHash($value);
+            $clearValue = $this->getChoiceValueByHash($value);
+
+            // If the hash equals the choice value then it's an indexed list
+            if ($hashValue === $clearValue) {
+                // If the choice value is not a number then consider it as the choice label
+                // (for compatibility with older versions of noviusos_form)
+                if (!ctype_digit((string) $value)) {
+                    // Searches choice value by label
+                    $value = array_search($value, $choices);
+                    if ($value === false) {
+                        return $value;
+                    } else {
+                        return \Arr::get($choices, $value);
+                    }
+                }
+            }
+
+            return \Arr::get($choices, $hashValue);
         }, $values);
 
         return $values;
