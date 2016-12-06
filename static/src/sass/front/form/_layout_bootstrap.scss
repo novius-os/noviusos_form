@@ -2,7 +2,6 @@
 
     @import 'layout/wizard';
 
-
     /* The form layout */
     .form-errors {
         color: darkred;
@@ -10,14 +9,17 @@
         text-align: left;
     }
 
-    .form-fields-group.current {
-        display: block;
-    }
-
     label[for] {
         cursor: pointer;
     }
 
+    .form-fields-group {
+        display: none;
+
+        &.current {
+            display: block;
+        }
+    }
 
     input[type="text"],
     input[type="password"],
@@ -33,7 +35,6 @@
     textarea {
         width: 100%;
     }
-
 
     .form-field-label,
     .form-field-input,

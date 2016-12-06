@@ -38,7 +38,9 @@ class Helper_Front_Form
             }
         }
 
-        return 0;
+        // Default returns the first key
+        reset($fieldsLayout);
+        return key($fieldsLayout);
     }
 
     /**

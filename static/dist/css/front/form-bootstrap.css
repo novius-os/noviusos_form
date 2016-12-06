@@ -10,10 +10,12 @@
     color: darkred;
     margin: 10px 0;
     text-align: left; }
-  .noviusos_form .form-fields-group.current {
-    display: block; }
   .noviusos_form label[for] {
     cursor: pointer; }
+  .noviusos_form .form-fields-group {
+    display: none; }
+    .noviusos_form .form-fields-group.current {
+      display: block; }
   .noviusos_form input[type="text"],
   .noviusos_form input[type="password"],
   .noviusos_form input[type="date"],

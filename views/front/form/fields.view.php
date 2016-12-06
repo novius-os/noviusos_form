@@ -13,7 +13,7 @@ $current_page = \Nos\Form\Helper_Front_Form::getFirstErrorPage($fieldsLayout, $e
 // Displays the fields
 foreach ($fieldsLayout as $page => $rows) {
     ?>
-    <div class="form-page<?= $current_page === $page ? ' current' : '' ?>">
+    <div class="form-page form-fields-group<?= $current_page === $page ? ' current' : '' ?>">
         <?php foreach ($rows as $cols) { ?>
             <div class="row">
                 <?php

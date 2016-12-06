@@ -19,7 +19,8 @@ if ($pageBreakCount > 0) {
                 </div>
             ',
             '{{pagination}}' => '
-                <div class="columns large-4"> <progress class="wizard-control-progress" id="progress" value="1" max="'.($pageBreakCount + 1).'"></progress> '.
+                <div class="columns large-4">
+                    <progress class="wizard-control-progress" id="progress" value="1" max="'.($pageBreakCount + 1).'"></progress> '.
                     strtr(__('{{current}} out of {{total}}'), array(
                         '{{current}}' => '<span class="wizard-control-current-page wizard-control-current-page">1</span>',
                         '{{total}}' => '<span class="wizard-total-pages">'.($pageBreakCount + 1).'</span>',
