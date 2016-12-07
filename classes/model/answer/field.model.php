@@ -72,4 +72,18 @@ class Model_Answer_Field extends \Nos\Orm\Model
             'cascade_delete' => false,
         ),
     );
+
+    /**
+     * Gets the attachments of the specified field
+     *
+     * @return \Nos\Attachment
+     */
+    public function getAttachment()
+    {
+        return \Nos\Attachment::forge($this->anfi_answer_id.'_'.$this->anfi_field_id, array(
+            'dir' => 'apps'.DS.'noviusos_form'.DS.$this->answer->answer_form_id,
+            'alias' => 'form/'.$this->answer->answer_form_id,
+            'check' => array(__CLASS__, 'check_attachment'),
+        ));
+    }
 }

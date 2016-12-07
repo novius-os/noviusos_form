@@ -102,10 +102,8 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     {
         $html = '';
 
-        $answer = $answerField->answer;
-
         // Renders the attachment
-        $attachment = $answer->getAttachment($this->field);
+        $attachment = $answerField->getAttachment();
         if (!empty($attachment)) {
             $url = $attachment->url(false);
             if ($url !== false) {
@@ -151,11 +149,12 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
      */
     public function renderExportValue(Model_Answer_Field $answerField)
     {
-        $attachment = $answerField->getAttachment($this->field);
+        // Renders the attachment
+        $attachment = $answerField->getAttachment();
         if (empty($attachment)) {
             return null;
         }
-        return $attachment->filename();
+        return $attachment->url(true);
     }
 
     /**
@@ -182,7 +181,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
                 $fileName = \Arr::get($file, 'name', 'default');
 
                 // Saves as attachment
-                $attachment = $answer->getAttachment($this->field);
+                $attachment = $answer->getFieldAttachment($this->field);
                 $attachment->set($filePath, $fileName);
                 $attachment->save();
             }
@@ -200,7 +199,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     {
         $attachments = array();
 
-        $attachment = $answer->getAttachment($this->field);
+        $attachment = $answer->getFieldAttachment($this->field);
         if (!empty($attachment) && $attachment->path()) {
             $attachments[] = $attachment;
         }

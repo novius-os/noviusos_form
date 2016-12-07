@@ -104,7 +104,7 @@ class Model_Answer extends \Nos\Orm\Model
      * @param $field
      * @return \Nos\Attachment
      */
-    public function getAttachment($field)
+    public function getFieldAttachment($field)
     {
         return \Nos\Attachment::forge($this->answer_id.'_'.$field->field_id, array(
             'dir' => 'apps'.DS.'noviusos_form'.DS.$this->form->form_id,
