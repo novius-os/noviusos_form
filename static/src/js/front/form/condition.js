@@ -39,6 +39,11 @@
         // Gets the target field
         var $field = this.$form.find('[name="' + fieldName + '"]');
         if (!$field.length) {
+            // Multiple fields
+            $field = this.$form.find('[name^="' + fieldName + '["]');
+        }
+        if (!$field.length) {
+            // Custom driver should use this
             $field = this.$form.find('[data-id-field="' + fieldName + '"]');
         }
         if (!$field.length) {
