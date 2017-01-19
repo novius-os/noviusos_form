@@ -1,6 +1,6 @@
 /*!
 * Parsley.js
-* Version 2.6.0 - built Wed, Nov 2nd 2016, 10:27 am
+* Version 2.6.2 - built Wed, Jan 4th 2017, 8:58 am
 * http://parsleyjs.org
 * Guillaume Potier - <guillaume@wisembly.com>
 * Marc-Andre Lafortune - <petroselinum@marc-andre.ca>
@@ -1686,13 +1686,13 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       if ('string' === typeof this.$element.attr('pattern')) this.addConstraint('pattern', this.$element.attr('pattern'), undefined, true);
 
       // range
-      if ('undefined' !== typeof this.$element.attr('min') && 'undefined' !== typeof this.$element.attr('max')) this.addConstraint('range', [this.$element.attr('min'), this.$element.attr('max')], undefined, true);
+      if (this.$element.attr('type') !== 'date' && 'undefined' !== typeof this.$element.attr('min') && 'undefined' !== typeof this.$element.attr('max')) this.addConstraint('range', [this.$element.attr('min'), this.$element.attr('max')], undefined, true);
 
       // HTML5 min
-      else if ('undefined' !== typeof this.$element.attr('min')) this.addConstraint('min', this.$element.attr('min'), undefined, true);
+      else if (this.$element.attr('type') !== 'date' && 'undefined' !== typeof this.$element.attr('min')) this.addConstraint('min', this.$element.attr('min'), undefined, true);
 
         // HTML5 max
-        else if ('undefined' !== typeof this.$element.attr('max')) this.addConstraint('max', this.$element.attr('max'), undefined, true);
+        else if (this.$element.attr('type') !== 'date' && 'undefined' !== typeof this.$element.attr('max')) this.addConstraint('max', this.$element.attr('max'), undefined, true);
 
       // length
       if ('undefined' !== typeof this.$element.attr('minlength') && 'undefined' !== typeof this.$element.attr('maxlength')) this.addConstraint('length', [this.$element.attr('minlength'), this.$element.attr('maxlength')], undefined, true);
@@ -1883,7 +1883,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   ParsleyFactory.prototype = {
     init: function init(options) {
       this.__class__ = 'Parsley';
-      this.__version__ = '2.6.0';
+      this.__version__ = '2.6.2';
       this.__id__ = ParsleyUtils__default.generateID();
 
       // Pre-compute options
@@ -2005,7 +2005,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     actualizeOptions: null,
     _resetOptions: null,
     Factory: ParsleyFactory,
-    version: '2.6.0'
+    version: '2.6.2'
   });
 
   // Supplement ParsleyField and Form with ParsleyAbstract

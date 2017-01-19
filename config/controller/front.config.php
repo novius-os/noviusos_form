@@ -10,6 +10,10 @@ return array(
             'view' => 'noviusos_form::front/form',
             // The view params
             'view_params' => array(
+                // The JS params injected before other scripts in "noviusos_form_params" JS global variable
+                'js_params_injected_inline' => array(
+                    'uri_base' => \Fuel\Core\Uri::base(),
+                ),
                 // The form script (for wizard, condition, etc...)
                 'script_url' => 'static/apps/noviusos_form/dist/js/front/form.min.js',
                 // The form stylesheet
@@ -25,6 +29,9 @@ return array(
         'foundation' => array(
             'view' => 'noviusos_form::front/form',
             'view_params' => array(
+                'js_params_injected_inline' => array(
+                    'uri_base' => \Fuel\Core\Uri::base(),
+                ),
                 'script_url' => 'static/apps/noviusos_form/dist/js/front/form.min.js',
                 'stylesheet_url' => 'static/apps/noviusos_form/dist/css/front/form-foundation.min.css',
                 'view_fields' => 'noviusos_form::front/form/fields-foundation',
@@ -36,6 +43,9 @@ return array(
         'bootstrap' => array(
             'view' => 'noviusos_form::front/form',
             'view_params' => array(
+                'js_params_injected_inline' => array(
+                    'uri_base' => \Fuel\Core\Uri::base(),
+                ),
                 'script_url' => 'static/apps/noviusos_form/dist/js/front/form.min.js',
                 'stylesheet_url' => 'static/apps/noviusos_form/dist/css/front/form-bootstrap.min.css',
                 'view_controls' => 'noviusos_form::front/form/controls-bootstrap',

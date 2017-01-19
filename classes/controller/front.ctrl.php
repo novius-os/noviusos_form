@@ -117,6 +117,14 @@ class Controller_Front extends \Nos\Controller_Front_Application
 
         $conditions = array();
 
+        // Gets the front form layout
+        $formLayout = $this->getFormLayoutConfig();
+
+        $js_params_inline = \Arr::get($formLayout, 'view_params.js_params_injected_inline', array());
+        \Nos\Nos::main_controller()->addJavascriptInline(
+            'var noviusos_form_params = '.json_encode($js_params_inline).';'
+        );
+
         // Initializes conditional fields
         $fields = array();
         foreach ($fieldsLayout as $rows) {
@@ -153,9 +161,6 @@ class Controller_Front extends \Nos\Controller_Front_Application
                 }
             }
         }
-
-        // Gets the front form layout
-        $formLayout = $this->getFormLayoutConfig();
 
         // Triggers an event to allow fields and layout manipulation
         $args = array(

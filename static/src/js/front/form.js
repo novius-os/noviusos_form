@@ -1,15 +1,23 @@
 (function (window, document, undefined) {
 
+    var uri_base = '';
+    if (typeof noviusos_form_params !== 'undefined') {
+        uri_base = noviusos_form_params.uri_base;
+        if (uri_base.slice(-1) === '/') {
+            uri_base = uri_base.slice(0, -1);
+        }
+    }
+
     // Loads the requirements if not already loaded before executing the form script
     loadRequirements([
         {
-            url  : 'static/apps/noviusos_form/dist/vendor/jquery.min.js',
+            url: uri_base + '/static/apps/noviusos_form/dist/vendor/jquery.min.js',
             check: function () {
                 return typeof window.jQuery !== 'undefined';
             }
         },
         {
-            url  : 'static/apps/noviusos_form/dist/vendor/parsley.min.js',
+            url: uri_base + '/static/apps/noviusos_form/dist/vendor/parsley.min.js',
             check: function () {
                 return typeof $.fn.parsley !== 'undefined';
             }
