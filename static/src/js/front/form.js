@@ -1,7 +1,7 @@
 (function (window, document, undefined) {
 
     var uri_base = '';
-    if (typeof noviusos_form_params !== 'undefined') {
+    if (typeof noviusos_form_params === 'object') {
         uri_base = noviusos_form_params.uri_base;
         if (uri_base.slice(-1) === '/') {
             uri_base = uri_base.slice(0, -1);
