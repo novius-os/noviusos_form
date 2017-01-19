@@ -44,6 +44,6 @@ return array(
     ),
     // The JS params injected before other scripts in "noviusos_form_params" JS global variable
     'js_params_injected_inline' => array(
-        'uri_base' => \Fuel\Core\Uri::base(),
+        'uri_base' => \Uri::base(),
     ),
 );
