@@ -1,7 +1,6 @@
 <?php
 
 return array(
-
     // The available layouts (you can configure which one to use in config/config.php)
     'layouts' => array(
         // Default layout (works with no framework)
@@ -42,5 +41,9 @@ return array(
                 'view_fields' => 'noviusos_form::front/form/fields-bootstrap',
             ),
         ),
+    ),
+    // The JS params injected before other scripts in "noviusos_form_params" JS global variable
+    'js_params_injected_inline' => array(
+        'uri_base' => \Uri::base(),
     ),
 );
