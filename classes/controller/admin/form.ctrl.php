@@ -506,11 +506,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
              * @var $form Model_Form
              */
             $form = $this->crud_item($id);
-            $context = $form->form_context;
             if (empty($form->id)) {
                 throw new \Exception(__('The form was not found.'));
             }
+            $context = $form->form_context;
             static::duplicateForm($form);
+            // Send response
             \Response::json(array(
                 'dispatchEvent' => array(
                     'name' => 'Nos\Form\Model_Form',
