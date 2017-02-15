@@ -566,4 +566,9 @@ M.',
     'A notification of the form answer will be sent to the selected email.' => 'Une notification de la réponse au formulaire sera envoyée à l\'adresse mail sélectionnée.',
     'Label (displayed only in backoffice) :' => 'Label (affiché uniquement sur le back office)',
     '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
+
+    'Slow down, slow down. You have duplicated this form 5 times already. Edit them first before creating more duplicates.' => 'Mollo&nbsp;! Vous avez dupliqué ce formulaire cinq fois déjà. Modifiez les copies existantes avant d’en créer de nouvelles.',
+    'Here you are! The form has just been duplicated.' => 'C’est parti&nbsp;! Le formulaire a été dupliqué.',
+    'The form was not found.' => 'Le formulaire n\'a pas été trouvé.',
+    ' (copy {{count}})' => ' (copie {{count}})',
 );
