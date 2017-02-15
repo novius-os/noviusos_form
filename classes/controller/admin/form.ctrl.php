@@ -493,14 +493,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
     public function action_duplicate($id = null)
     {
-        return $this->_duplicate($id);
-    }
-
-    /**
-     * @param $id : ID of Model_Form to duplicate
-     */
-    protected function _duplicate($id)
-    {
         try {
             /**
              * @var $form Model_Form
