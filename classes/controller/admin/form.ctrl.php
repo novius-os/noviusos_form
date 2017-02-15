@@ -497,7 +497,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     }
 
     /**
-     * @param $id : ID of Model_Form to duplicated
+     * @param $id : ID of Model_Form to duplicate
      */
     protected function _duplicate($id)
     {
@@ -557,8 +557,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     }
 
     /**
-     * @param Model_Form $form : The original form, fields will be duplicated FROM
-     * @param Model_Form $duplicatedForm : The duplicated form, fields will be duplicated TO
+     * @param Model_Form $form : The original form, fields will duplicated FROM
+     * @param Model_Form $duplicatedForm : The duplicated form, fields will duplicated TO
      */
     protected static function duplicateFormFields(Model_Form $form, Model_Form $duplicatedForm)
     {
@@ -607,8 +607,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     }
 
     /**
-     * @param Model_Field $field : The original field, attributes will be duplicated FROM
-     * @param Model_Field $duplicatedField : The duplicated field, attributes will be duplicated TO
+     * @param Model_Field $field : The original field, attributes will duplicated FROM
+     * @param Model_Field $duplicatedField : The duplicated field, attributes will duplicated TO
      */
     protected static function duplicateFieldsAttributes(Model_Field $field, Model_Field $duplicatedField)
     {
