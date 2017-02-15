@@ -490,4 +490,136 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         return $fieldData;
     }
+
+    public function action_duplicate($id = null)
+    {
+        return $this->_duplicate($id);
+    }
+
+    /**
+     * @param $id : ID of Model_Form to duplicated
+     */
+    protected function _duplicate($id)
+    {
+        try {
+            /**
+             * @var $form Model_Form
+             */
+            $form = $this->crud_item($id);
+            $context = $form->form_context;
+            if (empty($form->id)) {
+                throw new \Exception(__('The form was not found.'));
+            }
+            static::duplicateForm($form);
+            \Response::json(array(
+                'dispatchEvent' => array(
+                    'name' => 'Nos\Form\Model_Form',
+                    'action' => 'insert',
+                    'context' => $context,
+                ),
+                'notify' => __('Here you are! The form has just been duplicated.'),
+            ));
+        } catch (\Exception $e) {
+            $this->send_error($e);
+        }
+    }
+
+    /**
+     * @param Model_Form $form : the form to duplicate
+     * @throws \Exception
+     */
+    protected static function duplicateForm(Model_Form $form)
+    {
+        $clone = clone $form;
+        $try = 1;
+        do {
+            try {
+                $title_append = strtr(__(' (copy {{count}})'), array(
+                    '{{count}}' => $try,
+                ));
+                $clone->form_virtual_name = null;
+                $clone->form_name = $form->title_item().$title_append;
+                if ($clone->save()) {
+                    static::duplicateFormFields($form, $clone);
+                }
+                break;
+            } catch (\Nos\BehaviourDuplicateException $e) {
+                $try++;
+                if ($try > 5) {
+                    throw new \Exception(__(
+                        'Slow down, slow down. You have duplicated this form 5 times already. '.
+                        'Edit them first before creating more duplicates.'
+                    ));
+                }
+            }
+        } while ($try <= 5);
+    }
+
+    /**
+     * @param Model_Form $form : The original form, fields will be duplicated FROM
+     * @param Model_Form $duplicatedForm : The duplicated form, fields will be duplicated TO
+     */
+    protected static function duplicateFormFields(Model_Form $form, Model_Form $duplicatedForm)
+    {
+        $formFields = $form->fields;
+        $arrFieldsIds = array();
+        foreach ($formFields as $field) {
+            /**
+             * @var $field Model_Field
+             */
+            $clone = clone $field;
+            $clone->field_form_id = $duplicatedForm->id;
+            if ($clone->save()) {
+                $arrFieldsIds[$field->id] = $clone->id;
+                static::duplicateFieldsAttributes($field, $clone);
+            }
+        }
+        // Refresh the new form layout with new fields IDs
+        static::updateDuplicatedFormLayout($arrFieldsIds, $duplicatedForm);
+    }
+
+    /**
+     * @param $arrFieldsIds : array of new fields IDs with old field id keys
+     * @param Model_Form $duplicatedForm : the duplicated form to apply its new form_layout
+     */
+    protected static function updateDuplicatedFormLayout($arrFieldsIds, Model_Form $duplicatedForm)
+    {
+        $formLayout = explode("\n", $duplicatedForm->form_layout);
+        $newFormLayout = array();
+        foreach ($formLayout as $rowLayout) {
+            $arrColumns = explode(',', $rowLayout);
+            $arrNewColumns = array();
+            foreach ($arrColumns as $column) {
+                $columnDetail = explode('=', $column);
+                $fieldId = (int)array_shift($columnDetail);
+                if (array_key_exists($fieldId, $arrFieldsIds)) {
+                    array_unshift($columnDetail, \Arr::get($arrFieldsIds, $fieldId));
+                    $arrNewColumns[] = implode('=', $columnDetail);
+                } else {
+                    $arrNewColumns[] = $column;
+                }
+            }
+            $newFormLayout[] = implode(',', $arrNewColumns);
+        }
+        $duplicatedForm->form_layout = implode("\n", $newFormLayout);
+        $duplicatedForm->save();
+    }
+
+    /**
+     * @param Model_Field $field : The original field, attributes will be duplicated FROM
+     * @param Model_Field $duplicatedField : The duplicated field, attributes will be duplicated TO
+     */
+    protected static function duplicateFieldsAttributes(Model_Field $field, Model_Field $duplicatedField)
+    {
+        $fieldsAttributes = $field->attributes;
+        foreach ($fieldsAttributes as $attribute) {
+            /**
+             * @var $attribute Model_Field_Attribute
+             */
+            $clone = clone $attribute;
+            $clone->fiat_field_id = $duplicatedField->id;
+            $clone->save();
+        }
+    }
+
 }
