@@ -501,7 +501,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
              */
             $form = $this->crud_item($id);
             $contexts = Permission::contexts();
-            $duplicateContext = \Input::post('duplicate_context');
+            $duplicateContext = (string)\Input::post('duplicate_context');
             // Check context permission with selected context target
             if (!empty($duplicateContext) && !array_key_exists($duplicateContext, $contexts)) {
                 throw new \Exception(__('Invalid context selected.'));
@@ -540,6 +540,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
     }
 
+    /**
+     * Return popup content to ask the target context of duplication
+     *
+     * @param null $id : the ID of Model_Form to duplicate
+     * @return \Fuel\Core\View
+     */
     public function action_popup_duplicate($id = null)
     {
         /**
@@ -550,7 +556,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return \View::forge('noviusos_form::admin/popup_duplicate', array(
             'item' => $form,
             'action' => 'admin/noviusos_form/form/duplicate/'.$id,
-            'crud' => $this->config,
             'contexts_list' => $contexts_list,
         ), false);
     }
