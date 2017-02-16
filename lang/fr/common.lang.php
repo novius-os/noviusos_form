@@ -571,4 +571,8 @@ M.',
     'Here you are! The form has just been duplicated.' => 'C’est parti&nbsp;! Le formulaire a été dupliqué.',
     'The form was not found.' => 'Le formulaire n\'a pas été trouvé.',
     ' (copy {{count}})' => ' (copie {{count}})',
+    'Duplication target :' => 'Cible de la duplication :',
+    'Duplicate' => 'Dupliquer',
+    'Invalid context selected.' => 'Contexte sélectionné invalide.',
+    'Duplicating the form "{{title}}"' => 'Duplication du formulaire "{{title}}"',
 );
