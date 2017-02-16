@@ -10,8 +10,6 @@
 
 namespace Nos\Form;
 
-use Fuel\Core\Input;
-use Nos\Nos;
 use Nos\User\Permission;
 
 class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
@@ -503,11 +501,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
              */
             $form = $this->crud_item($id);
             $contexts = Permission::contexts();
-            $duplicateContext = Input::post('duplicate_context');
+            $duplicateContext = \Input::post('duplicate_context');
             // Check context permission with selected context target
             if (!empty($duplicateContext) && !array_key_exists($duplicateContext, $contexts)) {
                 throw new \Exception(__('Invalid context selected.'));
             }
+            // No asking popup if only 1 context / duplicate if valid target context was chosen
             if (count($contexts) === 1 || !empty($duplicateContext)) {
                 $context = !empty($duplicateContext) ? $duplicateContext : $form->form_context;
                 $form->duplicate($context);
@@ -520,7 +519,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                     ),
                     'notify' => __('Here you are! The form has just been duplicated.'),
                 ));
-
             } else {
                 \Response::json(array(
                     'action' => array(
