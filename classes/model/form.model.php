@@ -185,4 +185,105 @@ class Model_Form extends \Nos\Orm\Model
 
         \Nos\Attachment::deleteAlias('form/'.$this->_form_id_for_delete);
     }
+
+    /**
+     * @param $targetContext : the context target wanted for the duplicated form
+     * @throws \Exception
+     */
+    public function duplicate($targetContext)
+    {
+        $clone = clone $this;
+        $try = 1;
+        do {
+            try {
+                $title_append = strtr(__(' (copy {{count}})'), array(
+                    '{{count}}' => $try,
+                ));
+                $clone->form_virtual_name = null;
+                $clone->form_name = $this->title_item().$title_append;
+                $clone->form_context = $targetContext;
+                if ($clone->save()) {
+                    static::duplicateFormFields($this, $clone);
+                }
+                break;
+            } catch (\Nos\BehaviourDuplicateException $e) {
+                $try++;
+                if ($try > 5) {
+                    throw new \Exception(__(
+                        'Slow down, slow down. You have duplicated this form 5 times already. '.
+                        'Edit them first before creating more duplicates.'
+                    ));
+                }
+            }
+        } while ($try <= 5);
+    }
+
+    /**
+     * @param Model_Form $form : The original form, fields will duplicated FROM
+     * @param Model_Form $duplicatedForm : The duplicated form, fields will duplicated TO
+     */
+    protected static function duplicateFormFields(Model_Form $form, Model_Form $duplicatedForm)
+    {
+        $formFields = $form->fields;
+        $arrFieldsIds = array();
+        foreach ($formFields as $field) {
+            /**
+             * @var $field Model_Field
+             */
+            $clone = clone $field;
+            $clone->field_form_id = $duplicatedForm->id;
+            if ($clone->save()) {
+                $arrFieldsIds[$field->id] = $clone->id;
+                static::duplicateFieldsAttributes($field, $clone);
+            }
+        }
+        // Refresh the new form layout with new fields IDs
+        static::updateDuplicatedFormLayout($arrFieldsIds, $duplicatedForm);
+    }
+
+    /**
+     * @param $arrFieldsIds : array of new fields IDs with old field id keys
+     * @param Model_Form $duplicatedForm : the duplicated form to apply its new form_layout
+     */
+    protected static function updateDuplicatedFormLayout($arrFieldsIds, Model_Form $duplicatedForm)
+    {
+        $formLayout = explode("\n", $duplicatedForm->form_layout);
+        $newFormLayout = array();
+        foreach ($formLayout as $rowLayout) {
+            $arrColumns = explode(',', $rowLayout);
+            $arrNewColumns = array();
+            foreach ($arrColumns as $column) {
+                $columnDetail = explode('=', $column);
+                $fieldId = (int)array_shift($columnDetail);
+                if (array_key_exists($fieldId, $arrFieldsIds)) {
+                    array_unshift($columnDetail, \Arr::get($arrFieldsIds, $fieldId));
+                    $arrNewColumns[] = implode('=', $columnDetail);
+                } else {
+                    $arrNewColumns[] = $column;
+                }
+            }
+            $newFormLayout[] = implode(',', $arrNewColumns);
+        }
+        $duplicatedForm->form_layout = implode("\n", $newFormLayout);
+        $duplicatedForm->save();
+    }
+
+    /**
+     * @param Model_Field $field : The original field, attributes will duplicated FROM
+     * @param Model_Field $duplicatedField : The duplicated field, attributes will duplicated TO
+     */
+    protected static function duplicateFieldsAttributes(Model_Field $field, Model_Field $duplicatedField)
+    {
+        $fieldsAttributes = $field->attributes;
+        foreach ($fieldsAttributes as $attribute) {
+            /**
+             * @var $attribute Model_Field_Attribute
+             */
+            $clone = clone $attribute;
+            $clone->fiat_field_id = $duplicatedField->id;
+            $clone->save();
+        }
+    }
+
+
 }
