@@ -10,6 +10,8 @@
 
 namespace Nos\Form;
 
+use Nos\User\Permission;
+
 class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 {
     protected $to_delete = array();
@@ -490,4 +492,72 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         return $fieldData;
     }
+
+    public function action_duplicate($id = null)
+    {
+        try {
+            /**
+             * @var $form Model_Form
+             */
+            $form = $this->crud_item($id);
+            $contexts = Permission::contexts();
+            $duplicateContext = (string)\Input::post('duplicate_context');
+            // Check context permission with selected context target
+            if (!empty($duplicateContext) && !array_key_exists($duplicateContext, $contexts)) {
+                throw new \Exception(__('Invalid context selected.'));
+            }
+            // No asking popup if only 1 context / duplicate if valid target context was chosen
+            if (count($contexts) === 1 || !empty($duplicateContext)) {
+                $context = !empty($duplicateContext) ? $duplicateContext : $form->form_context;
+                $form->duplicate($context);
+                // Send response
+                \Response::json(array(
+                    'dispatchEvent' => array(
+                        'name' => 'Nos\Form\Model_Form',
+                        'action' => 'insert',
+                        'context' => $context,
+                    ),
+                    'notify' => __('Here you are! The form has just been duplicated.'),
+                ));
+            } else {
+                \Response::json(array(
+                    'action' => array(
+                        'action' => 'nosDialog',
+                        'dialog' => array(
+                            'ajax' => true,
+                            'contentUrl' => 'admin/noviusos_form/form/popup_duplicate/'.$id,
+                            'title' => strtr(__('Duplicating the form "{{title}}"'), array(
+                                '{{title}}' => \Str::truncate($form->title_item(), 40),
+                            )),
+                            'width' => 500,
+                            'height' => 200,
+                        ),
+                    ),
+                ));
+            }
+        } catch (\Exception $e) {
+            $this->send_error($e);
+        }
+    }
+
+    /**
+     * Return popup content to ask the target context of duplication
+     *
+     * @param null $id : the ID of Model_Form to duplicate
+     * @return \Fuel\Core\View
+     */
+    public function action_popup_duplicate($id = null)
+    {
+        /**
+         * @var $form Model_Form
+         */
+        $form = $this->crud_item($id);
+        $contexts_list = array_keys(Permission::contexts());
+        return \View::forge('noviusos_form::admin/popup_duplicate', array(
+            'item' => $form,
+            'action' => 'admin/noviusos_form/form/duplicate/'.$id,
+            'contexts_list' => $contexts_list,
+        ), false);
+    }
+
 }

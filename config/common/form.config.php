@@ -100,6 +100,20 @@ return array(
                 }
             ),
         ),
+        'duplicate' => array(
+            'action' => array(
+                'action' => 'nosAjax',
+                'params' => array(
+                    'url' => '{{controller_base_url}}duplicate/{{_id}}',
+                ),
+            ),
+            'label' => __('Duplicate'),
+            'primary' => false,
+            'icon' => 'circle-plus',
+            'targets' => array(
+                'grid' => true,
+            ),
+        ),
         'delete' => array(
             'disabled' => array(
                 'check_permission' => function ($item) {
