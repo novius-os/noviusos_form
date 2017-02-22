@@ -17,11 +17,6 @@ The ‘Forms’ application for Novius OS allows you to create and publish forms
 
 ### Front-office integration
 
-Forms are displayed in front office via layouts.
-
-For the forms to be displayed in front-office there are some things to manage :
-* 
-
 By default the forms are displayed in front-office using a custom grid layout with custom css.
 
 Alternately you can use one of theses layouts :
