@@ -155,7 +155,11 @@ array(
 
 See [How to create a new field layout](#how-to-create-a-new-field-layout) for more details on this configuration.
 
-## Support
+### For contributors
+
+See [How to build the CSS and Javascript assets](DEV.md#how-to-build-the-css-and-javascript-assets).
+
+#### Support
 
 * You’ll find help in [the forum](http://forums.novius-os.org/en).
 
