@@ -14,18 +14,21 @@ The ‘Forms’ application for Novius OS allows you to create and publish forms
 
 ## Documentation
 
+### Form layout
 
-### Front-office integration
+Forms are rendered in front-office using a layout. The default layout uses specific embedded styles to display the grid and the fields.
 
-By default the forms are displayed in front-office using a custom grid layout with custom css.
+Here is the list of the default available layouts :
 
-Alternately you can use one of theses layouts :
- * Twitter Bootstrap
- * Zurb Foundation
-
-Take a look at the layouts configuration in `config/controller/front.config.php`.
+| Name                  | `front_layout` key value  |
+|:--------------------- |:------------------------- |
+| Default               | `default`                 |
+| Twitter Bootstrap     | `foundation`              |
+| Zurb Foundation       | `bootstrap`               |
 
 You can change which layout to use via the `front_layout` key in `config/config.php` :
+
+Take a look at the layouts configuration in `config/controller/front.config.php` if you want to customize the views, CSS or Javascript.
 
 ### Field types
 
@@ -39,14 +42,14 @@ Here is the list of the default available field types/drivers :
 | Date                                      | `Driver_Field_Input_Date`             | `<input type="date">`         |
 | Email                                     | `Driver_Field_Input_Email`            | `<input type="email">`        |
 | File upload                               | `Driver_Field_Input_File`             | `<input type="file">`         |
-| Number                                    | `Driver_Field_Input_Number`           | `<input type="number">`      |
+| Number                                    | `Driver_Field_Input_Number`           | `<input type="number">`       |
 | Multiple line text                        | `Driver_Field_Textarea`               | `<textarea>`                  |
 | Unique choice (drop-down list)            | `Driver_Field_Select`                 | `<select>`                    |
 | Unique choice (inline list)               | `Driver_Field_Radio`                  | `<input type="radio">`        |
-| Multiple choices (inline list)            | `Driver_Field_Checkbox`               | `<input type="checkbox">`    |
-| Single line text                          | `Driver_Field_Hidden`                 | `<input type="hidden">`      |
+| Multiple choices (inline list)            | `Driver_Field_Checkbox`               | `<input type="checkbox">`     |
+| Single line text                          | `Driver_Field_Hidden`                 | `<input type="hidden">`       |
 | Separator                                 | `Driver_Field_Separator`              | `<hr>`                        |
-| Variable                                  | `Driver_Field_Variable`               | `<input type="hidden">`      |
+| Variable                                  | `Driver_Field_Variable`               | `<input type="hidden">`       |
 | Text message                              | `Driver_Field_Message`                | `<label>`                     |
 | Form recipient choice (drop-down list)    | `Driver_Field_Recipient_Select`       | `<select>`                    |
 
@@ -80,7 +83,7 @@ Finally you have to **register your field** in the list of available fields driv
 
 ### Field layouts
 
-For a field to be available in a form, it have to be implemented as a field layout.
+To have the ability to add a field to a form in back-office, it have to be implemented as a field layout.
 
 Take a look at the `available_fields_layouts` key in `config/config.php` for some examples.
 
