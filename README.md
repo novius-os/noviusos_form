@@ -39,14 +39,14 @@ Here is the list of the default available field types/drivers :
 | Date                                      | `Driver_Field_Input_Date`             | `<input type="date">`         |
 | Email                                     | `Driver_Field_Input_Email`            | `<input type="email">`        |
 | File upload                               | `Driver_Field_Input_File`             | `<input type="file">`         |
-| Number                                    | `Driver_Field_Input_Number`           | `<input type="number"]>`      |
+| Number                                    | `Driver_Field_Input_Number`           | `<input type="number">`      |
 | Multiple line text                        | `Driver_Field_Textarea`               | `<textarea>`                  |
 | Unique choice (drop-down list)            | `Driver_Field_Select`                 | `<select>`                    |
-| Unique choice (radio buttons)             | `Driver_Field_Radio`                  | `<input type="radio">`        |
-| Multiple choices (checkboxes)             | `Driver_Field_Checkbox`               | `<input type="checkbox"]>`    |
-| Single line text                          | `Driver_Field_Hidden`                 | `<input type="hidden"]>`      |
+| Unique choice (inline list)               | `Driver_Field_Radio`                  | `<input type="radio">`        |
+| Multiple choices (inline list)            | `Driver_Field_Checkbox`               | `<input type="checkbox">`    |
+| Single line text                          | `Driver_Field_Hidden`                 | `<input type="hidden">`      |
 | Separator                                 | `Driver_Field_Separator`              | `<hr>`                        |
-| Variable                                  | `Driver_Field_Variable`               | `<input[type="hidden"]>`      |
+| Variable                                  | `Driver_Field_Variable`               | `<input type="hidden">`      |
 | Text message                              | `Driver_Field_Message`                | `<label>`                     |
 | Form recipient choice (drop-down list)    | `Driver_Field_Recipient_Select`       | `<select>`                    |
 
@@ -57,8 +57,8 @@ Here is the list of the default available field types/drivers :
 First you have to **create the driver**, it consists of a class that extends `Driver_Field_Abstract`.
 
 By default there are only two methods to implement :
-* `public function getHtml($inputValue = null, $formData = array()) {}` which returns the HTML representation of the field (used to display the field in front office)
-* `public function getPreviewHtml() {}` which returns the HTML representation of the field (used to display a preview of the field in backoffice)
+* `public function getHtml($inputValue = null, $formData = array()) {}` which returns the HTML of the field to be displayed in front office
+* `public function getPreviewHtml() {}` which returns the HTML preview of the field to be displayed in backoffice
 
 Take a look at `Driver_Field_Abstract` to have a full overview of what you can implement. You should also take a look at the traits in `classes/trait/driver` and interfaces in `classes/interface/driver` which provide some feature implementations (eg. placeholder, single or multiple choices, etc.).
 
