@@ -26,7 +26,7 @@ Here is the list of the default available layouts :
 | Twitter Bootstrap     | `foundation`              |
 | Zurb Foundation       | `bootstrap`               |
 
-You can change which layout to use via the `front_layout` key in `config/config.php` :
+You can **change which layout to use** via the `front_layout` key in `config/config.php` :
 
 Take a look at the layouts configuration in `config/controller/front.config.php` if you want to customize the views, CSS or Javascript.
 
@@ -83,7 +83,7 @@ Finally you have to **register your field** in the list of available fields driv
 
 ### Field layouts
 
-To have the ability to add a field to a form in back-office, it have to be implemented as a field layout.
+To have the **ability to add a field to a form** in back-office, it have to be implemented as a field layout.
 
 Take a look at the `available_fields_layouts` key in `config/config.php` for some examples.
 
@@ -111,11 +111,12 @@ array(
 ),
 ```
 
-The interesting parts are the keys in the `definition` array :
-* The `fields` key contains the fields configuration, each configuration consists of an array with an arbitrary identifier as key and containing at least the `driver` property.
-* The `layout` key contains the fields layout, each field must be added in the form `XXX=Y` where `XXX` is the field's arbitrary identifier and `Y` is the number of columns. Each form row can contain up to 4 columns.
+The interesting parts are the keys in the `definition` array.
 
-For each field you can set predefined property values in the `default_values` array (including EAV attributes).
+The `fields` key contains the fields configuration, each configuration consists of an array with an arbitrary identifier as key and containing at least the `driver` property. You can set predefined property values in the `default_values` array (including EAV attributes).
+
+The `layout` key contains the fields layout, each field must be added in the form `XXX=Y` where `XXX` is the field's arbitrary identifier and `Y` is the number of columns. Each form row can contain up to 4 columns.
+
 
 #### The default fields layout
 
