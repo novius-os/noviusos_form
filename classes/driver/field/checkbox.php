@@ -118,4 +118,19 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
         // Adds brackets for handling multiple selected values
         return $this->getVirtualName().'[]';
     }
+
+    /**
+     * Checks the requirement state or the specified form data
+     *
+     * @param $inputValue
+     * @param array|null $formData
+     * @return bool Returns true if successfully checked
+     */
+    public function checkRequirement($inputValue, $formData = null)
+    {
+        if (!$this->isMandatory()) {
+            return true;
+        }
+        return is_array($inputValue) && !empty($inputValue);
+    }
 }
