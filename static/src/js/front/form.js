@@ -36,19 +36,17 @@
 
             // Required checkboxes inputs prevent us from submitting the form if any checkbox is not checked.
             // This function toggle the attribute "required" if at least one checkbox is checked.
-            $(function () {
-                $('.form-group').each(function () {
-                    if ($(this).find('div.form_checkbox').length > 0) {
-                        var requiredCheckboxes = $(this).find(':checkbox[required]');
-                        requiredCheckboxes.change(function(){
-                            if (requiredCheckboxes.is(':checked')) {
-                                requiredCheckboxes.removeAttr('required');
-                            } else {
-                                requiredCheckboxes.attr('required', 'required');
-                            }
-                        });
-                    }
-                });
+            $('.form-group').each(function () {
+                if ($(this).find('div.form_checkbox').length > 0) {
+                    var requiredCheckboxes = $(this).find(':checkbox[required]');
+                    requiredCheckboxes.change(function(){
+                        if (requiredCheckboxes.is(':checked')) {
+                            requiredCheckboxes.removeAttr('required');
+                        } else {
+                            requiredCheckboxes.attr('required', 'required');
+                        }
+                    });
+                }
             });
 
             $('.noviusos_form form.nos-form-layout').each(function () {
