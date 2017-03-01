@@ -39,10 +39,11 @@ trait Trait_Driver_Field_Choices_Single
 
         // Gets the choices list
         $choices = $this->getChoicesList();
+        $hashValue = $this->convertChoiceValueToHash($selectedValue);
 
         $export    = '';
-        if( array_key_exists($selectedValue, $choices) ){
-            $export = e($choices[$selectedValue]);
+        if (array_key_exists($hashValue, $choices)) {
+            $export = $choices[$hashValue];
         }
 
         return $export;
