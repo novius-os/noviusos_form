@@ -96,9 +96,7 @@ trait Trait_Driver_Field_Choices_Single
         $hashValue = $this->convertChoiceValueToHash($value);
         if (array_key_exists($hashValue, $choices)) {
             $selectedValue = \Arr::get($choices, $hashValue);
-        }
-
-        if (empty($selectedValue)) {
+        } else {
             $selectedValue = \Arr::get($choices, $value, $value);
         }
 
