@@ -20,6 +20,7 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the answer value
         $value = $this->sanitizeValue($answerField->value);
 
+        // Gets the answer label
         $value = $this->getValueChoiceLabel($value);
 
         return e($value);
@@ -36,6 +37,7 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the answer value
         $selectedValue = $this->sanitizeValue($answerField->value);
 
+        // Gets the answer label
         $export = $this->getValueChoiceLabel($selectedValue);
 
         return $export;
@@ -72,6 +74,7 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the answer value
         $selectedValue = $this->sanitizeValue($inputValue);
 
+        // Gets the answer label
         $html = $this->getValueChoiceLabel($selectedValue);
 
         return array(
@@ -90,8 +93,6 @@ trait Trait_Driver_Field_Choices_Single
     {
         // Gets the choices
         $choices = $this->getChoicesList();
-
-        $selectedValue = '';
 
         $hashValue = $this->convertChoiceValueToHash($value);
         if (array_key_exists($hashValue, $choices)) {
