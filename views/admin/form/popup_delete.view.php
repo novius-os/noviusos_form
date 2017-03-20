@@ -11,7 +11,7 @@
 
 Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
 
-$answer_count = count($item->answers);
+$answer_count = $item->getAnswersCount();
 ?>
 <input type="hidden" name="id" value="<?= $item->{$crud['pk']} ?>" />
 <div id="<?= $uniqid = uniqid('id_') ?>" class="fieldset standalone">

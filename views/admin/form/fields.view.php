@@ -35,7 +35,7 @@ foreach ($available_fields_drivers as $driverClass) {
 }
 
 // Displays a warning dialog if answers already collected
-if (!$item->is_new() && count($item->answers) > 0) {
+if (!$item->is_new() && $item->getAnswersCount() > 0) {
     echo \View::forge('noviusos_form::admin/form/warning_answers_collected', $view_params, false);
 }
 
