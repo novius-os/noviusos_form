@@ -37,9 +37,7 @@ return array(
                 ),
             ),
             'value' => function ($item) {
-                return $item->is_new() ? 0 : \Nos\Form\Model_Answer::count(array(
-                        'where' => array(array('answer_form_id' => $item->form_id)),
-                    ));
+                return $item->getAnswersCount();
             },
             'sorting_callback' => function (&$query, $sortDirection) {
                 $query->_join_relation('answers', $join);
@@ -129,9 +127,7 @@ return array(
             ),
             'disabled' => array(
                 'check_empty' => function ($item) {
-                    if ($item->is_new() || !\Nos\Form\Model_Answer::count(array(
-                        'where' => array(array('answer_form_id' => $item->form_id)),
-                    ))) {
+                    if ($item->is_new() || !$item->getAnswersCount()) {
                         return __('There is no answers yet.');
                     }
                 }
@@ -153,9 +149,7 @@ return array(
             },
             'disabled' => array(
                 'check_empty' => function ($item) {
-                    if ($item->is_new() || !\Nos\Form\Model_Answer::count(array(
-                        'where' => array(array('answer_form_id' => $item->form_id)),
-                    ))) {
+                    if ($item->is_new() || !$item->getAnswersCount()) {
                         return __('There is no answers yet.');
                     }
                 },
