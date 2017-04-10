@@ -20,7 +20,7 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the answer value
         $value = $this->sanitizeValue($answerField->value);
 
-        // Converts to choice label
+        // Gets the answer label
         $value = $this->getValueChoiceLabel($value);
 
         return e($value);
@@ -37,13 +37,8 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the answer value
         $selectedValue = $this->sanitizeValue($answerField->value);
 
-        // Gets the choices list
-        $choices = $this->getChoicesList();
-
-        $export    = '';
-        if( array_key_exists($selectedValue, $choices) ){
-            $export = e($choices[$selectedValue]);
-        }
+        // Gets the answer label
+        $export = $this->getValueChoiceLabel($selectedValue);
 
         return $export;
     }
@@ -79,17 +74,12 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the answer value
         $selectedValue = $this->sanitizeValue($inputValue);
 
-        // Gets the choices list
-        $choices = $this->getChoicesList();
-
-        $html    = '';
-        if( array_key_exists($selectedValue, $choices) ){
-            $html = e($choices[$selectedValue]);
-        }
+        // Gets the answer label
+        $html = $this->getValueChoiceLabel($selectedValue);
 
         return array(
             'label' => $this->getField()->field_label,
-            'value' => $html,
+            'value' => e($html),
         );
     }
 
@@ -104,7 +94,14 @@ trait Trait_Driver_Field_Choices_Single
         // Gets the choices
         $choices = $this->getChoicesList();
 
-        return \Arr::get($choices, $value, $value);
+        $hashValue = $this->convertChoiceValueToHash($value);
+        if (array_key_exists($hashValue, $choices)) {
+            $selectedValue = \Arr::get($choices, $hashValue);
+        } else {
+            $selectedValue = \Arr::get($choices, $value, $value);
+        }
+
+        return $selectedValue;
     }
     
     /**

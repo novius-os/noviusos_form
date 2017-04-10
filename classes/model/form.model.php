@@ -285,5 +285,17 @@ class Model_Form extends \Nos\Orm\Model
         }
     }
 
-
+    /**
+     * Gets the answers count
+     *
+     * @return int
+     */
+    public function getAnswersCount()
+    {
+        return $this->is_new() ? 0 : (int) Model_Answer::count(array(
+            'where' => array(
+                array('answer_form_id' => $this->form_id),
+            ),
+        ));
+    }
 }

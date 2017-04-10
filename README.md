@@ -14,48 +14,58 @@ The ‘Forms’ application for Novius OS allows you to create and publish forms
 
 ## Documentation
 
+### Form layout
 
-### Front-office integration
+Forms are rendered in front-office using a layout. The default layout uses specific embedded styles to display the grid and the fields.
 
-By default the forms are displayed in front-office using a custom grid layout with custom css.
+Here is the list of the default available layouts :
 
-Alternately you can use one of theses layouts :
- * Twitter Bootstrap
- * Zurb Foundation
+| Name                  | `front_layout` key value  |
+|:--------------------- |:------------------------- |
+| Default               | `default`                 |
+| Twitter Bootstrap     | `foundation`              |
+| Zurb Foundation       | `bootstrap`               |
 
-Take a look at the layouts configuration in `config/controller/front.config.php`.
+You can **change which layout to use** via the `front_layout` key in `config/config.php` :
 
-You can change the layout to be used via the `front_layout` key in `config/config.php` :
+Take a look at the layouts configuration in `config/controller/front.config.php` if you want to customize the views, CSS or Javascript.
 
-### Fields types
+### Field types
 
-In a form you can have different types of fields (text, radio, select, file...). The fields are implemented via drivers.
+In a form you can have different types of fields (text, radio, select, file...). The fields are implemented via drivers..
 
-Here is the list of the default available fields/drivers :
-* `Driver_Field_Input_Text` Single line text
-* `Driver_Field_Input_Date` Date
-* `Driver_Field_Input_Email` Email
-* `Driver_Field_Input_File` File upload
-* `Driver_Field_Input_Number` Number
-* `Driver_Field_Textarea` Multiple line text
-* `Driver_Field_Select` Unique choice (drop-down list)
-* `Driver_Field_Radio` Unique choice (radio buttons)
-* `Driver_Field_Checkbox` Multiple choices (checkboxes)
-* `Driver_Field_Hidden` Hidden
-* `Driver_Field_Separator` Separator
-* `Driver_Field_Variable` Variable
-* `Driver_Field_Message` Text message
-* `Driver_Field_Recipient_Select` Form recipient choice (drop-down list)
+Here is the list of the default available field types/drivers :
+
+| Description                               | Driver                                | HTML tag                      |
+|:----------------------------------------- |:------------------------------------- |------------------------------ |
+| Single line text                          | `Driver_Field_Input_Text`             | `<input type="text">`         |
+| Date                                      | `Driver_Field_Input_Date`             | `<input type="date">`         |
+| Email                                     | `Driver_Field_Input_Email`            | `<input type="email">`        |
+| File upload                               | `Driver_Field_Input_File`             | `<input type="file">`         |
+| Number                                    | `Driver_Field_Input_Number`           | `<input type="number">`       |
+| Multiple line text                        | `Driver_Field_Textarea`               | `<textarea>`                  |
+| Unique choice (drop-down list)            | `Driver_Field_Select`                 | `<select>`                    |
+| Unique choice (inline list)               | `Driver_Field_Radio`                  | `<input type="radio">`        |
+| Multiple choices (inline list)            | `Driver_Field_Checkbox`               | `<input type="checkbox">`     |
+| Single line text                          | `Driver_Field_Hidden`                 | `<input type="hidden">`       |
+| Separator                                 | `Driver_Field_Separator`              | `<hr>`                        |
+| Variable                                  | `Driver_Field_Variable`               | `<input type="hidden">`       |
+| Text message                              | `Driver_Field_Message`                | `<label>`                     |
+| Form recipient choice (drop-down list)    | `Driver_Field_Recipient_Select`       | `<select>`                    |
 
 #### How to create a new type of field
+
+##### Driver
 
 First you have to **create the driver**, it consists of a class that extends `Driver_Field_Abstract`.
 
 By default there are only two methods to implement :
-* `public function getHtml($inputValue = null, $formData = array()) {}` which returns the HTML representation of the field (used to display the field in front office)
-* `public function getPreviewHtml() {}` which returns the HTML representation of the field (used to display a preview of the field in backoffice)
+* `public function getHtml($inputValue = null, $formData = array()) {}` which returns the HTML of the field to be displayed in front office
+* `public function getPreviewHtml() {}` which returns the HTML preview of the field to be displayed in backoffice
 
-Take a look at `Driver_Field_Abstract` to have a full overview of what you can implement.
+Take a look at `Driver_Field_Abstract` to have a full overview of what you can implement. You should also take a look at the traits in `classes/trait/driver` and interfaces in `classes/interface/driver` which provide some feature implementations (eg. placeholder, single or multiple choices, etc.).
+
+##### Configuration
 
 Then you have to **create the configuration file** for the driver, with at least the field's name :
 
@@ -67,17 +77,19 @@ array(
 
 Take a look at the existing drivers configurations to have a full overview of what you can implement. 
 
+##### Registration
+
 Finally you have to **register your field** in the list of available fields drivers, take a look at the `available_fields_drivers` key in `config/config.php`.
 
-### Fields layout
+### Field layouts
 
-For a field to be available in a form, it have to be implemented as a field layout.
+To have the **ability to add a field to a form** in back-office, it have to be implemented as a field layout.
 
-Take a look at the `fields_fields_drivers` key in `config/config.php` for some examples.
+Take a look at the `available_fields_layouts` key in `config/config.php` for some examples.
 
 #### How to create a new field layout
 
-Here is an example of a field layout to add a "Single line text" field on 4 columns (100% width) :
+Here is an example of a field layout to add a `Single line text` field on 4 columns (100% width) :
 
 ```php
 array(
@@ -89,6 +101,9 @@ array(
              'fields' => array(
                  'text' => array(
                      'driver' => \Nos\Form\Driver_Field_Input_Text::class,
+                     'default_values' => array(
+                         'field_label' => __('I\'m the label'),
+                     ),
                  ),
              ),
          ),
@@ -96,19 +111,20 @@ array(
 ),
 ```
 
-The interesting parts are the keys in the `definition` array :
-* The `fields` key contains the fields configuration, each configuration consists of an array with an arbitrary identifier as key and containing at least the `driver` property.
-* The `layout` key contains the fields layout, each field must be added in the form `XXX=Y` where `XXX` is the field's arbitrary identifier and `Y` is the number of columns. Each form row can contain up to 4 columns.
+The interesting parts are the keys in the `definition` array.
+
+The `fields` key contains the fields configuration, each configuration consists of an array with an arbitrary identifier as key and containing at least the `driver` property. You can set predefined property values in the `default_values` array (including EAV attributes).
+
+The `layout` key contains the fields layout, each field must be added in the form `XXX=Y` where `XXX` is the field's arbitrary identifier and `Y` is the number of columns. Each form row can contain up to 4 columns.
+
 
 #### The default fields layout
 
-When you create a new form, it will be populated with a default fields layout.
+When you create a new form, it will be populated with a default field layout.
 
-You can change this default layout via the `default_fields_layout` key in `config/config.php` :
-
+You can change it via the `default_fields_layout` key in `config/config.php` :
 ```php
 array(
-    // The default fields layout when creating a new form in backoffice
     'default_fields_layout' => array(
         'definition' => array(
             'layout' => "firstname=2,lastname=2\nemail=4",
@@ -139,7 +155,11 @@ array(
 
 See [How to create a new field layout](#how-to-create-a-new-field-layout) for more details on this configuration.
 
-## Support
+### For contributors
+
+See [How to build the CSS and Javascript assets](DEV.md#how-to-build-the-css-and-javascript-assets).
+
+#### Support
 
 * You’ll find help in [the forum](http://forums.novius-os.org/en).
 
