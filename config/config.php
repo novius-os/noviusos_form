@@ -129,8 +129,6 @@ return array(
 
     // The available drivers layouts (displayed in the "Standard fields" and "Special fields" columns
     // when clicking the "Add field" button in the form CRUD in backoffice)
-
-    // Here you can add you own drivers layouts or override the existing ones (see the example below)
     'available_drivers_layouts' => array(
         //// Example of how to override a default generated driver layout :
         //\Nos\Form\Driver_Field_Input_Text::class => array(
