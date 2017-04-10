@@ -2,6 +2,7 @@
 
 return array(
     'name' => __('Variable'),
+    'icon' => 'static/apps/noviusos_form/img/fields/variable.png',
 
     // If enabled this driver won't be available as field type in backoffice
     //
@@ -24,4 +25,7 @@ return array(
             ),
         ),
     ),
+
+    // Sets true to display the field in the "Special fields" column when adding a new field to a form
+    'special' => true,
 );

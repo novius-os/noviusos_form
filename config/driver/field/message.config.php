@@ -2,11 +2,17 @@
 
 return array(
     'name' => __('Message'),
+    'icon' => 'static/apps/noviusos_form/img/fields/message.png',
 
-    'admin'             => array(
+    'default_values' => array(
+        'field_label' => __('Message:'),
+        'field_message' => 'Your message',
+    ),
+
+    'admin'  => array(
         // Meta layout
         'layout' => array(
-            'main'     => array(
+            'main' => array(
                 'fields' => array(
                     'field_label',
                     'field_message',
@@ -23,5 +29,8 @@ return array(
     'display_as_answer' => false,
 
     // Sets false if not exportable
-    'exportable'        => false,
+    'exportable' => false,
+
+    // Sets true to display the field in the "Special fields" column when adding a new field to a form
+    'special' => true,
 );

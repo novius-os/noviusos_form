@@ -16,19 +16,16 @@ Nos\I18n::current_dictionary(array('noviusos_form::common', 'nos::common'));
 
 $config = \Config::load('noviusos_form::config', true);
 
-// Gets the available fields layouts
-$available_fields_layouts = \Arr::get($config, 'available_fields_layouts', array());
+// Gets the form layout
+$formLayoutFieldsName = $item->getService()->getLayoutFieldsName();
 
 // Gets the available fields drivers
 $available_fields_drivers = \Arr::get($config, 'available_fields_drivers', array());
 
-// Gets the form layout
-$formLayoutFieldsName = $item->getService()->getLayoutFieldsName();
-
-// Builds the drivers config
-$driversConfig = array();
+// Builds the drivers config for javascript
+$jsDriversConfig = array();
 foreach ($available_fields_drivers as $driverClass) {
-    $driversConfig[$driverClass] = array(
+    $jsDriversConfig[$driverClass] = array(
         'name' => $driverClass::getName(),
         'config' => $driverClass::getConfig(),
     );
@@ -51,9 +48,7 @@ if (!$item->is_new() && count($item->answers) > 0) {
                 </span>
             </div>
 
-            <?= \View::forge('noviusos_form::admin/form/fields_blank_slate', array(
-                'layouts' => $available_fields_layouts,
-            ), false) ?>
+            <?= \Nos\Nos::hmvc('noviusos_form/admin/form/render_fields_blank_slate', array()); ?>
 
             <div class="form_previews">
 
@@ -166,9 +161,6 @@ if (!$item->is_new() && count($item->answers) > 0) {
     </div>
 </div>
 
-<?php
-?>
-
 <script type="text/javascript">
 require([
     'jquery-nos',
@@ -184,7 +176,7 @@ require([
         $(function() {
             init_form(uniqid, <?= \Format::forge()->to_json(array(
                 'textDelete' => __('Are you sure?'),
-                'driversConfig' => $driversConfig,
+                'driversConfig' => $jsDriversConfig,
             )) ?>,<?= $crud['is_new'] ? 'true' : 'false'; ?>, <?= \Session::user()->user_expert ? 'true' : 'false' ?>);
             $(uniqid).find('.preview_container').loadspinner('destroy');
         });

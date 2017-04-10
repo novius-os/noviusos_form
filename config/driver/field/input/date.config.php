@@ -1,17 +1,18 @@
 <?php
 
 return array(
-    'name'           => __('Date'),
+    'name' => __('Date'),
+    'icon' => 'static/apps/noviusos_form/img/fields/date.png',
 
     // Fields default value
     'default_values' => array(
         'field_label' => __('Pick a date:'),
     ),
 
-    'admin'                 => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
-            'main'     => array(
+            'main' => array(
                 'fields' => array(
                     'field_label',
                     'field_placeholder',
@@ -31,7 +32,7 @@ return array(
         'fields' => array(
             'field_placeholder' => array(
                 'label' => __('Placeholder :'),
-                'form'  => array(
+                'form' => array(
                     'type' => 'text',
                 ),
             ),

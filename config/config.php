@@ -25,13 +25,13 @@ return array(
         \Nos\Form\Driver_Field_Checkbox::class,
         \Nos\Form\Driver_Field_Select::class,
         \Nos\Form\Driver_Field_Radio::class,
-        \Nos\Form\Driver_Field_Input_File::class,
         \Nos\Form\Driver_Field_Input_Email::class,
         \Nos\Form\Driver_Field_Input_Number::class,
         \Nos\Form\Driver_Field_Input_Date::class,
+        \Nos\Form\Driver_Field_Input_File::class,
+        \Nos\Form\Driver_Field_Separator::class,
         \Nos\Form\Driver_Field_Message::class,
         \Nos\Form\Driver_Field_Hidden::class,
-        \Nos\Form\Driver_Field_Separator::class,
         \Nos\Form\Driver_Field_Variable::class,
     ),
 
@@ -62,137 +62,8 @@ return array(
         ),
     ),
 
-    // The available fields layouts (displayed when clicking the "Add field" button in the form CRUD in backoffice)
+    // The available fields layouts (displayed in the "Fields templates" column when clicking the "Add field" button in the form CRUD in backoffice)
     'available_fields_layouts' => array(
-        'single_line_text' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/text.png',
-            'title' => __('Single line text'),
-            'definition' => array(
-                'layout' => 'text=4',
-                'fields' => array(
-                    'text' => array(
-                        'driver' => \Nos\Form\Driver_Field_Input_Text::class,
-                    ),
-                ),
-            ),
-        ),
-        'paragraph_text' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/textarea.png',
-            'title' => __('Paragraph text'),
-            'definition' => array(
-                'layout' => 'textarea=4',
-                'fields' => array(
-                    'textarea' => array(
-                        'driver' => \Nos\Form\Driver_Field_Textarea::class,
-                    ),
-                ),
-            ),
-        ),
-        'checkboxes' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/checkbox.png',
-            'title' => __('Multiple choice (checkboxes)'),
-            'definition' => array(
-                'layout' => 'checkbox=4',
-                'fields' => array(
-                    'checkbox' => array(
-                        'driver' => \Nos\Form\Driver_Field_Checkbox::class,
-                        'default_values' => array(
-                            'field_choices' => __("First option\nSecond option"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'dropdown' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/dropdown.png',
-            'title' => __('Unique choice (drop-down list)'),
-            'definition' => array(
-                'layout' => 'select=4',
-                'fields' => array(
-                    'select' => array(
-                        'driver' => \Nos\Form\Driver_Field_Select::class,
-                        'default_values' => array(
-                            'field_choices' => __("First option\nSecond option"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'unique_choice' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/radio.png',
-            'title' => __('Unique choice (radio buttons)'),
-            'definition' => array(
-                'layout' => 'radio=4',
-                'fields' => array(
-                    'radio' => array(
-                        'driver' => \Nos\Form\Driver_Field_Radio::class,
-                        'default_values' => array(
-                            'field_choices' => __("First choice\nSecond choice"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'file' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/file.png',
-            'title' => __('File'),
-            'definition' => array(
-                'layout' => 'file=4',
-                'fields' => array(
-                    'file' => array(
-                        'driver' => \Nos\Form\Driver_Field_Input_File::class,
-                        'default_values' => array(
-                            'field_label' => __('I’m the label of a file input, click to edit me:'),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'email' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/email.png',
-            'title' => __('Email address'),
-            'definition' => array(
-                'layout' => 'email=4',
-                'fields' => array(
-                    'email' => array(
-                        'driver' => \Nos\Form\Driver_Field_Input_Email::class,
-                        'default_values' => array(
-                            'field_label' => __('Your email address:'),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'number' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/number.png',
-            'title' => __('Number'),
-            'definition' => array(
-                'layout' => 'number=4',
-                'fields' => array(
-                    'number' => array(
-                        'driver' => \Nos\Form\Driver_Field_Input_Number::class,
-                        'default_values' => array(
-                            'field_label' => __('Enter a number:'),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'date' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/date.png',
-            'title' => __('Date'),
-            'definition' => array(
-                'layout' => 'date=4',
-                'fields' => array(
-                    'date' => array(
-                        'driver' => \Nos\Form\Driver_Field_Input_Date::class,
-                        'default_values' => array(
-                            'field_label' => __('Pick a date:'),
-                        ),
-                    ),
-                ),
-            ),
-        ),
         'fullname' => array(
             'icon' => 'static/apps/noviusos_form/img/fields/fullname.png',
             'title' => __('Full name'),
@@ -254,82 +125,19 @@ return array(
                 ),
             ),
         ),
-        'message' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/message.png',
-            'title' => __('Message'),
-            'definition' => array(
-                'layout' => 'message=4',
-                'fields' => array(
-                    'message' => array(
-                        'driver' => \Nos\Form\Driver_Field_Message::class,
-                        'default_values' => array(
-                            'field_label' => __('Message:'),
-                            'field_message' => 'Your message',
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'separator' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/separator.png',
-            'title' => __('Separator'),
-            'definition' => array(
-                'layout' => 'separator=4',
-                'fields' => array(
-                    'separator' => array(
-                        'driver' => \Nos\Form\Driver_Field_Separator::class,
-                        'default_values' => array(
-                            'field_label' => __('Separator'),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'recipients' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/dropdown.png',
-            'title' => __('Email Recipient List'),
-            'definition' => array(
-                'layout' => 'select=4',
-                'fields' => array(
-                    'select' => array(
-                        'driver' => \Nos\Form\Driver_Field_Recipient_Select::class,
-                        'default_values' => array(
-                            'field_technical_id' => 'recipient-list',
-                            'field_details' => __('A notification of the form answer will be sent to the selected email.'), //Separate name and email addresses with a "=" sign. (eg. Name=mail@domain.com)
-                            'field_choices' => __("First option=mail@domain.com\nSecond option=othermail@domain.com"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'hidden' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/hidden.png',
-            'title' => __('Hidden'),
-            'expert' => true,
-            'definition' => array(
-                'layout' => 'hidden=4',
-                'fields' => array(
-                    'hidden' => array(
-                        'driver' => \Nos\Form\Driver_Field_Hidden::class,
-                        'default_values' => array(
-                            'field_label' => __('I’m the label for internal use only as I won’t be shown to users:'),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'variable' => array(
-            'icon' => 'static/apps/noviusos_form/img/fields/variable.png',
-            'title' => __('Variable'),
-            'expert' => true,
-            'definition' => array(
-                'layout' => 'variable=4',
-                'fields' => array(
-                    'variable' => array(
-                        'driver' => \Nos\Form\Driver_Field_Variable::class,
-                    ),
-                ),
-            ),
-        ),
+    ),
+
+    // The available drivers layouts (displayed in the "Standard fields" and "Special fields" columns
+    // when clicking the "Add field" button in the form CRUD in backoffice)
+
+    // Here you can add you own drivers layouts or override the existing ones (see the example below)
+    'available_drivers_layouts' => array(
+        //// Example of how to override a default generated driver layout :
+        //\Nos\Form\Driver_Field_Input_Text::class => array(
+        //    'title' => __('My custom title'),
+        //    'definition' => array(
+        //        'layout' => "default=2",
+        //    ),
+        //),
     ),
 );

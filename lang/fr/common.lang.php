@@ -225,7 +225,7 @@ M.',
     'Type:' => 'Type&nbsp;:',
 
     #: config/controller/admin/form.config.php:410
-    'Label:' => 'Label&nbsp;:',
+    'Label:' => 'Libellé&nbsp;:',
 
     #: config/controller/admin/form.config.php:413
     'I’m the label, click to edit me:' => 'Je suis le libellé, cliquez pour me modifier :',
@@ -494,6 +494,9 @@ M.',
 
     #: views/admin/fields.view.php:54
     'Special fields' => 'Champs spéciaux',
+
+    #: views/admin/fields.view.php:54
+    'Fields layout' => 'Gabarits de champs',
 
     #: views/admin/fields.view.php:93
     'Add a page break' => 'Ajouter un saut de page',

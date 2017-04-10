@@ -1,7 +1,8 @@
 <?php
 
 return array(
-    'name'           => __('File upload'),
+    'name' => __('File upload'),
+    'icon' => 'static/apps/noviusos_form/img/fields/file.png',
 
     // Fields default value
     'default_values' => array(

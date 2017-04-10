@@ -39,19 +39,30 @@
         margin: 0;
         padding: 1em;
         position: absolute;
-        z-index: 10;
+        z-index: 91; // Must be greater than the z-index of the resize icon (currently 90)
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+        table {
+            width: 100%;
+        }
 
         th {
             text-align: center;
             font-weight: bold;
+            white-space: nowrap;
+            padding: .5em;
         }
 
         td {
             vertical-align: top;
-            padding: 1em;
+            padding: .5em;
+        }
+
+        .layout-type {
+            border-left: 1px solid #ccc;
+
             &:first-child {
-                border-right: 1px solid #ccc;
+                border-left: 0;
             }
         }
 

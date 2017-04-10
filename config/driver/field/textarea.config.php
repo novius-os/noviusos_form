@@ -2,6 +2,7 @@
 
 return array(
     'name' => __('Paragraph text'),
+    'icon' => 'static/apps/noviusos_form/img/fields/textarea.png',
 
     // Fields default value
     'default_values' => array(

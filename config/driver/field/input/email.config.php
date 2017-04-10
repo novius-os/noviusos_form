@@ -1,17 +1,18 @@
 <?php
 
 return array(
-    'name'           => __('Email address'),
+    'name' => __('Email address'),
+    'icon' => 'static/apps/noviusos_form/img/fields/email.png',
 
     // Fields default value
     'default_values' => array(
         'field_label' => __('Your email address:'),
     ),
 
-    'admin'                 => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
-            'main'     => array(
+            'main' => array(
                 'fields' => array(
                     'field_label',
                     'field_placeholder',
@@ -32,13 +33,13 @@ return array(
         'fields' => array(
             'field_default_value' => array(
                 'label' => __('Default Email Address:'),
-                'form'  => array(
+                'form' => array(
                     'type' => 'email',
                 ),
             ),
-            'field_placeholder'   => array(
+            'field_placeholder' => array(
                 'label' => __('Placeholder :'),
-                'form'  => array(
+                'form' => array(
                     'type' => 'text',
                 ),
             ),
