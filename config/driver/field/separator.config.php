@@ -33,6 +33,6 @@ return array(
     // Sets false if not exportable
     'exportable' => false,
 
-    // Sets true to display the field in the "Special fields" column when adding a new field to a form
+    // Set true to display the field in the "Special fields" column when adding a new field to a form
     'special' => true,
 );

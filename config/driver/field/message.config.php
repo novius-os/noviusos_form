@@ -4,6 +4,7 @@ return array(
     'name' => __('Message'),
     'icon' => 'static/apps/noviusos_form/img/fields/message.png',
 
+    // Fields default value
     'default_values' => array(
         'field_label' => __('Message:'),
         'field_message' => 'Your message',
@@ -31,6 +32,6 @@ return array(
     // Sets false if not exportable
     'exportable' => false,
 
-    // Sets true to display the field in the "Special fields" column when adding a new field to a form
+    // Set true to display the field in the "Special fields" column when adding a new field to a form
     'special' => true,
 );
