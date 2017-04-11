@@ -1,11 +1,11 @@
 <?php
 
-$max_per_col = !empty($max_per_col) ? $max_per_col : 10;
+$maxPerCol = !empty($maxPerCol) ? $maxPerCol : 5;
 
 // Calculates the columns and rows
-$layouts = array_map(function($layout) use ($max_per_col) {
+$layouts = array_map(function($layout) use ($maxPerCol) {
     $layout['count'] = count($layout['layout']);
-    $layout['nb_cols'] = $layout['count'] > $max_per_col ? 2 : 1;
+    $layout['nb_cols'] = $layout['count'] > $maxPerCol ? 2 : 1;
     $layout['nb_per_col'] = ceil($layout['count'] / $layout['nb_cols']);
     return $layout;
 }, $layouts);
