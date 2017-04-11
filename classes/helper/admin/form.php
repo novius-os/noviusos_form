@@ -14,7 +14,7 @@ class Helper_Admin_Form
         // Gets the available fields drivers
         $availableFieldsDrivers = \Arr::get($config, 'available_fields_drivers', array());
 
-        // Ajout des drivers aux layouts
+        // Creates a default layout for each available driver
         $driversLayouts = array();
         foreach ($availableFieldsDrivers as $driverClass) {
             $driverId = \Str::lower(\Inflector::friendly_title($driverClass, '_'));
@@ -47,6 +47,7 @@ class Helper_Admin_Form
             );
         }
 
+        // Merges with the drivers layouts from the main configuration
         $driversLayouts = \Arr::merge($driversLayouts, \Arr::get($config, 'available_drivers_layouts', array()));
 
         return $driversLayouts;
