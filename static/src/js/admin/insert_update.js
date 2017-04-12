@@ -57,6 +57,13 @@ define(
 
             // Handles form submit
             $container.closest('form').submit(function(e) {
+
+                // Checks native HTML5 form validation if available
+                var form = $(this).get(0);
+                if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+                    return false;
+                }
+
                 var layout = extractLayout();
 
                 // Sets the layout input value
@@ -118,6 +125,7 @@ define(
                     url: action,
                     dataType: 'json'
                 });
+
                 return false;
             });
 
