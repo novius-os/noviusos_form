@@ -172,18 +172,18 @@ class Model_Form extends \Nos\Orm\Model
         return $this->service;
     }
 
-    public function _event_before_delete()
+    /**
+     * Gets the answers count
+     *
+     * @return int
+     */
+    public function getAnswersCount()
     {
-        $this->_form_id_for_delete = $this->form_id;
-    }
-
-    public function _event_after_delete()
-    {
-        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete)) {
-            \Fuel\Core\File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete);
-        }
-
-        \Nos\Attachment::deleteAlias('form/'.$this->_form_id_for_delete);
+        return $this->is_new() ? 0 : (int) Model_Answer::count(array(
+            'where' => array(
+                array('answer_form_id' => $this->form_id),
+            ),
+        ));
     }
 
     /**
@@ -286,16 +286,22 @@ class Model_Form extends \Nos\Orm\Model
     }
 
     /**
-     * Gets the answers count
-     *
-     * @return int
+     * Before item's deletion
      */
-    public function getAnswersCount()
+    public function _event_before_delete()
     {
-        return $this->is_new() ? 0 : (int) Model_Answer::count(array(
-            'where' => array(
-                array('answer_form_id' => $this->form_id),
-            ),
-        ));
+        $this->_form_id_for_delete = $this->form_id;
+    }
+
+    /**
+     * After item's deletion
+     */
+    public function _event_after_delete()
+    {
+        if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete)) {
+            \Fuel\Core\File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete);
+        }
+
+        \Nos\Attachment::deleteAlias('form/'.$this->_form_id_for_delete);
     }
 }
