@@ -10,37 +10,36 @@
 
 namespace Nos\Form;
 
-use Fuel\Core\Crypt;
-use Fuel\Core\Form;
-use Nos\Controller_Front_Application;
-
-use View;
-
-class Controller_Front extends Controller_Front_Application
+class Controller_Front extends \Nos\Controller_Front_Application
 {
-
     protected $enhancer_args = array();
 
+    /**
+     * Displays the form and handles it submission
+     *
+     * @param array $enhancer_args
+     * @return \Fuel\Core\View|string
+     */
     public function action_main($enhancer_args = array())
     {
         \Nos\I18n::current_dictionary('noviusos_form::front');
 
         $this->enhancer_args = $enhancer_args;
 
+        // Gets the form ID
         $form_id = $enhancer_args['form_id'];
         if (empty($form_id)) {
             return '';
         }
+
+        // Finds the form
         $item = \Nos\Form\Model_Form::find($form_id);
         if (empty($item)) {
             return '';
         }
 
-        $errors = array();
-
         // Post handler with redirect
         if (\Input::method() == 'POST' && \Input::post('_form_id') == $form_id) {
-
             $errors = $this->post_answers($item);
             if (empty($errors)) {
                 $after_submit = \Arr::get($this->enhancer_args, 'after_submit', 'message');
@@ -56,632 +55,313 @@ class Controller_Front extends Controller_Front_Application
 
                 \Response::redirect(\Nos\Tools_Url::encodePath(\Nos\Nos::main_controller()->getUrl()).'?message='.$form_id);
             }
+        } else {
+            $errors = array();
         }
 
         // 'message' is used to show the user a message when the form is submitted
         $request_parameters_to_exclude_from_cache = array('message');
 
+        // Handles cache
         foreach ($item->fields as $field) {
+            // Don't store the page in cache when one field is pre-filled with a parameter
+            // This allows to still use the cache for the "empty" version of the form
             if (!empty($field->field_origin_var) && in_array($field->field_origin, array('get', 'request'))) {
                 $request_parameters_to_exclude_from_cache[] = $field->field_origin_var;
-
-                // Don't store the page in cache when one field is pre-filled with a parameter
-                // This allows to still use the cache for the "empty" version of the form
-                $value = $this->getFieldDefaultValue($field);
-                if (!empty($value) && $value != $field->field_default_value) {
+                $defaultValue = $field->getDriver($this->enhancer_args)->getDefaultValue();
+                if (!empty($defaultValue) && $defaultValue != $field->field_default_value) {
                     \Nos\Nos::main_controller()->disableCaching();
                 }
             }
         }
-
         \Nos\Nos::main_controller()->addCacheSuffixHandler(array(
             'type' => 'GET',
             'keys' => $request_parameters_to_exclude_from_cache,
         ));
 
-        // Confirmation message
+        // Displays the confirmation message
         if (\Input::get('message', 0) == $form_id) {
-            return \View::forge('noviusos_form::message', array(
-                'message' => \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'))
-            ), false);
+            return $this->render_confirmation($item);
         }
-
-        return $this->render_form($item, $errors);
+        // Displays the form
+        else {
+            return $this->render_form($item, $errors);
+        }
     }
 
-    public function render_form($item, $errors)
+    /**
+     * Renders the confirmation message
+     *
+     * @param Model_Form $form
+     * @return \Fuel\Core\View
+     */
+    public function render_confirmation(Model_Form $form)
     {
-        $layout = explode("\n", $item->form_layout);
-        array_walk($layout, function (&$v) {
-            $v = explode(',', $v);
-        });
+        return \View::forge('noviusos_form::front/form/confirmation', array(
+            'form' => $form,
+            'message' => \Arr::get($this->enhancer_args, 'confirmation_message', __('Thank you. Your answer has been sent.'))
+        ), false);
+    }
 
-        // Cleanup empty values
-        foreach ($layout as $a => $rows) {
-            $layout[$a] = array_filter($rows);
-            if (empty($layout[$a])) {
-                unset($layout[$a]);
-                continue;
-            }
-        }
+    /**
+     * Renders the form
+     *
+     * @param Model_Form $form
+     * @param $errors
+     * @return \Fuel\Core\View
+     */
+    protected function render_form(Model_Form $form, $errors)
+    {
+        // Gets the form fields layout
+        $fieldsLayout = $form->getService()->getFieldsLayout($errors, $this->enhancer_args);
 
+        $conditions = array();
+
+        // Gets the front form layout
+        $formLayout = $this->getFormLayoutConfig();
+
+        // Add global variable into script inline containing some params
+        $js_params_inline = \Arr::get($this->config, 'js_params_injected_inline', array());
+        \Nos\Nos::main_controller()->addJavascriptInline(
+            'var noviusos_form_params = '.json_encode($js_params_inline).';'
+        );
+
+        // Initializes conditional fields
         $fields = array();
+        foreach ($fieldsLayout as $rows) {
+            foreach ($rows as $cols) {
+                foreach ($cols as $field) {
 
-        if ($item->form_captcha) {
-            $layout[] = array('captcha=4');
-        }
-        $layout[] = array('_form_id=4');
+                    if (is_a($field['item'], 'Nos\Form\Model_Field')) {
 
-        $page_break_count = 0;
-        foreach ($item->fields as $field_id => $field) {
-            if ($field->field_type == 'page_break') {
-                $page_break_count++;
-            }
-        }
-
-        $new_page = $page_break_count > 0;
-
-        // Loop through rows...
-        foreach ($layout as $rows) {
-            $first_col = true;
-            $col_width = 0;
-            // ...and cols
-            foreach ($rows as $row) {
-                list($field_id, $width) = explode('=', $row);
-
-                $available_width = $width * 3;
-                $col_width += $available_width;
-
-                if ($field_id == 'captcha') {
-                    $field = (object) array(
-                        'field_name' => 'form_captcha',
-                        'field_label' => '',
-                        'field_type' => 'text',
-                        'field_mandatory' => '1',
-                        'field_technical_id' => '',
-                        'field_technical_css' => '',
-                        'field_default_value' => '',
-                        'field_virtual_name' => 'form_captcha',
-                    );
-                    $name = 'form_captcha';
-                } else if ($field_id == '_form_id') {
-                    $field = (object) array(
-                        'field_label' => '',
-                        'field_type' => 'hidden',
-                        'field_mandatory' => '1',
-                        'field_technical_id' => '',
-                        'field_technical_css' => '',
-                        'field_default_value' => $item->form_id,
-                        'field_origin' => '',
-                    );
-                    $name = '_form_id';
-                } else {
-                    $field = $item->fields[$field_id];
-                    $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
-                }
-
-                if ($field->field_type == 'page_break') {
-                    $new_page = true;
-                    continue;
-                }
-
-                $html_attrs = array(
-                    'id' => $field->field_technical_id ?: $name,
-                    'class' => $field->field_technical_css,
-                    'title' => $field->field_label,
-                );
-
-                if ($this->enhancer_args['label_position'] == 'placeholder') {
-                    $html_attrs['placeholder'] = $field->field_label;
-                }
-
-                if ($field->field_mandatory) {
-                    $html_attrs['required'] = 'required';
-                }
-
-                $label_attrs = array(
-                    'for' => $html_attrs['id'],
-                );
-
-                $value = \Input::post($name, $this->getFieldDefaultValue($field));
-
-                if (!empty($errors[$name])) {
-                    if ($name == 'form_captcha') {
-                        $value = '';
-                    }
-                    if ($this->enhancer_args['label_position'] == 'placeholder') {
-                        $html_attrs['class'] .= ' user-error form-ui-invalid';
-                        $html_attrs['title'] = htmlspecialchars($errors[$name]);
-                    }
-                    $label_attrs['class'] = ' user-error form-ui-invalid';
-                    $label_attrs['title'] = htmlspecialchars($errors[$name]);
-                }
-
-                $html = '';
-
-                if ($this->enhancer_args['label_position'] == 'placeholder') {
-                    $label = '';
-                } else {
-                    $label = array(
-                        'callback' => array('Form', 'label'),
-                        'args' => array($field->field_label, $field->field_technical_id, $label_attrs),
-                    );
-                }
-
-                if (!in_array($field->field_type, array('radio', 'checkbox', 'select')) && !empty($field->field_details)) {
-                    $instructions = array(
-                        'callback' => 'html_tag',
-                        'args' => array('p', array('class' => 'instructions'), $field->field_details),
-                    );
-                } else {
-                    $instructions = '';
-                }
-
-                if (in_array($field->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file'))) {
-
-                    if (in_array($field->field_type, array('text', 'email', 'number', 'date', 'file'))) {
-                        $html_attrs['type'] = $field->field_type;
-                        if (!empty($field->field_width)) {
-                            $html_attrs['size'] = $field->field_width;
-                        }
-                        if (!empty($field->field_limited_to)) {
-                            $html_attrs['maxlength'] = $field->field_limited_to;
-                        }
-                        $html = array(
-                            'callback' => array('Form', 'input'),
-                            'args' => array($name, $value, $html_attrs),
-                        );
-                    } else if ($field->field_type == 'textarea') {
-                        if (!empty($field->field_height)) {
-                            $html_attrs['rows'] = $field->field_height;
-                        }
-                        $html = array(
-                            'callback' => array('Form', 'textarea'),
-                            'args' => array($name, $value, $html_attrs),
-                        );
-                    } else if ($field->field_type == 'select') {
-                        $choices = explode("\n", $field->field_choices);
-                        $choiceList = array();
-                        $isCrypted = false;
-                        foreach ($choices as $choice) {
-                            if (mb_strrpos($choice, '=')) {
-                                $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
-                                foreach ($choiceInfos as $key => $choiceValue) {
-                                    $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
-                                }
-                                $choiceLabel       = $choiceInfos[0];
-                                $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $choiceLabel));
-                                $isCrypted = true;
-                            } else {
-                                $choiceLabel = $choiceValue = $choice;
-                            }
-                            $choiceList[$choiceValue] = $choiceLabel;
-                        }
-
-                        if ($isCrypted) {
-                            $value = Crypt::encode($value);
-                        }
-                        $choices = array('' => '') + $choiceList;
-                        $html = array(
-                            'callback' => array('Form', 'select'),
-                            'args' => array($name, $value, $choices, $html_attrs),
-                        );
-                    }
-
-                } else if (in_array($field->field_type, array('checkbox', 'radio'))) {
-
-                    $label = array(
-                        'callback' => 'html_tag',
-                        'args' => array('span', $label_attrs, $field->field_label),
-                    );
-
-                    if (in_array($field->field_type, array('checkbox', 'radio'))) {
-                        $html = array();
-                        $default = \Input::post($name, $field->field_type == 'checkbox' ? explode("\n", $field->field_default_value) : $field->field_default_value);
-                        $choices = explode("\n", $field->field_choices);
-                        foreach ($choices as $i => $choice) {
-                            $html_attrs_choice = $html_attrs;
-                            $html_attrs_choice['id'] .= $i;
-                            if ($field->field_type == 'checkbox') {
-                                $item_html = array(
-                                    'callback' => array('Form', 'checkbox'),
-                                    'args' => array($name.'[]', $choice, in_array($choice, $default), $html_attrs_choice),
-                                );
-                            } else if ($field->field_type == 'radio') {
-                                $item_html = array(
-                                    'callback' => array('Form', 'radio'),
-                                    'args' => array($name, $choice, $choice == $default, $html_attrs_choice),
-                                );
-                            }
-                            $item_label = array(
-                                'callback' => array('Form', 'label'),
-                                'args' => array(
-                                    $choice,
-                                    $field->field_technical_id,
-                                    array(
-                                        'for' => $html_attrs_choice['id'],
-                                    ),
-                                ),
+                        // Injects as condition
+                        if (filter_var($field['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
+                            $fieldName = $field['item']->getDriver($this->enhancer_args)->getVirtualName();
+                            $conditions[$fieldName] = array(
+                                'observedFieldName' => $field['item']->get('field_conditional_form'),
+                                'observedFieldValue' => $field['item']->get('field_conditional_value')
                             );
-                            $html[] = array(
-                                'field' => $item_html,
-                                'label' => $item_label,
-                                'template' => '{field} {label} <br />',
+                        }
+
+                        // Injects the field custom front script
+                        $js_file = \Arr::get($field['item']->getDriver()->getConfig(), 'front.js_file');
+                        if (!empty($js_file)) {
+                            // ... by file
+                            \Nos\Nos::main_controller()->addJavascript($js_file);
+                        }
+                        $js_inline = \Arr::get($field['item']->getDriver()->getConfig(), 'front.js_inline');
+                        if (!empty($js_inline)) {
+                            // ... inline
+                            \Nos\Nos::main_controller()->addJavascriptInline(
+                                str_replace('{{field_id}}', \Format::forge($field['uniqid'])->to_json(), $js_inline)
                             );
                         }
                     }
-                } else if ($field->field_type == 'message') {
-                    $label = '';
-                    $type = in_array($field->field_style, array('p', 'h1', 'h2', 'h3')) ? $field->field_style : 'p';
-                    $html_attrs = array(
-                        'id' => $field->field_technical_id,
-                        'class' => 'label_text '.$field->field_technical_css,
-                    );
-                    $html = array(
-                        'callback' => 'html_tag',
-                        'args' => array($type, $html_attrs, nl2br($field->field_message)),
-                    );
 
-                } else if ($field->field_type == 'separator') {
-                    $label = '';
-                    $html = html_tag('hr');
-                } else if (in_array($field->field_type, array('hidden', 'variable'))) {
-                    $value = $this->getFieldDefaultValue($field);
-                    if ($field->field_type == 'hidden') {
-                        $label = '';
-                        $html = array(
-                            'callback' => array('Form', 'hidden'),
-                            'args' => array($name, e($value)),
-                        );
-                    } else if ($field->field_type == 'variable') {
-                        $html = array(
-                            'callback' => 'html_tag',
-                            'args' => array('p', array(), e($value)),
-                        );
-                    }
-                } else {
-                    $label = '';
+                    $fields[] = $field;
                 }
-
-                $fields[$name] = array(
-                    'label' => $label,
-                    'field' => $html,
-                    'instructions' => $instructions,
-                    'new_row' => $first_col,
-                    'new_page' => $new_page,
-                    'width' => $width,
-                    'item' => $field,
-                );
-                $first_col = false;
-                $new_page = false;
             }
         }
 
-        foreach ($fields as $condition_item) {
-            if (is_a($condition_item['item'], 'Nos\Form\Model_Field') && filter_var($condition_item['item']->get('field_conditional'), FILTER_VALIDATE_BOOLEAN)) {
-
-
-                // get condition source form type. text, radio, etc.
-                $form_key = $condition_item['item']->get('field_conditional_form');
-                $inputtype = $fields[$form_key]['item']->field_type;
-
-                $array = array(
-                    'inputtype' => $inputtype,
-                    'inputname' => $condition_item['item']->get('field_conditional_form'),
-                    'condition' => $condition_item['item']->get('field_virtual_name'),
-                    'value' => $condition_item['item']->get('field_conditional_value')
-                );
-                $json = \Fuel\Core\Format::forge($array)->to_json();
-
-
-                \Nos\Nos::main_controller()->addJavascriptInline("init_form_condition($json);");
-
-            }
-        }
-
-        $layout = 'noviusos_form::foundation';
+        // Triggers an event to allow fields and layout manipulation
         $args = array(
-            'fields' => &$fields,
-            'layout' => &$layout,
+            'item' => $form,
+            'formLayout' => &$formLayout,
+            'layout' => &$fieldsLayout,
             'enhancer_args' => $this->enhancer_args,
-            'item' => $item,
         );
         \Event::trigger_function('noviusos_form::rendering', array(&$args));
-        if (!empty($item->form_virtual_name)) {
-            \Event::trigger_function('noviusos_form::rendering.' . $item->form_virtual_name, array(&$args));
+        if (!empty($form->form_virtual_name)) {
+            \Event::trigger_function('noviusos_form::rendering.'.$form->form_virtual_name, array(&$args));
         }
 
-        $layout = array(
-            'layout' => $layout,
-            'args' => array(
-                'item' => $item,
-                'fields' => $fields,
-                'enhancer_args' => $this->enhancer_args,
-                'page_break_count' => $page_break_count,
-                'errors' => $errors,
-                'form_attrs' => array(
-                    'method' => 'POST',
-                    'enctype' => 'multipart/form-data',
-                    'action' => '',
-                ),
+        // Gets the minimum label width for each page
+        $labelWidthPerPage = array();
+        foreach ($fieldsLayout as $page => $rows) {
+            foreach ($rows as $cols) {
+                foreach ($cols as &$field) {
+                    // Label width will be set according to the smallest columns
+                    $labelWidthPerPage[$page] = isset($labelWidthPerPage[$page]) ? min($labelWidthPerPage[$page], $field['width']) : $field['width'];
+                }
+            }
+        }
+
+        // Gets the view and params
+        $view = \Arr::get($formLayout, 'view');
+        $view_params = \Arr::get($formLayout, 'view_params', array());
+
+        return \View::forge($view, \Arr::merge($view_params, array(
+            'form' => $form,
+            'fields' => \Arr::pluck($fields, 'item', 'name'),
+            'fieldsLayout' => $fieldsLayout,
+            'labelWidthPerPage' => $labelWidthPerPage,
+            'errors' => $errors,
+            'enhancer_args' => $this->enhancer_args,
+            'form_attrs' => array(
+                'method' => 'POST',
+                'enctype' => 'multipart/form-data',
+                'action' => '',
+                'data-locale' => \Nos\Form\Helper_Front_Form::getParsleyLocale(\Nos\Nos::main_controller()->getContext()),
+                'data-conditions' => \Format::forge($conditions)->to_json(),
             ),
-        );
-
-        return \View::forge($layout['layout'], $layout['args'], false);
+        )), false);
     }
 
-    protected function getFieldDefaultValue($field)
+    /**
+     * Handles form answer post
+     *
+     * @param Model_Form $form
+     * @return array
+     * @throws \Exception
+     */
+    protected function post_answers(Model_Form $form)
     {
-        if (!in_array($field->field_type, array('text', 'email', 'number', 'textarea', 'hidden', 'variable'))) {
-            return $field->field_default_value;
-        }
+        // Gets the fields and their values in order of their layout position
+        $data = $fields = array();
+        foreach ($form->getService()->getLayoutFieldsName() as $field_name) {
+            // Gets the field
+            $field = \Arr::get($form->fields, $field_name);
+            if (!empty($field)) {
 
-        $value = $field->field_default_value;
+                // Gets the field driver
+                $fieldDriver = $field->getDriver($this->enhancer_args);
 
-        // When the parameter name is not filled, there is nothing more to retrieve
-        if (empty($field->field_origin_var)) {
-            return $value;
-        }
+                // Gets field name and value
+                $value = $fieldDriver->getInputValue();
+                $name = $fieldDriver->getVirtualName();
 
-        switch($field->field_origin) {
-            case 'get':
-                $value = \Input::get($field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'post':
-                $value = \Input::post($field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'request':
-                $value = \Input::param($field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'global':
-                $value = \Arr::get($GLOBALS, $field->field_origin_var, $field->field_default_value);
-                break;
-
-            case 'session':
-                $value = \Session::get($field->field_origin_var, $field->field_default_value);
-                break;
-
-            default:
-        }
-
-        return $value;
-    }
-
-    public function post_answers($form)
-    {
-        $errors = array();
-        $data = array();
-        $fields = array();
-        $files = array();
-
-
-        $layout = $form->form_layout;
-        $layout = explode("\n", $layout);
-        array_walk($layout, function (&$v) {
-            $v = explode(',', $v);
-        });
-
-        // Fetching the fields according to their layout position
-        foreach ($layout as $cols) {
-            foreach ($cols as $field_layout) {
-                list($field_id, ) = explode('=', $field_layout);
-                $field = $form->fields[$field_id];
-                $type = $field->field_type;
-                if (in_array($type, array('message', 'variable', 'separator', 'page_break'))) {
-                    continue;
-                }
-                $name = !empty($field->field_virtual_name) ? $field->field_virtual_name : 'field_'.$field->field_id;
-                $value = null;
-
-                if ($type === 'file' && !empty($_FILES[$name])) {
-                    if ($field->isMandatory($data) && empty($_FILES[$name]['tmp_name'])) {
-                        $errors[$name] = __('{{label}}: Please select a file for this field.');
-                    }
-                    $files[$name] = $_FILES[$name];
-                } else {
-                    switch($type) {
-                        case 'checkbox':
-                            $value = implode("\n", \Input::post($name, array()));
-                            break;
-
-                        default:
-                            $value = \Input::post($name, '');
-                            if (in_array($type, array('select')) && mb_strpos($field->field_choices, '=')) {
-                                $value = Crypt::decode($value);
-                            }
-                            break;
-                    }
-
-                    $data[$name] = $value;
-                }
+                $data[$name] = $value;
                 $fields[$name] = $field;
             }
         }
 
-        // Native validation
-        foreach ($data as $name => $value) {
-            $field = $fields[$name];
-            $type = $field->field_type;
-
-            if ($field->field_technical_id === 'recipient-list') {
-                if (preg_match("/".preg_quote($value)."$/m", $field->field_choices)) {
-                    $form->form_submit_email = $value;
-                }
-            }
-
-            // Mandatory (required)
-            if ($field->isMandatory($data) && empty($value)) {
-                $errors[$name] = __('{{label}}: Please enter a value for this field.');
-            } else if (!empty($value)) {
-                // Only if there is a value
-                if ($type == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid email.');
-                }
-                if ($type == 'number' && !filter_var($value, FILTER_VALIDATE_INT)) {
-                    $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid number.');
-                }
-                if ($type == 'date') {
-                    if ($checkdate = preg_match('`^(\d{4})-(\d{2})-(\d{2})$`', $value, $m)) {
-                        list(, $year, $month, $day) = $m;
-                        $checkdate = checkdate((int) $month, (int) $day, (int) $year);
-                    }
-                    if (!$checkdate) {
-                        $errors[$name] = __('{{label}}: ‘{{value}}’ is not a valid date.');
-                    }
-                }
-            }
-        }
-
-        // Custom validation
-        foreach ((array) \Event::trigger_function('noviusos_form::data_validation', array(&$data, $fields, $form), 'array') as $array) {
-            if ($array === null) {
-                continue;
-            }
-            foreach ($array as $name => $error) {
-                $errors[$name] = $error.(isset($errors[$name]) ? "\n".$errors[$name] : '');
-            }
-        }
-        if (!empty($form->form_virtual_name)) {
-            foreach ((array) \Event::trigger_function('noviusos_form::data_validation.' . $form->form_virtual_name, array(&$data, $fields, $form), 'array') as $array) {
-                if ($array === null) {
-                    continue;
-                }
-                foreach ($array as $name => $error) {
-                    $errors[$name] = (isset($errors[$name]) ? $errors[$name]."\n" : '').$error;
-                }
-            }
-        }
-
-        if ($form->form_captcha && \Session::get('captcha.'.$form->form_id) != \Input::post('form_captcha', 0)) {
-            $errors['form_captcha'] = __('You have not passed the spam test. Please try again.');
-        }
-
-        // Some validation errors occurred
+        // Validates the form fields
+        $errors = $form->getService()->validateFieldsData($fields, $data);
         if (!empty($errors)) {
+
+            // Replaces errors placeholders
             foreach ($errors as $name => &$error) {
-                if ($name == 'form_captcha') {
+                $field = \Arr::get($fields, $name);
+                if (empty($field) || $name == 'form_captcha') {
                     continue;
                 }
+
+                // Renders the value for the error string
+                $value = \Arr::get($data, $name);
+                $value = $field->getDriver($this->enhancer_args)->renderErrorValueHtml($value);
+
                 $error = strtr($error, array(
                     '{{label}}' => $fields[$name]->field_label,
-                    '{{value}}' => $data[$name],
+                    '{{value}}' => $value,
                 ));
             }
+
             return $errors;
         }
 
-        // data pre-processing
-        $before_submission = (array) \Event::trigger_function('noviusos_form::before_submission', array(&$data, $form, $this->enhancer_args), 'array');
-        if (!empty($form->form_virtual_name)) {
-            $before_submission = array_merge((array) \Event::trigger_function('noviusos_form::before_submission.' . $form->form_virtual_name, array(&$data, $form, $this->enhancer_args), 'array'));
+        // Forges a new answer
+        $answer = Service_Answer::forgeAnswer($form);
+
+        // Does some checks and actions before submission
+        if ($this->beforeSubmission($form, $answer, $fields, $data)) {
+
+            // Saves the answer
+            $answer->getService()->saveAnswer($fields, $data);
+
+            // Sends a notification by mail to the form recipients
+            $answer->getService()->sendNotificationByMail($fields, $data);
+
+            // Does some actions after submission
+            $this->afterSubmission($form, $answer, $fields, $data);
         }
 
-        $before_submission = array_filter($before_submission, function ($val) {
-            return $val === false;
-        });
+        return $errors;
+    }
 
-        // We only save the answer into the database if none before_submission callback returned 'false'
-        if (count($before_submission) == 0) {
-            $answer = Model_Answer::forge(array(
-                'answer_form_id' => $form->form_id,
-                'answer_ip' => \Input::real_ip(),
-            ), true);
-            $answer->save();
-
-            $email_data = array();
-
-
-            $config = \Config::load('noviusos_form::noviusos_form', true);
-            $emails = array_filter(explode("\n", $form->form_submit_email), function ($var) {
-                $var = trim($var);
-                return !empty($var);
-            });
-            $sendMail = !empty($emails);
-            $addAttachment = true;
-            if ($sendMail) {
-                $mail = \Email::forge();
-                $attachmentMaxSize = \Arr::get($config, 'mail_attachments_max_size', 8388608);
-                $size = 0;
-                foreach ($files as $file) {
-                    if (!empty($file['tmp_name'])) {
-                        $size += filesize($file['tmp_name']);
-                    }
-                }
-                if ($size > $attachmentMaxSize) {
-                    $addAttachment = false;
-                }
-            }
-
-            foreach ($files as $name => $file) {
-                if (!empty($file['tmp_name'])) {
-                    $attachment = $answer->getAttachment($fields[$name]);
-                    $attachment->set($file['tmp_name'], $file['name']);
-                    $attachment->save();
-                    if ($sendMail && $addAttachment) {
-                        $mail->attach($attachment->path());
-                    }
-                }
-            }
-
-            $reply_to_auto = \Arr::get($config, 'add_replyto_to_first_email', true);
-            $reply_to = '';
-            foreach ($data as $field_name => $value) {
-                $field = $fields[$field_name];
-                $email_data[] = array(
-                    'label' => $field->field_label,
-                    'value' => $value
-                );
-                if ($reply_to_auto && $field->field_type === 'email' && !empty($value) && empty($reply_to)) {
-                    // save first non empty email as potential "reply_to"
-                    $reply_to = $value;
-                }
-                $answer_field = Model_Answer_Field::forge(array(
-                    'anfi_answer_id' => $answer->answer_id,
-                    'anfi_field_id' => $field->field_id,
-                    'anfi_field_type' => $field->field_type,
-                    'anfi_value' => $value,
-                ), true);
-                $answer_field->save();
-            }
-
-
-            if ($sendMail) {
-                $mail->bcc($emails);
-                if (!empty($reply_to)) {
-                    $mail->reply_to($reply_to);
-                }
-                $mail->html_body(\View::forge('noviusos_form::email', array('form' => $form, 'data' => $email_data), false));
-                $mail->subject(strtr(__('{{form}}: New answer'), array(
-                    '&nbsp;' => ' ',
-                    '{{form}}' => $form->form_name,
-                )));
-                try {
-                    $mail->send();
-                } catch (\Exception $e) {
-                    logger(\Fuel::L_ERROR, 'The Forms application cannot send emails - '.$e->getMessage());
-                }
-            }
-
-            // after_submission
-            \Event::trigger('noviusos_form::after_submission', array(
+    /**
+     * Triggers some callbacks after submission
+     *
+     * @param Model_Form $form
+     * @param Model_Answer $answer
+     * @param array $fields
+     * @param array $data
+     */
+    protected function afterSubmission(Model_Form $form, Model_Answer $answer, array $fields, array &$data)
+    {
+        // After_submission
+        \Event::trigger('noviusos_form::after_submission', array(
+            'answer' => $answer,
+            'enhancer_args' => $this->enhancer_args,
+            0 => $answer, //For consistency. Deprecated. To remove when made BC
+            1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
+        ));
+        if (!empty($form->form_virtual_name)) {
+            \Event::trigger('noviusos_form::after_submission.'.$form->form_virtual_name, array(
                 'answer' => $answer,
                 'enhancer_args' => $this->enhancer_args,
                 0 => $answer, //For consistency. Deprecated. To remove when made BC
                 1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
             ));
-            if (!empty($form->form_virtual_name)) {
-                \Event::trigger('noviusos_form::after_submission.' . $form->form_virtual_name, array(
-                    'answer' => $answer,
-                    'enhancer_args' => $this->enhancer_args,
-                    0 => $answer, //For consistency. Deprecated. To remove when made BC
-                    1 => $this->enhancer_args, //For consistency. Deprecated. To remove when made BC
-                ));
-            }
+        }
+    }
+
+    /**
+     * Triggers some callbacks before submission to know if we should continue
+     *
+     * @param Model_Form $form
+     * @param Model_Answer $answer
+     * @param array $fields
+     * @param array $data
+     * @return bool
+     */
+    protected function beforeSubmission(Model_Form $form, Model_Answer $answer, array $fields, array &$data)
+    {
+        // Triggers the fields method
+        foreach ($fields as $name => $field) {
+            $field->getDriver($this->enhancer_args)->beforeFormSubmission($form, \Arr::get($data, $name), $data);
         }
 
-        return $errors;
+        // Triggers the global event
+        $before_submission = (array) \Event::trigger_function('noviusos_form::before_submission', array(
+            &$data,
+            $form,
+            $this->enhancer_args,
+            $answer,
+        ), 'array');
+
+        // Triggers the form event
+        if (!empty($form->form_virtual_name)) {
+            $before_submission = array_merge(
+                (array) \Event::trigger_function('noviusos_form::before_submission.'.$form->form_virtual_name, array(
+                    &$data,
+                    $form,
+                    $this->enhancer_args,
+                    $answer
+                ), 'array'));
+        }
+
+        // We only save the answer into the database if none before_submission callback returned 'false'
+        $before_submission = array_filter($before_submission, function ($val) {
+            return $val === false;
+        });
+        return count($before_submission) == 0;
+    }
+
+    /**
+     * Gets the layout config
+     *
+     * @return mixed
+     */
+    protected function getFormLayoutConfig()
+    {
+        // Gets the layout name to use
+        $appConfig = \Config::load('noviusos_form::config', true);
+        $layoutName = \Arr::get($appConfig, 'front_layout', 'default');
+
+        // Finds the layout config
+        $layouts = \Arr::get($this->config, 'layouts', array());
+        $layoutConfig = \Arr::get($layouts, $layoutName, array());
+
+        return $layoutConfig;
     }
 }

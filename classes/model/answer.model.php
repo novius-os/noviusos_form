@@ -14,6 +14,7 @@ class Model_Answer extends \Nos\Orm\Model
 {
     protected static $_table_name = 'nos_form_answer';
     protected static $_primary_key = array('answer_id');
+    protected static $_prefix = 'answer_';
 
     protected static $_properties = array(
         'answer_id' => array(
@@ -76,7 +77,34 @@ class Model_Answer extends \Nos\Orm\Model
     protected $_form_id_for_delete = null;
     protected $_answer_id_for_delete = null;
 
-    public function getAttachment($field)
+    /**
+     * The form service
+     *
+     * @var Service_Answer|null
+     */
+    protected $service = null;
+
+    /**
+     * Gets the answer service
+     *
+     * @param bool $reload
+     * @return Service_Answer|null
+     */
+    public function getService($reload = false)
+    {
+        if (is_null($this->service) || $reload) {
+            $this->service = Service_Answer::forge($this);
+        }
+        return $this->service;
+    }
+
+    /**
+     * Gets the attachments of the specified field
+     *
+     * @param $field
+     * @return \Nos\Attachment
+     */
+    public function getFieldAttachment($field)
     {
         return \Nos\Attachment::forge($this->answer_id.'_'.$field->field_id, array(
             'dir' => 'apps'.DS.'noviusos_form'.DS.$this->form->form_id,
@@ -85,8 +113,14 @@ class Model_Answer extends \Nos\Orm\Model
         ));
     }
 
+    /**
+     * Attachment access check callback
+     *
+     * @return bool
+     */
     public static function check_attachment()
     {
+        // Must be loggued in backoffice
         return \Nos\Auth::check();
     }
 

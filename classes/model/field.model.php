@@ -14,117 +14,118 @@ class Model_Field extends \Nos\Orm\Model
 {
     protected static $_table_name = 'nos_form_field';
     protected static $_primary_key = array('field_id');
+    protected static $_prefix = 'field_';
 
     protected static $_properties = array(
         'field_id' => array(
-            'default' => null,
             'data_type' => 'int unsigned',
+            'default' => null,
             'null' => false,
         ),
         'field_form_id' => array(
-            'default' => null,
             'data_type' => 'int unsigned',
+            'default' => null,
             'null' => false,
         ),
-        'field_type' => array(
-            'default' => null,
+        'field_driver' => array(
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_label' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_message' => array(
-            'default' => null,
             'data_type' => 'text',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_virtual_name' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_choices' => array(
+            'data_type' => 'serialize',
             'default' => null,
-            'data_type' => 'text',
-            'null' => false,
+            'null' => true,
         ),
         'field_created_at' => array(
-            'default' => null,
             'data_type' => 'datetime',
+            'default' => '',
             'null' => false,
         ),
         'field_mandatory' => array(
-            'default' => null,
             'data_type' => 'tinyint',
+            'default' => 0,
             'null' => false,
         ),
         'field_default_value' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_details' => array(
-            'default' => null,
             'data_type' => 'text',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_style' => array(
+            'data_type' => 'text',
             'default' => null,
-            'data_type' => 'enum',
-            'null' => false,
+            'null' => true,
         ),
         'field_width' => array(
-            'default' => null,
             'data_type' => 'tinyint',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_height' => array(
-            'default' => null,
             'data_type' => 'tinyint',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_limited_to' => array(
-            'default' => null,
             'data_type' => 'int',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_origin' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_origin_var' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_technical_id' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_technical_css' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_conditional' => array(
-            'default' => null,
             'data_type' => 'tinyint',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_conditional_form' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
         'field_conditional_value' => array(
-            'default' => null,
             'data_type' => 'varchar',
-            'null' => false,
+            'default' => null,
+            'null' => true,
         ),
     );
 
@@ -136,8 +137,9 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_twinnable_many_many = array();
 
     protected static $_observers = array(
-        'Orm\\Observer_Self',
-        'Orm\\Observer_CreatedAt' => array(
+        'Orm\Observer_Self',
+        'Nos\Form\Observer_Typing',
+        'Orm\Observer_CreatedAt' => array(
             'mysql_timestamp' => true,
             'property' => 'field_created_at',
         ),
@@ -156,58 +158,144 @@ class Model_Field extends \Nos\Orm\Model
     protected static $_has_many = array(
         'answer_fields' => array(
             'key_from'       => 'field_id',
-            'model_to'       => 'Nos\Form\\Model_Answer_Field',
+            'model_to'       => 'Nos\Form\Model_Answer_Field',
             'key_to'         => 'anfi_field_id',
             'cascade_save'   => false,
             'cascade_delete' => true,
         ),
+        'attributes' => array(
+            'key_from' => 'field_id',
+            'model_to' => Model_Field_Attribute::class,
+            'key_to' => 'fiat_field_id',
+            'cascade_save' => true,
+            'cascade_delete' => true,
+        ),
+    );
+
+    protected static $_eav = array(
+        'attributes' => array(
+            'attribute' => 'fiat_key',
+            'value' => 'fiat_value',
+        )
     );
 
     protected $_form_id_for_delete = null;
     protected $_field_id_for_delete = null;
 
     /**
-     * @param array $datas Values send in the form
+     * The field drivers instances (per driver class)
      *
-     * Return if a field is mandatory or not.
-     * Take in count the fact that a field may be conditionnal
+     * @var array
+     */
+    protected $driversInstance = array();
+
+    /**
+     * The form service instance
+     *
+     * @var Service_Field|null
+     */
+    protected $serviceInstance = null;
+
+    /**
+     * Gets the input name
+     *
+     * @return \Nos\Orm\Model|null|string
+     */
+    public function getInputName()
+    {
+        if (!empty($this->virtual_name)) {
+            return $this->virtual_name;
+        } else if (!empty($this->id)) {
+            return 'field_' . $this->id;
+        } else {
+            return uniqid('field_');
+        }
+    }
+
+    /**
+     * Gets the driver
+     *
+     * @param null|array $options
+     * @param bool $reload
+     * @return Driver_Field_Abstract|null
+     * @throws Exception_Driver
+     */
+    public function getDriver($options = null, $reload = false)
+    {
+        // Gets the driver class
+        $driverClass = $this->getDriverClass();
+        if (empty($driverClass)) {
+            return null;
+        }
+
+        // Checks if the class exists
+        if (!class_exists($driverClass)) {
+            throw new Exception_Driver(str_replace('{{class}}', $driverClass, __('Driver `{{class}}` not found.')));
+        }
+
+        // Forges if not already forged or if reload
+        if (!isset($this->driversInstance[$driverClass]) || $reload) {
+            $this->driversInstance[$driverClass] = $driverClass::forge($this, $options);
+        }
+        // Otherwise reset options if specified
+        elseif (!is_null($options)) {
+            $this->driversInstance[$driverClass]->setOptions($options);
+        }
+
+        return $this->driversInstance[$driverClass];
+    }
+
+    /**
+     * Checks if field has a driver
      *
      * @return bool
      */
-    public function isMandatory(array $datas)
+    public function hasDriver()
     {
-        $is_mandatory = in_array($this->field_type, array('text', 'textarea', 'select', 'email', 'number', 'date', 'file')) && $this->field_mandatory;
-
-        //This isn't a conditionnal field or conditionnal values are not set, return the simple mandatory value
-        if (!$this->field_conditional || empty($this->field_conditional_form) || empty($this->field_conditional_value) || !$is_mandatory) {
-            return $is_mandatory;
-        }
-
-        //Retrieve the conditionnal field that say if this is displayed or not
-        $conditional_field = self::query()
-            ->where('field_form_id', $this->field_form_id)
-            ->where('field_virtual_name', $this->field_conditional_form)
-            ->get_one();
-
-        if (empty($conditional_field)) {
-            return $is_mandatory;
-        }
-
-        if (\Arr::get($datas, $conditional_field->field_virtual_name) == $this->field_conditional_value) {
-            return $is_mandatory;
-        } else {
-            return false;
-        }
+        // Gets the driver class
+        return !empty($this->getDriverClass()) && class_exists($this->getDriverClass());
     }
 
+    /**
+     * Gets the driver class name
+     *
+     * @return mixed|\Nos\Orm\Model|null
+     */
+    public function getDriverClass()
+    {
+        return $this->field_driver;
+    }
+
+    /**
+     * Gets the field service
+     *
+     * @param bool $reload
+     * @return Service_Field|null
+     */
+    public function getService($reload = false)
+    {
+        if (is_null($this->serviceInstance) || $reload) {
+            $this->serviceInstance = Service_Field::forge($this);
+        }
+        return $this->serviceInstance;
+    }
+
+    /**
+     * Triggered before delete
+     */
     public function _event_before_delete()
     {
-        $this->_form_id_for_delete = $this->field_form_id;
-        $this->_field_id_for_delete = $this->field_id;
+        // Store field and form IDs
+        $this->_form_id_for_delete = $this->form_id;
+        $this->_field_id_for_delete = $this->id;
     }
 
+    /**
+     * Triggered after delete
+     */
     public function _event_after_delete()
     {
+        // Deletes related files
         if (is_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete)) {
             $files = \File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete, 1, array('^\d+_'.$this->_field_id_for_delete));
             foreach ($files as $dir => $file) {

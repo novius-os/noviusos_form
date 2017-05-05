@@ -46,54 +46,102 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
             $this->config['appdesk']['appdesk']['grid']['urlJson'] = $this->config['appdesk']['appdesk']['grid']['urlJson'].'?form_id='.$form->form_id;
             $this->config['hideContexts'] = true;
 
-            $fields = preg_split("/[\n,]+/", $form->form_layout);
             $columns = array();
             $dataset = array();
             $meta = array();
-            foreach ($fields as $field) {
-                list($field_id) = explode('=', $field);
-                $field = $form->fields[$field_id];
-                if (!in_array($field->field_type, array('text', 'select', 'email', 'number', 'date'))) {
+            foreach ($form->getService()->getLayoutFieldsName() as $fieldName) {
+
+                // We don't care about the page break
+                if ($fieldName === 'page_break') {
+                    continue;
+                }
+
+                // Gets the field
+                $field = \Arr::get($form->fields, $fieldName);
+                if (empty($field)) {
                     continue;
                 }
 
                 $id = 'field_'.$field->field_id;
+
+                // Gets the field appdesk config
+                $fieldAppdeskConfig = \Arr::get($field->getDriver()->getConfig(), 'answer_appdesk_config');
+
+                // Default field config
+                if ($fieldAppdeskConfig === true) {
+                    $fieldAppdeskConfig = array();
+                }
+
+                // Skip if no config available
+                elseif (!is_array($fieldAppdeskConfig)) {
+                    continue;
+                }
+
+                $value = \Arr::get($fieldAppdeskConfig, 'value');
+
+                // Gets data type
+                $dataType = \Arr::get($fieldAppdeskConfig, 'dataType', 'string');
+                $dataType = is_callable($dataType) ? $dataType($field) : $dataType;
+
+                // Gets header text
+                $headerText = \Arr::get($fieldAppdeskConfig, 'headerText', preg_replace('/\:\s*$/', ' ', $field->field_label));
+                $headerText = is_callable($headerText) ? $dataType($field) : $headerText;
+
+                // Gets title label (inspector)
+                $label = \Arr::get($fieldAppdeskConfig, 'label', $field->field_label);
+                if (is_callable($label)) {
+                    $label = $label($field);
+                }
+
                 $column = array (
-                    'headerText' => preg_replace('/\:\s*$/', ' ', $field->field_label),
+                    'headerText' => $headerText,
+                    'dataType' => $dataType,
                     'dataKey' => $id,
-                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : 'string'),
                 );
                 $meta[$id] = array (
-                    'label' => $field->field_label,
-                    'dataType' => $field->field_type === 'date' ? 'datetime' : ($field->field_type === 'number' ? 'number' : 'string'),
+                    'label' => $label,
+                    'dataType' => $dataType,
                 );
 
+                // Adds the column if less than 3 are already displayed
                 if (count($columns) < 3) {
                     $columns[$id] = $column;
                 }
+
+                // Creates the dataset
                 $dataset[$id] = array_merge($column, array(
-                    'value' =>
-                    function ($item) use ($field) {
-                        $answer = Model_Answer_Field::find('first', array(
-                                'where' => array(
-                                    array('anfi_answer_id', $item->answer_id),
-                                    array('anfi_field_id', $field->field_id),
-                                )
-                            ));
-                        if (empty($answer) || empty($answer->anfi_value)) {
+                    'value' => function ($item) use ($field, $value) {
+
+                        // Gets the answer field
+                        $answerField = Model_Answer_Field::find('first', array(
+                            'where' => array(
+                                array('anfi_answer_id', $item->answer_id),
+                                array('anfi_field_id', $field->field_id),
+                            )
+                        ));
+                        if (empty($answerField)) {
                             return null;
                         }
-                        if ($field->field_type === 'date') {
-                            try {
-                                return \Date::create_from_string($answer->anfi_value, 'mysql_date')->wijmoFormat();
-                            } catch (\Exception $e) {
-                                return null;
-                            }
+
+                        // Gets the field driver
+                        if (is_callable($value)) {
+                            // Custom value callback
+                            $value = $value($field->getDriver(), $answerField);
+                        } else {
+                            // Default driver render
+                            $value = $field->getDriver()->renderAnswerHtml($answerField);
                         }
-                        return $answer->anfi_value;
+
+                        // Truncates
+                        if (mb_strlen($value) > 50) {
+                            $value = \Str::truncate($value, 50, '...', \Str::is_html($value));
+                        }
+
+                        return $value;
                     }
                 ));
 
+                // Stops after 6 columns
                 if (count($columns) === 6) {
                     break;
                 }

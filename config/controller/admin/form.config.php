@@ -10,6 +10,23 @@
 
 Nos\I18n::current_dictionary('noviusos_form::common');
 
+$config = \Config::load('noviusos_form::config', true);
+
+// Gets the available fields drivers
+$available_fields_drivers = \Arr::get($config, 'available_fields_drivers', array());
+
+// Builds the drivers options list
+$drivers_options = array();
+foreach ($available_fields_drivers as $driverCLass) {
+    $drivers_options[$driverCLass] = $driverCLass::getName();
+}
+
+// Gets the default fields layout
+$default_fields_layout = \Arr::get($config, 'default_fields_layout', array());
+
+// Gets the available fields layouts
+$available_fields_layouts = \Arr::get($config, 'available_fields_layouts', array());
+
 return array(
     'controller_url' => 'admin/noviusos_form/form',
     'model' => 'Nos\Form\Model_Form',
@@ -19,23 +36,53 @@ return array(
         ),
     ),
     'require_js' => array(
-        'static/apps/noviusos_form/js/admin/insert_update.js?update=20151103',
+        'static/apps/noviusos_form/dist/js/admin/insert_update.min.js?update=20161102',
     ),
     'views' => array(
-        'delete' => 'noviusos_form::admin/popup_delete',
+        'delete' => 'noviusos_form::admin/form/popup_delete',
     ),
     'layout' => array(
         'standard' => array(
             'view' => 'nos::form/layout_standard',
             'params' => array(
                 'title' => 'form_name',
-                'subtitle' => array('form_submit_email', 'form_virtual_name'),
+                'subtitle' => array('form_publish_warning'),
                 'medias' => array(),
                 'large' => true,
                 'content' => array(
+                    'content' => array(
+                        'view' => 'nos::form/expander',
+                        'params' => array(
+                            'title' => __('Properties'),
+                            'nomargin' => true,
+                            'options' => array(
+                                'allowExpand' => false,
+                            ),
+                            'content' => array(
+                                'view' => 'nos::form/fields',
+                                'params' => array(
+                                    'fields' => array(
+                                        'form_virtual_name',
+                                        'form_submit_email',
+                                        'form_submit_email_warning',
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
                     'fields' => array(
-                        'view' => 'noviusos_form::admin/layout_fields',
-                        'params' => array(),
+                        'view' => 'nos::form/expander',
+                        'params' => array(
+                            'title' => __('Fields'),
+                            'nomargin' => true,
+                            'options' => array(
+                                'allowExpand' => false,
+                            ),
+                            'content' => array(
+                                'view' => 'noviusos_form::admin/form/fields',
+                                'params' => array(),
+                            ),
+                        ),
                     ),
                 ),
                 'menu' => array(),
@@ -57,6 +104,7 @@ return array(
             'label' => __('Virtual name:'),
             'form' => array(
                 'type' => 'text',
+                'size' => 30,
             ),
             'expert' => true,
         ),
@@ -85,517 +133,291 @@ return array(
             'form' => array(
                 'description' => __("One email per line"),
                 'type' => 'textarea',
-                // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
                 'placeholder' => __('One email per line'),
                 'cols' => 50,
             ),
-            'template' => '<div><span style="vertical-align:top;">{label}</span> <span style="display: inline-block;">{field}<br />{description}</span></div>',
         ),
-    ),
-    'fields_meta' => array(
-        'default' => array(
-            'definition' => array(
-                'layout' => "firstname=2,lastname=2\nemail=4",
-                'fields_list' => array(
-                    'firstname' => array(
-                        'field_type' => 'text',
-                        'field_label' => __('Firstname:'),
-                    ),
-                    'lastname' => array(
-                        'field_type' => 'text',
-                        'field_label' => __('Lastname:'),
-                    ),
-                    'email' => array(
-                        'field_type' => 'email',
-                        'field_label' => __('Email address:'),
-                    ),
-                ),
+        'form_submit_email_warning' => array(
+            'label' => '',
+            'renderer' => \Nos\Renderer_Text::class,
+            'form' => array(
+                'value' => '
+                    <div class="ui-state-error" style="padding:0.5em;">
+                        '.__(
+                            'You have a problem here: Your Novius OS is not set up to send emails. '.
+                            'You’ll have to ask your developer to set it up for you.'
+                        ).'
+                    </div>
+                '
             ),
+            'show_when' => function() {
+                return !\Email::hasDefaultFrom();
+            }
         ),
-        'standard' => array(
-            'single_line_text' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/text.png',
-                'title' => __('Single line text'),
-                'definition' => array(
-                    'layout' => 'text=4',
-                    'fields_list' => array(
-                        'text' => array(
-                            'field_type' => 'text',
-                        ),
-                    ),
-                ),
+
+        'form_publish_warning' => array(
+            'label' => '',
+            'renderer' => \Nos\Renderer_Text::class,
+            'form' => array(
+                'value' => \View::forge('noviusos_form::admin/form/warning_not_published', array(), false)->render()
             ),
-            'paragraph_text' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/textarea.png',
-                'title' => __('Paragraph text'),
-                'definition' => array(
-                    'layout' => 'textarea=4',
-                    'fields_list' => array(
-                        'textarea' => array(
-                            'field_type' => 'textarea',
-                        ),
+            'show_when' => function($item) {
+                if ($item->is_new()) {
+                    return false;
+                }
+                $count = \Nos\Model_Wysiwyg::count(array(
+                    'where' => array(
+                        array('wysiwyg_text', 'LIKE', '%&quot;form_id&quot;:&quot;'.$item->form_id.'%'),
                     ),
-                ),
-            ),
-            'checkboxes' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/checkbox.png',
-                'title' => __('Multiple choice (checkboxes)'),
-                'definition' => array(
-                    'layout' => 'checkbox=4',
-                    'fields_list' => array(
-                        'checkbox' => array(
-                            'field_type' => 'checkbox',
-                            'field_choices' => __("First option\nSecond option"),
-                        ),
-                    ),
-                ),
-            ),
-            'dropdown' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/dropdown.png',
-                'title' => __('Unique choice (drop-down list)'),
-                'definition' => array(
-                    'layout' => 'select=4',
-                    'fields_list' => array(
-                        'select' => array(
-                            'field_type' => 'select',
-                            'field_choices' => __("First option\nSecond option"),
-                        ),
-                    ),
-                ),
-            ),
-            'unique_choice' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/radio.png',
-                'title' => __('Unique choice (radio buttons)'),
-                'definition' => array(
-                    'layout' => 'radio=4',
-                    'fields_list' => array(
-                        'radio' => array(
-                            'field_type' => 'radio',
-                            'field_choices' => __("First choice\nSecond choice"),
-                        ),
-                    ),
-                ),
-            ),
-            'file' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/file.png',
-                'title' => __('File'),
-                'definition' => array(
-                    'layout' => 'file=4',
-                    'fields_list' => array(
-                        'file' => array(
-                            'field_type' => 'file',
-                            'field_label' => __('I’m the label of a file input, click to edit me:'),
-                        ),
-                    ),
-                ),
-            ),
+                ));
+                return $count == 0;
+            },
+            'template' => '<td colspan="2">{field}</td>',
         ),
-        'special' => array(
-            'recipients' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/dropdown.png',
-                'title' => __('Recipient List'),
-                'definition' => array(
-                    'layout' => 'select=4',
-                    'fields_list' => array(
-                        'select' => array(
-                            'field_type' => 'select',
-                            'field_technical_id' => 'recipient-list',
-                            'field_details' => __('Separate name and email addresses with a "=" sign. (eg. Name=mail@domain.com)'),
-                            'field_choices' => __("First option=mail@domain.com\nSecond option=othermail@domain.com"),
-                        ),
-                    ),
-                ),
-            ),
-            'email' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/email.png',
-                'title' => __('Email address'),
-                'definition' => array(
-                    'layout' => 'email=4',
-                    'fields_list' => array(
-                        'email' => array(
-                            'field_type' => 'email',
-                            'field_label' => __('Your email address:'),
-                        ),
-                    ),
-                ),
-            ),
-            'number' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/number.png',
-                'title' => __('Number'),
-                'definition' => array(
-                    'layout' => 'number=4',
-                    'fields_list' => array(
-                        'textarea' => array(
-                            'field_type' => 'number',
-                            'field_label' => __('Enter a number:'),
-                        ),
-                    ),
-                ),
-            ),
-            'date' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/date.png',
-                'title' => __('Date'),
-                'definition' => array(
-                    'layout' => 'date=4',
-                    'fields_list' => array(
-                        'date' => array(
-                            'field_type' => 'date',
-                            'field_label' => __('Pick a date:'),
-                        ),
-                    ),
-                ),
-            ),
-            'fullname' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/fullname.png',
-                'title' => __('Full name'),
-                'definition' => array(
-                    'layout' => 'gender=1,firstname=1,name=2',
-                    'fields_list' => array(
-                        'gender' => array(
-                            'field_type' => 'select',
-                            'field_label' => __('Title:'),
-                            'field_choices' => __("Ms\nMr"),
-                        ),
-                        'firstname' => array(
-                            'field_type' => 'text',
-                            'field_label' => __('Firstname:'),
-                        ),
-                        'name' => array(
-                            'field_type' => 'text',
-                            'field_label' => __('Name:'),
-                        ),
-                    ),
-                ),
-            ),
-            'address' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/address.png',
-                'title' => __('Address'),
-                'definition' => array(
-                    'layout' => "line_1=4\nline_2=4\npostal=1,city=3",
-                    'fields_list' => array(
-                        'line_1' => array(
-                            'field_type' => 'text',
-                            'field_label' => __('First address line:'),
-                        ),
-                        'line_2' => array(
-                            'field_type' => 'text',
-                            'field_label' => __('Second address line:'),
-                        ),
-                        'postal' => array(
-                            'field_type' => 'text',
-                            'field_label' => __('Postal code:'),
-                        ),
-                        'city' => array(
-                            'field_type' => 'text',
-                            'field_label' => __('City:'),
-                        ),
-                    ),
-                ),
-            ),
-            'message' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/message.png',
-                'title' => __('Message'),
-                'definition' => array(
-                    'layout' => 'message=4',
-                    'fields_list' => array(
-                        'message' => array(
-                            'field_type' => 'message',
-                            'field_label' => __('Message:'),
-                        ),
-                    ),
-                ),
-            ),
-            'separator' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/separator.png',
-                'title' => __('Separator'),
-                'definition' => array(
-                    'layout' => 'separator=4',
-                    'fields_list' => array(
-                        'separator' => array(
-                            'field_label' => __('Separator'),
-                            'field_type' => 'separator',
-                        ),
-                    ),
-                ),
-            ),
-            'hidden' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/hidden.png',
-                'title' => __('Hidden'),
-                'expert' => true,
-                'definition' => array(
-                    'layout' => 'hidden=4',
-                    'fields_list' => array(
-                        'hidden' => array(
-                            'field_type' => 'hidden',
-                            'field_label' => __('I’m the label for internal use only as I won’t be shown to users:'),
-                        ),
-                    ),
-                ),
-            ),
-            'variable' => array(
-                'icon' => 'static/apps/noviusos_form/img/fields/variable.png',
-                'title' => __('Variable'),
-                'expert' => true,
-                'definition' => array(
-                    'layout' => 'variable=4',
-                    'fields_list' => array(
-                        'variable' => array(
-                            'field_type' => 'variable',
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'fields_layout' => array(
-        'standard' => array(
-            'view' => 'nos::form/accordion',
-            'params' => array(
-                //'classes' => 'notransform',
-                'accordions' => array(
-                    'main' => array(
-                        'title' => __('Properties'),
-                        'fields' => array(
-                            'field_label',
-                            'field_type',
-                            'field_choices',
-                            'field_style',
-                            'field_message',
-                            //'field_name',
-                            'field_origin',
-                            'field_origin_var',
-                        ),
-                    ),
-                    'optional' => array(
-                        'title' => __('Further options'),
-                        'fields' => array(
-                            'field_mandatory',
-                            'field_default_value',
-                            'field_details',
-                            'field_width',
-                            'field_height',
-                            'field_limited_to',
-                        ),
-                    ),
-                    'technical' => array(
-                        'title' => __('Technical options'),
-                        'fields' => array(
-                            'field_virtual_name',
-                            'field_technical_id',
-                            'field_technical_css',
-                        ),
-                    ),
-                    'condition' => array(
-                        'title' => __('Conditions'),
-                        'fields' => array(
-                            'field_conditional',
-                            'field_conditional_form',
-                            'field_conditional_value',
-                        ),
-                    ),
-                ),
-            ),
-        ),
+
     ),
     'fields_config' => array(
-        'field_id' => array(
-            'form' => array(
-                'type' => 'hidden',
-                'value' => '0',
-            ),
-        ),
-        'field_type' => array(
-            'label' => __('Type:'),
-            'form' => array(
-                'type' => 'select',
-                'options' => array(
-                    'text' => __('Single line text'),
-                    'textarea' => __('Paragraph text'),
-                    'checkbox' => __('Multiple choice (checkboxes)'),
-                    'select' => __('Unique choice (drop-down list)'),
-                    'radio' => __('Unique choice (radio buttons)'),
-                    'file' => __('File'),
-                    'email' => __('Email address'),
-                    'number' => __('Number'),
-                    'date' => __('Date'),
-                    'message' => __('Message'),
-                    'hidden' => __('Hidden'),
-                    'separator' => __('Separator'),
-                    'variable' => __('Variable'),
+        'layout' => array(
+            'standard' => array(
+                'view' => 'nos::form/accordion',
+                'params' => array(
+                    //'classes' => 'notransform',
+                    'accordions' => array(
+                        'main' => array(
+                            'title' => __('Properties'),
+                            'fields' => array(
+                                'field_driver',
+                                'field_label',
+                                //'field_choices',
+                                //'field_style',
+                                //'field_message',
+                            ),
+                        ),
+                        'optional' => array(
+                            'title' => __('Further options'),
+                            'fields' => array(
+                                //'field_mandatory',
+                                //'field_default_value',
+                                //'field_origin',
+                                //'field_origin_var',
+                                //'field_details',
+                                //'field_width',
+                                //'field_height',
+                                //'field_limited_to',
+                            ),
+                        ),
+                        'technical' => array(
+                            'title' => __('Technical options'),
+                            'fields' => array(
+                                'field_virtual_name',
+                                'field_technical_id',
+                                'field_technical_css',
+                            ),
+                        ),
+                        'condition' => array(
+                            'title' => __('Conditions'),
+                            'fields' => array(
+                                'field_conditional',
+                                'field_conditional_form',
+                                'field_conditional_value',
+                            ),
+                        ),
+                    ),
                 ),
-                'value' => 'text',
-            ),
-            'validation' => array(
-                'required',
             ),
         ),
-        'field_label' => array(
-            'label' => __('Label:'),
-            'form' => array(
-                'type' => 'text',
-                'value' => __('I’m the label, click to edit me:'),
-            ),
-            'validation' => array(
-                'required',
-            ),
-        ),
-        'field_message' => array(
-            'label' => __('Message:'),
-            'form' => array(
-                'type' => 'textarea',
-                'rows' => '3',
-                'value' => __('I’m a message, click to edit me.'),
-            ),
-            'validation' => array(
-                'required',
-            ),
-        ),
-        'field_style' => array(
-            'label' => __('Style:'),
-            'form' => array(
-                'type' => 'select',
-                'options' => array(
-                    'p' => __('Standard'),
-                    'h1' => __('Heading 1'),
-                    'h2' => __('Heading 2'),
-                    'h3' => __('Heading 3'),
+        'fields' => array(
+            'field_id' => array(
+                'form' => array(
+                    'type' => 'hidden',
+                    'value' => '0',
                 ),
-                'value' => 'p',
             ),
-        ),
-        'field_choices' => array(
-            'label' => __('Answers:'),
-            'form' => array(
-                'type' => 'textarea',
-                'rows' => '5',
-                'value' => '',
-                // Note to translator: This is a placeholder, i.e. a field’s label shown within the field
-                'placeholder' => __('One answer per line'),
+            'field_driver' => array(
+                'label' => __('Type:'),
+                'form' => array(
+                    'type' => 'select',
+                    'options' => $drivers_options,
+                    'value' => 'text',
+                ),
+                'validation' => array(
+                    'required',
+                ),
             ),
-        ),
-        'field_mandatory' => array(
-            'label' => __('Mandatory'),
-            'form' => array(
-                'type' => 'checkbox',
-                'value' => '1',
-                'empty' => '0',
+            'field_label' => array(
+                'label' => __('Label:'),
+                'form' => array(
+                    'type' => 'text',
+                    'value' => __('I’m the label, click to edit me:'),
+                ),
+                'validation' => array(
+                    'required',
+                ),
             ),
-        ),
-        'field_default_value' => array(
-            'label' => __('Default value:'),
-            'form' => array(
-                // Textarea is needed to preserve \n to store multiple default values (checkboxes)
-                'type' => 'textarea',
+            'field_message' => array(
+                'label' => __('Message:'),
+                'form' => array(
+                    'type' => 'textarea',
+                    'rows' => '3',
+                    'value' => __('I’m a message, click to edit me.'),
+                ),
+                'validation' => array(
+                    'required',
+                ),
             ),
-        ),
-        'field_details' => array(
-            'label' => __('Instructions for the user:'),
-            'form' => array(
-                'type' => 'textarea',
-                'rows' => '3',
+            'field_style' => array(
+                'label' => __('Style:'),
+                'form' => array(
+                    'type' => 'select',
+                    'options' => array(
+                        'p' => __('Standard'),
+                        'h1' => __('Heading 1'),
+                        'h2' => __('Heading 2'),
+                        'h3' => __('Heading 3'),
+                    ),
+                    'value' => 'p',
+                ),
             ),
-        ),
-        'field_width' => array(
-            'label' => __('Width:'),
-            'template' => str_replace('{{count}}', '{field} {required}', __('Width: {{count}} characters')),
-            'form' => array(
-                'type' => 'number',
-                'value' => '',
-                'size' => '3',
+            'field_choices' => array(
+                'label' => __('Answers:'),
+                'form' => array(
+                    'type' => 'hidden',
+                    'value' => '',
+                ),
+                'populate' => function ($item) {
+                    return is_array($item->choices) ? implode(PHP_EOL, $item->choices) : $item->choices;
+                },
             ),
-            'populate' => function ($item) {
+            'field_mandatory' => array(
+                'label' => __('Mandatory'),
+                'form' => array(
+                    'type' => 'checkbox',
+                    'value' => '1',
+                    'empty' => '0',
+                ),
+            ),
+            'field_default_value' => array(
+                'label' => __('Default value:'),
+                'form' => array(
+                    'type' => 'text',
+                ),
+                'populate' => function ($item) {
+                    $defaultValue = $item->hasDriver() ? $item->getDriver()->getDefaultValue() : $item->field_default_value;
+                    if (is_array($defaultValue)) {
+                        $defaultValue = implode(',', $defaultValue);
+                    }
+                    return $defaultValue;
+                },
+            ),
+            'field_details' => array(
+                'label' => __('Instructions for the user:'),
+                'form' => array(
+                    'type' => 'textarea',
+                    'rows' => '3',
+                ),
+            ),
+            'field_width' => array(
+                'label' => __('Width:'),
+                'template' => str_replace('{{count}}', '{field} {required}', __('Width: {{count}} characters')),
+                'form' => array(
+                    'type' => 'number',
+                    'value' => '',
+                    'size' => '3',
+                ),
+                'populate' => function ($item) {
                     return empty($item->field_width) ? '' : $item->field_width;
-            },
-        ),
-        'field_height' => array(
-            'label' => '',
-            'template' => str_replace('{{count}}', '{field} {required}', __('Height: {{count}} lines')),
-            'form' => array(
-                'type' => 'number',
-                'size' => '3',
-                'value' => '3',
+                },
             ),
-            'populate' => function ($item) {
-                    return empty($item->field_height) ? '' : $item->field_height;
-            },
-        ),
-        'field_limited_to' => array(
-            'label' => '',
-            'template' => str_replace('{{count}}', '{field} {required}', __('Limited to {{count}} characters')),
-            'form' => array(
-                'type' => 'number',
-                'size' => '3',
+            'field_height' => array(
+                'label' => '',
+                'template' => str_replace('{{count}}', '{field} {required}', __('Height: {{count}} lines')),
+                'form' => array(
+                    'type' => 'number',
+                    'size' => '3',
+                    'value' => '3',
+                ),
+                'populate' => function ($item) {
+                        return empty($item->field_height) ? '' : $item->field_height;
+                },
             ),
-            'populate' => function ($item) {
-                    return empty($item->field_limited_to) ? '' : $item->field_limited_to;
-            },
-        ),
-        'field_origin' => array(
-            'label' => __('Origin:'),
-            'form' => array(
-                'type' => 'select',
-                'options' => array(
-                    'get' => 'Get', // No translation here: it's a feature
-                    'post' => 'Post',
-                    'request' => 'Request',
-                    'global' => 'Global',
-                    'session' => 'Session',
+            'field_limited_to' => array(
+                'label' => '',
+                'template' => str_replace('{{count}}', '{field} {required}', __('Limited to {{count}} characters')),
+                'form' => array(
+                    'type' => 'number',
+                    'size' => '3',
+                ),
+                'populate' => function ($item) {
+                        return empty($item->field_limited_to) ? '' : $item->field_limited_to;
+                },
+            ),
+            'field_origin' => array(
+                'label' => __('Origin:'),
+                'form' => array(
+                    'type' => 'select',
+                    'options' => array(
+                        'get' => 'Get',
+                        'post' => 'Post',
+                        'request' => 'Request',
+                        'global' => 'Global',
+                        'session' => 'Session',
+                    ),
                 ),
             ),
-        ),
-        'field_origin_var' => array(
-            'label' => __('Variable name:'),
-            'form' => array(
-                'type' => 'text',
-                'value' => '',
+            'field_origin_var' => array(
+                'label' => __('Variable name:'),
+                'form' => array(
+                    'type' => 'text',
+                    'value' => '',
+                ),
             ),
-        ),
-        'field_virtual_name' => array(
-            'label' => __('Virtual field name:'),
-            'form' => array(
-                'type' => 'text',
-                'value' => '',
+            'field_virtual_name' => array(
+                'label' => __('Virtual field name:'),
+                'form' => array(
+                    'type' => 'text',
+                    'value' => '',
+                ),
+                'expert' => true,
             ),
-            'expert' => true,
-        ),
-        'field_technical_id' => array(
-            'label' => __('ID:'),
-            'form' => array(
-                'type' => 'text',
+            'field_technical_id' => array(
+                'label' => __('ID:'),
+                'form' => array(
+                    'type' => 'text',
+                ),
+                'expert' => true,
             ),
-            'expert' => true,
-        ),
-        'field_technical_css' => array(
-            'label' => __('CSS classes:'),
-            'form' => array(
-                'type' => 'text',
+            'field_technical_css' => array(
+                'label' => __('CSS classes:'),
+                'form' => array(
+                    'type' => 'text',
+                ),
+                'expert' => true,
             ),
-            'expert' => true,
-        ),
-        'field_conditional' => array(
-            'label' => __('Conditional'),
-            'form' => array(
-                'type' => 'checkbox',
-                'value' => '1',
-                'empty' => '0',
+            'field_conditional' => array(
+                'label' => __('Conditional'),
+                'form' => array(
+                    'type' => 'checkbox',
+                    'value' => '1',
+                    'empty' => '0',
+                ),
+                'expert' => true,
             ),
-            'expert' => true,
-        ),
-        'field_conditional_form' => array(
-            'label' => __('Form name to Check:'),
-            'form' => array(
-                // Textarea is needed to preserve \n to store multiple default values (checkboxes)
-                'type' => 'text',
+            'field_conditional_form' => array(
+                'label' => __('Form name to Check:'),
+                'form' => array(
+                    // Textarea is needed to preserve \n to store multiple default values (checkboxes)
+                    'type' => 'text',
+                ),
+                'expert' => true,
             ),
-            'expert' => true,
-        ),
-        'field_conditional_value' => array(
-            'label' => __('Show when the value is:'),
-            'form' => array(
-                // Textarea is needed to preserve \n to store multiple default values (checkboxes)
-                'type' => 'textarea',
+            'field_conditional_value' => array(
+                'label' => __('Show when the value is:'),
+                'form' => array(
+                    // Textarea is needed to preserve \n to store multiple default values (checkboxes)
+                    'type' => 'textarea',
+                ),
+                'expert' => true,
             ),
-            'expert' => true,
         ),
     ),
 );

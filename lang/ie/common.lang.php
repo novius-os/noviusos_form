@@ -28,64 +28,64 @@ return array(
     #: config/controller/admin/enhancer.config.php:76
     'Thank you. Your answer has been sent.' => 'Mersi. Tu response ha esset expedit.',
 
-    #: views/enhancer/blank_slate.view.php:16
+    #: views/admin/enhancer/blank_slate.view.php:16
     'How frustrating, you have no form to insert. But let’s not worry, shall we? Here is how it works:' => 'Ti es frustrant, tu ne have un formul por inserter. Ma null panic. Tu deve solmen: ',
 
-    #: views/enhancer/blank_slate.view.php:19
+    #: views/admin/enhancer/blank_slate.view.php:19
     '<ul><li><a>Add your first form</a> (a new tab will open).</li>
 <li>Once you’re done (it won’t take long), come back to this tab to insert your shiny new form.</li></ul>' => '<ul><li><a>Addir tu prim formul</a> (un nov tabul va apert).</li>
 <li>Quande it es fat (it ne va esser long), returna vers ti tabul por inserter tu splendid nov formul.</li></ul>',
 
-    #: views/enhancer/blank_slate.view.php:27
+    #: views/admin/enhancer/blank_slate.view.php:27
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this language</a>.' => 'Null formul disponibil in {{context}}. Corage, <a>addi tu prim formul in ti lingue</a>.',
 
-    #: views/enhancer/blank_slate.view.php:29
+    #: views/admin/enhancer/blank_slate.view.php:29
     'No forms are available in {{context}}. Go ahead, <a>add your first form in this context</a>.' => 'Null formul disponibil in {{context}}. Corage, <a>addi tu prim formul in ti contextus</a>.',
 
     #: views/email.view.php:31
     'Message sent by:' => '',
 
-    #: views/admin/warning_answers_collected.view.php:26
+    #: views/admin/form/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'Modificar li formul mey alter li datas colectet.',
 
-    #: views/admin/warning_answers_collected.view.php:29
+    #: views/admin/form/warning_answers_collected.view.php:29
     'You’re right, take me to the answers' => 'OK, go vers li responses.',
 
-    #: views/admin/warning_answers_collected.view.php:31
+    #: views/admin/form/warning_answers_collected.view.php:31
     'or' => 'o',
 
-    #: views/admin/warning_answers_collected.view.php:31
+    #: views/admin/form/warning_answers_collected.view.php:31
     'Don’t worry, I know what I’m doing' => 'Null panic, yo save quo yo fa.',
 
-    #: views/admin/warning_answers_collected.view.php:49
+    #: views/admin/form/warning_answers_collected.view.php:49
     'Answers to this form have already been received' => 'Responses con ti formul ha esset ja recivet.',
 
-    #: views/admin/layout_fields.view.php:28
+    #: views/admin/fields.view.php:28
     'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Tu have un problem: tu Novius OS ne es configurat por expedir emails. Demanda a tu developator de far it.',
 
-    #: views/admin/layout_fields.view.php:47
-    #: views/admin/layout_fields.view.php:92
+    #: views/admin/fields.view.php:47
+    #: views/admin/fields.view.php:92
     'Add a field' => 'Addir un intrada',
 
-    #: views/admin/layout_fields.view.php:53
+    #: views/admin/fields.view.php:53
     'Standard fields' => 'Intradas standarde',
 
-    #: views/admin/layout_fields.view.php:54
+    #: views/admin/fields.view.php:54
     'Special fields' => 'Intradas special',
 
-    #: views/admin/layout_fields.view.php:93
+    #: views/admin/fields.view.php:93
     'Add a page break' => 'Addir un ruptura de pagine',
 
-    #: views/admin/layout_fields.view.php:96
+    #: views/admin/fields.view.php:96
     'Help us prevent spam: How much is 3 plus 8?' => 'Assista nos a preventer spam: quante fa 3 plus 8?',
 
-    #: views/admin/layout_fields.view.php:103
+    #: views/admin/fields.view.php:103
     'Delete' => 'Delete',
 
-    #: views/admin/layout_fields.view.php:132
+    #: views/admin/fields.view.php:132
     'Form submission' => 'Submission del formul',
 
-    #: views/admin/layout_fields.view.php:172
+    #: views/admin/fields.view.php:172
     'Are you sure?' => 'Es tu cert?',
 
     #: views/admin/permissions.view.php:15
@@ -94,25 +94,25 @@ return array(
     #: views/admin/permissions.view.php:22
     'Can visualise answers only' => 'Posse visualisar responses solmen',
 
-    #: views/admin/popup_delete.view.php:24
+    #: views/admin/form/popup_delete.view.php:24
     'This form has already received <strong>one answer</strong>.' => array(
         0 => 'Ti formul ha recivet ja <strong>un response</strong>.',
         1 => 'Ti formul ha recivet ja <strong>{{count}} responses</strong>.',
     ),
 
-    #: views/admin/popup_delete.view.php:33
+    #: views/admin/form/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Yes, yo desira deleter ti formul e li {{count}} responses recivet.',
 
-    #: views/admin/warning_not_published.view.php:18
+    #: views/admin/form/warning_not_published.view.php:18
     'Not published' => 'Ne publicat',
 
-    #: views/admin/warning_not_published.view.php:19
+    #: views/admin/form/warning_not_published.view.php:19
     'To publish this form, add it to a page, a blog post or any other text editor.' => 'Por publicar ti formul, addir it a une pagine, un blog post o un altri textu editor.',
 
-    #: views/admin/warning_not_published.view.php:22
+    #: views/admin/form/warning_not_published.view.php:22
     '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>Li textu editors de Novius OS (anc nominat WYSIWYG editors) have ti button {{preview}} in the utilbar.</p><p>Clica it por accesser li liste de applications que posse ameliorar tu contenete.</p>',
 
-    #: views/admin/warning_not_published.view.php:23
+    #: views/admin/form/warning_not_published.view.php:23
     'Applications' => 'Applications',
 
     #: views/admin/answer.view.php:15

@@ -1,0 +1,63 @@
+/* Form layout grid */
+.one, .row .one {
+    width: 8.33333%;
+}
+.two, .row .two {
+    width: 16.66667%;
+}
+.three, .row .three {
+    width: 25%;
+}
+.four, .row .four {
+    width: 33.33333%;
+}
+.five, .row .five {
+    width: 41.66667%;
+}
+.six, .row .six {
+    width: 50%;
+}
+.seven, .row .seven {
+    width: 58.33333%;
+}
+.eight, .row .eight {
+    width: 66.66667%;
+}
+.nine, .row .nine {
+    width: 75%;
+}
+.ten, .row .ten {
+    width: 83.33333%;
+}
+.eleven, .row .eleven {
+    width: 91.66667%;
+}
+.twelve {
+    width: 100%;
+}
+
+/* Nicolas Gallagher's micro clearfix */
+.row {
+    *zoom: 1;
+
+    .twelve {
+        width: 100%;
+    }
+
+    &:before {
+        content: " ";
+        display: table;
+    }
+
+    &:after {
+        content: " ";
+        display: table;
+        clear: both;
+    }
+    margin: 15px 0 25px;
+}
+
+.column,
+.columns {
+    padding-right: 10px;
+}

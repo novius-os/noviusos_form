@@ -1,0 +1,60 @@
+.noviusos_form {
+
+    @import 'layout/wizard';
+
+    /* The form layout */
+    .form-errors {
+        color: darkred;
+        margin: 10px 0;
+        text-align: left;
+    }
+
+    label[for] {
+        cursor: pointer;
+    }
+
+    .form-fields-group {
+        display: none;
+
+        &.current {
+            display: block;
+        }
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="date"],
+    input[type="datetime"],
+    input[type="email"],
+    input[type="number"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="time"],
+    input[type="url"],
+    select,
+    textarea {
+        width: 100%;
+    }
+
+    .form-field-label,
+    .form-field-input,
+    .form-field-error {
+        &.inline {
+            display: inline-block;
+        }
+    }
+
+    .form-field-label.inline {
+        vertical-align: top;
+    }
+
+    .instructions {
+        font-style: italic;
+        font-size: 90%;
+        margin-top: 0.1em;
+    }
+
+    input{
+
+    }
+}

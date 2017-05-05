@@ -225,7 +225,7 @@ M.',
     'Type:' => 'Type&nbsp;:',
 
     #: config/controller/admin/form.config.php:410
-    'Label:' => 'Label&nbsp;:',
+    'Label:' => 'Libellé&nbsp;:',
 
     #: config/controller/admin/form.config.php:413
     'I’m the label, click to edit me:' => 'Je suis le libellé, cliquez pour me modifier :',
@@ -440,40 +440,40 @@ M.',
     #: views/captcha.view.php:35
     'You have not passed the spam test. Please try again.' => 'Vous n’avez pas passé le test contre le spam. Merci de ré-essayer.',
 
-    #: views/admin/warning_answers_collected.view.php:26
+    #: views/admin/form/warning_answers_collected.view.php:26
     'Modifying the form may alter the collected data.' => 'Le modifier pourrait supprimer des données collectées.',
 
-    #: views/admin/warning_answers_collected.view.php:29
+    #: views/admin/form/warning_answers_collected.view.php:29
     'You’re right, take me to the answers' => 'C’est vrai, allons voir les réponses',
 
-    #: views/admin/warning_answers_collected.view.php:31
+    #: views/admin/form/warning_answers_collected.view.php:31
     'or' => 'ou',
 
-    #: views/admin/warning_answers_collected.view.php:31
+    #: views/admin/form/warning_answers_collected.view.php:31
     'Don’t worry, I know what I’m doing' => 'Ne vous inquiétez pas, je sais ce que je fais',
 
-    #: views/admin/warning_answers_collected.view.php:49
+    #: views/admin/form/warning_answers_collected.view.php:49
     'Answers to this form have already been received' => 'Des réponses à ce formulaire ont déjà été reçues',
 
-    #: views/admin/popup_delete.view.php:24
+    #: views/admin/form/popup_delete.view.php:24
     'This form has already received <strong>one answer</strong>.' => array(
         0 => 'Ce formulaire a déjà reçu <strong>une réponse</strong>.',
         1 => 'Ce formulaire a déjà reçu <strong>{{count}} réponses</strong>.',
     ),
 
-    #: views/admin/popup_delete.view.php:33
+    #: views/admin/form/popup_delete.view.php:33
     'Yes, I want to delete this form and the {{count}} answers received.' => 'Oui, je veux supprimer ce formulaire et les {{count}} réponses reçues.',
 
-    #: views/admin/warning_not_published.view.php:18
+    #: views/admin/form/warning_not_published.view.php:18
     'Not published' => 'Non publié',
 
-    #: views/admin/warning_not_published.view.php:19
+    #: views/admin/form/warning_not_published.view.php:19
     'To publish this form, add it to a page, a blog post or any other text editor.' => 'Pour publier ce formulaire, ajoutez-le à une page, un billet de blog ou tout autre éditeur de texte.',
 
-    #: views/admin/warning_not_published.view.php:22
+    #: views/admin/form/warning_not_published.view.php:22
     '<p>Most Novius OS text editors (also called WYSIWYG editors) feature this button {{preview}} in the toolbar.</p><p>Click it to access the list of applications you can enhance your text with.</p>' => '<p>La plupart des éditeurs de texte de Novius OS (aussi appelés éditeurs WYSIWYG) ont ce bouton {{preview}} dans la barre d’outils.</p><p>Cliquez pour accéder à la liste des applications permettant d’enrichir vos contenus.</p>',
 
-    #: views/admin/warning_not_published.view.php:23
+    #: views/admin/form/warning_not_published.view.php:23
     'Applications' => 'Applications',
 
     #: views/admin/permissions.view.php:15
@@ -482,32 +482,35 @@ M.',
     #: views/admin/permissions.view.php:22
     'Can visualise answers only' => 'Peut uniquement visualiser les réponses',
 
-    #: views/admin/layout_fields.view.php:28
+    #: views/admin/fields.view.php:28
     'You have a problem here: Your Novius OS is not set up to send emails. You’ll have to ask your developer to set it up for you.' => 'Il y a un souci&nbsp;: Votre Novius OS n’est pas configuré pour envoyer des emails. Demandez à votre développeur de le configurer.',
 
-    #: views/admin/layout_fields.view.php:47
-    #: views/admin/layout_fields.view.php:92
+    #: views/admin/fields.view.php:47
+    #: views/admin/fields.view.php:92
     'Add a field' => 'Ajouter un champ',
 
-    #: views/admin/layout_fields.view.php:53
+    #: views/admin/fields.view.php:53
     'Standard fields' => 'Champs standards',
 
-    #: views/admin/layout_fields.view.php:54
+    #: views/admin/fields.view.php:54
     'Special fields' => 'Champs spéciaux',
 
-    #: views/admin/layout_fields.view.php:93
+    #: views/admin/fields.view.php:54
+    'Fields layout' => 'Gabarits de champs',
+
+    #: views/admin/fields.view.php:93
     'Add a page break' => 'Ajouter un saut de page',
 
-    #: views/admin/layout_fields.view.php:96
+    #: views/admin/fields.view.php:96
     'Help us prevent spam: How much is 3 plus 8?' => 'Aidez-nous à lutter contre le spam&nbsp;: Combien font 3 plus 8&nbsp;?',
 
-    #: views/admin/layout_fields.view.php:103
+    #: views/admin/fields.view.php:103
     'Delete' => 'Supprimer',
 
-    #: views/admin/layout_fields.view.php:132
+    #: views/admin/fields.view.php:132
     'Form submission' => 'Envoi du formulaire',
 
-    #: views/admin/layout_fields.view.php:172
+    #: views/admin/fields.view.php:172
     'Are you sure?' => 'Êtes-vous sur(e)&nbsp;?',
 
     #: views/admin/answer.view.php:15
@@ -552,4 +555,27 @@ M.',
     #: classes/controller/admin/answer/appdesk.ctrl.php:36
     'Export (spreadsheet)' => 'Exporter (tableur)',
 
+
+    'Fields' => 'Champs',
+    'Conditions' => 'Conditions',
+    'Conditional' => 'Conditionnel',
+    'Form name to Check:' => 'Nom du champ à checker',
+    'Show when the value is:' => 'Montrer quand la valeur est :',
+    'Captcha' => 'Captcha',
+    'Default Email Address:' => 'Adresse e-mail par défault :',
+    'Placeholder :' => 'Placeholder :',
+    'File upload' => 'Téléchargement de fichier',
+    'Email Recipient List' => 'Liste des destinataires',
+    'A notification of the form answer will be sent to the selected email.' => 'Une notification de la réponse au formulaire sera envoyée à l\'adresse mail sélectionnée.',
+    'Label (displayed only in backoffice) :' => 'Label (affiché uniquement sur le back office)',
+    '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
+
+    'Slow down, slow down. You have duplicated this form 5 times already. Edit them first before creating more duplicates.' => 'Mollo&nbsp;! Vous avez dupliqué ce formulaire cinq fois déjà. Modifiez les copies existantes avant d\'en créer de nouvelles.',
+    'Here you are! The form has just been duplicated.' => 'C’est parti&nbsp;! Le formulaire a été dupliqué.',
+    'The form was not found.' => 'Le formulaire n\'a pas été trouvé.',
+    ' (copy {{count}})' => ' (copie {{count}})',
+    'Duplication target :' => 'Cible de la duplication :',
+    'Duplicate' => 'Dupliquer',
+    'Invalid context selected.' => 'Contexte sélectionné invalide.',
+    'Duplicating the form "{{title}}"' => 'Duplication du formulaire "{{title}}"',
 );

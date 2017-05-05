@@ -1,0 +1,80 @@
+.noviusos_form {
+
+    @import 'layout/wizard';
+
+    .column,
+    .columns {
+        padding-right: 10px;
+    }
+
+    /* The form layout */
+    .form-errors {
+        color: darkred;
+        margin: 10px 0;
+        text-align: left;
+    }
+
+    .form-fields-group.current {
+        display: block;
+    }
+
+    label[for] {
+        cursor: pointer;
+    }
+
+    .label-position-top,
+    .label-position-placeholder {
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="datetime"],
+        input[type="email"],
+        input[type="number"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="time"],
+        input[type="url"],
+        select,
+        textarea {
+            width: 100%;
+        }
+    }
+
+    .label-position-left {
+        text-align: left;
+
+        label {
+            vertical-align: top;
+        }
+
+        input,
+        select,
+        textarea {
+            width: auto;
+        }
+    }
+
+    .label-position-right {
+        text-align: right;
+    }
+
+    .form-field-label,
+    .form-field-input,
+    .form-field-error {
+
+        &.inline {
+            display: inline-block;
+        }
+    }
+
+    .form-field-label.inline {
+        vertical-align: top;
+    }
+
+    .instructions {
+        font-style: italic;
+        font-size: 90%;
+        margin-top: 0.1em;
+    }
+}

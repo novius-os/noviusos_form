@@ -3,7 +3,7 @@
 return array(
     'dictionaries' => array(
         'front' => array(
-            '^views/foundation.view.php',
+            '^views/front/form.view.php',
             '^classes/controller/front',
         ),
         // false == default dict

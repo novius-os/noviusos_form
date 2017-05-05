@@ -1,0 +1,49 @@
+/* Global Reset & Standards */
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.row {
+    margin: 0 auto;
+
+    &.collapse .column,
+    &.collapse .columns {
+        padding: 0;
+    }
+
+    .row {
+        margin: 0 -0px;
+        margin: 0 0px;
+
+        &.collapse {
+            margin: 0;
+        }
+    }
+}
+
+.column,
+.columns {
+    float: left;
+    min-height: 1px;
+    padding: 0 0;
+    position: relative;
+
+    &.centered {
+        float: none;
+        margin: 0 auto;
+    }
+}
+
+/* The Grid */
+[class*="column"] + [class*="column"] {
+    &:last-child {
+        float: right;
+    }
+    &.end {
+        float: left;
+    }
+}

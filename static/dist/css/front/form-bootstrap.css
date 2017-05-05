@@ -1,0 +1,73 @@
+.noviusos_form {
+  /* The form layout */ }
+  .noviusos_form .wizard-control-previous,
+  .noviusos_form .wizard-control-submit {
+    display: none; }
+  .noviusos_form .wizard-controls .columns {
+    text-align: center;
+    min-height: 1px; }
+  .noviusos_form .form-errors {
+    color: darkred;
+    margin: 10px 0;
+    text-align: left; }
+  .noviusos_form label[for] {
+    cursor: pointer; }
+  .noviusos_form .form-fields-group {
+    display: none; }
+    .noviusos_form .form-fields-group.current {
+      display: block; }
+  .noviusos_form input[type="text"],
+  .noviusos_form input[type="password"],
+  .noviusos_form input[type="date"],
+  .noviusos_form input[type="datetime"],
+  .noviusos_form input[type="email"],
+  .noviusos_form input[type="number"],
+  .noviusos_form input[type="search"],
+  .noviusos_form input[type="tel"],
+  .noviusos_form input[type="time"],
+  .noviusos_form input[type="url"],
+  .noviusos_form select,
+  .noviusos_form textarea {
+    width: 100%; }
+  .noviusos_form .form-field-label.inline,
+  .noviusos_form .form-field-input.inline,
+  .noviusos_form .form-field-error.inline {
+    display: inline-block; }
+  .noviusos_form .form-field-label.inline {
+    vertical-align: top; }
+  .noviusos_form .instructions {
+    font-style: italic;
+    font-size: 90%;
+    margin-top: 0.1em; }
+
+.noviusos_form input.parsley-error,
+.noviusos_form select.parsley-error,
+.noviusos_form textarea.parsley-error {
+  color: #B94A48;
+  background-color: #F2DEDE;
+  border: 1px solid #EED3D7; }
+
+.noviusos_form .parsley-errors-list {
+  margin: 2px 0 3px;
+  padding: 0;
+  list-style-type: none;
+  line-height: 0.9em;
+  opacity: 0;
+  transition: all .3s ease-in;
+  -o-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+  -webkit-transition: all .3s ease-in; }
+  .noviusos_form .parsley-errors-list.filled {
+    opacity: 1; }
+  .noviusos_form .parsley-errors-list .parsley-type {
+    font-size: 1em; }
+
+.noviusos_form .parsley-type,
+.noviusos_form .parsley-custom-error-message,
+.noviusos_form .parsley-required {
+  color: darkred;
+  margin: 4px 0 0 0;
+  text-align: left; }
+
+.nos_form_disabled {
+  display: none; }

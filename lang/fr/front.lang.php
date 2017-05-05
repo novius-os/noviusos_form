@@ -6,16 +6,16 @@
 // 66 out of 66 words are translated (100%).
 
 return array(
-    #: views/foundation.view.php:149
+    #: views/front/form.view.php:149
     '{{previous}}{{pagination}}{{next}}' => '',
 
-    #: views/foundation.view.php:158
+    #: views/front/form.view.php:158
     'Previous page' => 'Page précédente',
 
-    #: views/foundation.view.php:162
+    #: views/front/form.view.php:162
     'Next page' => 'Page suivante',
 
-    #: views/foundation.view.php:169
+    #: views/front/form.view.php:169
     '{{current}} out of {{total}}' => '{{current}} sur {{total}}',
 
     #: classes/controller/front.ctrl.php:83
@@ -41,5 +41,7 @@ return array(
 
     #: classes/controller/front.ctrl.php:587
     '{{form}}: New answer' => '{{form}}&nbsp;: Nouvelle réponse',
+
+    'Message sent by:' => 'Message envoyé par :',
 
 );

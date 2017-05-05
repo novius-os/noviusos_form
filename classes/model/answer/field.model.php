@@ -14,6 +14,7 @@ class Model_Answer_Field extends \Nos\Orm\Model
 {
     protected static $_table_name = 'nos_form_answer_field';
     protected static $_primary_key = array('anfi_id');
+    protected static $_prefix = 'anfi_';
 
     protected static $_properties = array(
         'anfi_id' => array(
@@ -31,16 +32,20 @@ class Model_Answer_Field extends \Nos\Orm\Model
             'data_type' => 'int unsigned',
             'null' => false,
         ),
-        'anfi_field_type' => array(
+        'anfi_field_driver' => array(
             'default' => null,
             'data_type' => 'varchar',
             'null' => false,
         ),
         'anfi_value' => array(
             'default' => null,
-            'data_type' => 'text',
+            'data_type' => 'serialize',
             'null' => false,
         ),
+    );
+
+    protected static $_observers = array(
+        'Nos\Form\Observer_Typing',
     );
 
     protected static $_has_one = array();
@@ -67,4 +72,18 @@ class Model_Answer_Field extends \Nos\Orm\Model
             'cascade_delete' => false,
         ),
     );
+
+    /**
+     * Gets the attachments of the specified field
+     *
+     * @return \Nos\Attachment
+     */
+    public function getAttachment()
+    {
+        return \Nos\Attachment::forge($this->anfi_answer_id.'_'.$this->anfi_field_id, array(
+            'dir' => 'apps'.DS.'noviusos_form'.DS.$this->answer->answer_form_id,
+            'alias' => 'form/'.$this->answer->answer_form_id,
+            'check' => array(__CLASS__, 'check_attachment'),
+        ));
+    }
 }

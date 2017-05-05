@@ -52,9 +52,10 @@ return array(
     ),
     'search_text' => array(
         function ($value, $query) {
-            $query->related('fields', array('where' => array(
-                array('anfi_field_type', 'IN', array('text', 'textarea', 'checkbox', 'select', 'radio', 'email', 'number')),
-            )));
+//            // @todo refacto
+//            $query->related('fields', array('where' => array(
+//                array('anfi_field_driver', 'IN', array('text', 'textarea', 'checkbox', 'select', 'radio', 'email', 'number')),
+//            )));
             $query->where('fields.anfi_value', 'LIKE', '%'.$value.'%');
             return $query;
         }
