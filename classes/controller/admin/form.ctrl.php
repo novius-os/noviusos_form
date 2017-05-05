@@ -145,6 +145,33 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         return $return;
     }
 
+    public function action_render_fields_blank_slate()
+    {
+        $availableFields = Helper_Admin_Form::getAvailableFields();
+        $availableTemplates = Helper_Admin_Form::getAvailableTemplates();
+
+        return \View::forge('noviusos_form::admin/form/fields_blank_slate', array(
+            'layouts' => array(
+                array(
+                    'title' => __('Standard fields'),
+                    'layout' => array_filter($availableFields, function($field) {
+                        return empty($field['special']);
+                    }),
+                ),
+                array(
+                    'title' => __('Special fields'),
+                    'layout' => array_filter($availableFields, function($field) {
+                        return !empty($field['special']);
+                    }),
+                ),
+                array(
+                    'title' => __('Fields layout'),
+                    'layout' => $availableTemplates,
+                ),
+            ),
+        ), false);
+    }
+
     /**
      * Renders the specified layout
      *
@@ -153,7 +180,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
      */
     public function action_render_layout($layoutName)
     {
-        $fields = $previews = array();
+        $layoutName = base64_decode($layoutName);
 
         // Gets the app config
         $appConfig = \Config::load('noviusos_form::config', true);
@@ -162,13 +189,17 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         if ($layoutName == 'default') {
             $definition = \Arr::get($appConfig, 'default_fields_layout.definition', array());
         } else {
-            $definition = \Arr::get($appConfig, 'available_fields_layouts.'.$layoutName.'.definition', array());
+            $definition = \Arr::get(Helper_Admin_Form::getAvailableFields(), $layoutName.'.definition',
+                \Arr::get(Helper_Admin_Form::getAvailableTemplates(), $layoutName.'.definition', array())
+            );
         }
         if (empty($definition)) {
             throw new \Exception('Field definition not found.');
         }
 
-        // Creates the fields
+        // Creates the fields meta, preview and layout
+        $fields = array();
+        $previews = array();
         $layout = \Arr::get($definition, 'layout');
         foreach (\Arr::get($definition, 'fields', array()) as $field_identifier => $field_properties) {
 

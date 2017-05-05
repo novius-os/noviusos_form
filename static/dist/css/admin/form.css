@@ -21,16 +21,22 @@
     margin: 0;
     padding: 1em;
     position: absolute;
-    z-index: 10;
+    z-index: 91;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
+    .nos-form-layout-fields .field_blank_slate table {
+      width: 100%; }
     .nos-form-layout-fields .field_blank_slate th {
       text-align: center;
-      font-weight: bold; }
+      font-weight: bold;
+      white-space: nowrap;
+      padding: .5em; }
     .nos-form-layout-fields .field_blank_slate td {
       vertical-align: top;
-      padding: 1em; }
-      .nos-form-layout-fields .field_blank_slate td:first-child {
-        border-right: 1px solid #ccc; }
+      padding: .5em; }
+    .nos-form-layout-fields .field_blank_slate .layout-type {
+      border-left: 1px solid #ccc; }
+      .nos-form-layout-fields .field_blank_slate .layout-type:first-child {
+        border-left: 0; }
     .nos-form-layout-fields .field_blank_slate img {
       vertical-align: middle; }
     .nos-form-layout-fields .field_blank_slate label {

@@ -2,6 +2,7 @@
 
 return array(
     'name' => __('Separator'),
+    'icon' => 'static/apps/noviusos_form/img/fields/separator.png',
 
     // Fields default value
     'default_values' => array(
@@ -31,4 +32,7 @@ return array(
 
     // Sets false if not exportable
     'exportable' => false,
+
+    // Set true to display the field in the "Special fields" column when adding a new field to a form
+    'special' => true,
 );

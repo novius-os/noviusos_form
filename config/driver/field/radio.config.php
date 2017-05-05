@@ -2,6 +2,7 @@
 
 return array(
     'name' => __('Unique choice (radio buttons)'),
+    'icon' => 'static/apps/noviusos_form/img/fields/radio.png',
 
     // Fields default value
     'default_values' => array(

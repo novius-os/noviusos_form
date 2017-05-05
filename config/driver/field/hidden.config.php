@@ -2,6 +2,7 @@
 
 return array(
     'name' => __('Hidden'),
+    'icon' => 'static/apps/noviusos_form/img/fields/hidden.png',
 
     // Fields default value
     'default_values' => array(
@@ -33,4 +34,10 @@ return array(
             'label' => __('Label (displayed only in backoffice) :'),
         ),
     ),
+
+    // Set true to display the field in the "Special fields" column when adding a new field to a form
+    'special' => true,
+
+    // Set true to display the field only for experts
+    'expert' => true,
 );

@@ -1,12 +1,14 @@
 <?php
 
 return array(
-    'name' => __('Unique choice (drop-down list)'),
+    'name' => __('Email Recipient List'),
     'icon' => 'static/apps/noviusos_form/img/fields/dropdown.png',
 
     // Fields default value
     'default_values' => array(
-        'field_choices' => __("First option\nSecond option"),
+        'field_technical_id' => 'recipient-list',
+        'field_details' => __('A notification of the form answer will be sent to the selected email.'),
+        'field_choices' => __("First option=mail@domain.com\nSecond option=othermail@domain.com"),
     ),
 
     'admin' => array(
@@ -48,4 +50,6 @@ return array(
     'answer_appdesk_config' => array(
         'dataType' => 'string',
     ),
+
+    'available_as_field' => false,
 );

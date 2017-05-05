@@ -2,6 +2,7 @@
 
 return array(
     'name' => __('Multiple choice (checkboxes)'),
+    'icon' => 'static/apps/noviusos_form/img/fields/checkbox.png',
 
     // Fields default value
     'default_values' => array(

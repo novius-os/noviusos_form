@@ -2,8 +2,9 @@
 
 return array(
     'name' => __('Single line text'),
+    'icon' => 'static/apps/noviusos_form/img/fields/text.png',
 
-    'admin'                 => array(
+    'admin' => array(
         // Meta layout
         'layout' => array(
             'main'     => array(
