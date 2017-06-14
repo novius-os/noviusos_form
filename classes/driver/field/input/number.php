@@ -20,6 +20,22 @@ class Driver_Field_Input_Number extends Driver_Field_Input
     }
 
     /**
+     * checks requirement state
+     *
+     * @param $inputValue
+     * @param null $formData
+     * @return bool
+     */
+    public function checkRequirement($inputValue, $formData = null)
+    {
+        if (!$this->isMandatory()) {
+            return true;
+        }
+
+        return is_int($inputValue) && !empty($inputValue);
+    }
+
+    /**
      * Gets the input type
      *
      * @return string
