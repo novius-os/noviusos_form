@@ -57,6 +57,7 @@ class Driver_Field_Input_Number extends Driver_Field_Input
         if (!is_int($value) && !ctype_digit($value)) {
             return null;
         }
+
         return (int) $value;
     }
 }
