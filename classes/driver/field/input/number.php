@@ -20,6 +20,22 @@ class Driver_Field_Input_Number extends Driver_Field_Input
     }
 
     /**
+     * checks requirement state
+     *
+     * @param $inputValue
+     * @param null $formData
+     * @return bool
+     */
+    public function checkRequirement($inputValue, $formData = null)
+    {
+        if (!$this->isMandatory()) {
+            return true;
+        }
+
+        return is_int($inputValue);
+    }
+
+    /**
      * Gets the input type
      *
      * @return string
@@ -31,12 +47,17 @@ class Driver_Field_Input_Number extends Driver_Field_Input
 
     /**
      * Sanitizes the value
+     * This method is called in front-office (with string) input value and in back-office (with int)
      *
      * @param $value
      * @return int
      */
     public function sanitizeValue($value)
     {
+        if (!is_int($value) && !ctype_digit($value)) {
+            return null;
+        }
+
         return (int) $value;
     }
 }
