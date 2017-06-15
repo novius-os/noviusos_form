@@ -32,7 +32,7 @@ class Driver_Field_Input_Number extends Driver_Field_Input
             return true;
         }
 
-        return is_int($inputValue) && !empty($inputValue);
+        return is_int($inputValue);
     }
 
     /**
@@ -47,12 +47,16 @@ class Driver_Field_Input_Number extends Driver_Field_Input
 
     /**
      * Sanitizes the value
+     * This method is called in front-office (with string) input value and in back-office (with int)
      *
      * @param $value
      * @return int
      */
     public function sanitizeValue($value)
     {
+        if (!is_int($value) && !ctype_digit($value)) {
+            return null;
+        }
         return (int) $value;
     }
 }
