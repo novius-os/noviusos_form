@@ -418,7 +418,7 @@ class Controller_Front extends Controller_Front_Application
                 foreach ($choiceInfos as $key => $choiceValue) {
                     $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
                 }
-                $choiceLabel       = $choiceInfos[0];
+                $choiceLabel = $choiceInfos[0];
                 $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $choiceLabel));
                 if ($field->field_technical_id === 'recipient-list') {
                     // Keep in memory the recipent e-mail
@@ -434,7 +434,7 @@ class Controller_Front extends Controller_Front_Application
                     // Choice value for recipient-list is line number of the choice in $field->field_choices
                     $choiceValue = $keyChoice;
                     $choiceLabel = $choice;
-                }else{
+                } else {
                     $choiceLabel = $choiceValue = $choice;
                 }
             }
@@ -528,11 +528,11 @@ class Controller_Front extends Controller_Front_Application
                         default:
                             $value = \Input::post($name, '');
                             if (in_array($type, array('select')) && mb_strpos($field->field_choices, '=')) {
-                                if($field->field_technical_id === 'recipient-list' && $value !== '') {
+                                if ($field->field_technical_id === 'recipient-list' && $value !== '') {
                                     $tmp = '';
                                     $this->getSelectFieldChoices($field, $tmp); // Generate recipients list in static variable
                                     $value = \Arr::get(static::$fieldsRecipents, $field->id.'.'.((int) $value), '');
-                                }else{
+                                } else {
                                     $value = Crypt::decode($value);
                                 }
                             }
