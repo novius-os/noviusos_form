@@ -404,7 +404,7 @@ class Controller_Front extends Controller_Front_Application
      */
     protected function getSelectFieldChoices(Model_Field $field, &$value)
     {
-        if ($field->field_technical_id === 'recipient-list') {
+        if ($field->isRecipientList()) {
             // The field is a recipent-list : the select values are line numbers so we have to keep emails in memory
             static::$fieldsRecipents[$field->id] = array();
         }
@@ -413,14 +413,14 @@ class Controller_Front extends Controller_Front_Application
         $choiceList = array();
         $isCrypted = false;
         foreach ($choices as $keyChoice => $choice) {
-            if (mb_strrpos($choice, '=')) {
+            if (mb_strrpos($choice, '=') !== false) {
                 $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
                 foreach ($choiceInfos as $key => $choiceValue) {
                     $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
                 }
                 $choiceLabel = $choiceInfos[0];
                 $choiceValue = Crypt::encode(\Arr::get($choiceInfos, 1, $choiceLabel));
-                if ($field->field_technical_id === 'recipient-list') {
+                if ($field->isRecipientList()) {
                     // Keep in memory the recipent e-mail
                     static::$fieldsRecipents[$field->id][$keyChoice] = \Arr::get($choiceInfos, 1, $choiceLabel);
                     // Choice value for recipient-list is line number of the choice in $field->field_choices
@@ -428,7 +428,7 @@ class Controller_Front extends Controller_Front_Application
                 }
                 $isCrypted = true;
             } else {
-                if ($field->field_technical_id === 'recipient-list') {
+                if ($field->isRecipientList()) {
                     // Keep in memory the recipent e-mail
                     static::$fieldsRecipents[$field->id][$keyChoice] = $choice;
                     // Choice value for recipient-list is line number of the choice in $field->field_choices
@@ -441,7 +441,7 @@ class Controller_Front extends Controller_Front_Application
             $choiceList[$choiceValue] = $choiceLabel;
         }
 
-        if ($isCrypted && $field->field_technical_id !== 'recipient-list') {
+        if ($isCrypted && !$field->isRecipientList()) {
             $value = Crypt::encode($value);
         }
 
@@ -527,8 +527,8 @@ class Controller_Front extends Controller_Front_Application
 
                         default:
                             $value = \Input::post($name, '');
-                            if (in_array($type, array('select')) && mb_strpos($field->field_choices, '=')) {
-                                if ($field->field_technical_id === 'recipient-list' && $value !== '') {
+                            if (in_array($type, array('select')) && mb_strpos($field->field_choices, '=') !== false) {
+                                if ($field->isRecipientList() && $value !== '') {
                                     $tmp = '';
                                     $this->getSelectFieldChoices($field, $tmp); // Generate recipients list in static variable
                                     $value = \Arr::get(static::$fieldsRecipents, $field->id.'.'.((int) $value), '');
@@ -550,7 +550,7 @@ class Controller_Front extends Controller_Front_Application
             $field = $fields[$name];
             $type = $field->field_type;
 
-            if ($field->field_technical_id === 'recipient-list') {
+            if ($field->isRecipientList()) {
                 if (preg_match("/".preg_quote($value)."$/m", $field->field_choices) && !empty($value)) {
                     if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
                         // Override form_submit_email only if selected option is an email

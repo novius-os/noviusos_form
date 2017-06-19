@@ -219,4 +219,10 @@ class Model_Field extends \Nos\Orm\Model
             }
         }
     }
+
+    public function isRecipientList()
+    {
+        return $this->field_technical_id === 'recipient-list';
+    }
+
 }
