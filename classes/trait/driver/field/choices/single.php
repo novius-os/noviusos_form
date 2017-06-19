@@ -10,6 +10,18 @@ namespace Nos\Form;
 trait Trait_Driver_Field_Choices_Single
 {
     /**
+     * @var bool : Set to true if you want number values (based on line number) instead of crypted values
+     */
+    protected $useLineNumberForValues = false;
+
+    /**
+     * @var array : An associative array to keep in memory the fields' values if $useLineNumberForValues is set to true
+     * Example of value :
+     * [FIELD_ID] => [0 => "value 1", 2 => "value 2",]
+     */
+    protected static $storedfieldValues = array();
+
+    /**
      * Renders the answer as HTML
      *
      * @param Model_Answer_Field $answerField
@@ -91,14 +103,21 @@ trait Trait_Driver_Field_Choices_Single
      */
     protected function getValueChoiceLabel($value)
     {
+        $selectedValue = null;
         // Gets the choices
         $choices = $this->getChoicesList();
 
-        $hashValue = $this->convertChoiceValueToHash($value);
-        if (array_key_exists($hashValue, $choices)) {
-            $selectedValue = \Arr::get($choices, $hashValue);
-        } else {
-            $selectedValue = \Arr::get($choices, $value, $value);
+        if (!$this->useLineNumberForValues) {
+            $hashValue = $this->convertChoiceValueToHash($value);
+            if (array_key_exists($hashValue, $choices)) {
+                $selectedValue = \Arr::get($choices, $hashValue);
+            } else {
+                $selectedValue = \Arr::get($choices, $value, $value);
+            }
+        }else{
+            if ($value !== ''){
+                $selectedValue = \Arr::get(static::$storedfieldValues, $this->getField()->id.'.'.(int)$value, '');
+            }
         }
 
         return $selectedValue;
@@ -126,6 +145,9 @@ trait Trait_Driver_Field_Choices_Single
      */
     protected function getChoicesList($onlyValues = null)
     {
+        if ($this->useLineNumberForValues && empty(static::$storedfieldValues[$this->getField()->id])) {
+            static::$storedfieldValues[$this->getField()->id] = array();
+        }
         $choices = $this->getChoices();
 
         $choiceList = array();
@@ -136,10 +158,17 @@ trait Trait_Driver_Field_Choices_Single
                     $choiceInfos[$key] = str_replace('\=', '=', $choiceValue);
                 }
                 $choiceLabel = (string) $choiceInfos[0];
+                $choiceValueNotCrypted = \Arr::get($choiceInfos, 1);
                 $choiceValue = $this->hashChoiceValue($choiceInfos[1] ?: $choiceLabel);
             } else {
                 $choiceLabel = $choice;
                 $choiceValue = (string) $index;
+                $choiceValueNotCrypted = $choice;
+            }
+
+            if ($this->useLineNumberForValues) {
+                static::$storedfieldValues[$this->getField()->id][$index] = $choiceValueNotCrypted;
+                $choiceValue = $index;
             }
 
             if (is_null($onlyValues) || (is_array($onlyValues) && in_array($choiceValue, $onlyValues))) {
@@ -151,7 +180,6 @@ trait Trait_Driver_Field_Choices_Single
         if (empty($choiceList) && is_null($onlyValues)) {
             $choiceList = array('' => '');
         }
-
 
         return $choiceList;
     }

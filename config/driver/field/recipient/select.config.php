@@ -33,12 +33,12 @@ return array(
         ),
         'fields' => array(
             'field_choices' => array(
-                'label' => __('Answers:'),
+                'label' => __('Recipients:'),
                 'form' => array(
                     'type' => 'textarea',
                     'rows' => '5',
                     'value' => '',
-                    'placeholder' => __('One answer per line'),
+                    'placeholder' => __('One recipient per line'),
                 ),
             ),
         ),
@@ -51,5 +51,7 @@ return array(
         'dataType' => 'string',
     ),
 
-    'available_as_field' => false,
+    // Set true to display the field in the "Special fields" column when adding a new field to a form
+    'special' => true,
+
 );
