@@ -114,9 +114,9 @@ trait Trait_Driver_Field_Choices_Single
             } else {
                 $selectedValue = \Arr::get($choices, $value, $value);
             }
-        }else{
-            if ($value !== ''){
-                $selectedValue = \Arr::get(static::$storedfieldValues, $this->getField()->id.'.'.(int)$value, '');
+        } else {
+            if ($value !== '') {
+                $selectedValue = \Arr::get(static::$storedfieldValues, $this->getField()->id.'.'.(int) $value, '');
             }
         }
 
