@@ -19,6 +19,8 @@ class Field_Eav extends \Nos\Migration
     {
         parent::up();
 
+        \Autoloader::add_class('Nos\\Form\\Model_Answer_Field', __DIR__ . '/../classes/model/answer/field.model.php');
+
         $query         = DB::select_array(array('anfi_id', 'anfi_value'))
             ->from(Model_Answer_Field::table())
             ->where('anfi_field_driver', 'NOT LIKE', '%Driver_Field_Checkbox%');
