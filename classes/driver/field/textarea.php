@@ -38,7 +38,7 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
     {
         return html_tag('textarea', array(
             'rows' => $this->field->field_height !== '' ? $this->field->field_height : null,
-            'placeholder'  => ($this instanceof Interface_Driver_Field_Placeholder ) ? $this->getPlaceholderValue() : '',
+            'placeholder'  => ($this instanceof Interface_Driver_Field_Placeholder) ? $this->getPlaceholderValue() : '',
         ), $this->getFieldDefaultValue());
     }
 
@@ -52,6 +52,7 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
     public function renderAnswerHtml(Model_Answer_Field $answerField)
     {
         $html = \Str::textToHtml($answerField->value);
+
         return $html;
     }
 
@@ -75,5 +76,4 @@ class Driver_Field_Textarea extends Driver_Field_Abstract implements Interface_D
 
         return $attributes;
     }
-
 }

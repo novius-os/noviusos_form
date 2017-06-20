@@ -90,7 +90,7 @@ return array(
         ),
     ),
     'fields' => array(
-        'form_name' => array (
+        'form_name' => array(
             'label' => __('Title'),
             'form' => array(
                 'type' => 'text',
@@ -100,7 +100,7 @@ return array(
                 'min_length' => array(2),
             ),
         ),
-        'form_virtual_name' => array (
+        'form_virtual_name' => array(
             'label' => __('Virtual name:'),
             'form' => array(
                 'type' => 'text',
@@ -108,12 +108,12 @@ return array(
             ),
             'expert' => true,
         ),
-        'form_layout' => array (
+        'form_layout' => array(
             'form' => array(
                 'type' => 'hidden',
             ),
         ),
-        'form_captcha' => array (
+        'form_captcha' => array(
             'label' => __('Captcha protected'),
             'form' => array(
                 'type' => 'checkbox',
@@ -121,17 +121,17 @@ return array(
                 'empty' => '0',
             ),
         ),
-        'form_submit_label' => array (
-            'label' => __("Submit button’s label:"),
+        'form_submit_label' => array(
+            'label' => __('Submit button’s label:'),
             'form' => array(
                 'type' => 'text',
-                'value' => __("I’m the submit button, click to edit me"),
+                'value' => __('I’m the submit button, click to edit me'),
             ),
         ),
-        'form_submit_email' => array (
-            'label' => __("For every new answer, an email notification is sent to:"),
+        'form_submit_email' => array(
+            'label' => __('For every new answer, an email notification is sent to:'),
             'form' => array(
-                'description' => __("One email per line"),
+                'description' => __('One email per line'),
                 'type' => 'textarea',
                 'placeholder' => __('One email per line'),
                 'cols' => 50,
@@ -150,7 +150,7 @@ return array(
                     </div>
                 '
             ),
-            'show_when' => function() {
+            'show_when' => function () {
                 return !\Email::hasDefaultFrom();
             }
         ),
@@ -161,7 +161,7 @@ return array(
             'form' => array(
                 'value' => \View::forge('noviusos_form::admin/form/warning_not_published', array(), false)->render()
             ),
-            'show_when' => function($item) {
+            'show_when' => function ($item) {
                 if ($item->is_new()) {
                     return false;
                 }
@@ -170,6 +170,7 @@ return array(
                         array('wysiwyg_text', 'LIKE', '%&quot;form_id&quot;:&quot;'.$item->form_id.'%'),
                     ),
                 ));
+
                 return $count == 0;
             },
             'template' => '<td colspan="2">{field}</td>',
@@ -306,6 +307,7 @@ return array(
                     if (is_array($defaultValue)) {
                         $defaultValue = implode(',', $defaultValue);
                     }
+
                     return $defaultValue;
                 },
             ),
@@ -337,7 +339,7 @@ return array(
                     'value' => '3',
                 ),
                 'populate' => function ($item) {
-                        return empty($item->field_height) ? '' : $item->field_height;
+                    return empty($item->field_height) ? '' : $item->field_height;
                 },
             ),
             'field_limited_to' => array(
@@ -348,7 +350,7 @@ return array(
                     'size' => '3',
                 ),
                 'populate' => function ($item) {
-                        return empty($item->field_limited_to) ? '' : $item->field_limited_to;
+                    return empty($item->field_limited_to) ? '' : $item->field_limited_to;
                 },
             ),
             'field_origin' => array(

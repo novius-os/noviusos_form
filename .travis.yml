@@ -17,4 +17,4 @@ before_script:
   - php $PHPCSFIXER_PATH -V
 
 script: 
-  - php $PHPCSFIXER_PATH fix . -vv --diff --config-file ./.php_cs
+  - php $PHPCSFIXER_PATH fix . -vv --diff --config ./.php_cs

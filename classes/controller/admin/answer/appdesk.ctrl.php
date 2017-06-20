@@ -93,12 +93,12 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                     $label = $label($field);
                 }
 
-                $column = array (
+                $column = array(
                     'headerText' => $headerText,
                     'dataType' => $dataType,
                     'dataKey' => $id,
                 );
-                $meta[$id] = array (
+                $meta[$id] = array(
                     'label' => $label,
                     'dataType' => $dataType,
                 );

@@ -95,6 +95,7 @@ class Model_Answer extends \Nos\Orm\Model
         if (is_null($this->service) || $reload) {
             $this->service = Service_Answer::forge($this);
         }
+
         return $this->service;
     }
 
@@ -136,7 +137,7 @@ class Model_Answer extends \Nos\Orm\Model
             $files = \File::read_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete, 1, array('^'.$this->_answer_id_for_delete.'_'));
             foreach ($files as $dir => $file) {
                 if (is_int($dir)) {
-                    \File::delete(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete.DS .$file);
+                    \File::delete(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete.DS.$file);
                 } else {
                     \File::delete_dir(APPPATH.'data'.DS.'files'.DS.'apps'.DS.'noviusos_form'.DS.$this->_form_id_for_delete.DS.$dir);
                 }

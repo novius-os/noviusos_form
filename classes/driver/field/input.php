@@ -93,5 +93,4 @@ class Driver_Field_Input extends Driver_Field_Abstract implements Interface_Driv
     {
         return $this->getVirtualName();
     }
-
 }

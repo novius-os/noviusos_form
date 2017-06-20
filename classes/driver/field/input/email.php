@@ -33,6 +33,7 @@ class Driver_Field_Input_Email extends Driver_Field_Input implements Interface_D
         if (!filter_var($inputValue, FILTER_VALIDATE_EMAIL)) {
             return null;
         }
+
         return $this->sanitizeValue($inputValue);
     }
 
@@ -45,6 +46,7 @@ class Driver_Field_Input_Email extends Driver_Field_Input implements Interface_D
     public function sanitizeValue($value)
     {
         $value =  parent::sanitizeValue($value);
+
         return $value;
     }
 

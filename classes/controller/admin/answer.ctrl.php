@@ -24,6 +24,7 @@ class Controller_Admin_Answer extends \Nos\Controller_Admin_Crud
             return null;
         }
         $item = parent::crud_item($id);
+
         return $item;
     }
 

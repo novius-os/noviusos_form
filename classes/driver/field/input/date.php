@@ -17,6 +17,7 @@ class Driver_Field_Input_Date extends Driver_Field_Input
         if (!empty($inputValue) && !$this->isDateValid($inputValue)) {
             throw new Exception_Driver_Field_Validation(__('Please enter a valid date.'));
         }
+
         return true;
     }
 
@@ -32,8 +33,10 @@ class Driver_Field_Input_Date extends Driver_Field_Input
         if (!empty($value)) {
             try {
                 return \Date::create_from_string($answerField->value, 'mysql_date')->format();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
+
         return null;
     }
 
@@ -51,6 +54,7 @@ class Driver_Field_Input_Date extends Driver_Field_Input
                 return true;
             }
         }
+
         return false;
     }
 

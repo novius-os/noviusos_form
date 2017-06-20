@@ -99,7 +99,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         // Registers the fields
         $fieldsConfig = \Arr::get($this->config, 'fields_config.fields');
         foreach ($fields_data as $field_id => $field_data) {
-
             $field = Model_Field::find($field_id);
 
             // Builds the fields config with the driver's config
@@ -154,13 +153,13 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             'layouts' => array(
                 array(
                     'title' => __('Standard fields'),
-                    'layout' => array_filter($availableFields, function($field) {
+                    'layout' => array_filter($availableFields, function ($field) {
                         return empty($field['special']);
                     }),
                 ),
                 array(
                     'title' => __('Special fields'),
-                    'layout' => array_filter($availableFields, function($field) {
+                    'layout' => array_filter($availableFields, function ($field) {
                         return !empty($field['special']);
                     }),
                 ),
@@ -282,7 +281,6 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     public function action_render_field_preview($field)
     {
         if (!is_a($field, Model_Field::class)) {
-
             $field_id = intval($field);
 
             // Gets the field or forge a new one
@@ -366,10 +364,10 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             gc_enable();
 
             // Send HTTP headers for inform the browser that it will receive a CSV file
-            \Response::forge(\Format::forge($csv)->to_csv() . "\n", 200, array(
+            \Response::forge(\Format::forge($csv)->to_csv()."\n", 200, array(
                 'Content-Type'              => 'application/csv',
-                'Content-Disposition'       => 'attachment; ' .
-                    'filename=' . \Nos\Orm_Behaviour_Virtualname::friendly_slug($this->crud_item($id)->form_name) . '.csv;',
+                'Content-Disposition'       => 'attachment; '.
+                    'filename='.\Nos\Orm_Behaviour_Virtualname::friendly_slug($this->crud_item($id)->form_name).'.csv;',
                 'Content-Transfer-Encoding' => 'binary',
             ))->send(true);
 
@@ -386,7 +384,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                     }
                     $csv[] = $csvValue;
                 }
-                \Response::forge(\Format::forge($csv)->to_csv() . "\n")->send();
+                \Response::forge(\Format::forge($csv)->to_csv()."\n")->send();
             }
             exit();
         } catch (\Exception $e) {
@@ -532,7 +530,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
              */
             $form = $this->crud_item($id);
             $contexts = Permission::contexts();
-            $duplicateContext = (string)\Input::post('duplicate_context');
+            $duplicateContext = (string) \Input::post('duplicate_context');
             // Check context permission with selected context target
             if (!empty($duplicateContext) && !array_key_exists($duplicateContext, $contexts)) {
                 throw new \Exception(__('Invalid context selected.'));
@@ -584,11 +582,11 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
          */
         $form = $this->crud_item($id);
         $contexts_list = array_keys(Permission::contexts());
+
         return \View::forge('noviusos_form::admin/popup_duplicate', array(
             'item' => $form,
             'action' => 'admin/noviusos_form/form/duplicate/'.$id,
             'contexts_list' => $contexts_list,
         ), false);
     }
-
 }

@@ -6,11 +6,13 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach ($fields as $field) { ?>
+    <?php foreach ($fields as $field) {
+    ?>
         <tr>
             <td><?= $field['label'] ?></td>
             <td><?= $field['value'] ?></td>
         </tr>
-    <?php } ?>
+    <?php 
+} ?>
     </tbody>
 </table>

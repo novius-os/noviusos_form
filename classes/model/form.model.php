@@ -169,6 +169,7 @@ class Model_Form extends \Nos\Orm\Model
         if (is_null($this->service) || $reload) {
             $this->service = Service_Form::forge($this);
         }
+
         return $this->service;
     }
 
@@ -254,7 +255,7 @@ class Model_Form extends \Nos\Orm\Model
             $arrNewColumns = array();
             foreach ($arrColumns as $column) {
                 $columnDetail = explode('=', $column);
-                $fieldId = (int)array_shift($columnDetail);
+                $fieldId = (int) array_shift($columnDetail);
                 if (array_key_exists($fieldId, $arrFieldsIds)) {
                     array_unshift($columnDetail, \Arr::get($arrFieldsIds, $fieldId));
                     $arrNewColumns[] = implode('=', $columnDetail);

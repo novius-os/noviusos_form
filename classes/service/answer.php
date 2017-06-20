@@ -112,6 +112,7 @@ class Service_Answer
         $config = \Config::load('noviusos_form::config', true);
         $recipients = array_filter(explode("\n", $form->form_submit_email), function ($var) {
             $var = trim($var);
+
             return !empty($var) && filter_var($var, FILTER_VALIDATE_EMAIL);
         });
 
@@ -149,7 +150,7 @@ class Service_Answer
         // Adds attachments to the mail
         if (!empty($attachments)) {
             // Calculates total size of attachments
-            $totalSize = array_sum(array_map(function($attachment) {
+            $totalSize = array_sum(array_map(function ($attachment) {
                 return filesize($attachment->path());
             }, $attachments));
             // Checks if total size of attachments does not exceed the limit
@@ -185,6 +186,7 @@ class Service_Answer
             $mail->send();
         } catch (\Exception $e) {
             logger(\Fuel::L_ERROR, 'The Forms application cannot send emails - '.$e->getMessage());
+
             return false;
         }
 
