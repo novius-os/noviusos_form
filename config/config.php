@@ -33,6 +33,7 @@ return array(
         \Nos\Form\Driver_Field_Message::class,
         \Nos\Form\Driver_Field_Hidden::class,
         \Nos\Form\Driver_Field_Variable::class,
+        \Nos\Form\Driver_Field_Recipient_Select::class,
     ),
 
     // The default fields layout when creating a new form in backoffice

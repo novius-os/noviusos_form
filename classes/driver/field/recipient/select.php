@@ -4,6 +4,9 @@ namespace Nos\Form;
 
 class Driver_Field_Recipient_Select extends Driver_Field_Select
 {
+
+    protected $useLineNumberForValues = true;
+
     /**
      * Triggered before form submission
      *
@@ -13,17 +16,12 @@ class Driver_Field_Recipient_Select extends Driver_Field_Select
      */
     public function beforeFormSubmission(Model_Form $form, $inputValue = null, $formData = null)
     {
-        // Checks if the field is a recipient list
-        if ($this->field->field_technical_id === 'recipient-list') {
-
-            // Gets the field value
-            $value = $this->sanitizeValue($inputValue);
-            $label = $this->getValueChoiceLabel($value);
-            if (!empty($label)) {
-
-                // Add the value to the recipient list
-                $form->form_submit_email .= $label . "\n";
-            }
+        // Gets the field value
+        $value = $this->sanitizeValue($inputValue);
+        $label = $this->getValueChoiceLabel($value);
+        if (!empty($label) && filter_var($label, FILTER_VALIDATE_EMAIL)) {
+            // Add the value to the recipient list
+            $form->form_submit_email .= $label . "\n";
         }
     }
 }
