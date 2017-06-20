@@ -39,11 +39,13 @@ $pageBreakCount = $form->getService()->getPageBreakCount();
 ?>
 <div class="noviusos_form noviusos_enhancer" id="<?= $id = uniqid('form_') ?>">
 
-    <?php if (!empty($errors)) { ?>
+    <?php if (!empty($errors)) {
+    ?>
         <div class="form-errors">
             <?= __('Oops, it seems there are some errors.') ?>
         </div>
-    <?php } ?>
+    <?php 
+} ?>
 
     <form <?= array_to_attr($form_attrs) ?>>
         <input type="hidden" name="_form_id" value="<?= $form->form_id ?>" />

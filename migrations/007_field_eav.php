@@ -44,7 +44,5 @@ class Field_Eav extends \Nos\Migration
                 ->value('anfi_value', $serialised_value)
                 ->where('anfi_id', $anfi_id)->execute();
         }
-
     }
-
 }

@@ -33,6 +33,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
     {
         $value = \Arr::get($_FILES, $this->getVirtualName());
         $value = $this->sanitizeValue($value);
+
         return $value;
     }
 
@@ -134,6 +135,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
         if (!empty($this->getAttachments($answer))) {
             $value = __('File attached.');
         }
+
         return array(
             'label' => $this->getField()->field_label,
             'value' => $value,
@@ -154,6 +156,7 @@ class Driver_Field_Input_File extends Driver_Field_Input implements Interface_Dr
         if (empty($attachment)) {
             return null;
         }
+
         return $attachment->url(true);
     }
 

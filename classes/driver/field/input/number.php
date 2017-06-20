@@ -16,6 +16,7 @@ class Driver_Field_Input_Number extends Driver_Field_Input
         if (!empty($inputValue) && !filter_var($inputValue, FILTER_VALIDATE_INT)) {
             throw new Exception_Driver_Field_Validation(__('Please enter a valid number.'));
         }
+
         return true;
     }
 

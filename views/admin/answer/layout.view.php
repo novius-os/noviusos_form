@@ -37,6 +37,7 @@ echo View::forge('nos::crud/toolbar', $view_params, false);
                 <?= strtr(__('Page {{number}}'), array('{{number}}' => $page)) ?>
             </h2>
             <?php
+
         }
         echo \View::forge('noviusos_form::admin/answer/layout-table', array(
             'fields' => $fields,

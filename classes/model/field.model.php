@@ -205,8 +205,8 @@ class Model_Field extends \Nos\Orm\Model
     {
         if (!empty($this->virtual_name)) {
             return $this->virtual_name;
-        } else if (!empty($this->id)) {
-            return 'field_' . $this->id;
+        } elseif (!empty($this->id)) {
+            return 'field_'.$this->id;
         } else {
             return uniqid('field_');
         }
@@ -277,6 +277,7 @@ class Model_Field extends \Nos\Orm\Model
         if (is_null($this->serviceInstance) || $reload) {
             $this->serviceInstance = Service_Field::forge($this);
         }
+
         return $this->serviceInstance;
     }
 

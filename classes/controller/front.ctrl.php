@@ -131,7 +131,6 @@ class Controller_Front extends \Nos\Controller_Front_Application
         foreach ($fieldsLayout as $rows) {
             foreach ($rows as $cols) {
                 foreach ($cols as $field) {
-
                     if (is_a($field['item'], 'Nos\Form\Model_Field')) {
 
                         // Injects as condition
@@ -344,6 +343,7 @@ class Controller_Front extends \Nos\Controller_Front_Application
         $before_submission = array_filter($before_submission, function ($val) {
             return $val === false;
         });
+
         return count($before_submission) == 0;
     }
 

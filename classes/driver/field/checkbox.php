@@ -131,6 +131,7 @@ class Driver_Field_Checkbox extends Driver_Field_Abstract
         if (!$this->isMandatory()) {
             return true;
         }
+
         return is_array($inputValue) && !empty($inputValue);
     }
 }

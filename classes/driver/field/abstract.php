@@ -139,6 +139,7 @@ abstract class Driver_Field_Abstract
         if (is_array($value)) {
             $value = implode(', ', $value);
         }
+
         return (string) $value;
     }
 
@@ -152,6 +153,7 @@ abstract class Driver_Field_Abstract
     {
         $value = \Input::post($this->getVirtualName(), $defaultValue);
         $value = $this->sanitizeValue($value);
+
         return $value;
     }
 
@@ -274,6 +276,7 @@ abstract class Driver_Field_Abstract
         if (!$this->isMandatory()) {
             return true;
         }
+
         return is_string($inputValue) && $inputValue !== '';
     }
 
@@ -298,6 +301,7 @@ abstract class Driver_Field_Abstract
     public function setErrors($errors)
     {
         $this->errors = (array) $errors;
+
         return $this;
     }
 
@@ -344,6 +348,7 @@ abstract class Driver_Field_Abstract
         if (is_array($value)) {
             $value = implode(', ', $value);
         }
+
         return e($value);
     }
 
@@ -359,6 +364,7 @@ abstract class Driver_Field_Abstract
         if (is_array($value)) {
             $value = implode(', ', $value);
         }
+
         return $value;
     }
 
@@ -419,11 +425,12 @@ abstract class Driver_Field_Abstract
         if (!isset(static::$config[$class])) {
             try {
                 list($app, $file) = \Config::configFile($class);
-                \Arr::set(static::$config, $class, \Config::load($app . '::' . $file, true));
+                \Arr::set(static::$config, $class, \Config::load($app.'::'.$file, true));
             } catch (\Exception $e) {
                 \Arr::set(static::$config, $class, array());
             }
         }
+
         return \Arr::get(static::$config, $class, array());
     }
 
@@ -458,7 +465,6 @@ abstract class Driver_Field_Abstract
         // Merges with the field meta layout
         $metaLayout = \Arr::get($this->getConfig(), 'admin.layout', array());
         if (!empty($metaLayout)) {
-
             $layoutAccordions = \Arr::get($layoutConfig, 'standard.params.accordions', array());
 
             foreach ($metaLayout as $name => $params) {
@@ -546,6 +552,7 @@ abstract class Driver_Field_Abstract
     public function setOptions(array $options)
     {
         $this->options = $options;
+
         return $this;
     }
 
@@ -566,5 +573,4 @@ abstract class Driver_Field_Abstract
             'label' => $this->field->field_label
         );
     }
-
 }

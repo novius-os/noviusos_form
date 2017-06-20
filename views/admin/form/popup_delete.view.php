@@ -17,7 +17,8 @@ $answer_count = $item->getAnswersCount();
 <input type="hidden" name="id" value="<?= $item->{$crud['pk']} ?>" />
 <div id="<?= $uniqid = uniqid('id_') ?>" class="fieldset standalone">
     <p>
-        <?php if ($answer_count > 0) { ?>
+        <?php if ($answer_count > 0) {
+    ?>
             <p><?=
                 strtr(
                     n__(
@@ -33,7 +34,8 @@ $answer_count = $item->getAnswersCount();
             <p><?= strtr(__('Yes, I want to delete this form and the {{count}} answers received.'), array(
                 '{{count}}' => '<input class="verification" data-verification="'.$answer_count.'" size="'.(mb_strlen($answer_count) + 1).'" />',
                 )); ?></p>
-        <?php } ?>
+        <?php 
+} ?>
     </p>
     <input type="checkbox" name="contexts[]" class="count" data-count="1" value="all" checked style="display:none;" />
 </div>

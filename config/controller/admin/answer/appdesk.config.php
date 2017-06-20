@@ -52,16 +52,17 @@ return array(
     ),
     'search_text' => array(
         function ($value, $query) {
-//            // @todo refacto
+            //            // @todo refacto
 //            $query->related('fields', array('where' => array(
 //                array('anfi_field_driver', 'IN', array('text', 'textarea', 'checkbox', 'select', 'radio', 'email', 'number')),
 //            )));
             $query->where('fields.anfi_value', 'LIKE', '%'.$value.'%');
+
             return $query;
         }
     ),
-    'appdesk' => array (
-        'tab' => array (
+    'appdesk' => array(
+        'tab' => array(
             'iconUrl' => 'static/apps/noviusos_form/img/icons/form-16.png',
         ),
     ),
@@ -71,6 +72,7 @@ return array(
                 if ($value) {
                     $query->where(array('answer_form_id', '=', $value));
                 }
+
                 return $query;
             },
     ),

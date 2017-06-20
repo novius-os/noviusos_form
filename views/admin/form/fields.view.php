@@ -66,8 +66,7 @@ if (!$item->is_new() && $item->getAnswersCount() > 0) {
                         foreach ($formLayoutFieldsName as $field_name) {
                             // Page break
                             if ($field_name === 'page_break') {
-                                $page_break_count++;
-                                ?>
+                                $page_break_count++; ?>
                                 <tr class="preview_row page_break">
                                     <?= \View::forge('noviusos_form::admin/form/field_preview', array(
                                         'className' => 'page_break ui-widget-header',
@@ -77,6 +76,7 @@ if (!$item->is_new() && $item->getAnswersCount() > 0) {
                                     ), false); ?>
                                 </tr>
                                 <?php
+
                             }
                             // Field
                             elseif (isset($item->fields[$field_name])) {
@@ -89,6 +89,7 @@ if (!$item->is_new() && $item->getAnswersCount() > 0) {
                                     ), false); ?>
                                 </tr>
                                 <?php
+
                             }
                         }
                         ?>
@@ -125,6 +126,7 @@ if (!$item->is_new() && $item->getAnswersCount() > 0) {
                     ?>
                     <div class="field_enclosure page_break" data-field-id="page-break-<?= ++$page_break_count ?>"></div>
                     <?php
+
                 }
                 // Field
                 elseif (isset($item->fields[$field_name])) {

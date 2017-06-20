@@ -38,7 +38,8 @@ $wrapperId = uniqid('field_enclosure_');
     ?>
 </div>
 
-<?php if (!empty($js_file)) { ?>
+<?php if (!empty($js_file)) {
+        ?>
     <script type="text/javascript">
         require(
             [<?= \Format::forge($js_file)->to_json() ?>],
@@ -46,4 +47,5 @@ $wrapperId = uniqid('field_enclosure_');
                 callback($('#<?= $wrapperId ?>'));
             });
     </script>
-<?php } ?>
+<?php 
+    } ?>

@@ -65,7 +65,7 @@ trait Trait_Driver_Field_Choices_Single
         $choicesList = $this->getChoicesList();
 
         // Builds the choices rows
-        $choices = array_map(function($label, $value) {
+        $choices = array_map(function ($label, $value) {
             return $label.' ('.$value.')';
         }, $choicesList, array_keys($choicesList));
 
@@ -201,7 +201,7 @@ trait Trait_Driver_Field_Choices_Single
             if (count($choiceParts) === 2) {
 
                 // Unescapes escaped equal signs
-                $choiceParts = array_map(function($choice) {
+                $choiceParts = array_map(function ($choice) {
                     return str_replace('\=', '=', $choice);
                 }, $choiceParts);
 
@@ -233,7 +233,7 @@ trait Trait_Driver_Field_Choices_Single
             if (count($choiceParts) === 2) {
 
                 // Unescapes escaped equal signs
-                $choiceParts = array_map(function($choice) {
+                $choiceParts = array_map(function ($choice) {
                     return str_replace('\=', '=', $choice);
                 }, $choiceParts);
 

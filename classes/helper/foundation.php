@@ -54,6 +54,7 @@ class Helper_Foundation
                 return $thing['args'][$key];
             }
         }
+
         return;
     }
 
@@ -72,7 +73,7 @@ class Helper_Foundation
     }
 
 
-    public static function renderThing ($thing)
+    public static function renderThing($thing)
     {
         if (is_string($thing)) {
             return $thing;
@@ -80,6 +81,7 @@ class Helper_Foundation
         if (is_array($thing)) {
             if (isset($thing['callback']) && is_callable($thing['callback'])) {
                 $args = isset($thing['args']) ? $thing['args'] : array();
+
                 return call_user_func_array($thing['callback'], $args);
             } else {
                 $out = array();
@@ -93,18 +95,20 @@ class Helper_Foundation
                         $out[] = static::renderThing($t);
                     }
                 }
+
                 return implode($out);
             }
         }
     }
 
 
-    public static function renderTemplate ($template, $args)
+    public static function renderTemplate($template, $args)
     {
         $replacements = array();
         foreach ($args as $name => $value) {
-            $replacements['{' . $name . '}'] = static::renderThing($value);
+            $replacements['{'.$name.'}'] = static::renderThing($value);
         }
+
         return strtr($template, $replacements);
     }
 }

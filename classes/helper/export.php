@@ -61,14 +61,17 @@ class Helper_Export
         $this->headers[] = array('label' => __('Answer date'));
     }
 
-    protected function splitChoice($field, $choice) {
+    protected function splitChoice($field, $choice)
+    {
         if ($field->field_technical_id === 'recipient-list' && mb_strrpos($choice, '=')) {
             $choiceInfos = preg_split('~(?<!\\\)=~', $choice);
             foreach ($choiceInfos as $key => $choiceValue) {
-                $choiceInfos[$key] = str_replace("\=", "=", $choiceValue);
+                $choiceInfos[$key] = str_replace("\=", '=', $choiceValue);
             }
+
             return $choiceInfos;
         }
+
         return null;
     }
 
@@ -115,7 +118,7 @@ class Helper_Export
                 $answerField = \Arr::get($answerFields, $field->field_id);
                 if (!empty($answerField)) {
                     $answer_row[] = $field->getDriver()->renderExportValue($answerField);
-                }else{
+                } else {
                     $answer_row[] = '';
                 }
             }

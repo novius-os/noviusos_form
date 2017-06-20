@@ -4,7 +4,6 @@ namespace Nos\Form;
 
 class Driver_Field_Recipient_Select extends Driver_Field_Select
 {
-
     protected $useLineNumberForValues = true;
 
     /**
@@ -21,7 +20,7 @@ class Driver_Field_Recipient_Select extends Driver_Field_Select
         $label = $this->getValueChoiceLabel($value);
         if (!empty($label) && filter_var($label, FILTER_VALIDATE_EMAIL)) {
             // Add the value to the recipient list
-            $form->form_submit_email .= $label . "\n";
+            $form->form_submit_email .= $label."\n";
         }
     }
 }

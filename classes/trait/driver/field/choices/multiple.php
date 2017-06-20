@@ -21,6 +21,7 @@ trait Trait_Driver_Field_Choices_Multiple
     {
         $value = $this->sanitizeValue($value);
         $value = implode(', ', $value);
+
         return $value;
     }
 
@@ -95,7 +96,7 @@ trait Trait_Driver_Field_Choices_Multiple
     {
         $value = $this->convertValueToArray($value);
 
-        $value = array_filter($value, function($v) {
+        $value = array_filter($value, function ($v) {
             return $v !== '';
         });
 
@@ -112,10 +113,11 @@ trait Trait_Driver_Field_Choices_Multiple
     {
         if (!is_array($value)) {
             // Replaces comma by newlines
-            $value = str_replace(",", PHP_EOL, $value);
+            $value = str_replace(',', PHP_EOL, $value);
             $value = preg_split('`\r\n|\r|\n`', $value);
             $value = array_combine($value, $value);
         }
+
         return $value;
     }
 
@@ -131,7 +133,7 @@ trait Trait_Driver_Field_Choices_Multiple
         $choices = $this->getChoicesList();
 
         // Converts values to choice
-        $values = array_map(function($value) use ($choices) {
+        $values = array_map(function ($value) use ($choices) {
             $hashValue = $this->convertChoiceValueToHash($value);
             $clearValue = $this->getChoiceValueByHash($value);
 

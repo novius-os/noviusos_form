@@ -29,6 +29,7 @@ if ($pageBreakCount > 0) {
         )); ?>
     </div>
     <?php
+
 }
 
 // Normal mode

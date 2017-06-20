@@ -14,7 +14,8 @@ $current_page = \Nos\Form\Helper_Front_Form::getFirstErrorPage($fieldsLayout, $e
 foreach ($fieldsLayout as $page => $rows) {
     ?>
     <div class="form-fields-group fieldset<?= $current_page === $page ? ' current' : '' ?>">
-        <?php foreach ($rows as $cols) { ?>
+        <?php foreach ($rows as $cols) {
+        ?>
             <div class="row">
                 <?php
                 foreach ($cols as $field) {
@@ -39,8 +40,7 @@ foreach ($fieldsLayout as $page => $rows) {
                         if (!empty($fieldError)) {
                             $template .= '<div class="form-field-error">{field_error}</div>';
                         }
-                    }
-                    ?>
+                    } ?>
                     <div class="col-xs-12 col-sm-<?= \Arr::get($field, 'width') * 3 ?>">
                         <div class="nos_form_field form-group" id="<?= $field['uniqid'] ?>">
                             <?= \Nos\Form\Helper_Front_Form::renderField($form, $field, $template, array(
@@ -53,8 +53,11 @@ foreach ($fieldsLayout as $page => $rows) {
                             )) ?>
                         </div>
                     </div>
-                <?php } ?>
+                <?php 
+                } ?>
             </div>
-        <?php } ?>
+        <?php 
+    } ?>
     </div>
-<?php } ?>
+<?php 
+} ?>

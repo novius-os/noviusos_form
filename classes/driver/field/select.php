@@ -42,6 +42,7 @@ class Driver_Field_Select extends Driver_Field_Abstract
     public function getPreviewHtml()
     {
         $defaultValue = $this->convertChoiceValueToHash($this->getDefaultValue());
+
         return Form::select('', $defaultValue, $this->getChoicesList());
     }
 

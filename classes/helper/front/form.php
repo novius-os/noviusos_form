@@ -40,6 +40,7 @@ class Helper_Front_Form
 
         // Default returns the first key
         reset($fieldsLayout);
+
         return key($fieldsLayout);
     }
 
@@ -66,6 +67,7 @@ class Helper_Front_Form
             11 => 'eleven',
             12 => 'twelve',
         );
+
         return \Arr::get($widths, $width);
     }
 
@@ -97,7 +99,7 @@ class Helper_Front_Form
 
             // Gets the context lang locale
             $localeCode = \Nos\Tools_Context::localeCode($context);
-            list($lang, $locale) = explode('_', $localeCode . '_');
+            list($lang, $locale) = explode('_', $localeCode.'_');
             $locale = mb_strtolower($locale);
             $lang = mb_strtolower($lang);
 
@@ -134,6 +136,7 @@ class Helper_Front_Form
                 'page'          => \Arr::get($options, 'page', 0),
                 'enhancer_args' => \Arr::get($options, 'enhancer_args', array()),
             )), false);
+
             return;
         }
 
@@ -187,8 +190,9 @@ class Helper_Front_Form
     {
         $replacements = array();
         foreach ($vars as $name => $value) {
-            $replacements['{' . $name . '}'] = static::renderThing($value);
+            $replacements['{'.$name.'}'] = static::renderThing($value);
         }
+
         return strtr($template, $replacements);
     }
 
@@ -248,6 +252,7 @@ class Helper_Front_Form
         if (false === $key) {
             return null;
         }
+
         return $thing['args'][$key];
     }
 
@@ -278,7 +283,7 @@ class Helper_Front_Form
      * @param $thing
      * @return mixed|string
      */
-    public static function renderThing ($thing)
+    public static function renderThing($thing)
     {
         if (is_string($thing)) {
             return $thing;
@@ -286,6 +291,7 @@ class Helper_Front_Form
         if (is_array($thing)) {
             if (isset($thing['callback']) && is_callable($thing['callback'])) {
                 $args = isset($thing['args']) ? $thing['args'] : array();
+
                 return call_user_func_array($thing['callback'], $args);
             } else {
                 $out = array();
@@ -299,6 +305,7 @@ class Helper_Front_Form
                         $out[] = static::renderThing($t);
                     }
                 }
+
                 return implode($out);
             }
         }

@@ -51,7 +51,6 @@ class Service_Field
         // Gets the driver
         $fieldDriver = $this->field->getDriver();
         if (!empty($fieldDriver)) {
-
             $fieldName = $fieldDriver->getVirtualName();
 
             // Validates the field

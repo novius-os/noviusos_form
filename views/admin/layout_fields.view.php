@@ -62,14 +62,14 @@ foreach (array('standard', 'special') as $type) {
     foreach (\Config::get('noviusos_form::controller/admin/form.fields_meta.'.$type) as $type => $meta) {
         if (!empty($meta['expert']) && !\Session::user()->user_expert) {
             continue;
-        }
-        ?>
+        } ?>
         <p><label data-meta="<?= $type ?>"><img src="<?= $meta['icon'] ?>" /> <?= $meta['title'] ?></label></p>
         <?php
-    }
-    ?>
+
+    } ?>
                         </td>
     <?php
+
 }
 ?>
                     </tr>

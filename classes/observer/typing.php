@@ -25,16 +25,16 @@ class Observer_Typing extends \Orm\Observer_Typing
         ),
     );
 
-	/**
-	 * Safely unserializes the input
-	 *
+    /**
+     * Safely unserializes the input
+     *
      * @param $var
      * @return array|mixed
      */
-	public static function type_unserialize($var)
-	{
-	    if (empty($var)) {
-	        return array();
+    public static function type_unserialize($var)
+    {
+        if (empty($var)) {
+            return array();
         }
 
         // Tries to unserialize
@@ -47,5 +47,5 @@ class Observer_Typing extends \Orm\Observer_Typing
         }
 
         return $result;
-	}
+    }
 }

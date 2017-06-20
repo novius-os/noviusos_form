@@ -139,15 +139,16 @@ class Service_Form
         $layout = explode("\n", $this->form->form_layout);
 
         // Extract rows
-        $layout = array_map(function($rows) {
+        $layout = array_map(function ($rows) {
             $rows = explode(',', $rows);
 
             // Cleanup empty rows
             $rows = array_filter($rows);
 
             // Extract fields
-            $rows = array_map(function($row) {
+            $rows = array_map(function ($row) {
                 $row = explode('=', $row);
+
                 return array(
                     'field_name' => $row[0],
                     'field_width' => $row[1],
@@ -167,7 +168,7 @@ class Service_Form
      */
     public function getLayoutFieldsName()
     {
-        return \Arr::flatten(array_map(function($row) {
+        return \Arr::flatten(array_map(function ($row) {
             return \Arr::pluck($row, 'field_name');
         }, $this->getLayout()));
     }
