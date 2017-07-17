@@ -75,6 +75,28 @@ return array(
             '{{count}} forms'
         ),
     ),
+    'i18n_answers_deletion' => array(
+        // Crud
+        'notification item deleted' => __('The answers have been deleted.'),
+
+        // Deletion popup
+        'deleting item title' => __('Deleting the answers\'s form ‘{{title}}’'),
+
+        # Delete action's labels
+        'deleting button N items' => array(
+            0 => 'Yes, delete this answer',
+            1 => 'Yes, delete these {{count}} answers',
+        ),
+
+        'deleting confirmation item' => __('Delete these answers'),
+
+        'deleting wrong confirmation' => __('We cannot delete because the number of answers you’ve entered is wrong. Please amend it.'),
+
+        'N items' => n__(
+            '1 answer',
+            '{{count}} answers'
+        ),
+    ),
     'actions' => array(
         'add' => array(
             'label' => __('Add a form'),
@@ -166,6 +188,31 @@ return array(
                     if ($item->is_new() || !$item->getAnswersCount()) {
                         return __('There is no answers yet.');
                     }
+                },
+            ),
+        ),
+        'delete_answers' => array(
+            'label' => __('Delete answers'),
+            'action' => array(
+                'action' => 'confirmationDialog',
+                'dialog' => array(
+                    'contentUrl' => '{{controller_base_url}}delete_answers/{{_id}}',
+                    'title' => __('Deleting answers of ‘{{title}}’'),
+                ),
+            ),
+            'icon' => 'trash',
+            'red' => true,
+            'targets' => array(
+                'grid' => true,
+            ),
+            'disabled' => array(
+                'check_empty' => function ($item) {
+                    if ($item->is_new() || !$item->getAnswersCount()) {
+                        return __('There is no answers yet.');
+                    }
+                },
+                'check_permission' => function ($item) {
+                    return !\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2);
                 },
             ),
         ),

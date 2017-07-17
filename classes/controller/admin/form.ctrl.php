@@ -589,4 +589,73 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             'contexts_list' => $contexts_list,
         ), false);
     }
+
+    public function action_delete($id = null)
+    {
+        if (\Input::method() === 'POST' && (int) \Input::post('delete_answers', 0) === 1) {
+            return $this->action_delete_answers($id);
+        }else {
+            return parent::action_delete($id);
+        }
+    }
+
+    /**
+     * Display a popup to confirm answer' deletion
+     * @param type $id : the id of item which will be display
+     * @return type View : the popup
+     */
+    public function action_delete_answers($id = null)
+    {
+        try {
+            if (\Input::method() === 'POST') {
+                $this->deleteAnswers();
+            } else {
+                $this->item = $this->crud_item($id);
+                $this->checkPermission('delete_answers');
+
+                if (!$this->item->getAnswersCount()) {
+                    throw new \Exception(__('There is no answer yet.'));
+                }
+
+                $viewsParams = $this->view_params();
+                $formCommonConfig = \Config::load('noviusos_form::common/form', true);
+                $i18nOverride = \array_merge($viewsParams['crud']['config']['i18n'], \Arr::get($formCommonConfig, 'i18n_answers_deletion', array()));
+
+                $viewsParams['crud']['config']['views']['delete'] = 'noviusos_form::admin/form/popup_delete_answers';
+                $viewsParams['crud']['config']['i18n'] = $i18nOverride;
+
+                return \View::forge('nos::crud/delete_popup_layout', $viewsParams, false);
+            }
+        } catch (\Exception $e) {
+            $this->send_error($e);
+        }
+    }
+
+    protected function deleteAnswers()
+    {
+        try {
+            $id = \Input::post('id', 0);
+            $this->item = $this->crud_item($id);
+            $this->checkPermission('delete_answers');
+
+            if (empty($this->item->id)) {
+                throw new \Exception(__('Unable to find the item.'));
+            }
+
+            // Remove all answers
+            $this->item->answers = array();
+            $this->item->save();
+
+            \Response::json(array(
+                'dispatchEvent' => array(
+                    'name' => 'Nos\Form\Model_Form',
+                ),
+                'notify' => __('Here you are! The answers have been deleted.'),
+            ));
+
+        } catch (\Exception $e) {
+            $this->send_error($e);
+        }
+    }
+
 }
