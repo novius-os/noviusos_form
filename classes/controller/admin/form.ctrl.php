@@ -600,7 +600,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     }
 
     /**
-     * Display a popup to confirm answer' deletion
+     * Display a popup to confirm answers' deletion
      * @param type $id : the id of item which will be display
      * @return type View : the popup
      */
@@ -608,7 +608,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     {
         try {
             if (\Input::method() === 'POST') {
-                $this->deleteAnswers();
+                $this->deleteAnswers((int) \Input::post('id', 0));
             } else {
                 $this->item = $this->crud_item($id);
                 $this->checkPermission('delete_answers');
@@ -632,11 +632,15 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         }
     }
 
-    protected function deleteAnswers()
+    /**
+     * Delete all answers of a given form
+     *
+     * @param integer $formID
+     */
+    protected function deleteAnswers($formID)
     {
         try {
-            $id = \Input::post('id', 0);
-            $this->item = $this->crud_item($id);
+            $this->item = $this->crud_item((int) $formID);
             $this->checkPermission('delete_answers');
 
             if (empty($this->item->id)) {
@@ -653,11 +657,18 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
             \Response::json(array(
                 'dispatchEvent' => array(
-                    'name' => 'Nos\Form\Model_Form',
+                    array(
+                        'name' => 'Nos\\Form\\Model_Answer',
+                    ),
+                    array(
+                        'name' => 'Nos\\Form\\Model_Form',
+                        'action' => 'delete',
+                        'id' => $this->item->id,
+                        'context' => $this->item->form_context,
+                    ),
                 ),
                 'notify' => __('The answers have been deleted.'),
             ));
-
         } catch (\Exception $e) {
             $this->send_error($e);
         }

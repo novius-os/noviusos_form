@@ -200,6 +200,7 @@ return array(
             'red' => true,
             'targets' => array(
                 'grid' => true,
+                'toolbar-edit' => true,
             ),
             'disabled' => array(
                 'check_empty' => function ($item) {
