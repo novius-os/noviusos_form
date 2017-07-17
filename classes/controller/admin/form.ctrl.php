@@ -670,7 +670,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                     ),
                     array(
                         'name' => 'Nos\\Form\\Model_Form',
-                        'action' => 'delete',
+                        'action' => 'delete', // Simulate Form deletion to reload the appdesk
                         'id' => $this->item->id,
                         'context' => $this->item->form_context,
                     ),
