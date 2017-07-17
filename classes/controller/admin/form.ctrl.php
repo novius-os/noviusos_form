@@ -590,6 +590,13 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
         ), false);
     }
 
+    /**
+     * Display a popup to confirm deletion of form or of form's answers
+     * If request is POST, it's a deletion confirmation : we make the deletion
+     *
+     * @param type $id : the id of form
+     * @return type View : the popup
+     */
     public function action_delete($id = null)
     {
         if (\Input::method() === 'POST' && (int) \Input::post('delete_answers', 0) === 1) {
@@ -601,7 +608,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
     /**
      * Display a popup to confirm answers' deletion
-     * @param type $id : the id of item which will be display
+     *
+     * @param type $id : the id of form
      * @return type View : the popup
      */
     public function action_delete_answers($id = null)
