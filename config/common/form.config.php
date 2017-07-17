@@ -90,12 +90,8 @@ return array(
 
         'deleting confirmation item' => __('Delete these answers'),
 
-        'deleting wrong confirmation' => __('We cannot delete because the number of answers you’ve entered is wrong. Please amend it.'),
+        'deleting wrong confirmation' => __('Number of answers you\'ve entered is wrong. Please amend it.'),
 
-        'N items' => n__(
-            '1 answer',
-            '{{count}} answers'
-        ),
     ),
     'actions' => array(
         'add' => array(

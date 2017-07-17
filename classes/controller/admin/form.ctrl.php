@@ -624,6 +624,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 $viewsParams['crud']['config']['views']['delete'] = 'noviusos_form::admin/form/popup_delete_answers';
                 $viewsParams['crud']['config']['i18n'] = $i18nOverride;
 
+
                 return \View::forge('nos::crud/delete_popup_layout', $viewsParams, false);
             }
         } catch (\Exception $e) {
@@ -639,7 +640,11 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $this->checkPermission('delete_answers');
 
             if (empty($this->item->id)) {
-                throw new \Exception(__('Unable to find the item.'));
+                throw new \Exception(__('Unable to find the form.'));
+            }
+
+            if (!$this->item->getAnswersCount()) {
+                throw new \Exception(__('This form has no answer.'));
             }
 
             // Remove all answers
@@ -650,7 +655,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 'dispatchEvent' => array(
                     'name' => 'Nos\Form\Model_Form',
                 ),
-                'notify' => __('Here you are! The answers have been deleted.'),
+                'notify' => __('The answers have been deleted.'),
             ));
 
         } catch (\Exception $e) {
