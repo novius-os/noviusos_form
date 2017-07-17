@@ -590,5 +590,6 @@ M.',
     'Delete answers' => 'Supprimer les réponses',
     'Deleting answers of ‘{{title}}’' => 'Supprimer les réponses de "{{title}}"',
     'Number of answers you\'ve entered is wrong. Please amend it.' => 'Nous ne pouvons supprimer ce formulaire car le nombre de réponses indiqué est faux. Merci de le corriger.',
-
+    'Deleting answers of : {{ title }}' => 'Suppression des réponses de : {{ title }}',
+    'Delete all answers' => 'Supprimer toutes les réponses',
 );

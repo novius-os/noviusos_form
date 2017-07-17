@@ -188,7 +188,7 @@ return array(
             ),
         ),
         'delete_answers' => array(
-            'label' => __('Delete answers'),
+            'label' => __('Delete all answers'),
             'action' => array(
                 'action' => 'confirmationDialog',
                 'dialog' => array(
