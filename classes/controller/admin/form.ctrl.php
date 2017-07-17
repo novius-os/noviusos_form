@@ -601,7 +601,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
     {
         if (\Input::method() === 'POST' && (int) \Input::post('delete_answers', 0) === 1) {
             return $this->action_delete_answers($id);
-        }else {
+        } else {
             return parent::action_delete($id);
         }
     }
@@ -681,5 +681,4 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             $this->send_error($e);
         }
     }
-
 }
