@@ -589,4 +589,96 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             'contexts_list' => $contexts_list,
         ), false);
     }
+
+    /**
+     * Display a popup to confirm deletion of form or of form's answers
+     * If request is POST, it's a deletion confirmation : we make the deletion
+     *
+     * @param type $id : the id of form
+     * @return type View : the popup
+     */
+    public function action_delete($id = null)
+    {
+        if (\Input::method() === 'POST' && (int) \Input::post('delete_answers', 0) === 1) {
+            return $this->action_delete_answers($id);
+        } else {
+            return parent::action_delete($id);
+        }
+    }
+
+    /**
+     * Display a popup to confirm answers' deletion
+     *
+     * @param type $id : the id of form
+     * @return type View : the popup
+     */
+    public function action_delete_answers($id = null)
+    {
+        try {
+            if (\Input::method() === 'POST') {
+                $this->deleteAnswers((int) \Input::post('id', 0));
+            } else {
+                $this->item = $this->crud_item($id);
+                $this->checkPermission('delete_answers');
+
+                if (!$this->item->getAnswersCount()) {
+                    throw new \Exception(__('There is no answer yet.'));
+                }
+
+                $viewsParams = $this->view_params();
+                $formCommonConfig = \Config::load('noviusos_form::common/form', true);
+                $i18nOverride = \array_merge($viewsParams['crud']['config']['i18n'], \Arr::get($formCommonConfig, 'i18n_answers_deletion', array()));
+
+                $viewsParams['crud']['config']['views']['delete'] = 'noviusos_form::admin/form/popup_delete_answers';
+                $viewsParams['crud']['config']['i18n'] = $i18nOverride;
+
+
+                return \View::forge('nos::crud/delete_popup_layout', $viewsParams, false);
+            }
+        } catch (\Exception $e) {
+            $this->send_error($e);
+        }
+    }
+
+    /**
+     * Delete all answers of a given form
+     *
+     * @param integer $formID
+     */
+    protected function deleteAnswers($formID)
+    {
+        try {
+            $this->item = $this->crud_item((int) $formID);
+            $this->checkPermission('delete_answers');
+
+            if (empty($this->item->id)) {
+                throw new \Exception(__('Unable to find the form.'));
+            }
+
+            if (!$this->item->getAnswersCount()) {
+                throw new \Exception(__('This form has no answer.'));
+            }
+
+            // Remove all answers
+            $this->item->answers = array();
+            $this->item->save();
+
+            \Response::json(array(
+                'dispatchEvent' => array(
+                    array(
+                        'name' => 'Nos\\Form\\Model_Answer',
+                    ),
+                    array(
+                        'name' => 'Nos\\Form\\Model_Form',
+                        'action' => 'delete', // Simulate Form deletion to reload the appdesk
+                        'id' => $this->item->id,
+                        'context' => $this->item->form_context,
+                    ),
+                ),
+                'notify' => __('The answers have been deleted.'),
+            ));
+        } catch (\Exception $e) {
+            $this->send_error($e);
+        }
+    }
 }

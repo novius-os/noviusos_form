@@ -42,6 +42,27 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
                     ),
                 ),
             ));
+
+            if (\Nos\User\Permission::atLeast('noviusos_form::all', '2_write', 2) && $form->getAnswersCount()) {
+                $this->config['appdesk']['appdesk']['buttons']['Nos\Form\Model_Form.delete_answers'] = array(
+                    'label' => __('Delete all answers'),
+                    'icon' => 'trash',
+                    'red' => true,
+                    'primary' => false,
+                    'action' => array(
+                        'action' => 'confirmationDialog',
+                        'dialog' => array(
+                            'contentUrl' => 'admin/noviusos_form/form/delete_answers/'.$form->form_id,
+                            'title' => strtr(__('Deleting answers of : {{ title }}'),
+                                array(
+                                    '{{ title }}' => e($form->title_item()),
+                                )
+                            ),
+                        ),
+                    ),
+                );
+            }
+
             $this->config['appdesk']['appdesk']['values']['form_id'] = $form_id;
             $this->config['appdesk']['appdesk']['grid']['urlJson'] = $this->config['appdesk']['appdesk']['grid']['urlJson'].'?form_id='.$form->form_id;
             $this->config['hideContexts'] = true;
