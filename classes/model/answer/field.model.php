@@ -40,7 +40,7 @@ class Model_Answer_Field extends \Nos\Orm\Model
         'anfi_value' => array(
             'default' => null,
             'data_type' => 'serialize',
-            'null' => false,
+            'null' => true,
         ),
     );
 

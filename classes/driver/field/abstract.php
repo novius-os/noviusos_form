@@ -146,10 +146,10 @@ abstract class Driver_Field_Abstract
     /**
      * Gets the sanitized input value
      *
-     * @param string $defaultValue
+     * @param string|null $defaultValue
      * @return mixed
      */
-    public function getInputValue($defaultValue = '')
+    public function getInputValue($defaultValue = null)
     {
         $value = \Input::post($this->getVirtualName(), $defaultValue);
         $value = $this->sanitizeValue($value);
