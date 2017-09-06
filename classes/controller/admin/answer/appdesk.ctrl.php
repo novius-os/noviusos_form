@@ -106,7 +106,7 @@ class Controller_Admin_Answer_Appdesk extends \Nos\Controller_Admin_Appdesk
 
                 // Gets header text
                 $headerText = \Arr::get($fieldAppdeskConfig, 'headerText', preg_replace('/\:\s*$/', ' ', $field->field_label));
-                $headerText = is_callable($headerText) ? $dataType($field) : $headerText;
+                $headerText = is_callable($headerText) ? $headerText($field) : $headerText;
 
                 // Gets title label (inspector)
                 $label = \Arr::get($fieldAppdeskConfig, 'label', $field->field_label);
