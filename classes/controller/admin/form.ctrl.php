@@ -11,6 +11,7 @@
 namespace Nos\Form;
 
 use Nos\User\Permission;
+use Nos\Form\Driver_Field_Select;
 
 class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 {
@@ -67,12 +68,17 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             throw new \Exception(__('Your form must have at least one field.'));
         }
 
-        // Formats fields data
-        foreach ($fields_data as $field_id => $field_data) {
+        // Validating selected default value for fields with multiple choices
+        foreach ($fields_data as $field_id => &$field_data) {
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
             if (!empty($field_data['field_choices'])) {
+                // Splitting choices and adding the first empty value for the case of select with an optional value
                 $choices = preg_split('`\r\n|\r|\n`', $field_data['field_choices']);
+                if (!boolval($field_data['field_mandatory']) && is_a($field_data['field_driver'], Driver_Field_Select::class, true)) {
+                    $choices[] = '';
+                }
+
                 // Check possible values in choices
                 $choiceList = array();
                 foreach ($choices as $index => $choice) {
@@ -84,9 +90,10 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 }
                 $choices = array_combine($choiceList, $choiceList);
 
+                // Setting default values according to the available ones
                 $default_value = explode(',', $field_data['field_default_value']);
                 $default_value = array_combine($default_value, $default_value);
-                $fields_data[$field_id]['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
+                $field_data['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
             }
         }
 
@@ -98,7 +105,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 
         // Registers the fields
         $fieldsConfig = \Arr::get($this->config, 'fields_config.fields');
-        foreach ($fields_data as $field_id => $field_data) {
+        foreach ($fields_data as $field_id => &$field_data) {
             $field = Model_Field::find($field_id);
 
             // Builds the fields config with the driver's config

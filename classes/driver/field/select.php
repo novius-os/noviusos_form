@@ -10,7 +10,10 @@ class Driver_Field_Select extends Driver_Field_Abstract
         // Renames the getHtmlAttributes method for overriding
         getHtmlAttributes as getDefaultHtmlAttributes;
     }
-    use Trait_Driver_Field_Choices_Single;
+    use Trait_Driver_Field_Choices_Single {
+        // Renames the getHtmlAttributes method for overriding
+        getChoicesList as getDefaultChoicesList;
+    }
 
     /**
      * Gets the HTML content
@@ -70,5 +73,19 @@ class Driver_Field_Select extends Driver_Field_Abstract
         }
 
         return $attributes;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getChoicesList()
+    {
+        $choices = $this->getDefaultChoicesList();
+
+        if (!$this->isMandatory()) {
+            $choices = \Arr::merge(array(''), $choices);
+        }
+
+        return $choices;
     }
 }

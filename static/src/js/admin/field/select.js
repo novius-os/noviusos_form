@@ -15,16 +15,32 @@ define(['jquery-nos'], function($) {
      */
     return function ($field, options, is_new, is_expert) {
         var $choices = getFieldProperty($field, 'field_choices');
+        var $mandatory = getFieldProperty($field, 'field_mandatory');
+        var $default_value = getFieldProperty($field, 'field_default_value');
 
         // Updates the preview on choices change
         $choices.on('blur change keyup', generateFieldDefaultValue);
+        $mandatory.on('change', function () {
+            // The selected value is determined by the index of the option in the list.
+            // Since the mandatory setting depends on adding an empty value on the top of the list,
+            // we have to change the index when the checkbox changes.
+            var selectedIndex = parseInt($default_value.val());
+            this.checked ? selectedIndex-- : selectedIndex++;
+            $default_value.val(selectedIndex);
+            
+            generateFieldDefaultValue();
+        });
 
         generateFieldDefaultValue();
 
         function generateFieldDefaultValue() {
             // Gets the default value
-            var $default_value = getFieldProperty($field, 'field_default_value');
             var default_value_value = $default_value.val();
+
+            var values = $choices.val().split("\n");
+            if (!$mandatory.prop('checked')) {
+                values.unshift('');
+            }
 
             // Creates the select
             var $new = $('<select />').attr({
@@ -33,7 +49,7 @@ define(['jquery-nos'], function($) {
             });
 
             // Creates the options
-            $.each($choices.val().split("\n"), function(index, choice) {
+            $.each(values, function(index, choice) {
                 // @todo do it better
                 var value = index;
                 var parts = choice.split("=");
@@ -47,8 +63,9 @@ define(['jquery-nos'], function($) {
             });
 
             // Append to DOM
-            var $parent = $default_value.closest('span');
+            var $parent = $default_value.parent();
             $parent.html($new).nosFormUI();
+            $default_value = $new;
         }
     };
 
