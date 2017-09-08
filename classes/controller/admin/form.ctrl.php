@@ -11,7 +11,6 @@
 namespace Nos\Form;
 
 use Nos\User\Permission;
-use Nos\Form\Driver_Field_Select;
 
 class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
 {
@@ -73,12 +72,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
             if (!empty($field_data['field_choices'])) {
-                // Splitting choices and adding the first empty value for the case of select with an optional value
                 $choices = preg_split('`\r\n|\r|\n`', $field_data['field_choices']);
-                if (!boolval($field_data['field_mandatory']) && is_a($field_data['field_driver'], Driver_Field_Select::class, true)) {
-                    $choices[] = '';
-                }
-
                 // Check possible values in choices
                 $choiceList = array();
                 foreach ($choices as $index => $choice) {

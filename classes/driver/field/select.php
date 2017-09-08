@@ -83,7 +83,7 @@ class Driver_Field_Select extends Driver_Field_Abstract
         $choices = $this->getDefaultChoicesList();
 
         if (!$this->isMandatory()) {
-            $choices = \Arr::merge(array(''), $choices);
+            $choices = \Arr::merge(array('' => ''), $choices);
         }
 
         return $choices;
