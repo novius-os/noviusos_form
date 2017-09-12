@@ -286,7 +286,15 @@ return array(
                     'value' => '',
                 ),
                 'populate' => function ($item) {
-                    return is_array($item->choices) ? implode(PHP_EOL, $item->choices) : $item->choices;
+                    $choices = is_array($item->choices) ? implode(PHP_EOL, $item->choices) : $item->choices;
+
+                    // If a text node begins with white space (space, new line) it will be ignored by some HTML parsers :
+                    // * https://bugs.chromium.org/p/chromium/issues/detail?id=60484
+                    // * https://bugs.webkit.org/show_bug.cgi?id=56434
+                    // To fix this we have to encode the first empty line as an HTML entity
+                    $choices = preg_replace('`^\n`', '&#13;', $choices);
+
+                    return $choices;
                 },
             ),
             'field_mandatory' => array(
