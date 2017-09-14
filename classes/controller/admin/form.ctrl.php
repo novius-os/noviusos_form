@@ -67,7 +67,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
             throw new \Exception(__('Your form must have at least one field.'));
         }
 
-        // Validating selected default value for fields with multiple choices
+        // Formats fields data, and select default value for fields with multiple choices
         foreach ($fields_data as $field_id => &$field_data) {
             // The default_value from POST is a comma-separated string of the indexes
             // We want to store textual values (separated by \n for the multiple values of checkboxes)
