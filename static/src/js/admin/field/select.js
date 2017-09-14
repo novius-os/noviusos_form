@@ -15,16 +15,18 @@ define(['jquery-nos'], function($) {
      */
     return function ($field, options, is_new, is_expert) {
         var $choices = getFieldProperty($field, 'field_choices');
+        var $mandatory = getFieldProperty($field, 'field_mandatory');
+        var $default_value = getFieldProperty($field, 'field_default_value');
 
         // Updates the preview on choices change
         $choices.on('blur change keyup', generateFieldDefaultValue);
+        $mandatory.on('change', generateFieldDefaultValue);
 
         generateFieldDefaultValue();
 
         function generateFieldDefaultValue() {
             // Gets the default value
-            var $default_value = getFieldProperty($field, 'field_default_value');
-            var default_value_value = $default_value.val();
+            var default_value_value = $default_value.val().toString();
 
             // Creates the select
             var $new = $('<select />').attr({
@@ -32,23 +34,32 @@ define(['jquery-nos'], function($) {
                 id: $default_value.attr('id')
             });
 
+            if (!$mandatory.prop('checked')) {
+                $new.append(
+                    $('<option value="" ' + (default_value_value === "" ? 'selected' : '') + '></option>')
+                );
+            }
+
             // Creates the options
-            $.each($choices.val().split("\n"), function(index, choice) {
-                // @todo do it better
-                var value = index;
+            var values = $choices.val().split("\n");
+            $.each(values, function(index, choice) {
+                var value = index.toString();
+
                 var parts = choice.split("=");
                 if (parts.length > 1) {
                     value = parts.pop();
                 }
                 var text = parts.join('=');
+
                 $new.append(
-                    $('<option value="' + value + '" ' + (default_value_value == value ? 'selected' : '') + '>' + text + '</option>')
+                    $('<option value="' + value + '" ' + (default_value_value === value ? 'selected' : '') + '>' + text + '</option>')
                 );
             });
 
             // Append to DOM
-            var $parent = $default_value.closest('span');
+            var $parent = $default_value.parent();
             $parent.html($new).nosFormUI();
+            $default_value = $new;
         }
     };
 
