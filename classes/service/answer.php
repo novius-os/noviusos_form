@@ -110,7 +110,7 @@ class Service_Answer
 
         // Gets the recipient list
         $config = \Config::load('noviusos_form::config', true);
-        $recipients = array_filter(explode("\n", $form->form_submit_email), function ($var) {
+        $recipients = array_filter(explode(PHP_EOL, $form->form_submit_email), function ($var) {
             $var = trim($var);
 
             return !empty($var) && filter_var($var, FILTER_VALIDATE_EMAIL);
