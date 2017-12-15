@@ -17,7 +17,7 @@ class Driver_Field_Recipient_Select extends Driver_Field_Select
     {
         // Gets the field value
         $value = $this->sanitizeValue($inputValue);
-        $emails = array_map('trim', explode(',',$this->getValueChoiceLabel($value)));
+        $emails = array_map('trim', explode(',', $this->getValueChoiceLabel($value)));
         foreach ($emails as $email) {
             if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 // Add the value to the recipient list
