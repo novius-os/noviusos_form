@@ -17,10 +17,12 @@ class Driver_Field_Recipient_Select extends Driver_Field_Select
     {
         // Gets the field value
         $value = $this->sanitizeValue($inputValue);
-        $label = trim($this->getValueChoiceLabel($value));
-        if (!empty($label) && filter_var($label, FILTER_VALIDATE_EMAIL)) {
-            // Add the value to the recipient list
-            $form->form_submit_email .= $label.PHP_EOL;
+        $emails = array_map('trim', explode(',',$this->getValueChoiceLabel($value)));
+        foreach ($emails as $email) {
+            if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // Add the value to the recipient list
+                $form->form_submit_email .= $email.PHP_EOL;
+            }
         }
     }
 }
