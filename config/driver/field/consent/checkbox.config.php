@@ -10,6 +10,7 @@ return array(
     'default_values' => array(
         'field_label' => __('This label will only be displayed in backoffice'),
         'field_content' => __('By submitting this form, I accept that...'),
+        'field_mandatory' => 1,
     ),
 
     // The field meta config
