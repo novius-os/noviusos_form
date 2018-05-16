@@ -1,0 +1,39 @@
+<?php
+
+Nos\I18n::current_dictionary('noviusos_form::common');
+
+return array(
+    'name' => __('Consent (checkbox)'),
+    'icon' => 'static/apps/noviusos_form/img/fields/checkbox.png',
+
+    // Fields default value
+    'default_values' => array(
+        'field_label' => __('This label will only be displayed in backoffice'),
+        'field_content' => __('By submitting this form, I accept that...'),
+    ),
+
+    // The field meta config
+    'admin' => array(
+        'layout' => array(
+            'main' => array(
+                'fields' => array(
+                    'field_label',
+                    'field_content',
+                ),
+            ),
+            'optional' => array(
+                'fields' => array(
+                    'field_mandatory',
+                ),
+            ),
+        ),
+        'fields' => array(
+            'field_content' => array(
+                'label' => __('Content:'),
+                'renderer' => \Nos\Renderer_Wysiwyg::class,
+            ),
+        ),
+        // The custom javascript file that will be loaded after the field meta is created
+        'js_file' => 'static/apps/noviusos_form/dist/js/admin/field/consent/checkbox.min.js',
+    ),
+);
