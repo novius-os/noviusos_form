@@ -18,7 +18,7 @@ class Driver_Field_Consent_Checkbox extends Driver_Field_Abstract
      */
     public function getLabel()
     {
-        return $this->getFieldContent();
+        return '';
     }
 
     /**
