@@ -1,5 +1,7 @@
 <?php
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 return array(
     'name' => __('Single line text'),
     'icon' => 'static/apps/noviusos_form/img/fields/text.png',
