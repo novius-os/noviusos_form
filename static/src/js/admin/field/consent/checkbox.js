@@ -68,7 +68,6 @@ define(['jquery-nos'], function($) {
             clearTimeout(debounceTimeout);
         }
         debounceTimeout = setTimeout(function() {
-            console.log('refresh');
             $field.trigger('refreshPreview');
         }, 500);
     };
