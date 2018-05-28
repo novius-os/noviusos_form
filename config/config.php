@@ -8,6 +8,8 @@
  * @link http://www.novius-os.org
  */
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 return array(
     // The front layout (default, foundation, ...)
     'front_layout' => 'default', // Take a look at the available layouts in config/controller/front.config.php
@@ -34,6 +36,7 @@ return array(
         \Nos\Form\Driver_Field_Hidden::class,
         \Nos\Form\Driver_Field_Variable::class,
         \Nos\Form\Driver_Field_Recipient_Select::class,
+        \Nos\Form\Driver_Field_Consent_Checkbox::class,
     ),
 
     // The default fields layout when creating a new form in backoffice

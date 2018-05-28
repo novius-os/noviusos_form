@@ -307,6 +307,19 @@
             font-style: italic;
             padding: 0.5em;
         }
+
+        .form_checkbox {
+            display: table;
+
+            label,
+            input {
+                display: table-cell;
+            }
+
+            input + label {
+                padding-left: .5em;
+            }
+        }
     }
 
     .ui-state-active .preview_content {

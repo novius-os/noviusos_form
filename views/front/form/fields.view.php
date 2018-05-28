@@ -23,7 +23,7 @@ foreach ($fieldsLayout as $page => $rows) {
                     $fieldError = \Nos\Form\Helper_Front_Form::renderFieldError(\Arr::get($errors, $field['name']));
 
                     // Builds the label and field class name
-                    $labelClass = $fieldClass = 'twelve';
+                    $labelClass = $fieldClass = 'nos_form_group twelve';
 
                     // Builds the template
                     $template = \Arr::get($field, 'template');

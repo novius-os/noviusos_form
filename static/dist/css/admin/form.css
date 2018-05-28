@@ -195,6 +195,13 @@
     .nos-form-layout-fields .preview_content .details {
       font-style: italic;
       padding: 0.5em; }
+    .nos-form-layout-fields .preview_content .form_checkbox {
+      display: table; }
+      .nos-form-layout-fields .preview_content .form_checkbox label,
+      .nos-form-layout-fields .preview_content .form_checkbox input {
+        display: table-cell; }
+      .nos-form-layout-fields .preview_content .form_checkbox input + label {
+        padding-left: .5em; }
   .nos-form-layout-fields .ui-state-active .preview_content {
     font-weight: normal; }
   .nos-form-layout-fields .tinymce_button {

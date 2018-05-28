@@ -102,6 +102,19 @@
         }
     }
 
+    .form_checkbox {
+        display: table;
+
+        label,
+        input {
+            display: table-cell;
+        }
+
+        input + label {
+            padding-left: .5em;
+        }
+    }
+
     .instructions {
         font-style: italic;
         font-size: 90%;

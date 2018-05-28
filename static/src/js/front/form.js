@@ -36,7 +36,7 @@
 
             // Required checkboxes inputs prevent us from submitting the form if any checkbox is not checked.
             // This function toggle the attribute "required" if at least one checkbox is checked.
-            $('.form-group').each(function () {
+            $('.nos_form_field').each(function () {
                 if ($(this).find('div.form_checkbox').length > 0) {
                     var requiredCheckboxes = $(this).find(':checkbox[required]');
                     requiredCheckboxes.change(function(){

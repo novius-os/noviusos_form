@@ -592,4 +592,11 @@ M.',
     'Number of answers you\'ve entered is wrong. Please amend it.' => 'Nous ne pouvons supprimer ce formulaire car le nombre de réponses indiqué est faux. Merci de le corriger.',
     'Deleting answers of : {{ title }}' => 'Suppression des réponses de : {{ title }}',
     'Delete all answers' => 'Supprimer toutes les réponses',
+
+    #: config/driver/field/consent/checkbox.config.php:6
+    'Consent (checkbox)' => 'Consentement (case à cocher)',
+    'By submitting this form, I accept that...' => 'En soumettant ce formulaire, vous acceptez que...',
+
+    #: config/controller/admin/form.config.php:315
+    'I’m the label for internal use only' => 'Je suis le libellé pour usage interne uniquement.',
 );

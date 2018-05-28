@@ -150,6 +150,13 @@
       text-align: left; }
     .noviusos_form .form-field-label label[for] {
       cursor: pointer; }
+  .noviusos_form .form_checkbox {
+    display: table; }
+    .noviusos_form .form_checkbox label,
+    .noviusos_form .form_checkbox input {
+      display: table-cell; }
+    .noviusos_form .form_checkbox input + label {
+      padding-left: .5em; }
   .noviusos_form .instructions {
     font-style: italic;
     font-size: 90%;
