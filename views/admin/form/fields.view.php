@@ -99,16 +99,17 @@ if (!$item->is_new() && $item->getAnswersCount() > 0) {
                 <div class="ui-widget-content submit_informations" style="display:none;">
                     <p class="form_captcha"><?= __('Help us prevent spam: How much is 3 plus 8?') ?> <input size="3" /></p>
                     <p class="form_submit_label"><input type="button" /></p>
+                    <div class="form_submit_consent"><?= \Nos\Tools_Wysiwyg::parse($item->wysiwygs->submit_consent) ?></div>
                 </div>
             </div>
 
             <div class="form-fields-actions bottom">
-                    <span class="button-container">
-                        <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom'))) ?>"><?= __('Add a field') ?></button>
-                    </span>
                 <span class="button-container">
-                        <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom', 'type' => 'page_break'))) ?>"><?= __('Add a page break') ?></button>
-                    </span>
+                    <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom'))) ?>"><?= __('Add a field') ?></button>
+                </span>
+                <span class="button-container">
+                    <button data-icon="plus" data-id="add" data-params="<?= e(json_encode(array('where' => 'bottom', 'type' => 'page_break'))) ?>"><?= __('Add a page break') ?></button>
+                </span>
             </div>
         </div>
 
@@ -136,9 +137,10 @@ if (!$item->is_new() && $item->getAnswersCount() > 0) {
             ?>
             <div class="accordion field_enclosure fieldset">
                 <h3><?= __('Form submission') ?></h3>
-                <div>
+                <div style="overflow: visible;">
                     <?= $fieldset->field('form_captcha')->set_template('<p><span>{label} {field}</span></p>') ?>
                     <?= $fieldset->field('form_submit_label')->set_template('<p><span>{label}<br />{field}</span></p>') ?>
+                    <?= $fieldset->field('wysiwygs->submit_consent->wysiwyg_text')->set_template('<p><span>{label}<br />{field}</span></p>') ?>
                 </div>
             </div>
         </div>

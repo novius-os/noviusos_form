@@ -34,7 +34,5 @@ return array(
                 'renderer' => \Nos\Renderer_Wysiwyg::class,
             ),
         ),
-        // The custom javascript file that will be loaded after the field meta is created
-        'js_file' => 'static/apps/noviusos_form/dist/js/admin/field/consent/checkbox.min.js',
     ),
 );

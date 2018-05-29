@@ -128,6 +128,17 @@ return array(
                 'value' => __('I’m the submit button, click to edit me'),
             ),
         ),
+        'wysiwygs->submit_consent->wysiwyg_text' => array(
+            'label' => __('Explanatory text on data processing (GDPR)'),
+            'renderer' => \Nos\Renderer_Wysiwyg::class,
+            'renderer_options' => array(
+                'theme_advanced_buttons1' => 'tablecontrols',
+                'theme_advanced_buttons2' => 'underline,strikethrough,sub,sup,|,forecolor,backcolor,|,outdent,indent,blockquote,|,anchor,charmap,hr,nonbreaking,nosbrclearall,|,styleprops,removeformat',
+                'theme_advanced_buttons3' => 'search,replace,|,spellchecker,|,newdocument,nosvisualhtml,code',
+                'theme_advanced_buttons4' => 'mediawithlabel,noslink',
+                'theme_advanced_buttons5' => 'nosstyleselect,bold,italic,nosalign,bullist,numlist,|,cut,copy,nospaste,undo,redo,|,nostoolbartoggle',
+            ),
+        ),
         'form_submit_email' => array(
             'label' => __('For every new answer, an email notification is sent to:'),
             'form' => array(

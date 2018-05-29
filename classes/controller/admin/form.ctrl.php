@@ -85,7 +85,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 $choices = array_combine($choiceList, $choiceList);
 
                 // Setting default values according to the available ones
-                $default_value = explode(',', \Arr::get($field_data, 'field_default_value', ''));
+                $default_value = explode(',', \Arr::get($field_data, 'field_default_value'));
                 $default_value = array_combine($default_value, $default_value);
                 $field_data['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
             }

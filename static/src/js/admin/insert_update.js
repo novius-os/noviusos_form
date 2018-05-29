@@ -27,6 +27,9 @@ define(
             var $currentTab = $('.nos-ostabs-panel.ui-widget-content:not(".nos-ostabs-hide")');
 
             var throttle = new ThrottleRequest(800);
+            var throttleConsent = new ThrottleRequest(500);
+
+            var wysiwygDebounceTimeout = {};
 
             $fields_container.show();
             $submit_informations.show();
@@ -195,12 +198,15 @@ define(
                 if (!$field) {
                     return ;
                 }
-                
+
                 // Sets as the selected field
                 setSelectedField($field);
 
                 // Shows the related
                 showField($field);
+
+                // Observes wysiwygs change
+                observeFieldWysiwygsChange($field);
 
                 // Auto focus the label field
                 getFieldProperty($field, 'field_label').focus();
@@ -286,6 +292,8 @@ define(
 
                     $field.find('[name$="[field_label]"]').trigger('change');
                     $field.find('[name$="[field_style]"]').trigger('change');
+
+                    reinitField($field);
                 })
                 .always(function() {
                     unfreezeField($field);
@@ -361,7 +369,8 @@ define(
             // Initializes the form submit configuration
             var $form_captcha = $container.find('[name=form_captcha]'),
                 $form_submit_label = $container.find('[name=form_submit_label]'),
-                $form_submit_email = $container.find('[name=form_submit_email]');
+                $form_submit_email = $container.find('[name=form_submit_email]'),
+                $form_submit_consent = $container.find('[name="wysiwygs->submit_consent->wysiwyg_text"]');
 
             $form_captcha.on('change', function() {
                 $submit_informations.find('.form_captcha')[$(this).is(':checked') ? 'show' : 'hide']();
@@ -379,6 +388,16 @@ define(
                     .end()
                     .find('span:last')[mail ? 'hide': 'show']();
             }).trigger('change');
+
+            // Keeps the wysiwyg of the submit consent in sync with the preview
+            observeWysiwygChange($form_submit_consent).done(function() {
+                $form_submit_consent.on('change', function() {
+                    throttleConsent.request(function(done) {
+                        $submit_informations.find('.form_submit_consent').html($form_submit_consent.val());
+                        done();
+                    });
+                });
+            });
 
             $submit_informations.on('click', function() {
                 var $accordion = $form_submit_label.closest('.accordion');
@@ -552,6 +571,35 @@ define(
                 $field.hide();
             }
 
+            function reinitField($field)
+            {
+                observeFieldWysiwygsChange($field);
+            }
+
+            /**
+             * Observes changes on the given field's wysiwygs
+             *
+             * @param $field
+             */
+            function observeFieldWysiwygsChange($field)
+            {
+                // Observes wysiwyg change
+                $field.find('[data-wysiwyg-options]').each(function() {
+                    var $wysiwyg = $(this);
+                    var throttleWysiwyg = new ThrottleRequest(500);
+                    observeWysiwygChange($wysiwyg).done(function() {
+                        $wysiwyg.on('change', function() {
+                            throttleWysiwyg.request(function(done) {
+                                // refreshFieldPreviewLabel($wysiwyg.closest('.field_enclosure'));
+                                refreshFieldPreviewContent($wysiwyg.closest('.field_enclosure'));
+                                done();
+                            });
+                        });
+                    });
+
+                });
+            }
+
             /**
              * Gets the field id
              *
@@ -662,7 +710,7 @@ define(
 
             /**
              * Show the field
-             * 
+             *
              * @param $field
              */
             function showField($field)
@@ -687,7 +735,7 @@ define(
 
             /**
              * Hides the field
-             * 
+             *
              * @param $field
              */
             function hideField($field)
@@ -841,7 +889,7 @@ define(
 
             /**
              * Gets the preview label
-             * 
+             *
              * @returns {*}
              */
             function getFieldPreviewLabel($field)
@@ -853,7 +901,7 @@ define(
                 if (getFieldProperty($field, 'field_mandatory').is(':checked')) {
                     label += '*';
                 }
-                
+
                 return label;
             }
 
@@ -1246,7 +1294,7 @@ define(
 
             /**
              * Initializes the preview layout
-             * 
+             *
              * @param $tr
              */
             function initPreviewLayout($tr)
@@ -1283,6 +1331,56 @@ define(
                     });
                 });
                 initPreviewLayout();
+            }
+
+            /**
+             * Implements the "change" event on the given wysiwyg
+             *
+             * @param $wysiwyg
+             * @return Promise
+             */
+            function observeWysiwygChange($wysiwyg) {
+                var deferred = jQuery.Deferred();
+
+                $wysiwyg.nosOnShow('one', function() {
+                    // Delays the execution of the following code, as the wysiwyg is initialized just after this script
+                    setTimeout(function() {
+                        // Waits for the wysiwyg plugin to be loaded
+                        require(['jquery-nos-wysiwyg'], function($) {
+                            $(function() {
+                                // Waits for the editor to be fully initialized
+                                setTimeout(function() {
+                                    // Checks if TinyMCE is loaded
+                                    if (typeof tinyMCE === 'undefined') {
+                                        console.warn('Cannot find TinyMCE.');
+                                        deferred.reject();
+                                        return;
+                                    }
+
+                                    // Gets the TinyMCE instance
+                                    var editor = tinyMCE.get($wysiwyg.prop('id'));
+                                    if (typeof editor === 'undefined') {
+                                        console.warn('Cannot find the TinyMCE editor instance.');
+                                        deferred.reject();
+                                        return;
+                                    }
+
+                                    // Refreshes the preview on editor change with debouncing
+                                    editor.onChange.add(function() {
+                                        $wysiwyg.trigger('change');
+                                    });
+                                    editor.onKeyUp.add(function() {
+                                        $wysiwyg.trigger('change');
+                                    })
+
+                                    deferred.resolve();
+                                }, 100);
+                            });
+                        });
+                    }, 1);
+                });
+
+                return deferred.promise();
             }
 
             /**

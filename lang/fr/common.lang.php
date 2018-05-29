@@ -599,4 +599,6 @@ M.',
 
     #: config/controller/admin/form.config.php:315
     'I’m the label for internal use only' => 'Je suis le libellé pour usage interne uniquement.',
+
+    'Explanatory text on data processing (GDPR)' => 'Texte explicatif sur le traitement des données (RGPD)',
 );

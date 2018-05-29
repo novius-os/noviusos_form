@@ -55,9 +55,12 @@
   .nos-form-layout-fields .submit_informations {
     margin: 0 1em 1em 1em;
     cursor: pointer;
+    font-weight: normal;
     /* Same value as above border-spacing */ }
     .nos-form-layout-fields .submit_informations p {
       margin: 1em; }
+    .nos-form-layout-fields .submit_informations .form_submit_consent {
+      font-weight: normal; }
   .nos-form-layout-fields .form_previews {
     padding-bottom: 1em;
     margin: 0 0 0 -1em; }
