@@ -370,7 +370,8 @@ define(
             var $form_captcha = $container.find('[name=form_captcha]'),
                 $form_submit_label = $container.find('[name=form_submit_label]'),
                 $form_submit_email = $container.find('[name=form_submit_email]'),
-                $form_submit_consent = $container.find('[name="wysiwygs->submit_consent->wysiwyg_text"]');
+                $form_submit_consent = $container.find('[name="wysiwygs->submit_consent->wysiwyg_text"]'),
+                $form_submit_consent_preview = $submit_informations.find('.form_submit_consent');
 
             $form_captcha.on('change', function() {
                 $submit_informations.find('.form_captcha')[$(this).is(':checked') ? 'show' : 'hide']();
@@ -390,10 +391,13 @@ define(
             }).trigger('change');
 
             // Keeps the wysiwyg of the submit consent in sync with the preview
+            $submit_informations.find('.form_submit_consent').on('refresh', function() {
+                $(this).html($form_submit_consent.val());
+            }).trigger('refresh');
             observeWysiwygChange($form_submit_consent).done(function() {
                 $form_submit_consent.on('change', function() {
                     throttleConsent.request(function(done) {
-                        $submit_informations.find('.form_submit_consent').html($form_submit_consent.val());
+                        $form_submit_consent_preview.trigger('refresh');
                         done();
                     });
                 });

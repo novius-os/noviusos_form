@@ -131,6 +131,12 @@ return array(
         'wysiwygs->submit_consent->wysiwyg_text' => array(
             'label' => __('Explanatory text on data processing (GDPR)'),
             'renderer' => \Nos\Renderer_Wysiwyg::class,
+            'value' => __('To know and exercise your rights, including the withdrawal of your consent to use the data collected by this form, please consult our privacy policy.'),
+            'populate' => function($item) {
+                return $item->wysiwygs->submit_consent
+                    ? $item->wysiwygs->submit_consent
+                    : html_tag('p', array(), __('To know and exercise your rights, including the withdrawal of your consent to use the data collected by this form, please consult our privacy policy.'));
+            },
             'renderer_options' => array(
                 'theme_advanced_buttons1' => 'tablecontrols',
                 'theme_advanced_buttons2' => 'underline,strikethrough,sub,sup,|,forecolor,backcolor,|,outdent,indent,blockquote,|,anchor,charmap,hr,nonbreaking,nosbrclearall,|,styleprops,removeformat',

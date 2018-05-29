@@ -601,4 +601,6 @@ M.',
     'I’m the label for internal use only' => 'Je suis le libellé pour usage interne uniquement.',
 
     'Explanatory text on data processing (GDPR)' => 'Texte explicatif sur le traitement des données (RGPD)',
+
+    'To know and exercise your rights, including the withdrawal of your consent to use the data collected by this form, please consult our privacy policy.' => 'Pour connaître et exercer vos droits, notamment de retrait de votre consentement à l\'utilisation des données collectées par ce formulaire, veuillez consulter notre politique de confidentialité.',
 );
