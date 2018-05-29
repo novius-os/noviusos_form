@@ -85,7 +85,7 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 $choices = array_combine($choiceList, $choiceList);
 
                 // Setting default values according to the available ones
-                $default_value = explode(',', $field_data['field_default_value']);
+                $default_value = explode(',', \Arr::get($field_data, 'field_default_value', ''));
                 $default_value = array_combine($default_value, $default_value);
                 $field_data['field_default_value'] = implode("\n", array_intersect_key($choices, $default_value));
             }
@@ -209,9 +209,12 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
                 throw new \Exception('The `driver` key is missing in the driver configuration.');
             }
 
-            // Builds the field data
-            $field_data = \Arr::get($field_properties, 'default_values');
-            $field_data['field_driver'] = $driverClass;
+            // Builds the field data with the default values
+            $field_data = array_merge(
+                \Arr::get($driverClass::getConfig(), 'default_values', array()),
+                \Arr::get($field_properties, 'default_values', array()),
+                array('field_driver' => $driverClass)
+            );
 
             // Creates the field in database
             $field = $this->create_field_db($field_data);
