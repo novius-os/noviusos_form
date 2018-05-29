@@ -1,5 +1,7 @@
 <?php
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 return array(
     'name' => __('File upload'),
     'icon' => 'static/apps/noviusos_form/img/fields/file.png',

@@ -1,5 +1,7 @@
 <?php
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 return array(
     'name' => __('Email Recipient List'),
     'icon' => 'static/apps/noviusos_form/img/fields/dropdown.png',

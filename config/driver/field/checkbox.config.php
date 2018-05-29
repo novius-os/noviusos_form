@@ -1,5 +1,7 @@
 <?php
 
+Nos\I18n::current_dictionary('noviusos_form::common');
+
 return array(
     'name' => __('Multiple choice (checkboxes)'),
     'icon' => 'static/apps/noviusos_form/img/fields/checkbox.png',
