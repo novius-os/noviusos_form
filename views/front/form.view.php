@@ -63,6 +63,10 @@ $pageBreakCount = $form->getService()->getPageBreakCount();
             'pageBreakCount' => $pageBreakCount,
         ), false); ?>
 
+        <?= \View::forge(!empty($view_submit_consent) ? $view_submit_consent : 'noviusos_form::front/form/submit/consent', array(
+            'form' => $form,
+        ), false); ?>
+
         <div class="clearfix"></div>
     </form>
 </div>

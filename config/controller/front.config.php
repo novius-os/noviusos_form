@@ -17,6 +17,8 @@ return array(
                 'view_fields' => 'noviusos_form::front/form/fields',
                 // The view used to display the controls
                 'view_controls' => 'noviusos_form::front/form/controls',
+                // The view used to display the submit consent
+                'view_submit_consent' => 'noviusos_form::front/form/submit/consent',
             ),
         ),
 
@@ -28,6 +30,7 @@ return array(
                 'stylesheet_url' => 'static/apps/noviusos_form/dist/css/front/form-foundation.min.css',
                 'view_fields' => 'noviusos_form::front/form/fields-foundation',
                 'view_controls' => 'noviusos_form::front/form/controls-foundation',
+                'view_submit_consent' => 'noviusos_form::front/form/submit/consent',
             ),
         ),
 
@@ -39,6 +42,7 @@ return array(
                 'stylesheet_url' => 'static/apps/noviusos_form/dist/css/front/form-bootstrap.min.css',
                 'view_controls' => 'noviusos_form::front/form/controls-bootstrap',
                 'view_fields' => 'noviusos_form::front/form/fields-bootstrap',
+                'view_submit_consent' => 'noviusos_form::front/form/submit/consent',
             ),
         ),
     ),
