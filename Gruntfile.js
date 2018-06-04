@@ -48,10 +48,6 @@ module.exports = function(grunt) {
                     'static/dist/js/admin/field/checkbox.min.js': [
                         'static/src/js/admin/field/checkbox.js',
                     ],
-                    // Admin forms CRUD consent checkbox custom script
-                    'static/dist/js/admin/field/consent/checkbox.min.js': [
-                        'static/src/js/admin/field/consent/checkbox.js',
-                    ],
                 }
             },
         },

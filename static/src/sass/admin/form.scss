@@ -91,10 +91,15 @@
     .submit_informations {
         margin: 0 1em 1em 1em;
         cursor: pointer;
+        font-weight: normal;
 
         /* Same value as above border-spacing */
         p {
             margin: 1em;
+        }
+
+        .form_submit_consent {
+            font-weight: normal;
         }
     }
 

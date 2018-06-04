@@ -62,6 +62,8 @@
     font-style: italic;
     font-size: 90%;
     margin-top: 0.1em; }
+  .noviusos_form .form-submit-consent {
+    margin-top: 1em; }
 
 .noviusos_form input.parsley-error,
 .noviusos_form select.parsley-error,
