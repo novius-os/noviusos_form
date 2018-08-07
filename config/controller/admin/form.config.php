@@ -133,9 +133,11 @@ return array(
             'renderer' => \Nos\Renderer_Wysiwyg::class,
             'value' => __('To know and exercise your rights, including the withdrawal of your consent to use the data collected by this form, please consult our privacy policy.'),
             'populate' => function($item) {
-                return $item->wysiwygs->submit_consent
-                    ? $item->wysiwygs->submit_consent
-                    : html_tag('p', array(), __('To know and exercise your rights, including the withdrawal of your consent to use the data collected by this form, please consult our privacy policy.'));
+                if ($item->is_new()) {
+                    return html_tag('p', array(), __('To know and exercise your rights, including the withdrawal of your consent to use the data collected by this form, please consult our privacy policy.'));
+                }
+
+                return $item->wysiwygs->submit_consent;
             },
             'renderer_options' => array(
                 'theme_advanced_buttons1' => 'tablecontrols',
