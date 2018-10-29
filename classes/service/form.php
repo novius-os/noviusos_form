@@ -226,6 +226,10 @@ class Service_Form
             $errors['form_captcha'] = __('You have not passed the spam test. Please try again.');
         }
 
+        if(!empty(\Session::get('captcha.'.$this->form->form_id)) {
+            \Session::set('captcha.'.$this->form->form_id, null);
+        }
+
         return $errors;
     }
 }

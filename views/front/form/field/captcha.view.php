@@ -12,12 +12,16 @@ use \Nos\Form\Helper_Front_Form;
 
 \Nos\I18n::current_dictionary('noviusos_form::common');
 
-$number_1 = mt_rand(1, 10);
-$number_2 = mt_rand(1, 50);
-if (mt_rand(1, 2) == 1) {
-    list($number_2, $number_1) = array($number_1, $number_2);
+if(!\Session::get('captcha.'.$form->form_id)) {
+    $number_1 = mt_rand(1, 10);
+    $number_2 = mt_rand(1, 50);
+    if (mt_rand(1, 2) == 1) {
+        list($number_2, $number_1) = array($number_1, $number_2);
+    }
+    \Session::set('captcha.'.$form->form_id, $number_1 + $number_2);
+} else {
+    list($number_1, $number_2) = \Session::get('captcha.'.$form->form_id);
 }
-\Session::set('captcha.'.$form->form_id, $number_1 + $number_2);
 
 $field['label'] = strtr(__('Help us prevent spam: How much is {{number_1}} plus {{number_2}}?'), array(
     '{{number_1}}' => $number_1,
