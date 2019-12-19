@@ -32,7 +32,7 @@ class Driver_Field_Input_Date extends Driver_Field_Input
         $value = $this->sanitizeValue($answerField->value);
         if (!empty($value)) {
             try {
-                return \Date::create_from_string($answerField->value, 'mysql_date')->wijmoFormat();
+                return \Date::create_from_string($answerField->value, 'mysql_date')->format('%d/%m/%Y');
             } catch (\Exception $e) {
             }
         }
