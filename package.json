@@ -6,7 +6,7 @@
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-sass": "^1.2.1",
-    "jquery": "^1.12.4",
+    "jquery": "^3.4.0",
     "parsleyjs": "^2.6.0",
     "resolve": "^1.1.1"
   }
