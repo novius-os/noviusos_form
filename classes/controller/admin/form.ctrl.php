@@ -332,6 +332,8 @@ class Controller_Admin_Form extends \Nos\Controller_Admin_Crud
      */
     public function action_export($id)
     {
+        \Event::trigger_function('noviusos_form::before_export', array($id));
+
         set_time_limit(5 * 60);
 
         try {
